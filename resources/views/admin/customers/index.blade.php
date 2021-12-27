@@ -3,7 +3,7 @@
 
 @section('content')
 @php 
-    $object_title = 'User';
+    $object_title = 'Customer';
 @endphp
 <div class="container-fluid pt-3">
 
@@ -30,6 +30,7 @@
                 </div>
             </div>
         </div><!-- /.row -->
+
         <hr/>
         
         <!-- START SEARCH BAR -->
@@ -66,7 +67,8 @@
                 <th>#</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Category</th>
+                <th>Phone</th>
+                <th>City</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
@@ -91,7 +93,7 @@ $(function () {
 
     const objects_dynamic_table = new DynamicTable(
         {
-            index_route   : "{{ route('admin.users.index') }}",
+            index_route   : "{{ route('admin.customers.index') }}",
             store_route   : "{{ route('admin.users.store') }}",
             show_route    : "{{ url('admin/users') }}",
             update_route  : "{{ url('admin/users') }}",
@@ -115,18 +117,19 @@ $(function () {
             { data: 'id', name: 'id' },
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
-            { data: 'category', name: 'category' },
+            { data: 'phone', name: 'phone' },
+            { data: 'city', name: 'city' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
-            if ($('#s-name').length)
-            d.name = $('#s-name').val(); 
+            // if ($('#s-name').length)
+            // d.name = $('#s-name').val(); 
 
-            if ($('#s-email').length)
-            d.email = $('#s-email').val();  
+            // if ($('#s-email').length)
+            // d.email = $('#s-email').val();  
             
-            if ($('#s-category').length)
-            d.category = $('#s-category').val();                
+            // if ($('#s-category').length)
+            // d.category = $('#s-category').val();                
         }
     );
 

@@ -22,7 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::resource('users', 'UsersController', ['names' => [
         'index' => 'admin.users.index',
         'store' => 'admin.users.store',
@@ -30,6 +30,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         'edit' => 'admin.users.edit',
         'update' => 'admin.users.update',
         'destroy' => 'admin.users.destroy'
+        ]
+    ]);
+
+    Route::resource('customers', 'CustomerController', ['names' => [
+        'index' => 'admin.customers.index',
+        'store' => 'admin.customers.store',
+        'show' => 'admin.customers.show',
+        'edit' => 'admin.customers.edit',
+        'update' => 'admin.customers.update',
+        'destroy' => 'admin.customers.destroy'
         ]
     ]);
 });

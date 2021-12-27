@@ -9,4 +9,10 @@
         <i class="nav-icon fas fa-headset"></i>
         <p>Users</p>
     </a>
+
+    <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}" >
+        <i class="nav-icon fas fa-users"></i>
+        <p>Customers</p>
+    </a>
 </li>
+
