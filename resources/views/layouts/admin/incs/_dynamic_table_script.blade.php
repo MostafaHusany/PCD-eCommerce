@@ -57,10 +57,19 @@ class DynamicTable {
 
         // inite data-table
         this.table_object = $(this.table_id).DataTable({
+            dom: "Btipl",
+            // dom : 'Bfrtipl',
+            buttons: [
+                'copy', 'csv', 'excel', 'print'//, 'pdf'//
+            ],
             processing: true,
             serverSide: true,
             ajax: this_objct.routs.index_route,
-            columns : this_objct.columns 
+            columns : this_objct.columns,
+            ajax: {
+                // url : index_route,
+                // data: 
+            },
         });
         
         // view manuplation model
