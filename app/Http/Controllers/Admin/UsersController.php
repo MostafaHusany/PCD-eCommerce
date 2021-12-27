@@ -16,6 +16,18 @@ class UsersController extends Controller
         
         if ($request->ajax()) {
             $model = User::query();
+            
+            if (isset($request->name)) {
+                $model->where('name', 'like', '%' . $request->name . '%');
+            }
+
+            if (isset($request->email)) {
+                $model->where('email', 'like', '%' . $request->email . '%');
+            }
+
+            if (isset($request->category)) {
+                $model->where('category', $request->category);
+            }
 
             $datatable_model = Datatables::of($model)
             ->addColumn('actions', function ($row_object) {

@@ -32,6 +32,33 @@
         </div><!-- /.row -->
         <hr/>
         
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="">Name</label>
+                    <input type="text" class="form-control" id="s-name">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+            
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="">Email</label>
+                    <input type="text" class="form-control" id="s-email">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="">Category</label>
+                    <select type="text" class="form-control" id="s-category">
+                        <option value="">-- select category --</option>
+                        <option value="technical">Technical</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+        </div><!-- /.row --> 
+
         <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
                 <th>#</th>
@@ -88,7 +115,17 @@ $(function () {
             { data: 'email', name: 'email' },
             { data: 'category', name: 'category' },
             { data: 'actions', name: 'actions' },
-        ]
+        ],
+        function (d) {
+            if ($('#s-name').length)
+            d.name = $('#s-name').val(); 
+
+            if ($('#s-email').length)
+            d.email = $('#s-email').val();  
+            
+            if ($('#s-category').length)
+            d.category = $('#s-category').val();                
+        }
     );
 
     objects_dynamic_table.validateData = (data, prefix = '') => {
@@ -121,6 +158,11 @@ $(function () {
 
         return is_valide;
     };
+
+    $('.search-action').on('keyup change', function () {
+        console.log('test');
+        objects_dynamic_table.table_object.draw();
+    });
  
 });
 </script>

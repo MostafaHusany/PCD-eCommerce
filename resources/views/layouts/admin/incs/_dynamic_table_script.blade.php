@@ -45,15 +45,17 @@ class DynamicTable {
             { data: 'name', name: 'name' },
             { data: 'category', name: 'category' },
             { data: 'actions', name: 'actions' },
-        ]
+        ],
+        search_function = () => {},
     ) {
 
-        let this_objct     = this;
-        this.routs         = routs;
-        this.table_id      = table_id;
-        this.columns       = columns;
-        this.table_el_ids  = table_el_ids;
-        this.msg_container = msg_container;
+        let this_objct       = this;
+        this.routs           = routs;
+        this.table_id        = table_id;
+        this.columns         = columns;
+        this.table_el_ids    = table_el_ids;
+        this.msg_container   = msg_container;
+        this.search_function = search_function;
 
         // inite data-table
         this.table_object = $(this.table_id).DataTable({
@@ -67,8 +69,8 @@ class DynamicTable {
             ajax: this_objct.routs.index_route,
             columns : this_objct.columns,
             ajax: {
-                // url : index_route,
-                // data: 
+                url : this_objct.routs.index_route,
+                data: this_objct.search_function
             },
         });
         
