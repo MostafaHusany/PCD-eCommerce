@@ -32,6 +32,7 @@
         </div><!-- /.row -->
         <hr/>
         
+        <!-- START SEARCH BAR -->
         <div class="row">
             <div class="col-4">
                 <div class="form-group search-action">
@@ -58,6 +59,7 @@
                 </div><!-- /.form-group -->
             </div><!-- /.col-4 -->
         </div><!-- /.row --> 
+        <!-- END   SEARCH BAR -->
 
         <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
