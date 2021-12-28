@@ -3,7 +3,7 @@
 
 @section('content')
 @php 
-    $object_title = 'Customer';
+    $object_title = 'Categor';
 @endphp
 <div class="container-fluid pt-3">
 
@@ -22,7 +22,7 @@
     <div id="objectsCard" class="card card-body">
         <div class="row">
             <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
+                <h5>{{$object_title}}ies Adminstration</h5>
             </div>
             <div class="col-6 text-right">
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
@@ -35,58 +35,31 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-3">
+            <div class="col-6">
                 <div class="form-group search-action">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" id="s-name">
+                    <label for="s-title">Title</label>
+                    <input type="text" class="form-control" id="s-title">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="">Email</label>
-                    <input type="text" class="form-control" id="s-email">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="">Phone</label>
-                    <input type="text" class="form-control" id="s-phone">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="">City</label>
-                    <select type="text" class="form-control" id="s-city">
-                        <option value="">-- select category --</option>
-                        <option>city 1</option>
-                        <option>city 2</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-6 -->
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
         <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
                 <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>City</th>
-                <th>Active</th>
+                <th>Ar-Title</th>
+                <th>En-Title</th>
+                <th>Products</th>
+                <th>Rule</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
         </table>
     </div><!-- /.card --> 
     
-    @include('admin.customers.incs._create')
+    @include('admin.categories.incs._create')
 
-    @include('admin.customers.incs._edit')
+    @include('admin.categories.incs._edit')
     
 
 </div>
@@ -102,11 +75,11 @@ $(function () {
 
     const objects_dynamic_table = new DynamicTable(
         {
-            index_route   : "{{ route('admin.customers.index') }}",
-            store_route   : "{{ route('admin.customers.store') }}",
-            show_route    : "{{ url('admin/customers') }}",
-            update_route  : "{{ url('admin/customers') }}",
-            destroy_route : "{{ url('admin/customers') }}",
+            index_route   : "{{ route('admin.products-categories.index') }}",
+            store_route   : "{{ route('admin.products-categories.store') }}",
+            show_route    : "{{ url('admin/products-categories') }}",
+            update_route  : "{{ url('admin/products-categories') }}",
+            destroy_route : "{{ url('admin/products-categories') }}",
         },
         '#dataTable',
         {
@@ -119,30 +92,20 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'first_name', 'second_name', 'name', 'email', 'phone', 'city', 'address', 'password'],
+            fields_list     : ['id', 'ar-title', 'en-title', 'ar-description', 'en-description', 'rule'],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
-            { data: 'name', name: 'name' },
-            { data: 'email', name: 'email' },
-            { data: 'phone', name: 'phone' },
-            { data: 'city', name: 'city' },
-            { data: 'active', name: 'active' },
+            { data: 'en-title', name: 'en-title' },
+            { data: 'ar-title', name: 'ar-title' },
+            { data: 'products', name: 'products' },
+            { data: 'rule', name: 'rule' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
-            if ($('#s-name').length)
-            d.name = $('#s-name').val(); 
-
-            if ($('#s-email').length)
-            d.email = $('#s-email').val();  
-            
-            if ($('#s-phone').length)
-            d.phone = $('#s-phone').val();
-            
-            if ($('#s-city').length)
-            d.city = $('#s-city').val();                
+            if ($('#s-title').length)
+            d.title = $('#s-title').val();              
         }
     );
 
@@ -153,25 +116,32 @@ $(function () {
         // clear old validation session
         $('.err-msg').slideUp(500);
 
-        if (data.get('name') === '') {
+        if (data.get('ar-title') === '') {
             is_valide = false;
-            let err_msg = 'name is required';
-            $(`#${prefix}nameErr`).text(err_msg);
-            $(`#${prefix}nameErr`).slideDown(500);
+            let err_msg = 'arabic title is required';
+            $(`#${prefix}ar-titleErr`).text(err_msg);
+            $(`#${prefix}ar-titleErr`).slideDown(500);
         }
 
-        if (data.get('email') === '') {
+        if (data.get('en-title') === '') {
             is_valide = false;
-            let err_msg = 'email name is required';
-            $(`#${prefix}emailErr`).text(err_msg);
-            $(`#${prefix}emailErr`).slideDown(500);
+            let err_msg = 'english title is required';
+            $(`#${prefix}en-titleErr`).text(err_msg);
+            $(`#${prefix}en-titleErr`).slideDown(500);
         }
 
-        if (data.get('phone') === '') {
+        if (data.get('ar-description') === '') {
             is_valide = false;
-            let err_msg = 'phone name is required';
-            $(`#${prefix}phoneErr`).text(err_msg);
-            $(`#${prefix}phoneErr`).slideDown(500);
+            let err_msg = 'arabic description is required';
+            $(`#${prefix}ar-descriptionErr`).text(err_msg);
+            $(`#${prefix}ar-descriptionErr`).slideDown(500);
+        }
+
+        if (data.get('en-description') === '') {
+            is_valide = false;
+            let err_msg = 'english description is required';
+            $(`#${prefix}en-descriptionErr`).text(err_msg);
+            $(`#${prefix}en-descriptionErr`).slideDown(500);
         }
 
         return is_valide;

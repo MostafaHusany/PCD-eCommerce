@@ -65,6 +65,8 @@
             <label for="edit-address" class="col-sm-2 col-form-label">Address</label>
             <div class="col-sm-10">
                 <textarea class="form-control" id="edit-address"></textarea>
+                <div style="padding: 5px 7px; display: none" id="edit-addressErr" class="err-msg mt-2 alert alert-danger">
+                </div>
             </div>
         </div><!-- /.form-group -->
 

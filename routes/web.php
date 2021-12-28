@@ -18,6 +18,7 @@ Route::get('/', function () {
     // dd(Cart::content());
     return view('welcome');
 });
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -42,6 +43,16 @@ Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin
         'destroy' => 'admin.customers.destroy'
         ]
     ]);
+
+    Route::resource('products-categories', 'ProductCategoriesController', ['names' => [
+        'index' => 'admin.products-categories.index',
+        'store' => 'admin.products-categories.store',
+        'show' => 'admin.products-categories.show',
+        'edit' => 'admin.products-categories.edit',
+        'update' => 'admin.products-categories.update',
+        'destroy' => 'admin.products-categories.destroy'
+        ]
+    ]);
 });
 
 use Illuminate\Support\Facades\Mail;
@@ -51,3 +62,8 @@ Route::get('test_mail', function () {
     Mail::to('mostafa.husany@goo.com')->send(new AccountActivation());
     return new AccountActivation();
 });
+
+Route::get('/home-sadas/asdasd', ['as' => 'home', function()
+{
+    dd(str_contains(Request::path(), 'home'));
+}]);

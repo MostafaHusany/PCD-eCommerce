@@ -15,7 +15,7 @@ class UsersController extends Controller
     public function index (Request $request) {
         
         if ($request->ajax()) {
-            $model = User::query();
+            $model = User::query()->where('category', '!=', 'user');
             
             if (isset($request->name)) {
                 $model->where('name', 'like', '%' . $request->name . '%');

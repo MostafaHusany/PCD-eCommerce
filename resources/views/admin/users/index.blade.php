@@ -160,11 +160,6 @@ $(function () {
 
         return is_valide;
     };
-
-    $('.search-action').on('keyup change', function () {
-        console.log('test');
-        objects_dynamic_table.table_object.draw();
-    });
  
 });
 </script>

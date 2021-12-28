@@ -56,6 +56,7 @@ class DynamicTable {
         this.table_el_ids    = table_el_ids;
         this.msg_container   = msg_container;
         this.search_function = search_function;
+        this.search_request  = null;
 
         // inite data-table
         this.table_object = $(this.table_id).DataTable({
@@ -155,6 +156,16 @@ class DynamicTable {
             }// end :: if
         });
 
+        
+        $('.search-action').on('keyup change', function (e, current_objct = this_objct) {
+            if (current_objct.search_request != null) {
+                clearTimeout(current_objct.search_request)
+            }
+            
+            current_objct.search_request = setTimeout(() => {
+                current_objct.table_object.draw();
+            }, 1000);
+        });
 
         // handle edit & delete event
         $(this.table_id).on('click', '.show-object', function (e, current_objct = this_objct) {
