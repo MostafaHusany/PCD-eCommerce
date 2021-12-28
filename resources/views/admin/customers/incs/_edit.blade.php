@@ -13,14 +13,25 @@
 
     <form action="/" id="objectForm">
         <input type="hidden" id="edit-id">
+        
         <div class="form-group row">
-            <label for="edit-name" class="col-sm-2 col-form-label">Name</label>
+            <label for="edit-first_name" class="col-sm-2 col-form-label">First Name</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="edit-name" placeholder="Name">
-                <div style="padding: 5px 7px; display: none" id="edit-nameErr" class="err-msg mt-2 alert alert-danger">
+                <input type="text" class="form-control" id="edit-first_name" placeholder="First Name">
+                <div style="padding: 5px 7px; display: none" id="edit-first_nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
+        
+        <div class="form-group row">
+            <label for="edit-second_name" class="col-sm-2 col-form-label">Second Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-second_name" placeholder="Second Name">
+                <div style="padding: 5px 7px; display: none" id="edit-second_nameErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
         
         <div class="form-group row">
             <label for="edit-email" class="col-sm-2 col-form-label">Email</label>
@@ -41,23 +52,19 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
+            <label for="edit-city" class="col-sm-2 col-form-label">City</label>
             <div class="col-sm-10">
-                <select class="form-control" id="edit-category" placeholder="category">
-                    <option value="technical">Technical</option>
-                    <option value="admin">Admin</option>
+                <select class="form-control" id="edit-city">
+                    <option>city 1</option>
+                    <option>city 2</option>
                 </select>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="permissions" class="col-sm-2 col-form-label">Permissions</label>
+            <label for="edit-address" class="col-sm-2 col-form-label">Address</label>
             <div class="col-sm-10">
-                <select class="form-control" id="edit-permissions" name="permissions[]" multiple="multiple">
-                    <option>permission 1</option>
-                    <option>permission 2</option>
-                    <option>permission 3</option>
-                </select>
+                <textarea class="form-control" id="edit-address"></textarea>
             </div>
         </div><!-- /.form-group -->
 

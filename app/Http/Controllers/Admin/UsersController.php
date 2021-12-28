@@ -67,11 +67,12 @@ class UsersController extends Controller
         $data['permissions'] = json_encode($data['permissions']);
 
         
-        $data['plain_password'] = $request->password;
         if (isset($request->password)) {
             $data['password'] = bcrypt($request->password);
+            $data['plain_password'] = $request->password;
         } else {
             $data['password'] = bcrypt('123456');
+            $data['plain_password'] = '123456';
         }
         
         $new_user = User::create($data);
@@ -91,6 +92,7 @@ class UsersController extends Controller
 
         $data = $request->except(['category', 'password']);
         $data['category'] = in_array($request->category , ['technical', 'admin']) ? $request->category  : 'technical';
+        
         if (isset($request->password)) {
             $data['plain_password'] = $request->password;
             $data['password']       = bcrypt($request->password);

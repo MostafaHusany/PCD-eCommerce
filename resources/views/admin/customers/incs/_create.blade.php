@@ -50,23 +50,19 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="category" class="col-sm-2 col-form-label">Category</label>
+            <label for="city" class="col-sm-2 col-form-label">City</label>
             <div class="col-sm-10">
-                <select class="form-control" id="category">
-                    <option value="technical">Technical</option>
-                    <option value="admin">Admin</option>
+                <select class="form-control" id="city">
+                    <option>city 1</option>
+                    <option>city 2</option>
                 </select>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="permissions" class="col-sm-2 col-form-label">Permissions</label>
+            <label for="address" class="col-sm-2 col-form-label">Address</label>
             <div class="col-sm-10">
-                <select class="form-control" id="permissions" name="permissions[]" multiple="multiple">
-                    <option>permission 1</option>
-                    <option>permission 2</option>
-                    <option>permission 3</option>
-                </select>
+                <textarea class="form-control" id="address"></textarea>
             </div>
         </div><!-- /.form-group -->
         

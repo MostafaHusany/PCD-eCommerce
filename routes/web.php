@@ -43,3 +43,11 @@ Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin
         ]
     ]);
 });
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Customers\AccountActivation;
+
+Route::get('test_mail', function () {
+    Mail::to('mostafa.husany@goo.com')->send(new AccountActivation());
+    return new AccountActivation();
+});

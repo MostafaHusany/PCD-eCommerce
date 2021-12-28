@@ -35,30 +35,38 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group search-action">
                     <label for="">Name</label>
                     <input type="text" class="form-control" id="s-name">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
+            </div><!-- /.col-3 -->
             
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group search-action">
                     <label for="">Email</label>
                     <input type="text" class="form-control" id="s-email">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
+            </div><!-- /.col-3 -->
 
-            <div class="col-4">
+            
+            <div class="col-3">
                 <div class="form-group search-action">
-                    <label for="">Category</label>
-                    <select type="text" class="form-control" id="s-category">
+                    <label for="">Phone</label>
+                    <input type="text" class="form-control" id="s-phone">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="">City</label>
+                    <select type="text" class="form-control" id="s-city">
                         <option value="">-- select category --</option>
-                        <option value="technical">Technical</option>
-                        <option value="admin">Admin</option>
+                        <option>city 1</option>
+                        <option>city 2</option>
                     </select>
                 </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
+            </div><!-- /.col-3 -->
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
@@ -69,15 +77,16 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>City</th>
+                <th>Active</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
         </table>
     </div><!-- /.card --> 
     
-    @include('admin.users.incs._create')
+    @include('admin.customers.incs._create')
 
-    @include('admin.users.incs._edit')
+    @include('admin.customers.incs._edit')
     
 
 </div>
@@ -94,10 +103,10 @@ $(function () {
     const objects_dynamic_table = new DynamicTable(
         {
             index_route   : "{{ route('admin.customers.index') }}",
-            store_route   : "{{ route('admin.users.store') }}",
-            show_route    : "{{ url('admin/users') }}",
-            update_route  : "{{ url('admin/users') }}",
-            destroy_route : "{{ url('admin/users') }}",
+            store_route   : "{{ route('admin.customers.store') }}",
+            show_route    : "{{ url('admin/customers') }}",
+            update_route  : "{{ url('admin/customers') }}",
+            destroy_route : "{{ url('admin/customers') }}",
         },
         '#dataTable',
         {
@@ -110,7 +119,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'name', 'email', 'phone', 'category', 'category', 'password', 'permissions'],
+            fields_list     : ['id', 'first_name', 'second_name', 'name', 'email', 'phone', 'city', 'address', 'password'],
             imgs_fields     : []
         },
         [
@@ -119,17 +128,21 @@ $(function () {
             { data: 'email', name: 'email' },
             { data: 'phone', name: 'phone' },
             { data: 'city', name: 'city' },
+            { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
-            // if ($('#s-name').length)
-            // d.name = $('#s-name').val(); 
+            if ($('#s-name').length)
+            d.name = $('#s-name').val(); 
 
-            // if ($('#s-email').length)
-            // d.email = $('#s-email').val();  
+            if ($('#s-email').length)
+            d.email = $('#s-email').val();  
             
-            // if ($('#s-category').length)
-            // d.category = $('#s-category').val();                
+            if ($('#s-phone').length)
+            d.phone = $('#s-phone').val();
+            
+            if ($('#s-city').length)
+            d.city = $('#s-city').val();                
         }
     );
 
@@ -168,6 +181,25 @@ $(function () {
         console.log('test');
         objects_dynamic_table.table_object.draw();
     });
+
+    $('#dataTable').on('change', '.c-activation-btn', function () {
+        let target_id = $(this).data('user-target');
+        
+        axios.post(`{{url('admin/customers')}}/${target_id}`, {
+            _token : "{{ csrf_token() }}",
+            _method : 'PUT',
+            activate_customer : true
+        }).then(res => {
+            if (!res.data.success) {
+                $(this).prop('checked', !$(this).prop('checked'));
+                $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+
+                setTimeout(() => {
+                    $('#dangerAlert').text('').slideUp(500);
+                }, 3000);
+            }
+        })// axios
+    })
  
 });
 </script>
