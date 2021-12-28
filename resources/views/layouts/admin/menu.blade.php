@@ -52,7 +52,7 @@
 </li>
 
 --}}
-<li class="nav-item {{ str_contains(Request::path(), '/products-categories') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), '/products-categories') || str_contains(Request::path(), '/products') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
         <i class="nav-icon fas fa-box-open"></i>
@@ -66,6 +66,12 @@
             <a href="{{ route('admin.products-categories.index') }}" class="nav-link {{ Request::is('admin/products-categories') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-clipboard-list"></i>
                 <p>Categories</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is('admin/products') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-boxes"></i>
+                <p>Products</p>
             </a>
         </li>
         <!-- <li class="nav-item">

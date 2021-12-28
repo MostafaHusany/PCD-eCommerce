@@ -53,6 +53,16 @@ Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin
         'destroy' => 'admin.products-categories.destroy'
         ]
     ]);
+
+    Route::resource('products', 'ProductsController', ['names' => [
+        'index'     => 'admin.products.index',
+        'store'     => 'admin.products.store',
+        'show'      => 'admin.products.show',
+        'edit'      => 'admin.products.edit',
+        'update'    => 'admin.products.update',
+        'destroy'   => 'admin.products.destroy'
+        ]
+    ]);
 });
 
 use Illuminate\Support\Facades\Mail;

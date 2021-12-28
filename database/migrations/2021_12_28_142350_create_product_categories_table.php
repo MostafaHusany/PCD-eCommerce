@@ -22,6 +22,12 @@ class CreateProductCategoriesTable extends Migration
             $table->text('en-description');
             $table->smallInteger('rule')->default(0);
 
+            $table->smallInteger('is_main')->default(1);   
+
+            $table->unsignedBigInteger('category_id')->nullable();;
+            $table->foreign('category_id')->references('id')->on('product_categories')
+            ->onDelete('cascade')->onUpdate('cascade');
+
             $table->timestamps();
         });
     }

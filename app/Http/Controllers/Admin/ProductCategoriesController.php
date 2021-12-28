@@ -24,6 +24,9 @@ class ProductCategoriesController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('parent', function ($row_object) {
+                return $row_object->is_main ? '--' : '';
+            })
             ->addColumn('products', function ($row_object) {
                 return 0;
             })
@@ -34,7 +37,8 @@ class ProductCategoriesController extends Controller
             return $datatable_model->make(true);
         }
         
-        return view('admin.categories.index');
+        $all_categories = ProductCategory::all();
+        return view('admin.categories.index', compact('all_categories'));
     }
 
     public function show (Request $request, $id) {
@@ -48,12 +52,15 @@ class ProductCategoriesController extends Controller
     }
 
     public function store (Request $request) {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'ar-title'       => 'required|unique:product_categories,ar-title|max:255',
             'en-title'       => 'required|unique:product_categories,en-title|max:255',
             'ar-description' => 'required|max:500',
             'en-description' => 'required|max:500',
-            'rule'        => 'required|max:3',
+            'rule'           => 'required|max:3',
+            'is_main'        => 'required',
+            'category_id'    =>  $request->is_main == 0 ? 'exists:product_categories,id' : ''
         ]);
 
         if ($validator->fails()) {
@@ -73,6 +80,8 @@ class ProductCategoriesController extends Controller
             'ar-description' => 'required|max:500',
             'en-description' => 'required|max:500',
             'rule'           => 'required|max:3',
+            'is_main'        => 'required',
+            'category_id'    =>  $request->is_main == 0 ? 'exists:product_categories,id' : ''
         ]);
 
         if ($validator->fails()) {

@@ -92,7 +92,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'ar-title', 'en-title', 'ar-description', 'en-description', 'rule'],
+            fields_list     : ['id', 'ar-title', 'en-title', 'ar-description', 'en-description', 'is_main', 'category_id', 'rule'],
             imgs_fields     : []
         },
         [
@@ -144,6 +144,13 @@ $(function () {
             $(`#${prefix}en-descriptionErr`).slideDown(500);
         }
 
+        if (data.get('is_main') === '0' && data.get('category_id') === '') {
+            is_valide = false;
+            let err_msg = 'main category is required';
+            $(`#${prefix}category_idErr`).text(err_msg);
+            $(`#${prefix}category_idErr`).slideDown(500);
+        }
+
         return is_valide;
     };
 
@@ -165,6 +172,16 @@ $(function () {
             }
         })// axios
     })
+
+    $('#is_main').change(function () {
+        let target = $(this).data('target');
+        if ($(this).val() === '1') {
+            $(target).attr('disabled', 'disabled');
+        } else {
+            $(target).attr('disabled', '');
+            $(target).removeAttr('disabled');
+        }
+    });
  
 });
 </script>
