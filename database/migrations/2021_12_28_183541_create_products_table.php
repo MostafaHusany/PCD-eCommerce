@@ -16,20 +16,26 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             
-            $table->string('ar-name')->unique();
-            $table->string('en-name')->unique();
+            $table->string('ar_name')->unique();
+            $table->text('ar_small_description');
+            $table->text('ar_description');
+            
+            $table->string('en_name')->unique();
+            $table->text('en_small_description');
+            $table->text('en_description');
+
             $table->string('sku')->unique();
             $table->string('slug')->unique();
-
-            $table->text('small-description');
-            $table->text('description');
             
-            $table->text('main_images')->nullable();
+            $table->text('main_image')->nullable();
             $table->text('images')->nullable();
 
             $table->text('meta')->nullable();
+            $table->smallInteger('quantity')->default(10);
+            $table->float('price');
+            $table->float('price_after_sale')->nullable();
 
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('product_categories')
             ->onDelete('cascade')->onUpdate('cascade');
 
