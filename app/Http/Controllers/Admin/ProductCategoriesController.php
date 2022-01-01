@@ -28,7 +28,8 @@ class ProductCategoriesController extends Controller
                 return $row_object->is_main ? '--' : '';
             })
             ->addColumn('products', function ($row_object) {
-                return 0;
+                // return 0;
+                return $row_object->products()->count();
             })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.categories.incs._actions', compact('row_object'));

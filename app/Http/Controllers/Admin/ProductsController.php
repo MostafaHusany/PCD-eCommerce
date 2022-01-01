@@ -98,9 +98,14 @@ class ProductsController extends Controller
         $data['slug'] = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
         $categories = explode(',', $request->categories);
+        // get all products 
 
+        /**
+        * get main category of the each child category parent ... 
+        */
         $new_object = Product::create($data);
-        $new_object->categories()->sync($categories);
+        // $new_object->categories()->sync($categories);
+        $this->sync_product_categories($categories, $new_object);
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }// end :: store
@@ -148,8 +153,9 @@ class ProductsController extends Controller
 
         $target_object = Product::find($id);
         $target_object->update($data);
-        $target_object->categories()->sync($categories);
-
+        // $target_object->categories()->sync($categories);
+        $this->sync_product_categories($categories, $target_object);
+        
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
 
@@ -173,4 +179,21 @@ class ProductsController extends Controller
         }
         return response()->json($data);
     }
+
+    private function sync_product_categories ($categories_id, $target_product) {
+        /**
+        * Get all categories child categories ids and thier parent id  
+        */
+
+        $all_categories_ids = [];
+        $targted_categories = ProductCategory::whereIn('id', $categories_id)->get();
+
+        foreach($targted_categories as $category) {
+            $all_categories_ids[] = $category->id;
+            !$category->is_main && $all_categories_ids[] = $category->category_id;
+        }
+        
+        $all_categories_ids = array_unique($all_categories_ids, SORT_REGULAR);
+        $target_product->categories()->sync($all_categories_ids);
+    }// end :: sync_product_categories
 }

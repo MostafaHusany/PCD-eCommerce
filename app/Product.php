@@ -14,6 +14,7 @@ class Product extends Model
     public function getFormatedPrice () {
         return $this->price . ' SR';
     }
+    
     public function getFormatedSale () {
         return $this->price . ' SR';
     }
