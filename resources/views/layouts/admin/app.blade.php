@@ -23,6 +23,18 @@
     @yield('third_party_stylesheets')
 
     @stack('page_css')
+    
+
+    <script src="{{ mix('js/app.js') }}" ></script>
+    <!-- DATATABLE SCRIPTS -->
+    <script src="{{ asset('plugins/datatable/datatables.bundle.js') }}"></script>
+    <script src="{{ asset('plugins/datatable/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatable/jszip.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatable/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatable/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('plugins/datatable/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatable/buttons.print.min.js') }}"></script>
+    
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -89,16 +101,6 @@
             reserved.
         </footer>
     </div>
-
-    <script src="{{ mix('js/app.js') }}" ></script>
-    <!-- DATATABLE SCRIPTS -->
-    <script src="{{ asset('plugins/datatable/datatables.bundle.js') }}"></script>
-    <script src="{{ asset('plugins/datatable/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('plugins/datatable/jszip.min.js') }}"></script>
-    <script src="{{ asset('plugins/datatable/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('plugins/datatable/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('plugins/datatable/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('plugins/datatable/buttons.print.min.js') }}"></script>
 
     @include('layouts.admin.incs._dynamic_table_script')
     

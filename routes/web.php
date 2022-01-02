@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin
 
     // fast ajax search
     Route::get('/products-search', 'ProductsController@dataAjax');
+    Route::get('/products-categories-search', 'ProductCategoriesController@dataAjax');
 });
 
 use Illuminate\Support\Facades\Mail;

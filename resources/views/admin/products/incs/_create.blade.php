@@ -56,9 +56,39 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
+            <label for="categories" class="col-sm-2 col-form-label">Category</label>
+            <div class="col-sm-10">
+                <select type="text" tabindex="7" name="categories[]" class="form-control"  multiple="multiple" id="categories"></select>
+                <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+        
+        <div class="form-group row">
+            <label for="is_composite" class="col-sm-2 col-form-label">Product Type</label>
+            <div class="col-sm-10">
+                <select tabindex="8" name="is_composite" data-first-target="#childProductsContainer" data-second-target="#productQuantityContainer" class="form-control" id="is_composite">
+                    <option value="0">Usual product</option>
+                    <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
+                </select>
+                <div style="padding: 5px 7px; display: none" id="is_compositeErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div id="childProductsContainer" class="form-group row mt-2 mb-2 pt-2 pb-2" style="display: none; !border: 1px solid #ddd; !border-radius: 5px">
+            <div class="col-sm-2">
+                <label for="">Child Products</label>
+            </div>
+            <div class="col-sm-10">
+                <select name="child_products"  multiple="multiple" id="child_products" class="form-control"></select>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div id="productQuantityContainer" class="form-group row">
             <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
             <div class="col-sm-10">
-                <input type="number" tabindex="7"  class="form-control" min="0" id="quantity" value="0">
+                <input type="number" tabindex="9"  class="form-control" min="0" id="quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="quantityErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -67,7 +97,7 @@
         <div class="form-group row">
             <label for="sku" class="col-sm-2 col-form-label">SKU</label>
             <div class="col-sm-10">
-                <input type="text" tabindex="8"  class="form-control" id="sku" placeholder="SKU">
+                <input type="text" tabindex="10"  class="form-control" id="sku" placeholder="SKU">
                 <div style="padding: 5px 7px; display: none" id="skuErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -76,13 +106,13 @@
         <div class="form-group row">
             <label for="price" class="col-sm-2 col-form-label">Price</label>
             <div class="col-sm-2">
-                <input type="number" min="0" step="0.5" tabindex="9"  class="form-control" id="price" value="0">
+                <input type="number" min="0" step="0.5" tabindex="11"  class="form-control" id="price" value="0">
                 <div style="padding: 5px 7px; display: none" id="priceErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
             <label for="price_after_sale" class="col-sm-2 col-form-label">Price After Sale</label>
             <div class="col-sm-2">
-                <input type="number" min="0" step="0.5" tabindex="10"  class="form-control" id="price_after_sale" value="0">
+                <input type="number" min="0" step="0.5" tabindex="12"  class="form-control" id="price_after_sale" value="0">
                 <div style="padding: 5px 7px; display: none" id="price_after_saleErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -94,18 +124,9 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="categories" class="col-sm-2 col-form-label">Category</label>
-            <div class="col-sm-10">
-                <select type="text" tabindex="11" name="categories[]" class="form-control"  multiple="multiple" id="categories" placeholder="SKU"></select>
-                <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        
-        <div class="form-group row">
             <label for="main_image" class="col-sm-2 col-form-label">Main Image</label>
             <div class="col-sm-10">
-                <input id="main_image" tabindex="12" type="file" data-jpreview-container="#demo-1-container">
+                <input id="main_image" tabindex="13" type="file" data-jpreview-container="#demo-1-container">
                 <div id="demo-1-container" class="jpreview-container"></div>
                 <div style="padding: 5px 7px; display: none" id="main_imageErr" class="err-msg mt-2 alert alert-danger">
                 </div>
@@ -115,13 +136,13 @@
         <div class="form-group row">
             <label for="images" class="col-sm-2 col-form-label">Product Images</label>
             <div class="col-sm-10">
-                <input id="images" name="images[]" tabindex="13" type="file" multiple data-jpreview-container="#demo-2-container">
+                <input id="images" name="images[]" tabindex="14" type="file" multiple data-jpreview-container="#demo-2-container">
                 <div id="demo-2-container" class="jpreview-container"></div>
                 <div style="padding: 5px 7px; display: none" id="imagesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
-        <button tabindex="11" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button tabindex="15" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
     </form>
 </div>

@@ -55,8 +55,39 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
-
+        
         <div class="form-group row">
+            <label for="edit-categories" class="col-sm-2 col-form-label">Category</label>
+            <div class="col-sm-10">
+                <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="SKU"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-categoriesErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+        
+        <div class="form-group row">
+            <label for="edit-is_composite" class="col-sm-2 col-form-label">Product Type</label>
+            <div class="col-sm-10">
+                <select tabindex="8" name="edit-is_composite" data-first-target="#edit-childProductsContainer" data-second-target="#edit-productQuantityContainer" class="form-control" id="edit-is_composite">
+                    <option value="0">Usual product</option>
+                    <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
+                </select>
+                <div style="padding: 5px 7px; display: none" id="edit-is_compositeErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div id="edit-childProductsContainer" class="form-group row mt-2 mb-2 pt-2 pb-2" style="display: none; !border: 1px solid #ddd; !border-radius: 5px">
+            <div class="col-sm-2">
+                <label for="">Child Products</label>
+            </div>
+            <div class="col-sm-10">
+                <select name="edit-child_products"  multiple="multiple" id="edit-child_products" class="form-control"></select>
+            </div>
+        </div><!-- /.form-group -->
+
+
+        <div id="edit-productQuantityContainer" class="form-group row">
             <label for="edit-quantity" class="col-sm-2 col-form-label">Quantity</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="7"  class="form-control" min="0" id="edit-quantity" value="0">
@@ -90,15 +121,6 @@
             <div class="col-sm-4">
                 <div style="padding: 5px 7px;" class="alert alert-info">
                     Leave price after sale emty if there is no sale
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        
-        <div class="form-group row">
-            <label for="edit-categories" class="col-sm-2 col-form-label">Category</label>
-            <div class="col-sm-10">
-                <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="SKU"></select>
-                <div style="padding: 5px 7px; display: none" id="edit-categoriesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
