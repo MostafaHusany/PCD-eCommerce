@@ -88,3 +88,11 @@
         </li> -->
     </ul>
 </li>
+
+
+<li class="nav-item">
+    <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}" >
+        <i class="nav-icon fas fa-dolly"></i>
+        <p>Orders</p>
+    </a>
+</li>

@@ -23,7 +23,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::resource('users', 'UsersController', ['names' => [
         'index' => 'admin.users.index',
         'store' => 'admin.users.store',
@@ -61,6 +61,16 @@ Route::group(['middleware' => 'auth', 'namespace' => 'Admin', 'prefix' => 'admin
         'edit'      => 'admin.products.edit',
         'update'    => 'admin.products.update',
         'destroy'   => 'admin.products.destroy'
+        ]
+    ]);
+
+    Route::resource('orders', 'OrdersController', ['names' => [
+        'index'     => 'admin.orders.index',
+        'store'     => 'admin.orders.store',
+        'show'      => 'admin.orders.show',
+        'edit'      => 'admin.orders.edit',
+        'update'    => 'admin.orders.update',
+        'destroy'   => 'admin.orders.destroy'
         ]
     ]);
 
