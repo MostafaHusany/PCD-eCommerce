@@ -167,18 +167,18 @@ $(document).ready(function () {
                 .then(res => {
                     if (res.data.success) {
                         let tmp = `
-                            <tr class="selected_product_tr" id="selected_product_tr_${res.data.product.id}">
-                                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${res.data.product.main_image}" /></td>
-                                <td>${res.data.product.ar_name} / ${res.data.product.en_name}</td>
-                                <td>${res.data.product.sku}</td>
-                                <td>${res.data.product.price}</td>
-                                <td id="selected_product_o_quantity_${res.data.product.id}" data-quantity="${res.data.product.quantity}">${res.data.product.quantity - 1}</td>
-                                <td><input style="width: 80px" class="selected_product_quantity" id="selected_product_quantity_${res.data.product.id}" data-price="${res.data.product.price}" data-target="${res.data.product.id}" type="number" min="1" max="${res.data.product.quantity}" value="1" step="1" data-max="${res.data.product.quantity}"/></td>
-                                <td id="selected_product_td_sub_total_${res.data.product.id}">${res.data.product.price} SR</td>
+                            <tr class="selected_product_tr" id="selected_product_tr_${res.data.data.id}">
+                                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${res.data.data.main_image}" /></td>
+                                <td>${res.data.data.ar_name} / ${res.data.data.en_name}</td>
+                                <td>${res.data.data.sku}</td>
+                                <td>${res.data.data.price}</td>
+                                <td id="selected_product_o_quantity_${res.data.data.id}" data-quantity="${res.data.data.quantity}">${res.data.data.quantity - 1}</td>
+                                <td><input style="width: 80px" class="selected_product_quantity" id="selected_product_quantity_${res.data.data.id}" data-price="${res.data.data.price}" data-target="${res.data.data.id}" type="number" min="1" max="${res.data.data.quantity}" value="1" step="1" data-max="${res.data.data.quantity}"/></td>
+                                <td id="selected_product_td_sub_total_${res.data.data.id}">${res.data.data.price} SR</td>
                                 <!--
-                                <td id="selected_product_td_fees_${res.data.product.id}">---</td>
-                                <td id="selected_product_td_tax_${res.data.product.id}">---</td>
-                                <td id="selected_product_td_total_${res.data.product.id}">---</td>
+                                <td id="selected_product_td_fees_${res.data.data.id}">---</td>
+                                <td id="selected_product_td_tax_${res.data.data.id}">---</td>
+                                <td id="selected_product_td_total_${res.data.data.id}">---</td>
                                 -->
                             </tr>
                         `;

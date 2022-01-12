@@ -105,7 +105,7 @@ class ProductsController extends Controller
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
             $target_object->categories;
             $target_object->is_composite && $target_object->children;
-            return response()->json(['product' => $target_object, 'success' => isset($target_object)]);
+            return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
         return response()->json(['product' => null, 'success' > false]);

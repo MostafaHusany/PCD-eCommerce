@@ -268,7 +268,7 @@ $(function () {
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-
+        console.log(data);
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
             $(`#${prefix + el_id}`).val(data[el_id]).change();
