@@ -108,7 +108,7 @@ class DynamicTable {
                     if (res.success) {
                         current_objct.table_object.draw();
                         current_objct.clearForm(current_objct.table_el_ids.fields_list);
-                        current_objct.showAlertMsg('New user was created successfully', current_objct.msg_container.success_el);
+                        current_objct.showAlertMsg('Request made successfully', current_objct.msg_container.success_el);
                         
                         toggleCard('#createObjectCard', '#objectsCard');
                     } else {
@@ -142,7 +142,7 @@ class DynamicTable {
                     if (res.success) {
                         current_objct.table_object.draw();
                         current_objct.clearForm(current_objct.table_el_ids.fields_list);
-                        current_objct.showAlertMsg('New user was created successfully', current_objct.msg_container.success_el);
+                        current_objct.showAlertMsg('Request made successfully', current_objct.msg_container.success_el);
                         
                         toggleCard('#editObjectsCard', '#objectsCard');
                     } else {

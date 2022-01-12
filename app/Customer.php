@@ -19,4 +19,8 @@ class Customer extends Model
     public function scopeFullName () {
         return $this->first_name . ' ' . $this->second_name;
     } 
+
+    public function orders () {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
 }

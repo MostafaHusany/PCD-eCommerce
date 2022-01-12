@@ -146,6 +146,6 @@
         </div><!-- /.form-group -->
 
 
-        <button class="update-object btn btn-warning float-right">Update User</button>
+        <button class="update-object btn btn-warning float-right">Update Product</button>
     </form>
 </div>

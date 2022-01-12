@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     ]);
 
     // fast ajax search
+    Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');
     Route::get('/products-categories-search', 'ProductCategoriesController@dataAjax');
 });

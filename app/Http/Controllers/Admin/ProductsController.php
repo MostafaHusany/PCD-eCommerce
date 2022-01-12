@@ -105,10 +105,10 @@ class ProductsController extends Controller
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
             $target_object->categories;
             $target_object->is_composite && $target_object->children;
-            return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
+            return response()->json(['product' => $target_object, 'success' => isset($target_object)]);
         }
 
-        return response()->json(['data' => null, 'success' > false]);
+        return response()->json(['product' => null, 'success' > false]);
     }
 
     public function store (Request $request) {
@@ -251,7 +251,8 @@ class ProductsController extends Controller
 
         if($request->has('q')){
             $search = $request->q;
-            $data = Product::select("id", "ar_name", "en_name", "quantity")
+            $model = Product::query();
+            $model->select("id", "ar_name", "en_name", "quantity")
                     ->where(function ($model) use ($search) {
                         $model->orWhere('ar_name','LIKE',"%$search%")
                         ->orWhere('en_name','LIKE',"%$search%")
@@ -260,9 +261,11 @@ class ProductsController extends Controller
                         ->orWhere('id', $search);
                     })
             		->where('quantity', '>', 0)
-            		->where('is_composite', 0)
-            		->where('is_active', 1)
-            		->get();
+            		->where('is_active', 1);
+            		
+            !isset($request->all_products) && $model->where('is_composite',  0);
+
+            $data = $model->get();
         }
         return response()->json($data);
     }

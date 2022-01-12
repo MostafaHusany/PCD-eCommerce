@@ -20,15 +20,26 @@ class Product extends Model
         return $this->price . ' SR';
     }
 
+    // START PRODUCT CATEGORIES PHASE
     public function categories () {
         return $this->belongsToMany(ProductCategory::class, 'r_category_products', 'product_id', 'category_id');
     }
 
+    // START COMPOSITE PRODUCT PHASE
     public function children () {
         return $this->belongsToMany(Product::class, 'composite_product_products', 'composite_product_id', 'product_id'); 
     }
     
     public function parent () {
         return $this->belongsToMany(Product::class, 'composite_product_products', 'product_id', 'composite_product_id'); 
+    }
+
+    // START ORDERS PHASE
+    public function product_orders () {
+        return $this->hasMany(OrderProduct::class, 'product_id');
+    }
+
+    public function orders () {
+        return $this->belongsToMany(Order::class, 'order_products', 'product_id', 'order_id');
     }
 }

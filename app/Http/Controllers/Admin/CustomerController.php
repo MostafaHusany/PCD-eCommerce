@@ -165,8 +165,11 @@ class CustomerController extends Controller
 
         if($request->has('q')){
             $search = $request->q;
-            $data = User::select("id", "name", "phone", "email")
-            		->where('name','LIKE',"%$search%")
+            $data = Customer::select("id", "first_name", "second_name", "phone", "email")
+                    ->where(function ($q) use($search) {
+                        $q->orWhere('first_name','LIKE',"%$search%")
+                          ->orWhere('second_name','LIKE',"%$search%");
+                    })
             		->orWhere('email','LIKE',"%$search%")
                     ->orWhere('phone','LIKE',"%$search%")
             		->get();
