@@ -35,37 +35,58 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-3">
+            
+            <div class="col-2">
+                <div class="form-group search-action">
+                    <label for="">Code</label>
+                    <input type="text" class="form-control" id="s-code">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-2 -->
+            
+            <div class="col-2">
+                <div class="form-group search-action">
+                    <label for="">Status</label>
+                    <select type="text" class="form-control" id="s-status">
+                        <option value="">-- select category --</option>
+                        <option>مرتجع</option>
+                        <option>قيد التجهيز</option>
+                        <option>مرحلة الشحن</option>
+                        <option>تم الاستلام</option>
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Name</label>
                     <input type="text" class="form-control" id="s-name">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-2 -->
             
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Email</label>
                     <input type="text" class="form-control" id="s-email">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-2 -->
 
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Phone</label>
                     <input type="text" class="form-control" id="s-phone">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-2 -->
 
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">City</label>
-                    <select type="text" class="form-control" id="s-city">
+                    <select disabled="disabled" type="text" class="form-control" id="s-city">
                         <option value="">-- select category --</option>
                         <option>city 1</option>
                         <option>city 2</option>
                     </select>
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-2 -->
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
@@ -139,17 +160,23 @@ $(function () {
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
-            // if ($('#s-name').length)
-            // d.name = $('#s-name').val(); 
+            if ($('#s-code').length)
+            d.code = $('#s-code').val(); 
+            
+            if ($('#s-status').length)
+            d.status = $('#s-status').val(); 
 
-            // if ($('#s-email').length)
-            // d.email = $('#s-email').val();  
+            if ($('#s-name').length)
+            d.name = $('#s-name').val(); 
+
+            if ($('#s-email').length)
+            d.email = $('#s-email').val();  
             
-            // if ($('#s-phone').length)
-            // d.phone = $('#s-phone').val();
+            if ($('#s-phone').length)
+            d.phone = $('#s-phone').val();
             
-            // if ($('#s-city').length)
-            // d.city = $('#s-city').val();                
+            if ($('#s-city').length)
+            d.city = $('#s-city').val();                
         },
         {
             delete_msg : 'Are you sure you want to restore this order '

@@ -17,7 +17,8 @@
     <button class="delete-object btn btn-xs btn-danger" 
         data-object-id="{{$row_object->id}}" data-object-name="{{$row_object->code}}"
     >
-        <i class="fas fa-trash-alt"></i>
+        <!-- <i class="fas fa-trash-alt"></i> -->
+        <i class="fas fa-recycle"></i>
     </button>
     @endif
 </div>

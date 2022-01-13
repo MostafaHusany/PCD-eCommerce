@@ -19,6 +19,40 @@ class OrdersController extends Controller
         if ($request->ajax()) {
             $model = Order::query();
             
+            if (isset($request->code)) {
+                $model->where('code', 'like', "%$request->code%");
+            }
+
+            if (isset($request->status)) {
+                $model->where('code', $request->status);
+            }
+
+            if (isset($request->name)) {
+                $model->whereHas('customer', function ($q) use ($request) {
+                    $q->where(function ($query) use ($request) {
+                        $query->orWhere('first_name', 'like', "%$request->name%");
+                        $query->orWhere('second_name', 'like', "%$request->name%");
+                    });
+                });
+            }
+
+            if (isset($request->email)) {
+                $model->whereHas('customer', function ($q) use ($request) {
+                    $q->where('customers.email', 'like', "%$request->email%");
+                });
+            }
+
+            if (isset($request->phone)) {
+                $model->whereHas('customer', function ($q) use ($request) {
+                    $q->where('customers.phone', 'like', "%$request->phone%");
+                });
+            }
+
+            if (isset($request->city)) {
+                $model->whereHas('customer', function ($q) use ($request) {
+                    $q->where('customers.city', $request->city);
+                });
+            }
 
             $datatable_model = Datatables::of($model)
             ->addColumn('customer', function ($row_object) {
