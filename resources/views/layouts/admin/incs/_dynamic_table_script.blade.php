@@ -47,6 +47,7 @@ class DynamicTable {
             { data: 'actions', name: 'actions' },
         ],
         search_function = () => {},
+        custome_msg = null
     ) {
 
         let this_objct       = this;
@@ -57,6 +58,7 @@ class DynamicTable {
         this.msg_container   = msg_container;
         this.search_function = search_function;
         this.search_request  = null;
+        this.custome_msg     = custome_msg;
 
         // inite data-table
         this.table_object = $(this.table_id).DataTable({
@@ -101,7 +103,7 @@ class DynamicTable {
 
             // send request
             if (is_valied) {
-                $('#loddingSpinner').slideDown(500);
+                $('#loddingSpinner').show(500);
 
                 current_objct._postRequest(current_objct.routs.store_route, data)
                 .then(res => {
@@ -117,7 +119,7 @@ class DynamicTable {
                         current_objct.showValidationErr(res.msg)
                     }// end :: if
                     
-                    $('#loddingSpinner').slideUp(500);
+                    $('#loddingSpinner').hide(500);
                 });
             }// end :: if
         });
@@ -135,7 +137,7 @@ class DynamicTable {
 
             // send request
             if (is_valied) {
-                $('#loddingSpinner').slideDown(500);
+                $('#loddingSpinner').show(500);
 
                 current_objct._postRequest(current_objct.routs.update_route + `/${data.get('id')}`, data)
                 .then(res => {
@@ -151,7 +153,7 @@ class DynamicTable {
                         current_objct.showValidationErr(res.msg, 'edit-')
                     }// end :: if
                     
-                    $('#loddingSpinner').slideUp(500);
+                    $('#loddingSpinner').hide(500);
                 });
             }// end :: if
         });
@@ -178,7 +180,7 @@ class DynamicTable {
             // get object id
             let object_id = $(this).data('object-id');
             
-            $('#loddingSpinner').slideDown(500);
+            $('#loddingSpinner').show(500);
             
             // send a get request for object data
             current_objct._getRequest(current_objct.routs.show_route + `/${object_id}?fast_acc=true`)
@@ -196,7 +198,7 @@ class DynamicTable {
                     console.log('my err response', res);// keep me for debuging
                 }// end :: if
                 
-                $('#loddingSpinner').slideUp(500);
+                $('#loddingSpinner').hide(500);
             });
 
             // show the edit form and show user data
@@ -206,11 +208,13 @@ class DynamicTable {
             let object_id   = $(this).data('object-id');
             let object_name = $(this).data('object-name');
 
-            let flag = confirm(`Are you sure you want to delete "${object_name}"`);
+            let message = current_objct.custome_msg.delete_msg != null ? current_objct.custome_msg.delete_msg + `"${object_name}"` 
+                                                           : `Are you sure you want to delete "${object_name}"`;
+            let flag = confirm(message);
 
             if (flag) {
                 
-                $('#loddingSpinner').slideDown(500);
+                $('#loddingSpinner').show(500);
                 let data = new FormData();
                 data.append('_method', 'delete');
                 data.append('_token' , $('meta[name="csrf-token"]').attr('content'));
@@ -218,7 +222,7 @@ class DynamicTable {
                 current_objct._postRequest(current_objct.routs.destroy_route + `/${object_id}`, data)
                 .then(res => {
                     current_objct.table_object.draw();
-                    $('#loddingSpinner').slideUp(500);
+                    $('#loddingSpinner').hide(500);
                 });
             }// end :: if
         }).on('click', '.toggle-cards-btn', function () {

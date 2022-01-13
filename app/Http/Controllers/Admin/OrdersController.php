@@ -62,6 +62,18 @@ class OrdersController extends Controller
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
+        } else if (isset($target_order) && isset($request->show_order)) {
+
+            $target_data = [
+                'id'            => $target_order->id,
+                'customer'      => $target_order->customer,
+                // 'all_products'  => $target_order->products,
+                'products'      => $target_order->products()->distinct()->get(),
+                'order_products'      => $target_order->order_products,
+                'products_meta' => $target_order->meta
+            ];
+
+            return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
         }
 
         return response()->json(['data' => null, 'success' > false]);
@@ -91,16 +103,18 @@ class OrdersController extends Controller
          * we need to disabel the composite product
          * */
 
-        $products_quantity = (array) json_decode($request->products_quantity);
-        $products_id = explode(',', $request->products);
-        $products    = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
-
+        $products_quantity  = (array) json_decode($request->products_quantity);
+        $products_id        = explode(',', $request->products);
+        $products           = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
+        // $products_prices    = [];
+        $meta = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => []];
+        
         $data = [
             'code'          => 'ad-' . time(), 
             'customer_id'   => $request->customer,
             'sub_total'     => 0,
             'total'         => 0,
-            'meta' => json_encode(['products_id' => $products_id, 'products_quantity' => $products_quantity])
+            // 'meta' => json_encode(['products_id' => $products_id, 'products_quantity' => $products_quantity])
         ];
         $new_order = Order::create($data);
 
@@ -122,15 +136,18 @@ class OrdersController extends Controller
                 ];
             }
 
-            $new_order_product = OrderProduct::insert($data);
-            $product->quantity -= $products_quantity[$product->id];
-            $product->save();
             
+            $new_order_product = OrderProduct::insert($data);
+            $this->update_product_quantity($product, $products_quantity[$product->id]);
+            $product->save();
+
+            $meta['products_prices'][$product->id] = $product->price;
             $total += $product->price * $products_quantity[$product->id];
         }
 
         $new_order->total     = $total;
         $new_order->sub_total = $total;
+        $new_order->meta      = $meta;
         $new_order->save();
         
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
@@ -206,11 +223,13 @@ class OrdersController extends Controller
 
         foreach ($products_id as $product_id) {
             $target_product = Product::find($product_id);
-            $target_product->quantity += $order_quantity[$product_id];
-            $target_product->save();
+            $this->restore_reserved_products($target_product, $order_quantity[$product_id]);
         }
 
-        $target_order->delete();
+        // $target_order->delete();
+        $target_order->status = -1;
+        $target_order->save();
+
         return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
     }
 
@@ -226,5 +245,34 @@ class OrdersController extends Controller
             		->get();
         }
         return response()->json($data);
+    }
+
+    // START HELPER FUNCTION
+    public function update_product_quantity ($target_product, $order_quantity) {
+        if ($target_product->is_composite === 1) {
+            $target_children = $target_product->children;
+
+            foreach ($target_children as $child_product) {
+                $child_product->reserved_quantity -= $order_quantity;
+                $child_product->save();
+            }
+        }
+
+        $target_product->quantity -= $order_quantity;
+        $target_product->save();
+    }
+
+    private function restore_reserved_products ($target_product, $order_quantity) {
+        if ($target_product->is_composite === 1) {
+            $target_children = $target_product->children;
+
+            foreach ($target_children as $child_product) {
+                $child_product->reserved_quantity += $order_quantity;
+                $child_product->save();
+            }
+        }
+
+        $target_product->quantity += $order_quantity;
+        $target_product->save();
     }
 }

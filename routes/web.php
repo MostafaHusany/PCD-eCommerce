@@ -88,7 +88,6 @@ Route::get('test_mail', function () {
     return new AccountActivation();
 });
 
-Route::get('/home-sadas/asdasd', ['as' => 'home', function()
-{
+Route::get('/home-sadas/asdasd', ['as' => 'home', function() {
     dd(str_contains(Request::path(), 'home'));
 }]);

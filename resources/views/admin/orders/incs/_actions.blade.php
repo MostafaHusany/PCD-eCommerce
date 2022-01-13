@@ -13,9 +13,11 @@
     </button>
     --}}
     
+    @if($row_object->status !== -1)
     <button class="delete-object btn btn-xs btn-danger" 
-        data-object-id="{{$row_object->id}}" data-object-name="{{$row_object->name}}"
+        data-object-id="{{$row_object->id}}" data-object-name="{{$row_object->code}}"
     >
         <i class="fas fa-trash-alt"></i>
     </button>
+    @endif
 </div>

@@ -49,7 +49,6 @@
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
 
-            
             <div class="col-3">
                 <div class="form-group search-action">
                     <label for="">Phone</label>
@@ -86,6 +85,7 @@
         </table>
     </div><!-- /.card --> 
     
+    @include('admin.orders.incs._show')
     @include('admin.orders.incs._create')
 
     {{--
@@ -150,6 +150,9 @@ $(function () {
             
             // if ($('#s-city').length)
             // d.city = $('#s-city').val();                
+        },
+        {
+            delete_msg : 'Are you sure you want to restore this order '
         }
     );
 

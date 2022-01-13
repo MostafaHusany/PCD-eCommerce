@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    /**
+     * status :
+     * -1 مرتجع
+     */
     protected $fillable = ['status', 'note', 'meta', 'sub_total', 'total', 'customer_id', 'code'];
 
     public function customer () {
