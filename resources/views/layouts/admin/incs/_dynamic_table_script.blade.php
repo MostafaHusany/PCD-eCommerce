@@ -307,7 +307,7 @@ class DynamicTable {
         keys.forEach(key => {
             // for case of sub validation specialy for images !!
             let tmp_key = (key.split('.'))[0];
-            $(`#${prefix}${tmp_key}Err`).text(msgs[key]).slideDown(500);
+            $(`#${prefix}${tmp_key}Err`).html(msgs[key]).slideDown(500);
         });
     }
 }

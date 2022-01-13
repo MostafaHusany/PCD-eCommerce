@@ -8,7 +8,7 @@ class Product extends Model
 {
     protected $fillable = ['ar_name', 'ar_small_description', 'ar_description',
                             'en_name', 'en_small_description', 'en_description',
-                            'quantity', 'price_after_sale', 'price', 'sku', 'slug',
+                            'quantity', 'reserved_quantity', 'price_after_sale', 'price', 'sku', 'slug',
                             'main_image', 'images', 'meta', 'category_id',
                             'is_active', 'is_composite'];
 

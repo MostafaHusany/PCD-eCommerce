@@ -84,7 +84,7 @@
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+        <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
                 <th>#</th>
                 <th>Image</th>
@@ -94,6 +94,7 @@
                 <th>Sale Price</th>
                 <th>Categories</th>
                 <th>Quantity</th>
+                <th>R-Quantity</th>
                 <th>Active</th>
                 <th>Type</th>
                 <th>Action</th>
@@ -145,19 +146,20 @@ $(function () {
             update_obj_btn  : '.update-object',
             fields_list     : ['id', 'ar_name', 'ar_small_description', 'ar_description',
                                'en_name', 'en_small_description', 'en_description', 'sku', 'categories',
-                               'quantity', 'main_image', 'images', 'price', 'price_after_sale',
+                               'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
                                 'is_active', 'is_composite', 'child_products'],
             imgs_fields     : ['main_image', 'images']
         },
         [
             { data: 'id', name: 'id' },
             { data: 'image', name: 'image' },
-            { data: 'ar_name', name: 'ar_name' },
+            { data: 'name', name: 'name' },
             { data: 'sku', name: 'sku' },
             { data: 'price',    name: 'price' },
             { data: 'price_after_sale',    name: 'price_after_sale' },
             { data: 'categories', name: 'categories' },
             { data: 'quantity', name: 'quantity' },
+            { data: 'reserved_quantity', name: 'reserved_quantity' },
             { data: 'active', name: 'active' },
             { data: 'is_composite', name: 'is_composite' },
             { data: 'actions' , name: 'actions' },
@@ -229,7 +231,7 @@ $(function () {
             $(`#${prefix}en_descriptionErr`).slideDown(500);
         }
 
-        if (data.get('quantity') === '' || data.get('quantity') < 0) {
+        if (data.get('is_composite') !== '1' && (data.get('quantity') === '' || data.get('quantity') < 0)) {
             is_valide = false;
             let err_msg = 'quantity is required';
             $(`#${prefix}quantityErr`).text(err_msg);
@@ -259,31 +261,42 @@ $(function () {
 
         if (data.get('price_after_sale') < 0) {
             is_valide = false;
-            let err_msg = 'price_after_sale can\'t be negative';
+            let err_msg = 'price after sale can\'t be negative';
             $(`#${prefix}price_after_saleErr`).text(err_msg);
             $(`#${prefix}price_after_saleErr`).slideDown(500);
+        }
+
+        if (data.get('is_composite') === '1' && data.get('reserved_quantity') <= 0) {
+            is_valide = false;
+            let err_msg = 'reserved quantity can\'t be zero';
+            $(`#${prefix}reserved_quantityErr`).text(err_msg);
+            $(`#${prefix}reserved_quantityErr`).slideDown(500);
         }
        
         return is_valide;
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-        console.log(data);
+        
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
             $(`#${prefix + el_id}`).val(data[el_id]).change();
         });
+
+        if (data.is_composite) {
+            $(`#${prefix}reserved_quantity`).val(data['quantity']);
+        }
         
         data.categories.forEach(category => {
-            var category_option = new Option(`${category['ar-title']} || ${category['en-title']}`, category.id, false, true);
+            var category_option = new Option(`${category['ar-title']} || ${category['en-title']}`, category.id, true, true);
             $('#edit-categories').append(category_option).trigger('change');
         });
 
         if (data.is_composite) {
-            $('#edit-childProductsContainer').slideDown(500);
+            $('.edit-child-products-container').slideDown(500);
             $('#edit-productQuantityContainer').slideUp(500);
-            data.children.forEach(category => {
-                var product_option = new Option(`${category['ar_name']} || ${category['en_name']}, quantity (${category.quantity})`, category.id, false, true);
+            data.children.forEach(product => {
+                var product_option = new Option(`${product['ar_name']} || ${product['en_name']}, quantity (${product.quantity})`, product.id, true, true);
                 $('#edit-child_products').append(product_option).trigger('change');
             });
         } else {
@@ -302,7 +315,6 @@ $(function () {
             let main_image = `<div class="jpreview-image" style="background-image: url({{url('/')}}/${image})"></div>`;
             $('#demo-4-container').append(main_image);
         });
-        // $('demo-4-container')
     }
 
     $('#dataTable').on('change', '.c-activation-btn', function () {

@@ -32,15 +32,6 @@ class ProductsController extends Controller
     public function index (Request $request) {
         if ($request->ajax()) {
             $model = Product::query()->orderBy('id', 'desc');
-            
-            // if (isset($request->title)) {
-            //     $model->where(function($query) use ($request){
-            //         $query->orWhere('ar-title', 'like', '%' . $request->title . '%');
-            //         $query->orWhere('en-title', 'like', '%' . $request->title . '%');
-            //     });
-            // }
-
-            // dd($request->all());
 
             if (isset($request->name)) {
                 $model->where(function ($q) use ($request) {
@@ -68,6 +59,10 @@ class ProductsController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('name', function ($row_object) {
+                // return "$row_object->en_name / $row_object->ar_name";
+                return view('admin.products.incs._name', compact('row_object'));
+            })
             ->addColumn('image', function ($row_object) {
                 return view('admin.products.incs._image', compact('row_object'));
             })
@@ -80,6 +75,9 @@ class ProductsController extends Controller
             ->addColumn('categories', function ($row_object) {
                 return $row_object->categories()->count() ? 
                     view('admin.products.incs._categories', compact('row_object')) : '---';
+            })
+            ->addColumn('reserved_quantity', function ($row_object) {
+                return $row_object->is_composite ? '---' : $row_object->reserved_quantity;
             })
             ->addColumn('is_composite', function ($row_object) {
                 return $row_object->is_composite ? 'منتج مركب' : '---';
@@ -112,7 +110,8 @@ class ProductsController extends Controller
     }
 
     public function store (Request $request) {
-        // dd($request->categories, explode(',', $request->categories));
+
+        // START VALIDATION
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|unique:products,ar_name|max:255',
             'en_name'        => 'required|unique:products,en_name|max:255',
@@ -129,8 +128,28 @@ class ProductsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
+        
+        if ($request->is_composite == 1) {
+            /**
+             * I want to make sure that products quantity is valied
+             * for making reserved_quantity for composite products
+             */
+            $child_products   = explode(',', $request->child_products);
+            $falied_products  = Product::whereIn('id', $child_products)->where('quantity', '<', $request->reserved_quantity)->get();
+            
+            if (sizeof($falied_products)) {
+                $msg_str = "<ul>";
+                foreach($falied_products as $falied_product) {
+                    $msg_str .= "<li>($falied_product->en_name / $falied_product->ar_name) has only $falied_product->quantity</li>";
+                }
+                $msg_str .= "</ul>";
+                $msg = ['reserved_quantity' => $msg_str];
+                return response()->json(['data' => null, 'success' => false, 'msg' => $msg]); 
+            }// end :: if
+        }
+        // END VALIDATION
 
-        $data       = $request->except(['main_image', 'price_after_sale', 'is_active']);
+        $data = $request->except(['main_image', 'price_after_sale', 'is_active']);
         
         $main_image = $request->file('main_image')[0];
         $main_image->store('/public/products');
@@ -138,30 +157,28 @@ class ProductsController extends Controller
         
         if (isset($request->images)) {
             $images = [];
+
             foreach($request->images as $image) {
                 $image->store('/public/products');
                 $images[] = 'storage/products/' . $image->hashName(); 
             }// end :: foreach
 
             $data['images'] = json_encode($images);
-        }// end :: if
+        }
         
-        $data['slug'] = join("-", explode(' ', $request->en_name));
+        $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
+        $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
-        $categories = explode(',', $request->categories);
-        // get all products 
-
-        /**
-        * get main category of the each child category parent ... 
-        */
+        
         $new_object = Product::create($data);
-        // $new_object->categories()->sync($categories);
+        
+        $categories = explode(',', $request->categories);
         $this->sync_product_categories($categories, $new_object);
 
-        
         if ($request->is_composite == 1) {
             $child_products = explode(',', $request->child_products);
             $new_object->children()->sync($child_products);
+            $this->update_reserved_products($new_object);
         }
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
@@ -194,7 +211,60 @@ class ProductsController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data       = $request->except(['main_image', 'price_after_sale', 'is_active']);
+        /**
+         * For the reserved quantity updates ?
+         * Parent quantity, child r-quantity , child o-quantity
+         * 
+         * we can return the whole quantityt than start updating the data
+         * don't forget about validation
+         * 
+         * check first if there is a change in the quantity that 
+         * user entered in the reserved unit by comparing the new by the 
+         * original, if there is a change start act
+         * 
+         * There is a diference sinario and more secure
+         * restore all reserved quantityt to the products
+         * than start doing validation , 
+         * if failed return every thing back
+         * if true start do your job 
+         * 
+         */
+
+        
+        // get the target product
+        $target_object = Product::find($id);
+
+        if ($request->is_composite == 1) {
+            $this->restore_reserved_products($target_object);
+            // foreach ($target_object->children as $child_product) {
+            //     $child_product->quantity          += $target_object->quantity;
+            //     $child_product->reserved_quantity -= $target_object->quantity;
+            //     $child_product->save();
+            // }
+
+            $child_products   = explode(',', $request->child_products);
+            $falied_products  = Product::whereIn('id', $child_products)->where('quantity', '<', $request->reserved_quantity)->get();
+            
+            if (sizeof($falied_products)) {
+                
+                $this->update_reserved_products($target_object);
+                // foreach ($target_object->children as $child_product) {
+                //     $child_product->quantity -= $target_object->quantity;
+                //     $child_product->reserved_quantity += $target_object->quantity;
+                //     $child_product->save();
+                // }
+
+                $msg_str = "<ul>";
+                foreach($falied_products as $falied_product) {
+                    $msg_str .= "<li>($falied_product->en_name / $falied_product->ar_name) has only $falied_product->quantity</li>";
+                }
+                $msg_str .= "</ul>";
+                $msg = ['reserved_quantity' => $msg_str];
+                return response()->json(['data' => null, 'success' => false, 'msg' => $msg]); 
+            }// end :: if
+        }
+
+        $data  = $request->except(['main_image', 'price_after_sale', 'is_active']);
         
         if (isset($request->main_image)) {
             $main_image = $request->file('main_image')[0];
@@ -212,18 +282,19 @@ class ProductsController extends Controller
             $data['images'] = json_encode($images);
         }// end :: if
         
-        $data['slug'] = join("-", explode(' ', $request->en_name));
+        
+        $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
+        $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
-        $categories = explode(',', $request->categories);
+        $categories               = explode(',', $request->categories);
 
-        $target_object = Product::find($id);
         $target_object->update($data);
-        // $target_object->categories()->sync($categories);
         $this->sync_product_categories($categories, $target_object);
 
         if ($request->is_composite == 1) {
             $child_products = explode(',', $request->child_products);
             $target_object->children()->sync($child_products);
+            $this->update_reserved_products($target_object);
         }
         
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
@@ -241,7 +312,11 @@ class ProductsController extends Controller
 
     public function destroy ($id) {
         $target_object = Product::find($id);
-        isset($target_object) && $target_object->delete();
+
+        if (isset($target_object)) {
+            $target_object->is_composite == 1 && $this->restore_reserved_products($target_object);
+            $target_object->delete();
+        }
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
@@ -287,4 +362,24 @@ class ProductsController extends Controller
         $all_categories_ids = array_unique($all_categories_ids, SORT_REGULAR);
         $target_product->categories()->sync($all_categories_ids);
     }// end :: sync_product_categories
+
+    private function update_reserved_products ($parent_product) {
+        $child_products = $parent_product->children;
+        foreach($child_products as $product) {
+            $product->quantity          -= $parent_product->quantity;
+            $product->reserved_quantity += $parent_product->quantity;
+            $product->save();
+        }
+    }
+
+    private function restore_reserved_products ($parent_product) {
+        $child_products = $parent_product->children;
+        foreach($child_products as $product) {
+            $product->quantity          += $parent_product->quantity;
+            $product->reserved_quantity -= $parent_product->quantity;
+            $product->save();
+        }
+    }
+    // END   HELPER FUNCTIONS 
+
 }

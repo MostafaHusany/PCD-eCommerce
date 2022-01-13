@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPhase2ColumnsToProductsTable extends Migration
+class AddReservedQuantityToProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddPhase2ColumnsToProductsTable extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->smallInteger('is_active')->default(0);
-            $table->smallInteger('is_composite')->default(0);
+            $table->smallInteger('reserved_quantity')->default(0);
         });
     }
 
@@ -27,7 +26,7 @@ class AddPhase2ColumnsToProductsTable extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['is_active', 'is_composite']);
+            $table->dropColumn(['reserved_quantity']);
         });
     }
 }

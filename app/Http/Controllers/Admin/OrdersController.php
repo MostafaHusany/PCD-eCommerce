@@ -84,6 +84,11 @@ class OrdersController extends Controller
          * 
          * Notice : I need to store the price history of the product
          * to make it easy as possible, store the history as a meta data
+         * 
+         * We have a special case ! composite products 
+         * we need to check if the product that we suptracting quantity from is beign 
+         * used for a composite product , and if the product is finshed from the storage 
+         * we need to disabel the composite product
          * */
 
         $products_quantity = (array) json_decode($request->products_quantity);
@@ -137,7 +142,7 @@ class OrdersController extends Controller
         //     return $this->updateActivation($id);
         // }
 
-        return $this->updateOrder($request, $id);
+        // return $this->updateOrder($request, $id);
     }
 
     protected function updateOrder (Request $request, $id) {
@@ -184,16 +189,6 @@ class OrdersController extends Controller
         dd($products_quantity, $products_id, $products);
 
         return response()->json(['data' => $target_user, 'success' => isset($target_user)]);
-    }
-
-    protected function updateActivation ($id) {
-        $target_user = User::find($id);
-        if (isset($target_user)) {
-            $target_user->email_verified_at = isset($target_user->email_verified_at) ? null : Date('Y-m-d H:i:s');
-            $target_user->save();
-        }
-
-        return response()->json(['data' => $target_user, 'success' => isset($target_user)]);        
     }
 
     public function destroy ($id) {
