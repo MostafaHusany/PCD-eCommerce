@@ -141,7 +141,7 @@ class OrdersController extends Controller
         $products_id        = explode(',', $request->products);
         $products           = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
         // $products_prices    = [];
-        $meta = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => []];
+        $meta = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => [], 'restored_quantity' => []];
         
         $data = [
             'code'          => 'ad-' . time(), 
@@ -176,6 +176,7 @@ class OrdersController extends Controller
             $product->save();
 
             $meta['products_prices'][$product->id] = $product->price;
+            $meta['restored_quantity'][$product->id] = 0;
             $total += $product->price * $products_quantity[$product->id];
         }
 

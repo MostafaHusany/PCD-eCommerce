@@ -2,7 +2,7 @@
 <div style="display: none" id="showObjectCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Show {{$object_title}}</h5>
+            <h5>Show Order</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#showObjectCard" data-target-card="#objectsCard">
@@ -54,11 +54,12 @@
                         <td>SKU</td>
                         <td>Price</td>
                         <td>Quantity</td>
+                        <td>Restored</td>
                         <td>Sub Total Price</td>
                     </tr>
                     <tbody id="show-selected_product_table">
                     <tr>
-                        <td class="text-center" colspan="5">
+                        <td class="text-center" colspan="6">
                             <h3>Total</h3>
                         </td>
                         <td id="show-selected_products_sub_total">---</td>
@@ -112,7 +113,10 @@
                         <td>${product.sku}</td>
                         <td>${order_meta.products_prices[product.id]}</td>
                         <td>${order_meta.products_quantity[product.id]}</td>
-                        <td>${parseFloat(order_meta.products_prices[product.id] * order_meta.products_quantity[product.id]).toFixed(2)}</td>
+                        <td>
+                            <span class="text-danger">${order_meta.restored_quantity[product.id]}</span>
+                        </td>
+                        <td>${parseFloat(order_meta.products_prices[product.id] * (order_meta.products_quantity[product.id] - order_meta.restored_quantity[product.id]) ).toFixed(2)} SR</td>
                     </tr>
                 `;
 
@@ -120,7 +124,7 @@
                 total_val += order_meta.products_prices[product.id] * order_meta.products_quantity[product.id];
             });
 
-            $('#show-selected_products_sub_total').text(parseFloat(total_val).toFixed(2))
+            $('#show-selected_products_sub_total').text(parseFloat(total_val).toFixed(2) + " SR")
 
             
             $('#objectsCard').slideUp(500);

@@ -74,25 +74,41 @@
                 <p>Products</p>
             </a>
         </li>
-        <!-- <li class="nav-item">
-            <a href="../../index2.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v2</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="../../index3.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v3</p>
-            </a>
-        </li> -->
     </ul>
 </li>
 
 
+{{--
 <li class="nav-item">
     <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}" >
         <i class="nav-icon fas fa-dolly"></i>
         <p>Orders</p>
     </a>
+</li>
+--}}
+
+
+<li class="nav-item {{ str_contains(Request::path(), '/orders') || str_contains(Request::path(), '/sold-products') ? 'menu-is-opening menu-open' : '' }}">
+    <a href="#" class="nav-link">
+        <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
+        <i class="nav-icon fas fa-hand-holding-usd"></i>
+        <p>
+            Sales
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" !style="display: block;">
+        <li class="nav-item">
+            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}" >
+                <i class="nav-icon fas fa-dolly"></i>
+                <p>Orders</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-box-open"></i>
+                <p>Sold Products</p>
+            </a>
+        </li>
+    </ul>
 </li>

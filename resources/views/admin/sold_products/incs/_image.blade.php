@@ -1,0 +1,1 @@
+<image src="{{ asset($row_object->product->main_image) }}" class="img-thumbnail" />

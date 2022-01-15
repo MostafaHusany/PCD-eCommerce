@@ -74,6 +74,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('sold-products', 'SoldProductsController', ['names' => [
+        'index'     => 'admin.sold_products.index',
+        'store'     => 'admin.sold_products.store',
+        'show'      => 'admin.sold_products.show',
+        'edit'      => 'admin.sold_products.edit',
+        'update'    => 'admin.sold_products.update',
+        'destroy'   => 'admin.sold_products.destroy'
+        ]
+    ]);
+
     // fast ajax search
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');

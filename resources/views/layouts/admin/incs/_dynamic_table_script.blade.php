@@ -47,7 +47,9 @@ class DynamicTable {
             { data: 'actions', name: 'actions' },
         ],
         search_function = () => {},
-        custome_msg = null
+        custome_msg = {
+            delete_msg : null
+        }
     ) {
 
         let this_objct       = this;
