@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductCategory extends Model
 {
-    protected $fillable = ['ar-title', 'en-title', 'ar-description', 'en-description', 'rule', 'is_main', 'category_id'];
+    protected $fillable = ['ar_title', 'en_title', 'ar_description', 'en_description', 'rule', 'is_main', 'category_id'];
 
     public function parent () {
         return $this->hasOne(ProductCategory::class, 'category_id');
     }
 
     public function children () {
-        return $this->belongsTo(ProductCategory::class, 'category_id');
+        return $this->hasMany(ProductCategory::class, 'category_id');
     }
 
     public function products () {

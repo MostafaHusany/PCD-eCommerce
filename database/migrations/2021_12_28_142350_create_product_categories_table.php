@@ -16,10 +16,10 @@ class CreateProductCategoriesTable extends Migration
         Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
 
-            $table->string('ar-title')->unique();
-            $table->string('en-title')->unique();
-            $table->text('ar-description');
-            $table->text('en-description');
+            $table->string('ar_title')->unique();
+            $table->string('en_title')->unique();
+            $table->text('ar_description');
+            $table->text('en_description');
             $table->smallInteger('rule')->default(0);
 
             $table->smallInteger('is_main')->default(1);   

@@ -288,7 +288,7 @@ $(function () {
         }
         
         data.categories.forEach(category => {
-            var category_option = new Option(`${category['ar-title']} || ${category['en-title']}`, category.id, true, true);
+            var category_option = new Option(`${category['ar_title']} || ${category['en_title']}`, category.id, true, true);
             $('#edit-categories').append(category_option).trigger('change');
         });
 
@@ -358,7 +358,7 @@ $(function () {
                 return {
                     results:  $.map(data, function (item) {
                         return {
-                            text: `${item['ar-title']} || ${item['en-title']}`,
+                            text: `${item['ar_title']} || ${item['en_title']}`,
                             id: item.id
                         }
                     })

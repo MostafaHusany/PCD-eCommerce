@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    // Cart::add('293ad', 'Product 1', 1, 9.99);
-    // dd(Cart::content());
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     // Cart::add('293ad', 'Product 1', 1, 9.99);
+//     // dd(Cart::content());
+//     return view('welcome');
+// });
 
 Auth::routes();
 
@@ -88,6 +88,18 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');
     Route::get('/products-categories-search', 'ProductCategoriesController@dataAjax');
+});
+
+// Route::group(['prefix' => LaravelLocalization::setLocale(), 'namespace' => 'Shop'], function () {
+Route::group(
+    [
+        'namespace' => 'Shop',
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+    ], function(){
+    Route::get('/', 'HomeController@index');
+    Route::get('/shop', 'ShopController@index');
+    Route::get('/shop/{slug}', 'ShopController@show');
 });
 
 use Illuminate\Support\Facades\Mail;

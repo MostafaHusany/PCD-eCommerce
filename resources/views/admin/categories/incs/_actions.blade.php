@@ -12,7 +12,7 @@
     </button>
     
     <button class="delete-object btn btn-xs btn-danger" 
-        data-object-id="{{$row_object->id}}" data-object-name="{{$row_object['ar-title'] . '/' . $row_object['en-title']}}"
+        data-object-id="{{$row_object->id}}" data-object-name="{{$row_object['ar_title'] . '/' . $row_object['en_title']}}"
     >
         <i class="fas fa-trash-alt"></i>
     </button>

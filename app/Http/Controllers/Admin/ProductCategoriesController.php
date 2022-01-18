@@ -18,8 +18,8 @@ class ProductCategoriesController extends Controller
             
             if (isset($request->title)) {
                 $model->where(function($query) use ($request){
-                    $query->orWhere('ar-title', 'like', '%' . $request->title . '%');
-                    $query->orWhere('en-title', 'like', '%' . $request->title . '%');
+                    $query->orWhere('ar_title', 'like', '%' . $request->title . '%');
+                    $query->orWhere('en_title', 'like', '%' . $request->title . '%');
                 });
             }
 
@@ -58,10 +58,10 @@ class ProductCategoriesController extends Controller
     public function store (Request $request) {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'ar-title'       => 'required|unique:product_categories,ar-title|max:255',
-            'en-title'       => 'required|unique:product_categories,en-title|max:255',
-            'ar-description' => 'required|max:500',
-            'en-description' => 'required|max:500',
+            'ar_title'       => 'required|unique:product_categories,ar_title|max:255',
+            'en_title'       => 'required|unique:product_categories,en_title|max:255',
+            'ar_description' => 'required|max:500',
+            'en_description' => 'required|max:500',
             'rule'           => 'required|max:3',
             'is_main'        => 'required',
             'category_id'    =>  $request->is_main == 0 ? 'exists:product_categories,id' : ''
@@ -79,10 +79,10 @@ class ProductCategoriesController extends Controller
 
     public function update (Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'ar-title'       => 'required|max:255|unique:product_categories,ar-title,' . $id,
-            'en-title'       => 'required|max:255|unique:product_categories,en-title,' . $id,
-            'ar-description' => 'required|max:500',
-            'en-description' => 'required|max:500',
+            'ar_title'       => 'required|max:255|unique:product_categories,ar_title,' . $id,
+            'en_title'       => 'required|max:255|unique:product_categories,en_title,' . $id,
+            'ar_description' => 'required|max:500',
+            'en_description' => 'required|max:500',
             'rule'           => 'required|max:3',
             'is_main'        => 'required',
             'category_id'    =>  $request->is_main == 0 ? 'exists:product_categories,id' : ''
@@ -111,9 +111,9 @@ class ProductCategoriesController extends Controller
 
         if($request->has('q')){
             $search = $request->q;
-            $data = ProductCategory::select("id", "ar-title", "en-title")
-            		->orWhere('ar-title','LIKE',"%$search%")
-            		->orWhere('en-title','LIKE',"%$search%")
+            $data = ProductCategory::select("id", "ar_title", "en_title")
+            		->orWhere('ar_title','LIKE',"%$search%")
+            		->orWhere('en_title','LIKE',"%$search%")
                     ->orWhere('id', $search)
             		->get();
         }

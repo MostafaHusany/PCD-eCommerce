@@ -47,8 +47,8 @@
         <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
                 <th>#</th>
-                <th>Ar-Title</th>
-                <th>En-Title</th>
+                <th>ar_title</th>
+                <th>en_title</th>
                 <th>Products</th>
                 <th>Rule</th>
                 <th>Actions</th>
@@ -92,13 +92,13 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'ar-title', 'en-title', 'ar-description', 'en-description', 'is_main', 'category_id', 'rule'],
+            fields_list     : ['id', 'ar_title', 'en_title', 'ar_description', 'en_description', 'is_main', 'category_id', 'rule'],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
-            { data: 'en-title', name: 'en-title' },
-            { data: 'ar-title', name: 'ar-title' },
+            { data: 'en_title', name: 'en_title' },
+            { data: 'ar_title', name: 'ar_title' },
             { data: 'products', name: 'products' },
             { data: 'rule', name: 'rule' },
             { data: 'actions', name: 'actions' },
@@ -116,32 +116,32 @@ $(function () {
         // clear old validation session
         $('.err-msg').slideUp(500);
 
-        if (data.get('ar-title') === '') {
+        if (data.get('ar_title') === '') {
             is_valide = false;
             let err_msg = 'arabic title is required';
-            $(`#${prefix}ar-titleErr`).text(err_msg);
-            $(`#${prefix}ar-titleErr`).slideDown(500);
+            $(`#${prefix}ar_titleErr`).text(err_msg);
+            $(`#${prefix}ar_titleErr`).slideDown(500);
         }
 
-        if (data.get('en-title') === '') {
+        if (data.get('en_title') === '') {
             is_valide = false;
             let err_msg = 'english title is required';
-            $(`#${prefix}en-titleErr`).text(err_msg);
-            $(`#${prefix}en-titleErr`).slideDown(500);
+            $(`#${prefix}en_titleErr`).text(err_msg);
+            $(`#${prefix}en_titleErr`).slideDown(500);
         }
 
-        if (data.get('ar-description') === '') {
+        if (data.get('ar_description') === '') {
             is_valide = false;
             let err_msg = 'arabic description is required';
-            $(`#${prefix}ar-descriptionErr`).text(err_msg);
-            $(`#${prefix}ar-descriptionErr`).slideDown(500);
+            $(`#${prefix}ar_descriptionErr`).text(err_msg);
+            $(`#${prefix}ar_descriptionErr`).slideDown(500);
         }
 
-        if (data.get('en-description') === '') {
+        if (data.get('en_description') === '') {
             is_valide = false;
             let err_msg = 'english description is required';
-            $(`#${prefix}en-descriptionErr`).text(err_msg);
-            $(`#${prefix}en-descriptionErr`).slideDown(500);
+            $(`#${prefix}en_descriptionErr`).text(err_msg);
+            $(`#${prefix}en_descriptionErr`).slideDown(500);
         }
 
         if (data.get('is_main') === '0' && data.get('category_id') === '') {

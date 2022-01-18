@@ -149,7 +149,7 @@ class ProductsController extends Controller
         }
         // END VALIDATION
 
-        $data = $request->except(['main_image', 'price_after_sale', 'is_active']);
+        $data = $request->except(['main_image', 'price_after_sale', 'is_active', 'reserved_quantity']);
         
         $main_image = $request->file('main_image')[0];
         $main_image->store('/public/products');

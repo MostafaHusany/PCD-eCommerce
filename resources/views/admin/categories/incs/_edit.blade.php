@@ -15,29 +15,29 @@
         <input type="hidden" id="edit-id">
         
         <div class="form-group row">
-            <label for="edit-en-title" class="col-sm-2 col-form-label">Title</label>
+            <label for="edit-en_title" class="col-sm-2 col-form-label">Title</label>
             <div class="col-sm-5">
-                <input type="text" tabindex="1"  class="form-control" id="edit-en-title" placeholder="Title">
-                <div style="padding: 5px 7px; display: none" id="edit-en-titleErr" class="err-msg mt-2 alert alert-danger">
+                <input type="text" tabindex="1"  class="form-control" id="edit-en_title" placeholder="Title">
+                <div style="padding: 5px 7px; display: none" id="edit-en_titleErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
             <div class="col-sm-5">
-                <input type="text"  tabindex="3" class="form-control text-right" dir="rtl" id="edit-ar-title" placeholder="العنوان">
-                <div style="padding: 5px 7px; display: none" id="edit-ar-titleErr" class="err-msg mt-2 alert alert-danger">
+                <input type="text"  tabindex="3" class="form-control text-right" dir="rtl" id="edit-ar_title" placeholder="العنوان">
+                <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-en-description" class="col-sm-2 col-form-label">Description</label>
+            <label for="edit-en_description" class="col-sm-2 col-form-label">Description</label>
             <div class="col-sm-5">
-                <textarea  tabindex="2" class="form-control" id="edit-en-description" placeholder="Description"></textarea>
-                <div style="padding: 5px 7px; display: none" id="edit-en-descriptionErr" class="err-msg mt-2 alert alert-danger">
+                <textarea  tabindex="2" class="form-control" id="edit-en_description" placeholder="Description"></textarea>
+                <div style="padding: 5px 7px; display: none" id="edit-en_descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
             <div class="col-sm-5">
-                <textarea  tabindex="4" class="form-control text-right" id="edit-ar-description" dir="rtl" placeholder="الوصف"></textarea>
-                <div style="padding: 5px 7px; display: none" id="edit-ar-descriptionErr" class="err-msg mt-2 alert alert-danger">
+                <textarea  tabindex="4" class="form-control text-right" id="edit-ar_description" dir="rtl" placeholder="الوصف"></textarea>
+                <div style="padding: 5px 7px; display: none" id="edit-ar_descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
@@ -59,7 +59,7 @@
                 <select class="form-control" id="edit-category_id" disabled="disabled">
                     <option value="">-- select main category --</option>
                     @foreach($all_categories as $category)
-                    <option value="{{ $category->id }}">{{ $category['ar-title'] . '||' . $category['en-title'] }}</option>
+                    <option value="{{ $category->id }}">{{ $category['ar_title'] . '||' . $category['en_title'] }}</option>
                     @endforeach
                 </select>
                 <div style="padding: 5px 7px; display: none" id="edit-category_idErr" class="err-msg mt-2 alert alert-danger">

@@ -113,7 +113,7 @@ $(document).ready(function () {
                 return {
                     results:  $.map(data, function (item) {
                         return {
-                            text: `${item['en-title']} / ${item['ar-title']}`,
+                            text: `${item['en_title']} / ${item['ar_title']}`,
                             id: item.id
                         }
                     })
@@ -149,7 +149,7 @@ $(document).ready(function () {
                 .then(res => {
                     let tmp = `
                     <div class="form-group mb-3">
-                        <legend>${res.data.data['en-title'] || res.data.data['ar-title']}</legend>
+                        <legend>${res.data.data['en_title'] || res.data.data['ar_title']}</legend>
                         <div class="form-group row">
                             <label for="" class="col-md-2">Main Item</label>
                             <div class="col-md-10">
@@ -203,7 +203,7 @@ $(document).ready(function () {
                         <div class="list-group-item list-group-item-action"> 
                             <div class="row">
                                 <div class="col-sm-6">
-                                    ${res.data.category['en-title']} / ${res.data.category['ar-title']}
+                                    ${res.data.category['en_title']} / ${res.data.category['ar_title']}
                                 </div>
                                 <div class="col-sm-6 text-right">
                                     <button class="close-composite-category-section btn btn-sm btn-default" data-target="${res.data.category.id}">
