@@ -55,14 +55,25 @@
 
         <div class="product-pahse">
             <input type="hidden" id="products_quantity" value="">
+            <input type="hidden" id="products" value="">
+
             <div class="form-group row">
-                <label for="products" class="col-sm-2 col-form-label">Select Products</label>
+                <label for="find-products" class="col-sm-2 col-form-label">Select Products</label>
                 <div class="col-sm-10">
-                    <select class="form-control" id="products" data-prefix="" multiple="multiple"></select>
+                    <select class="form-control" id="find-products" data-prefix=""></select>
                     <div style="padding: 5px 7px; display: none" id="productsErr" class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div>
             </div>
+
+            <div class="d-flex justify-content-center mb-3">
+                <div id="createOrderLoddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+            <div id="createOrderWarningAlert" style="display: none" class="alert alert-warning"></div>
+
             <div class="form-group">
                 <table class="table">
                     <tr>
@@ -70,14 +81,11 @@
                         <td>Name</td>
                         <td>SKU</td>
                         <td>Price</td>
+                        <td>Edit Price</td>
                         <td>Valied Quantity</td>
                         <td>Requested Quantity</td>
                         <td>Sub Total Price</td>
-                        <!--
-                            <td>Fees</td>
-                            <td>Tax</td>
-                            <td>Total</td>
-                        -->
+                        <td>Actions</td>
                     </tr>
                     <tbody id="selected_product_table">
                     <tr>
@@ -99,38 +107,19 @@
 
 <script>
 $(document).ready(function () {
-    let selected_products = [];
+    
+    /**
+        When the user search for product
+        find the product , with another request
+        show a row with the product
+        the user should be able to add nom of products, customize the price
+        remove the item from the list
+        in next phase the item updates should be done asynchrnised
+     */
+     
+    let selected_products = {};
 
-
-    function update_sub_total () {
-        /**
-         * We use this function to update sub total
-         */
-        let total = 0.0;
-
-        selected_products.forEach(product_id => {
-            let tmp_price     = $(`#selected_product_quantity_${product_id}`).data('price');
-            let tmp_quantity  = $(`#selected_product_quantity_${product_id}`).val();
-
-            // console.log(total, tmp_price , tmp_quantity, (parseFloat(tmp_price) * parseInt(tmp_quantity)).toFixed(2));
-            
-            total += tmp_price * tmp_quantity;
-        });
-
-        $('#selected_products_sub_total').text(parseFloat(total).toFixed(2) + ' SR');
-    }
-
-    function update_products () {
-        let products = {};
-        selected_products.forEach(product_id => {
-            let tmp_quantity     = $(`#selected_product_quantity_${product_id}`).val();
-            products[product_id] = tmp_quantity;
-        });
-
-        $('#products_quantity').val(JSON.stringify(products));
-    }
-
-    $('#products').select2({
+    $('#find-products').select2({
         allowClear: true,
         width: '100%',
         placeholder: 'Select products',
@@ -150,90 +139,144 @@ $(document).ready(function () {
             },
             cache: true
         }
-    }).change(function () {
-        let tmp_selected_products = $('#products').val();
+    }).change(function (e) {
+        let target_product_id = $(this).val();
+        
+        if (!(target_product_id in selected_products)) {
+            if (target_product_id !== '') {
+                $('#createOrderLoddingSpinner').show(500);
+                
+                get_selected_product(target_product_id)
+                .then(target_product => {
+                    if (target_product != null) {
+                        create_selected_product_row(target_product);
+                        $('#find-products').val('').trigger('change');
+                        
+                        $('#createOrderLoddingSpinner').hide(500);
+                
+                        selected_products[target_product_id] = {
+                            quantity : 1,
+                            price    : target_product.price
+                        } 
 
-        // check new products added to the list
-        let new_selected_products = tmp_selected_products.filter(product_id => {
-            /**  
-             *  Here we will add more functionality for grapping the products from the server
-             * */
-            
-            const is_not_in_list = !selected_products.includes(product_id);
-
-            if (is_not_in_list) {
-                // If this a new data need to get, send request to the server
-                axios.get(`{{ url('admin/products') }}/${product_id}?fast_acc=true`)
-                .then(res => {
-                    if (res.data.success) {
-                        let tmp = `
-                            <tr class="selected_product_tr" id="selected_product_tr_${res.data.data.id}">
-                                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${res.data.data.main_image}" /></td>
-                                <td>${res.data.data.ar_name} / ${res.data.data.en_name}</td>
-                                <td>${res.data.data.sku}</td>
-                                <td>${res.data.data.price}</td>
-                                <td id="selected_product_o_quantity_${res.data.data.id}" data-quantity="${res.data.data.quantity}">${res.data.data.quantity - 1}</td>
-                                <td><input style="width: 80px" class="selected_product_quantity" id="selected_product_quantity_${res.data.data.id}" data-price="${res.data.data.price}" data-target="${res.data.data.id}" type="number" min="1" max="${res.data.data.quantity}" value="1" step="1" data-max="${res.data.data.quantity}"/></td>
-                                <td id="selected_product_td_sub_total_${res.data.data.id}">${res.data.data.price} SR</td>
-                                <!--
-                                <td id="selected_product_td_fees_${res.data.data.id}">---</td>
-                                <td id="selected_product_td_tax_${res.data.data.id}">---</td>
-                                <td id="selected_product_td_total_${res.data.data.id}">---</td>
-                                -->
-                            </tr>
-                        `;
-
-                        $('#selected_product_table').prepend(tmp);
+                        update_products_hidden_field();
                     }
-                }).then( () => {
-                    update_products();
-                    update_sub_total();
                 });
+            }// end :: if            
+        } else {
+            $('#createOrderWarningAlert').text('Product is already in the list').slideDown(500);
+            $(`.selected-product-row-${target_product_id}`).css('border', '1px solid red');
+            
+            setTimeout(() => {
+                $('#createOrderWarningAlert').text('').slideUp(500);
+                $(`.selected-product-row-${target_product_id}`).css('border', '');
+            }, 3000);
+        }
+    });
+
+    // the selected product quantity, price change event, anf remove item event
+    $('#selected_product_table').on('change', '.selected_product_quantity', function () {
+        let target_id   = $(this).data('target');
+        let price       = selected_products[target_id].price;
+        let quantity    = selected_products[target_id].quantity = $(this).val();
+
+        let original_quantity = $(`#selected_product_o_quantity_${target_id}`).data('quantity');
+        $(`#selected_product_o_quantity_${target_id}`).text(original_quantity - quantity);
+        
+        // update item sub total price
+        $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR');
+        
+        update_products_hidden_field();
+    }).on('change', '.selected_product_price', function () {
+        let target_id      = $(this).data('target');
+        let original_price = $(this).data('original-price');
+        let quantity       = selected_products[target_id].quantity;
+        let price          = selected_products[target_id].price = $(this).val();
+    
+        price < original_price && $(`#selected_product_price_${target_id}`).css('color', 'red');
+        price >= original_price && $(`#selected_product_price_${target_id}`).css('color', 'green');
+
+        // update item sub total price
+        $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR')
+        
+        update_products_hidden_field();
+    }).on('click', '.remove_selected_item', function () {
+        let target_id = $(this).data('target');
+
+        $(`.selected-product-row-${target_id}`).remove();
+        delete selected_products[target_id];
+        
+        update_products_hidden_field();
+    });
+
+    // clear old session
+    $('.toggle-btn').click(function () {
+        let target_card  = $(this).data('target-card');
+
+        if (target_card === '#createObjectCard') {
+            selected_products = {};
+            $('#products').val('');
+            $('#products_quantity').val('');
+            $('.selected-product-rows').remove();
+        }
+    });
+
+    async function get_selected_product (target_product_id) {
+        const request  = axios.get(`{{ url('admin/products') }}/${target_product_id}?get_p=true`);
+        const target_product = request.then(res => {
+            if (res.data.success) {
+                return res.data.data
             }
 
-            return is_not_in_list && product_id;
+            return null;
         });
 
-        // check products that been removed from the list
-        selected_products = selected_products.filter(product_id => {
-            /**
-             * Here we will get ride from the data that been removed from the list
-             * */
+        return target_product;
+    } 
 
-            const is_in_list = tmp_selected_products.includes(product_id);
+    function create_selected_product_row (target_product) {
+        let product_tr = `
+            <tr class="selected-product-rows selected-product-row-${target_product.id}">
+                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                <td>${target_product.sku}</td>
+                <td>${target_product.price}</td>
+                <td>
+                    <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
+                        id="selected_product_price_${target_product.id}"
+                        data-target="${target_product.id}" data-original-price="${target_product.price}" 
+                        min="0"/>
+                    SR
+                </td>
+                <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                    ${target_product.quantity - 1}
+                </td>
+                <td>
+                    <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
+                        id="selected_product_quantity_${target_product.id}" 
+                        data-target="${target_product.id}" data-max="${target_product.quantity}"
+                        min="1" max="${target_product.quantity}" />
+                    </td>
+                <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                <td>
+                    <button class="remove_selected_item btn btn-sm btn-danger"
+                        data-target="${target_product.id}"
+                    >
+                        <i class="fas fa-minus-circle"></i>
+                    </button>
+                </td>
+            </tr>
+        `; 
 
-            if (!is_in_list) {
-                $(`#selected_product_tr_${product_id}`).remove();
-            }
+        $('#selected_product_table').prepend(product_tr);
+    } 
+    
+    function update_products_hidden_field () {
+        console.log(selected_products, Object.keys(selected_products));
 
-            return tmp_selected_products.includes(product_id) && product_id;
-        })
-
-        // update selected products
-        selected_products = selected_products.concat(new_selected_products);
-
-        tmp_selected_products.length == 0 && $('#selected_products_sub_total').text('---')
-
-    });
-
-    // the selected product quantity, price change
-    $('#selected_product_table').on('change', '.selected_product_quantity', function () {
-        let target   = $(this).data('target');
-        let price    = $(this).data('price');
-        let quantity = $(this).val();
-
-        let original_quantity = $(`#selected_product_o_quantity_${target}`).data('quantity');
-        $(`#selected_product_o_quantity_${target}`).text(original_quantity - quantity);
-
-        // console.log(target, price, quantity);
-
-        $(`#selected_product_td_sub_total_${target}`).text(parseFloat(price * quantity).toFixed(2) + ' SR')
-
-        // update products input
-        update_products();
-        // update sub_total
-        update_sub_total();
-    });
+        $('#products_quantity').val(JSON.stringify(selected_products));
+        $('#products').val(JSON.stringify(Object.keys(selected_products)));
+    }
 
 });
 </script>

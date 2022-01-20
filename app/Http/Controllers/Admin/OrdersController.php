@@ -17,7 +17,7 @@ class OrdersController extends Controller
     public function index (Request $request) {
         
         if ($request->ajax()) {
-            $model = Order::query();
+            $model = Order::query()->orderBy('id', 'desc');
             
             if (isset($request->code)) {
                 $model->where('code', 'like', "%$request->code%");
@@ -89,9 +89,9 @@ class OrdersController extends Controller
             $target_data = [
                 'id'            => $target_order->id,
                 'customer'      => $target_order->customer,
-                'all_products'  => $target_order->products,
-                // 'products'      => $target_order->products()->distinct()->get(),
-                'products'      => $target_order->products,
+                // 'all_products'  => $target_order->products,
+                'products'      => $target_order->products()->distinct()->get(),
+                // 'products'      => $target_order->products,
                 'products_meta' => $target_order->meta
             ];
 
@@ -138,63 +138,26 @@ class OrdersController extends Controller
          * */
 
         $products_quantity  = (array) json_decode($request->products_quantity);
-        $products_id        = explode(',', $request->products);
-        $products           = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
-        // $products_prices    = [];
-        $meta = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => [], 'restored_quantity' => []];
-        
-        $data = [
+        $products_id        = json_decode($request->products);
+        $new_order = Order::create([
             'code'          => 'ad-' . time(), 
             'customer_id'   => $request->customer,
             'sub_total'     => 0,
-            'total'         => 0,
-            // 'meta' => json_encode(['products_id' => $products_id, 'products_quantity' => $products_quantity])
-        ];
-        $new_order = Order::create($data);
-
-        $total = 0;
-        foreach ($products as $product) {
-            $data = [];
-
-            for ($i = 0; $i < $products_quantity[$product->id]; $i++) {
-                $data[] = [
-                    'order_id'   => $new_order->id,
-                    'product_id' => $product->id, 
-                    'ar_name'    => $product->ar_name,
-                    'en_name'    => $product->en_name,
-                    'sku'        => $product->sku,
-                    'price_when_order'  => $product->price,
-                    'created_at' => $new_order->created_at,
-                    'updated_at' => $new_order->updated_at,
-                    'code'       => $new_order->code
-                ];
-            }
-
-            
-            $new_order_product = OrderProduct::insert($data);
-            $this->update_product_quantity($product, $products_quantity[$product->id]);
-            $product->save();
-
-            $meta['products_prices'][$product->id] = $product->price;
-            $meta['restored_quantity'][$product->id] = 0;
-            $total += $product->price * $products_quantity[$product->id];
-        }
-
-        $new_order->total     = $total;
-        $new_order->sub_total = $total;
-        $new_order->meta      = $meta;
-        $new_order->save();
+            'total'         => 0
+        ]);
+        
+        $this->create_requested_order($new_order, $products_id, $products_quantity);
         
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
     }// end :: store
 
     public function update (Request $request, $id) {
-        
+        // dd($request->all());
         // if (isset($request->activate_customer)) {
         //     return $this->updateActivation($id);
         // }
 
-        // return $this->updateOrder($request, $id);
+        return $this->updateOrder($request, $id);
     }
 
     protected function updateOrder (Request $request, $id) {
@@ -215,55 +178,69 @@ class OrdersController extends Controller
         
          /**
           * 1- get target order 
-          * 2- get target products
-          * 3- start loop through the order_products
-          * 4- delete product if it's not in the new product list, 
-          *    and return the orderd_quantityt to the storage quantityt
-          * 4- 
-          * 4-
-          * 4-
+          * 2- get target order meta
+          * 3- get order quantity
+          * 4- get targted products
+          * 5- delete old order_products
+          * 6- restore old unatity
+          * 7- create requested order
+          * 8- update the restore if order was restored
           * */
-        dd($request->all());
-        $target_order          = Order::find($id);
-        $target_products       = $target_order->products;
-        $target_order_products = $target_order->order_products;
-        $products_quantity     = (array) json_decode($request->products_quantity);
+        // dd($request->all());
+        $target_order       = Order::find($id);
+        $order_meta         = (array) json_decode($target_order->meta);
+        $order_quantity     = (array) $order_meta['products_quantity'];
+        $target_products    = $target_order->products;
         
-        $products_id = explode(',', $request->products);
-        $products    = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
+        // delete old orders
+        $target_order->order_products()->delete();
 
-        $total = 0;
-
+        // restore old qunatity
+        foreach ($target_products as $target_product) {
+            $target_product_quantity = (array) $order_quantity[$target_product->id];
+            $this->restore_reserved_products($target_product, $target_product_quantity['quantity']);
+        }
         
-
-
+        // create updated order
+        $products_quantity  = (array) json_decode($request->products_quantity);
+        $products_id        = json_decode($request->products);
+        $this->create_requested_order($target_order, $products_id, $products_quantity);
         
-        dd($products_quantity, $products_id, $products);
+        if ($target_order->status == -1) {
+            $target_order->status = 0;
+            $target_order->save();
+        }
 
-        return response()->json(['data' => $target_user, 'success' => isset($target_user)]);
+        return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
     }
 
-    public function destroy ($id) {
+    public function destroy (Request $request, $id) {
         /**
          * Delete an order meeans we need to delete all the order products
          * restore the quantity to the products in the storage
          */
-        // $target_user = User::find($id);
-        // isset($target_user) && $target_user->delete();
-        
+         
         $target_order   = Order::find($id);
-        $order_meta     = (array) json_decode($target_order->meta);
-        $products_id    = (array) $order_meta['products_id'];
-        $order_quantity = (array) $order_meta['products_quantity'];
 
-        foreach ($products_id as $product_id) {
-            $target_product = Product::find($product_id);
-            $this->restore_reserved_products($target_product, $order_quantity[$product_id]);
+        foreach ($target_order->products as $target_product) {
+            $quantity = $target_order->order_products()->where('product_id', $target_product->id)->count();
+            $this->restore_reserved_products($target_product, $quantity);
         }
 
-        // $target_order->delete();
-        $target_order->status = -1;
-        $target_order->save();
+        if (isset($request->restore_product)) {
+            $this->restore_order_meta($target_order);
+            
+            foreach ($target_order->order_products as $target_order_product) {
+                $target_order_product->status = 0;
+                $target_order_product->save();
+            }
+
+            $target_order->status = -1;
+            $target_order->save();
+            
+        } else {
+            $target_order->delete();
+        }
 
         return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
     }
@@ -309,5 +286,59 @@ class OrdersController extends Controller
 
         $target_product->quantity += $order_quantity;
         $target_product->save();
+    }
+
+    private function create_requested_order ($target_order, $products_id, $products_quantity) {
+        // dd($products_id, $products_quantity);
+        $total = 0;
+        $meta = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => [], 'restored_quantity' => []];
+        $products           = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
+
+        foreach ($products as $product) {
+            $targted_product_quantity = (array) $products_quantity[$product->id];
+            $data = [];
+            
+            for ($i = 0; $i < $targted_product_quantity['quantity']; $i++) {
+                $data[] = [
+                    'order_id'   => $target_order->id,
+                    'product_id' => $product->id, 
+                    'ar_name'    => $product->ar_name,
+                    'en_name'    => $product->en_name,
+                    'sku'        => $product->sku,
+                    'price_when_order'  => $targted_product_quantity['price'],
+                    'created_at' => $target_order->created_at,
+                    'updated_at' => $target_order->updated_at,
+                    'code'       => $target_order->code
+                ];
+            }
+
+            
+            $new_order_product = OrderProduct::insert($data);
+            $this->update_product_quantity($product, $targted_product_quantity['quantity']);
+            $product->save();
+
+            $meta['products_prices'][$product->id]      = $targted_product_quantity['price'];
+            $meta['restored_quantity'][$product->id]    = 0;
+            $total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
+        }
+
+        $target_order->total     = $total;
+        $target_order->sub_total = $total;
+        $target_order->meta      = $meta;
+        $target_order->save();
+    }
+
+    private function restore_order_meta ($target_order) {
+        $target_order_meta    = (array) json_decode($target_order->meta);
+        $requested_quantity   = (array) $target_order_meta['products_quantity'];
+        $restored_quantity    = [];
+
+        foreach ($requested_quantity as $product_id => $product_meta) {
+            $product_meta = (array) $product_meta;
+            $restored_quantity[$product_id] = $product_meta['quantity'];
+        }
+
+        $target_order_meta['restored_quantity'] = $restored_quantity;
+        $target_order->meta = json_encode($target_order_meta);
     }
 }

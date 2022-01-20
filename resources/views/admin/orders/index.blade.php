@@ -25,6 +25,12 @@
                 <h5>{{$object_title}}s Adminstration</h5>
             </div>
             <div class="col-6 text-right">
+                
+                <div class="relode-btn btn btn-info btn-sm">
+                    <i class="relode-btn-icon fas fa-redo"></i>
+                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                </div>
+                
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -35,7 +41,6 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            
             <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Code</label>
@@ -108,11 +113,8 @@
     
     @include('admin.orders.incs._show')
     @include('admin.orders.incs._create')
-
-    {{--
     @include('admin.orders.incs._edit')
-    --}}
-    
+
 
 </div>
 @endsection
@@ -210,7 +212,13 @@ $(function () {
     
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        // console.log(data, edit_selected_products);
+        // clear ol session
+        edit_selected_products = {};
+        $('.edit-selected-product-rows').remove();
 
+        const order_meta = JSON.parse(data.products_meta);
+        
         // selected 
         const products_quantity = (JSON.parse(data.products_meta))['products_quantity'];
         $('#tmp-products_quantity').val(JSON.stringify(products_quantity));
@@ -219,27 +227,53 @@ $(function () {
         $('#edit-customer').append(customer_option).trigger('change');
         
         $('#edit-products').val('').trigger('change');
-        data.products.forEach(product => {
-            console.log(product);
-            const template_tr = `
-                <tr class="edit-selected_product_tr" id="edit-selected_product_tr_${product.id}">
-                    <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
-                    <td>${product.ar_name} / ${product.en_name}</td>
-                    <td>${product.sku}</td>
-                    <td>${product.price}</td>
-                    <td>${product.pivot.price_when_order} SR</td>
+        data.products.forEach(target_product => {
+            edit_selected_products[target_product.id] = {
+                price    : order_meta.products_prices[target_product.id],
+                quantity : order_meta.products_quantity[target_product.id].quantity,
+            };
+            
+            let product_tr = `
+                <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
+                    <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                    <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                    <td>${target_product.sku}</td>
+                    <td>${target_product.price}</td>
                     <td>
-                        <button class="btn btn-sm btn-danger"></button>
+                        <input style="width: 80px" class="selected_product_price" type="number" value="${edit_selected_products[target_product.id].price}" step="1"
+                            id="selected_product_price_${target_product.id}"
+                            data-target="${target_product.id}" data-original-price="${target_product.price}" 
+                            min="0"/>
+                        SR
+                    </td>
+                    <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                        ${target_product.quantity}
+                    </td>
+                    <td>
+                        <input style="width: 80px" class="selected_product_quantity" type="number" value="${edit_selected_products[target_product.id].quantity}" step="1"
+                            id="selected_product_quantity_${target_product.id}" 
+                            data-target="${target_product.id}" data-max="${target_product.quantity}"
+                            min="1" max="${target_product.quantity}" />
+                    </td>
+                    <td id="selected_product_td_sub_total_${target_product.id}">
+                        ${parseFloat(edit_selected_products[target_product.id].price * edit_selected_products[target_product.id].quantity).toFixed(2)} SR
+                    </td>
+                    <td>
+                        <button class="remove_selected_item btn btn-sm btn-danger"
+                            data-target="${target_product.id}"
+                        >
+                            <i class="fas fa-minus-circle"></i>
+                        </button>
                     </td>
                 </tr>
-            `;
+            `; 
 
-            $('#edit-old_selected_product_table').prepend(template_tr)
-        //     var product_option = new Option(`${product.ar_name} / ${product.en_name} , quantity : (${product.quantity})`, product.id, false, true);
-        //     $('#edit-products').append(product_option).trigger('change');
+            $('#edit-selected_product_table').prepend(product_tr);
         });
 
         $('#edit-id').val(data.id);
+        $('#edit-products_quantity').val(JSON.stringify(edit_selected_products));
+        $('#edit-products').val(JSON.stringify(Object.keys(edit_selected_products)));
     }
 
 
@@ -260,7 +294,35 @@ $(function () {
                 }, 3000);
             }
         })// axios
-    })
+    }).on('click', '.restore-object', function () {
+        console.log('test restore');
+        $('#loddingSpinner').show(500);
+
+        let target_order_id   = $(this).data('object-id');
+        let target_order_code = $(this).data('object-name');
+        
+        let flag = confirm(`Are you sure you want to restor "${target_order_code}"`);
+        
+        if (flag) {
+            axios.post(`{{ url('admin/orders') }}/${target_order_id}`, {
+                _method  : 'DELETE',
+                '_token' : $('meta[name="csrf-token"]').attr('content'),
+                restore_product : true
+            }).then(res => {
+                
+                $('#loddingSpinner').hide(500);
+                
+                if (res.data.success) {
+                    objects_dynamic_table.table_object.draw();
+
+                    $('#warningAlert').text('You restored the order successfully').slideDown();
+                    setTimeout(() => {
+                        $('#warningAlert').text('').slideUp();
+                    }, 3000);
+                }// end :: if
+            });
+        }// end :: if
+    });
 
     $('#customer, #edit-customer').select2({
         // allowClear: true,
@@ -303,7 +365,6 @@ $(function () {
                 }
             });
         } else {
-            
             $('#customer_name').text('---');
             $('#customer_email').text('---');
             $('#customer_phone').text('---');

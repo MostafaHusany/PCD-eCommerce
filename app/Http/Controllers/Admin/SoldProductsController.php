@@ -17,7 +17,7 @@ class SoldProductsController extends Controller
     public function index (Request $request) {
         
         if ($request->ajax()) {
-            $model = OrderProduct::query();
+            $model = OrderProduct::query()->orderBy('id', 'desc');
             
             if (isset($request->name)) {
                 $model->where(function ($q) use ($request) {
@@ -81,17 +81,18 @@ class SoldProductsController extends Controller
          */
 
         $target_order_product = OrderProduct::find($id);
-        $this->restore_reserved_products($target_order_product->product, 1);
-        // dd($request->all());
-        // هل ممكن اختزال الخطوات دي بشكل افضل
-        $target_order         = $target_order_product->order;
-        $target_order_meta    = (array) json_decode($target_order->meta);
-        $restored_quantity    = (array) $target_order_meta['restored_quantity'];
-        $restored_quantity[$target_order_product->product->id] += 1;
-        $target_order_meta['restored_quantity'] = $restored_quantity;
-        $target_order->meta = json_encode($target_order_meta);
-        $target_order->save();
-        
+        if ($target_order_product->status == 1) {
+            $this->restore_reserved_products($target_order_product->product, 1);
+            // dd($request->all());
+            // هل ممكن اختزال الخطوات دي بشكل افضل
+            $target_order         = $target_order_product->order;
+            $target_order_meta    = (array) json_decode($target_order->meta);
+            $restored_quantity    = (array) $target_order_meta['restored_quantity'];
+            $restored_quantity[$target_order_product->product->id] += 1;
+            $target_order_meta['restored_quantity'] = $restored_quantity;
+            $target_order->meta = json_encode($target_order_meta);
+            $target_order->save();
+        }
         
         if (isset($request->restore_product)) {
             $target_order_product->status = 0;

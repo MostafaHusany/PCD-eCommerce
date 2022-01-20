@@ -1,7 +1,8 @@
-<div style="display: !none" id="editObjectsCard" class="card card-body">
+
+<div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update {{ $object_title }}y</h5>
+            <h5>Create New {{$object_title}}</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -14,7 +15,7 @@
     <form action="/" id="objectForm">
         
         <input type="hidden" id="edit-id">
-        
+
         <div class="customer-phase">
             <div class="form-group row">
                 <label for="edit-customer" class="col-sm-2 col-form-label">Select Customer</label>
@@ -55,39 +56,27 @@
             </div>
         </div><!-- /.customer-phase --> 
 
-        <div class="form-group" style="background-color: #edecec; padding: 10px; border: 1px solid #555; border-radius: 10px">
-            <h4>Product Requested</h4>
-            <table class="table">
-                <tr>
-                    <td>Img</td>
-                    <td>Name</td>
-                    <td>SKU</td>
-                    <td>Current Price</td>
-                    <td>Price When Order</td>
-                    <td>Action</td>
-                </tr>
-                <tbody id="edit-old_selected_product_table">
-                    <tr>
-                        <td class="text-center" colspan="7">
-                            <h3>Total</h3>
-                        </td>
-                        <td id="edit-old_selected_products_sub_total">---</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
         <div class="product-pahse">
             <input type="hidden" id="edit-products_quantity" value="">
-            <input type="hidden" id="tmp-products_quantity" value="">
+            <input type="hidden" id="edit-products" value="">
+
             <div class="form-group row">
-                <label for="edit-products" class="col-sm-2 col-form-label">Add More Products</label>
+                <label for="edit-find-products" class="col-sm-2 col-form-label">Select Products</label>
                 <div class="col-sm-10">
-                    <select class="form-control" id="edit-products" data-prefix="edit-" multiple="multiple"></select>
+                    <select class="form-control" id="edit-find-products" data-prefix=""></select>
                     <div style="padding: 5px 7px; display: none" id="edit-productsErr" class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div>
             </div>
+
+            <div class="d-flex justify-content-center mb-3">
+                <div id="edit-createOrderLoddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+            <div id="edit-createOrderWarningAlert" style="display: none" class="alert alert-warning"></div>
+
             <div class="form-group">
                 <table class="table">
                     <tr>
@@ -95,87 +84,45 @@
                         <td>Name</td>
                         <td>SKU</td>
                         <td>Price</td>
-                        <td>Valied Quantityt</td>
-                        <td>Requested Quantityt</td>
+                        <td>Edit Price</td>
+                        <td>Valied Quantity</td>
+                        <td>Requested Quantity</td>
                         <td>Sub Total Price</td>
+                        <td>Actions</td>
                     </tr>
                     <tbody id="edit-selected_product_table">
-                        <tr>
-                            <td class="text-center" colspan="6">
-                                <h3>Total</h3>
-                            </td>
-                            <td id="edit-selected_products_sub_total">---</td>
-                        </tr>
+                    <tr>
+                        <td class="text-center" colspan="6">
+                            <h3>Total</h3>
+                        </td>
+                        <td id="edit-selected_products_sub_total">---</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div><!-- /.product-pahse -->
         
 
-        <button !id="createorder" class="update-object btn btn-warning float-right">Create Order</button>
+        <button !id="createorder" class="update-object btn btn-warning float-right">Update Order</button>
     </form>
 </div>
 
 
 <script>
 $(document).ready(function () {
-    let edit_selected_products = [];
-    let tmp_edit_quantity      = {};
+    
+    /**
+        When the user search for product
+        find the product , with another request
+        show a row with the product
+        the user should be able to add nom of products, customize the price
+        remove the item from the list
+        in next phase the item updates should be done asynchrnised
+     */
+     
+    window.edit_selected_products = {"tmp" : 'test'};
 
-
-    function update_sub_total () {
-        /**
-         * We use this function to update sub total
-         */
-        let total = 0.0;
-
-        edit_selected_products.forEach(product_id => {
-            let tmp_price     = $(`#edit-selected_product_quantity_${product_id}`).data('price');
-            let tmp_quantity  = $(`#edit-selected_product_quantity_${product_id}`).val();
-            
-            total += tmp_price * tmp_quantity;
-        });
-
-        $('#edit-selected_products_sub_total').text(parseFloat(total).toFixed(2) + ' SR');
-    }
-
-    function update_products () {
-        let products = {};
-        edit_selected_products.forEach(product_id => {
-            let tmp_quantity     = $(`#edit-selected_product_quantity_${product_id}`).val();
-            products[product_id] = tmp_quantity;
-        });
-
-        $('#edit-products_quantity').val(JSON.stringify(products));
-    }
-
-    function edit_quantity () {
-        let products_quantity = $('#tmp-products_quantity').val()
-
-        if (products_quantity != '') {
-            tmp_edit_quantity = JSON.parse(products_quantity);
-        }
-
-        $('#tmp-products_quantity').val('')
-    }
-
-    function create_order_product_row (product, tmp_o_r_quantity, tmp_r_quantity) {
-        const template_tr = `
-            <tr class="edit-selected_product_tr" id="edit-selected_product_tr_${product.id}">
-                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
-                <td>${product.ar_name} / ${product.en_name}</td>
-                <td>${product.sku}</td>
-                <td>${product.price}</td>
-                <td id="edit-selected_product_o_quantity_${product.id}" data-quantity="${tmp_o_r_quantity}">${product.quantity}</td>
-                <td><input style="width: 80px" class="edit-selected_product_quantity" id="edit-selected_product_quantity_${product.id}" data-price="${product.price}" data-target="${product.id}" type="number" min="1" max="${tmp_o_r_quantity}" value="${tmp_r_quantity}" step="1" data-max="${product.quantity}"/></td>
-                <td id="edit-selected_product_td_sub_total_${product.id}">${product.price * tmp_r_quantity} SR</td>
-            </tr>
-        `;
-
-        return template_tr;
-    }
-
-    $('#edit-products').select2({
+    $('#edit-find-products').select2({
         allowClear: true,
         width: '100%',
         placeholder: 'Select products',
@@ -195,80 +142,133 @@ $(document).ready(function () {
             },
             cache: true
         }
-    }).change(function () {
-        // get edit quantity if exists
-        edit_quantity();
-
-        let tmp_selected_products = $('#edit-products').val();
-
-        // check new products added to the list
-        let new_selected_products = tmp_selected_products.filter(product_id => {
-            /**  
-             *  Here we will add more functionality for grapping the products from the server
-             * */
-            
-            const is_not_in_list = !edit_selected_products.includes(product_id);
-
-            if (is_not_in_list) {
-                // If this a new data need to get, send request to the server
-                axios.get(`{{ url('admin/products') }}/${product_id}?fast_acc=true`)
-                .then(res => {
-                    if (res.data.success) {
-                        const tmp_r_quantity   = tmp_edit_quantity[res.data.product.id] != null ? tmp_edit_quantity[res.data.product.id] : 1;
-                        const tmp_o_quantity   = res.data.product.quantity;
-                        const tmp_o_r_quantity = parseInt(res.data.product.quantity) + parseInt(tmp_r_quantity);
-
-                        const template_tr = create_order_product_row(res.data.product, tmp_o_r_quantity, tmp_r_quantity);
+    }).change(function (e) {
+        let target_product_id = $(this).val();
+        
+        if (!(target_product_id in edit_selected_products)) {
+            if (target_product_id !== '') {
+                $('#edit-createOrderLoddingSpinner').show(500);
+                
+                get_selected_product(target_product_id)
+                .then(target_product => {
+                    if (target_product != null) {
+                        edit_create_selected_product_row(target_product);
+                        $('#edit-find-products').val('').trigger('change');
                         
-                        $('#edit-selected_product_table').prepend(template_tr);
+                        $('#edit-createOrderLoddingSpinner').hide(500);
+                
+                        edit_selected_products[target_product_id] = {
+                            quantity : 1,
+                            price    : target_product.price
+                        } 
+
+                        edit_update_products_hidden_field();
                     }
-                }).then( () => {
-                    update_products();
-                    update_sub_total();
                 });
+            }// end :: if            
+        } else {
+            $('#edit-createOrderWarningAlert').text('Product is already in the list').slideDown(500);
+            $(`.edit-selected-product-row-${target_product_id}`).css('border', '1px solid red');
+            
+            setTimeout(() => {
+                $('#edit-createOrderWarningAlert').text('').slideUp(500);
+                $(`.edit-selected-product-row-${target_product_id}`).css('border', '');
+            }, 3000);
+        }
+    });
+
+    // the selected product quantity, price change event, anf remove item event
+    $('#edit-selected_product_table').on('change keyup', '.selected_product_quantity', function () {
+        let target_id   = $(this).data('target');
+        let price       = edit_selected_products[target_id].price;
+        let quantity    = edit_selected_products[target_id].quantity = $(this).val();
+
+        let original_quantity = $(`#selected_product_o_quantity_${target_id}`).data('quantity');
+        $(`#selected_product_o_quantity_${target_id}`).text(original_quantity - quantity);
+        
+        // update item sub total price
+        $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR');
+        
+        edit_update_products_hidden_field();
+    }).on('change keyup', '.selected_product_price', function () {
+        let target_id      = $(this).data('target');
+        let original_price = $(this).data('original-price');
+        let quantity       = edit_selected_products[target_id].quantity;
+        let price          = edit_selected_products[target_id].price = $(this).val();
+    
+        price < original_price && $(`#selected_product_price_${target_id}`).css('color', 'red');
+        price >= original_price && $(`#selected_product_price_${target_id}`).css('color', 'green');
+
+        // update item sub total price
+        $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR')
+        
+        edit_update_products_hidden_field();
+    }).on('click', '.remove_selected_item', function (e) {
+        e.preventDefault();
+        let target_id = $(this).data('target');
+
+        $(`.edit-selected-product-row-${target_id}`).remove();
+        delete edit_selected_products[target_id];
+        
+        edit_update_products_hidden_field();
+    });
+
+    async function get_selected_product (target_product_id) {
+        const request  = axios.get(`{{ url('admin/products') }}/${target_product_id}?get_p=true`);
+        const target_product = request.then(res => {
+            if (res.data.success) {
+                return res.data.data
             }
 
-            return is_not_in_list && product_id;
+            return null;
         });
 
-        // check products that been removed from the list
-        edit_selected_products = edit_selected_products.filter(product_id => {
-            /**
-             * Here we will get ride from the data that been removed from the list
-             * */
+        return target_product;
+    } 
 
-            const is_in_list = tmp_selected_products.includes(product_id);
+    function edit_create_selected_product_row (target_product) {
+        let product_tr = `
+            <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
+                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                <td>${target_product.sku}</td>
+                <td>${target_product.price}</td>
+                <td>
+                    <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
+                        id="selected_product_price_${target_product.id}"
+                        data-target="${target_product.id}" data-original-price="${target_product.price}" 
+                        min="0"/>
+                    SR
+                </td>
+                <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                    ${target_product.quantity - 1}
+                </td>
+                <td>
+                    <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
+                        id="selected_product_quantity_${target_product.id}" 
+                        data-target="${target_product.id}" data-max="${target_product.quantity}"
+                        min="1" max="${target_product.quantity}" />
+                    </td>
+                <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                <td>
+                    <button class="remove_selected_item btn btn-sm btn-danger"
+                        data-target="${target_product.id}"
+                    >
+                        <i class="fas fa-minus-circle"></i>
+                    </button>
+                </td>
+            </tr>
+        `; 
 
-            if (!is_in_list) {
-                $(`#edit-selected_product_tr_${product_id}`).remove();
-            }
+        $('#edit-selected_product_table').prepend(product_tr);
+    } 
+    
+    function edit_update_products_hidden_field () {
+        console.log(edit_selected_products, Object.keys(edit_selected_products));
 
-            return tmp_selected_products.includes(product_id) && product_id;
-        })
-
-        // update selected products
-        edit_selected_products = edit_selected_products.concat(new_selected_products);
-
-        tmp_selected_products.length == 0 && $('#edit-selected_products_sub_total').text('---')
-
-    });
-
-    // the selected product quantity, price change
-    $('#edit-selected_product_table').on('change', '.edit-selected_product_quantity', function () {
-        let target   = $(this).data('target');
-        let price    = $(this).data('price');
-        let quantity = $(this).val();
-
-        let original_quantity = $(`#edit-selected_product_o_quantity_${target}`).data('quantity');
-        
-        $(`#edit-selected_product_o_quantity_${target}`).text(parseInt(original_quantity) - parseInt(quantity));
-        $(`#edit-selected_product_td_sub_total_${target}`).text(parseFloat(price * quantity).toFixed(2) + ' SR');
-
-        // update products input
-        update_products();
-        // update sub_total
-        update_sub_total();
-    });
+        $('#edit-products_quantity').val(JSON.stringify(edit_selected_products));
+        $('#edit-products').val(JSON.stringify(Object.keys(edit_selected_products)));
+    }
 
 });
 </script>

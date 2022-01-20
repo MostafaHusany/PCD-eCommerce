@@ -159,7 +159,6 @@ class DynamicTable {
                 });
             }// end :: if
         });
-
         
         $('.search-action').on('keyup change', function (e, current_objct = this_objct) {
             if (current_objct.search_request != null) {
@@ -170,6 +169,20 @@ class DynamicTable {
                 current_objct.table_object.draw();
             }, 1000);
         });
+
+        $('.relode-btn').on('click', () => {
+            /**
+             * relode datatable event
+             */
+            this.table_object.draw();
+            
+            $('.relode-btn-icon').hide();
+            $('.relode-btn-loader').show();
+            setTimeout(() => {
+                $('.relode-btn-icon').show();
+                $('.relode-btn-loader').hide();
+            }, 1500);
+        })
 
         // handle edit & delete event
         $(this.table_id).on('click', '.show-object', function (e, current_objct = this_objct) {

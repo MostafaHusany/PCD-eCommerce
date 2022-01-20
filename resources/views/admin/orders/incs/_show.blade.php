@@ -95,7 +95,7 @@
         .then(res => {
             const data = res.data.data;
             const order_meta = JSON.parse(data.products_meta);
-            // console.log('data, and order_meta', data, order_meta);
+            console.log('data, and order_meta', data, order_meta);
             // get customer data
             $('#show-customer_name').text(`${data.customer.first_name} ${data.customer.second_name}`);
             $('#show-customer_email').text(data.customer.email);
@@ -105,23 +105,22 @@
 
             let total_val = 0;
             data.products.forEach(product => {
-                // console.log(product);
                 let tmp_row = `
                     <tr class="show-order-product-tr">
                         <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
                         <td>${product.ar_name} / ${product.en_name}</td>
                         <td>${product.sku}</td>
                         <td>${order_meta.products_prices[product.id]}</td>
-                        <td>${order_meta.products_quantity[product.id]}</td>
+                        <td>${order_meta.products_quantity[product.id].quantity}</td>
                         <td>
                             <span class="text-danger">${order_meta.restored_quantity[product.id]}</span>
                         </td>
-                        <td>${parseFloat(order_meta.products_prices[product.id] * (order_meta.products_quantity[product.id] - order_meta.restored_quantity[product.id]) ).toFixed(2)} SR</td>
+                        <td>${parseFloat(order_meta.products_prices[product.id] * (order_meta.products_quantity[product.id].quantity - order_meta.restored_quantity[product.id]) ).toFixed(2)} SR</td>
                     </tr>
                 `;
 
                 $('#show-selected_product_table').prepend(tmp_row);
-                total_val += order_meta.products_prices[product.id] * order_meta.products_quantity[product.id];
+                total_val += order_meta.products_prices[product.id] * order_meta.products_quantity[product.id].quantity;
             });
 
             $('#show-selected_products_sub_total').text(parseFloat(total_val).toFixed(2) + " SR")

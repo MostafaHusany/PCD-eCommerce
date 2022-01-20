@@ -28,13 +28,19 @@
             <div class="col-6">
                 <h5>{{$object_title}}s Adminstration</h5>
             </div>
-            {{--
+            
             <div class="col-6 text-right">
+                <div class="relode-btn btn btn-info btn-sm">
+                    <i class="relode-btn-icon fas fa-redo"></i>
+                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                </div>
+                
+                {{--
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
+                --}}
             </div>
-            --}}
         </div><!-- /.row -->
 
         <hr/>
@@ -51,7 +57,7 @@
             <div class="col-3">
                 <div class="form-group search-action">
                     <label for="s-title">Order Code</label>
-                    <input type="text" class="form-control" id="s-order">
+                    <input type="text" class="form-control" id="s-code">
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
             
@@ -159,8 +165,8 @@ $(function () {
             if ($('#s-name').length)
             d.name = $('#s-name').val();    
             
-            if ($('#s-order').length)
-            d.order = $('#s-order').val();    
+            if ($('#s-code').length)
+            d.code = $('#s-code').val();    
             
             if ($('#s-sku').length)
             d.sku = $('#s-sku').val();  

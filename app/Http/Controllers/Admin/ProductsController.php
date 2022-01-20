@@ -106,6 +106,10 @@ class ProductsController extends Controller
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
+        if (isset($target_object) && isset($request->get_p)) {
+            return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
+        }
+
         return response()->json(['product' => null, 'success' > false]);
     }
 
