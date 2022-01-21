@@ -167,7 +167,7 @@ class DynamicTable {
             
             current_objct.search_request = setTimeout(() => {
                 current_objct.table_object.draw();
-            }, 1000);
+            }, 250);
         });
 
         $('.relode-btn').on('click', () => {

@@ -81,11 +81,11 @@ class SoldProductsController extends Controller
          */
 
         $target_order_product = OrderProduct::find($id);
+        $target_order         = $target_order_product->order;
         if ($target_order_product->status == 1) {
             $this->restore_reserved_products($target_order_product->product, 1);
             // dd($request->all());
             // هل ممكن اختزال الخطوات دي بشكل افضل
-            $target_order         = $target_order_product->order;
             $target_order_meta    = (array) json_decode($target_order->meta);
             $restored_quantity    = (array) $target_order_meta['restored_quantity'];
             $restored_quantity[$target_order_product->product->id] += 1;
@@ -99,6 +99,14 @@ class SoldProductsController extends Controller
             $target_order_product->save();
         } else {
             $target_order_product->delete();
+        }
+
+        /* 
+            Check if there is no more products in the order, and change the order status to be restored
+        */
+        if ($target_order->order_products()->where('status', 1)->count() === 0) {
+            $target_order->status = -1;
+            $target_order->save();
         }
         
         return response()->json(['data' => $target_order_product, 'success' => isset($target_order_product)]);

@@ -137,15 +137,16 @@ class OrdersController extends Controller
          * we need to disabel the composite product
          * */
 
-        $products_quantity  = (array) json_decode($request->products_quantity);
-        $products_id        = json_decode($request->products);
+         
         $new_order = Order::create([
             'code'          => 'ad-' . time(), 
             'customer_id'   => $request->customer,
             'sub_total'     => 0,
             'total'         => 0
         ]);
-        
+        // products_quantity contains the quantity and the prices of eacg product in the order 
+        $products_quantity  = (array) json_decode($request->products_quantity);
+        $products_id        = json_decode($request->products);
         $this->create_requested_order($new_order, $products_id, $products_quantity);
         
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
@@ -188,18 +189,21 @@ class OrdersController extends Controller
           * */
         // dd($request->all());
         $target_order       = Order::find($id);
-        $order_meta         = (array) json_decode($target_order->meta);
-        $order_quantity     = (array) $order_meta['products_quantity'];
-        $target_products    = $target_order->products;
-        
+        if ($target_order->status !== -1) {
+            $order_meta         = (array) json_decode($target_order->meta);
+            $order_quantity     = (array) $order_meta['products_quantity'];
+            $order_restored_q   = (array) $order_meta['restored_quantity'];
+            $target_products    = $target_order->products()->distinct()->get();
+
+            // restore old qunatity
+            foreach ($target_products as $target_product) {
+                $target_product_quantity = (array) $order_quantity[$target_product->id];
+                $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
+            }
+        }
+
         // delete old orders
         $target_order->order_products()->delete();
-
-        // restore old qunatity
-        foreach ($target_products as $target_product) {
-            $target_product_quantity = (array) $order_quantity[$target_product->id];
-            $this->restore_reserved_products($target_product, $target_product_quantity['quantity']);
-        }
         
         // create updated order
         $products_quantity  = (array) json_decode($request->products_quantity);
@@ -222,9 +226,12 @@ class OrdersController extends Controller
          
         $target_order   = Order::find($id);
 
-        foreach ($target_order->products as $target_product) {
-            $quantity = $target_order->order_products()->where('product_id', $target_product->id)->count();
-            $this->restore_reserved_products($target_product, $quantity);
+        if ($target_order->status !== -1) {
+            // dd($target_order->products);
+            foreach ($target_order->products()->distinct()->get() as $target_product) {
+                $quantity = $target_order->order_products()->where('status', 1)->where('product_id', $target_product->id)->count();
+                $this->restore_reserved_products($target_product, $quantity);
+            }
         }
 
         if (isset($request->restore_product)) {
@@ -290,9 +297,9 @@ class OrdersController extends Controller
 
     private function create_requested_order ($target_order, $products_id, $products_quantity) {
         // dd($products_id, $products_quantity);
-        $total = 0;
-        $meta = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => [], 'restored_quantity' => []];
-        $products           = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
+        $total      = 0;
+        $meta       = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => [], 'restored_quantity' => []];
+        $products   = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
 
         foreach ($products as $product) {
             $targted_product_quantity = (array) $products_quantity[$product->id];

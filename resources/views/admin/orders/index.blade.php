@@ -193,6 +193,7 @@ $(function () {
         // clear old validation session
         $('.err-msg').slideUp(500);
         console.log('test', data.get('customer'), data.get('products'), prefix);
+
         if (data.get('customer') == '' || data.get('customer') == 'null') {
             is_valide = false;
             let err_msg = 'customer is required';
@@ -200,7 +201,7 @@ $(function () {
             $(`#${prefix}customerErr`).slideDown(500);
         }
 
-        if (data.get('products') == '') {
+        if (data.get('products') == '' || data.get('products') == '[]') {
             is_valide = false;
             let err_msg = 'products is required';
             $(`#${prefix}productsErr`).text(err_msg);
@@ -233,6 +234,11 @@ $(function () {
                 quantity : order_meta.products_quantity[target_product.id].quantity,
             };
             
+            let selected_quantity = parseInt(edit_selected_products[target_product.id].quantity) - parseInt(order_meta.restored_quantity[target_product.id]);
+            selected_quantity = selected_quantity === 0 ? 1 : selected_quantity;
+            // total quantity of the value still in the storage, and the requested of the order_product sumed togather
+            const total_quantity = parseInt(target_product.quantity) + selected_quantity;
+
             let product_tr = `
                 <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
                     <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
@@ -246,14 +252,14 @@ $(function () {
                             min="0"/>
                         SR
                     </td>
-                    <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                    <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${total_quantity}">
                         ${target_product.quantity}
                     </td>
                     <td>
-                        <input style="width: 80px" class="selected_product_quantity" type="number" value="${edit_selected_products[target_product.id].quantity}" step="1"
+                        <input style="width: 80px" class="selected_product_quantity" type="number" value="${selected_quantity}" step="1"
                             id="selected_product_quantity_${target_product.id}" 
-                            data-target="${target_product.id}" data-max="${target_product.quantity}"
-                            min="1" max="${target_product.quantity}" />
+                            data-target="${target_product.id}" data-max="${total_quantity}"
+                            min="1" max="${total_quantity}" />
                     </td>
                     <td id="selected_product_td_sub_total_${target_product.id}">
                         ${parseFloat(edit_selected_products[target_product.id].price * edit_selected_products[target_product.id].quantity).toFixed(2)} SR

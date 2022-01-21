@@ -184,6 +184,7 @@ $(document).ready(function () {
         let quantity    = edit_selected_products[target_id].quantity = $(this).val();
 
         let original_quantity = $(`#selected_product_o_quantity_${target_id}`).data('quantity');
+        console.log('original_quantity : ', original_quantity);
         $(`#selected_product_o_quantity_${target_id}`).text(original_quantity - quantity);
         
         // update item sub total price
