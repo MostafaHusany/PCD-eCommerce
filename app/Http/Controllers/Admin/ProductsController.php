@@ -358,15 +358,13 @@ class ProductsController extends Controller
         $child_products      = $parent_product->children()->get();
         $parent_product_meta = (array) json_decode($parent_product->meta);
         $products_quantity   = (array) $parent_product_meta['products_quantity'];
-        $count = 0;
+
         foreach($child_products as $product) {
             $requested_quantity          = $parent_product->quantity * $products_quantity[$product->id];
 
             $product->quantity          -= $requested_quantity;
             $product->reserved_quantity += $requested_quantity;
             $product->save();
-            // dd($parent_product->quantity, $products_quantity[$product->id], $requested_quantity);
-            // $count++;
         }
     }
 

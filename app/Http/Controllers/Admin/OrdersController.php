@@ -270,9 +270,12 @@ class OrdersController extends Controller
     public function update_product_quantity ($target_product, $order_quantity) {
         if ($target_product->is_composite === 1) {
             $target_children = $target_product->children;
+            $parent_product_meta = (array) json_decode($target_product->meta);
+            $products_quantity   = (array) $parent_product_meta['products_quantity'];
 
             foreach ($target_children as $child_product) {
-                $child_product->reserved_quantity -= $order_quantity;
+                $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
+                $child_product->reserved_quantity -= $requested_quantity;
                 $child_product->save();
             }
         }
@@ -283,10 +286,15 @@ class OrdersController extends Controller
 
     private function restore_reserved_products ($target_product, $order_quantity) {
         if ($target_product->is_composite === 1) {
-            $target_children = $target_product->children;
+            $target_children = $target_product->children;        
+            $parent_product_meta = (array) json_decode($target_product->meta);
+            $products_quantity   = (array) $parent_product_meta['products_quantity'];
+    
 
             foreach ($target_children as $child_product) {
-                $child_product->reserved_quantity += $order_quantity;
+                $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
+
+                $child_product->reserved_quantity += $requested_quantity;
                 $child_product->save();
             }
         }
