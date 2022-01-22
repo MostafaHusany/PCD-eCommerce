@@ -152,7 +152,7 @@ $(function () {
             fields_list     : ['id', 'ar_name', 'ar_small_description', 'ar_description',
                                'en_name', 'en_small_description', 'en_description', 'sku', 'categories',
                                'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
-                                'is_active', 'is_composite', 'child_products'],
+                                'is_active', 'is_composite', 'child_products', 'child_products_quantity'],
             imgs_fields     : ['main_image', 'images']
         },
         [
@@ -277,12 +277,22 @@ $(function () {
             $(`#${prefix}reserved_quantityErr`).text(err_msg);
             $(`#${prefix}reserved_quantityErr`).slideDown(500);
         }
+
+        if (data.get('is_composite') === '1' && (data.get('child_products') === '[]' || data.get('child_products') === '')) {
+            is_valide = false;
+            $(`#${prefix}find_child_productsErr`).text('You need to select child product').slideDown(500);    
+        }
+
+        if (data.get('is_composite') === '1' && (data.get('child_products_quantity') === '{}' || data.get('child_products') === '')) {
+            is_valide = false;
+            $(`#${prefix}find_child_productsErr`).text('You need to select child product').slideDown(500);    
+        }
        
         return is_valide;
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-        
+        console.log(data, fields_id_list);
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
             $(`#${prefix + el_id}`).val(data[el_id]).change();
@@ -297,18 +307,7 @@ $(function () {
             $('#edit-categories').append(category_option).trigger('change');
         });
 
-        if (data.is_composite) {
-            $('.edit-child-products-container').slideDown(500);
-            $('#edit-productQuantityContainer').slideUp(500);
-            data.children.forEach(product => {
-                var product_option = new Option(`${product['ar_name']} || ${product['en_name']}, quantity (${product.quantity})`, product.id, true, true);
-                $('#edit-child_products').append(product_option).trigger('change');
-            });
-        } else {
-
-        }
-
-        $('#child_products').val()
+        // $('#child_products').val()
 
         $('#demo-3-container .jpreview-image, #demo-4-container .jpreview-image').remove()
         let main_image = `<div class="jpreview-image" style="background-image: url({{url('/')}}/${data.main_image})"></div>`;
@@ -320,6 +319,21 @@ $(function () {
             let main_image = `<div class="jpreview-image" style="background-image: url({{url('/')}}/${image})"></div>`;
             $('#demo-4-container').append(main_image);
         });
+
+        
+        if (data.is_composite) {
+            $('.edit-child-products-container').slideDown(500);
+            $('#edit-productQuantityContainer').slideUp(500);
+            const parent_product_meta = JSON.parse(data.meta);
+            data.children.forEach(target_product => {
+                // var product_option = new Option(`${product['ar_name']} || ${product['en_name']}, quantity (${product.quantity})`, product.id, true, true);
+                // $('#edit-child_products').append(product_option).trigger('change');
+                // const target_product = res.data.data;
+                const total_parent_quantity = data.quantity;
+                create_child_product_tr (target_product, total_parent_quantity, parent_product_meta);
+            });
+        } 
+
     }
 
     $('#dataTable').on('change', '.c-activation-btn', function () {
@@ -396,7 +410,8 @@ $(function () {
         }
     });
 
-    $('#child_products, #edit-child_products').select2({
+    $('#find_child_products, #edit-find_child_products').select2({
+        allowClear: true,
         width: '100%',
         placeholder: 'Select products, by name, id, or sku',
         ajax: {

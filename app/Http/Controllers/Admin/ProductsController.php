@@ -102,7 +102,7 @@ class ProductsController extends Controller
         if (isset($target_object) && isset($request->fast_acc)) {
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
             $target_object->categories;
-            $target_object->is_composite && $target_object->children;
+            $target_object->children = $target_object->is_composite ? $target_object->children()->distinct()->get() : null;
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
@@ -114,7 +114,6 @@ class ProductsController extends Controller
     }
 
     public function store (Request $request) {
-
         // START VALIDATION
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|unique:products,ar_name|max:255',
@@ -132,24 +131,21 @@ class ProductsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
-        
+
+        $child_products          = $request->is_composite == 1 ? (array) json_decode($request->child_products) : [];
+        $child_products_quantity = $request->is_composite == 1 ? (array) json_decode($request->child_products_quantity) : [];
+        // dd($child_products, $child_products_quantity, $request->reserved_quantity);
         if ($request->is_composite == 1) {
             /**
              * I want to make sure that products quantity is valied
              * for making reserved_quantity for composite products
-             */
-            $child_products   = explode(',', $request->child_products);
-            $falied_products  = Product::whereIn('id', $child_products)->where('quantity', '<', $request->reserved_quantity)->get();
-            
-            if (sizeof($falied_products)) {
-                $msg_str = "<ul>";
-                foreach($falied_products as $falied_product) {
-                    $msg_str .= "<li>($falied_product->en_name / $falied_product->ar_name) has only $falied_product->quantity</li>";
-                }
-                $msg_str .= "</ul>";
-                $msg = ['reserved_quantity' => $msg_str];
-                return response()->json(['data' => null, 'success' => false, 'msg' => $msg]); 
-            }// end :: if
+            */
+
+            $err_msg = $this->validate_child_products_quantity($child_products, $child_products_quantity, $request->reserved_quantity);
+
+            if (isset($err_msg)) {
+                return response()->json(['data' => null, 'success' => false, 'msg' => $err_msg]); 
+            }
         }
         // END VALIDATION
 
@@ -173,14 +169,17 @@ class ProductsController extends Controller
         $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
         $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
-        
+        $data['meta']             = json_encode([
+            'child_products_id' => $child_products,
+            'products_quantity' => $child_products_quantity,
+        ]);
+
         $new_object = Product::create($data);
         
         $categories = explode(',', $request->categories);
         $this->sync_product_categories($categories, $new_object);
 
         if ($request->is_composite == 1) {
-            $child_products = explode(',', $request->child_products);
             $new_object->children()->sync($child_products);
             $this->update_reserved_products($new_object);
         }
@@ -197,7 +196,7 @@ class ProductsController extends Controller
     }
 
     protected function updateProduct (Request $request, $id) {
-        
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|max:255|unique:products,ar_name,'.$id,
             'en_name'        => 'required|max:255|unique:products,en_name,'.$id,
@@ -238,34 +237,18 @@ class ProductsController extends Controller
         // get the target product
         $target_object = Product::find($id);
 
+        $child_products          = $request->is_composite == 1 ? (array) json_decode($request->child_products) : [];
+        $child_products_quantity = $request->is_composite == 1 ? (array) json_decode($request->child_products_quantity) : [];
+        // dd($child_products, $child_products_quantity);
         if ($request->is_composite == 1) {
             $this->restore_reserved_products($target_object);
-            // foreach ($target_object->children as $child_product) {
-            //     $child_product->quantity          += $target_object->quantity;
-            //     $child_product->reserved_quantity -= $target_object->quantity;
-            //     $child_product->save();
-            // }
 
-            $child_products   = explode(',', $request->child_products);
-            $falied_products  = Product::whereIn('id', $child_products)->where('quantity', '<', $request->reserved_quantity)->get();
-            
-            if (sizeof($falied_products)) {
-                
+            $err_msg = $this->validate_child_products_quantity($child_products, $child_products_quantity, $request->reserved_quantity);
+
+            if (isset($err_msg)) {
                 $this->update_reserved_products($target_object);
-                // foreach ($target_object->children as $child_product) {
-                //     $child_product->quantity -= $target_object->quantity;
-                //     $child_product->reserved_quantity += $target_object->quantity;
-                //     $child_product->save();
-                // }
-
-                $msg_str = "<ul>";
-                foreach($falied_products as $falied_product) {
-                    $msg_str .= "<li>($falied_product->en_name / $falied_product->ar_name) has only $falied_product->quantity</li>";
-                }
-                $msg_str .= "</ul>";
-                $msg = ['reserved_quantity' => $msg_str];
-                return response()->json(['data' => null, 'success' => false, 'msg' => $msg]); 
-            }// end :: if
+                return response()->json(['data' => null, 'success' => false, 'msg' => $err_msg]); 
+            }
         }
 
         $data  = $request->except(['main_image', 'price_after_sale', 'is_active']);
@@ -290,13 +273,17 @@ class ProductsController extends Controller
         $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
         $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
+        $data['meta']             = json_encode([
+            'child_products_id' => $child_products,
+            'products_quantity' => $child_products_quantity,
+        ]);
         $categories               = explode(',', $request->categories);
 
         $target_object->update($data);
         $this->sync_product_categories($categories, $target_object);
+    
 
         if ($request->is_composite == 1) {
-            $child_products = explode(',', $request->child_products);
             $target_object->children()->sync($child_products);
             $this->update_reserved_products($target_object);
         }
@@ -368,21 +355,55 @@ class ProductsController extends Controller
     }// end :: sync_product_categories
 
     private function update_reserved_products ($parent_product) {
-        $child_products = $parent_product->children;
+        $child_products      = $parent_product->children()->get();
+        $parent_product_meta = (array) json_decode($parent_product->meta);
+        $products_quantity   = (array) $parent_product_meta['products_quantity'];
+        $count = 0;
         foreach($child_products as $product) {
-            $product->quantity          -= $parent_product->quantity;
-            $product->reserved_quantity += $parent_product->quantity;
+            $requested_quantity          = $parent_product->quantity * $products_quantity[$product->id];
+
+            $product->quantity          -= $requested_quantity;
+            $product->reserved_quantity += $requested_quantity;
             $product->save();
+            // dd($parent_product->quantity, $products_quantity[$product->id], $requested_quantity);
+            // $count++;
         }
     }
 
     private function restore_reserved_products ($parent_product) {
-        $child_products = $parent_product->children;
+        $child_products      = $parent_product->children()->get();
+        $parent_product_meta = (array) json_decode($parent_product->meta);
+        $products_quantity   = (array) $parent_product_meta['products_quantity'];
+        
         foreach($child_products as $product) {
-            $product->quantity          += $parent_product->quantity;
-            $product->reserved_quantity -= $parent_product->quantity;
+            $requested_quantity          = $parent_product->quantity * $products_quantity[$product->id];
+
+            $product->quantity          += $requested_quantity;
+            $product->reserved_quantity -= $requested_quantity;
             $product->save();
+            // dd($product->quantity, $product->reserved_quantity, $requested_quantity, $parent_product->quantity, $products_quantity[$product->id]);
         }
+    }
+
+    private function validate_child_products_quantity ($child_products, $child_products_quantity, $reserved_quantity) {
+        $selected_products  = Product::whereIn('id', $child_products)->get();
+        $msg_str = "";
+        $msg     = null;
+
+        foreach($selected_products as $product) {
+            $requested_quantity = ($child_products_quantity[$product->id] * $reserved_quantity);
+
+            if ($product->quantity < $requested_quantity) {
+                $msg_str .= "<li>($product->en_name / $product->ar_name) has only $product->quantity and you requested $requested_quantity</li>";
+            }
+        }
+
+        if (strlen($msg_str)) {
+            $msg_str = "<ul>" . $msg_str . "</ul>";
+            $msg     = ['reserved_quantity' => $msg_str];
+        }
+
+        return $msg;
     }
     // END   HELPER FUNCTIONS 
 
