@@ -93,7 +93,7 @@
             <thead>
                 <th>#</th>
                 <th>Image</th>
-                <th>Name</th>
+                <th style="width: 80px">Name</th>
                 <th>SKU</th>
                 <th>Price</th>
                 <th>Sale Price</th>

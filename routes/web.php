@@ -90,9 +90,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/products-categories-search', 'ProductCategoriesController@dataAjax');
 });
 
-// Route::group(['prefix' => LaravelLocalization::setLocale(), 'namespace' => 'Shop'], function () {
-Route::group(
-    [
+Route::group([
         'namespace' => 'Shop',
         'prefix' => LaravelLocalization::setLocale(),
         'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]

@@ -1,72 +1,147 @@
 @extends('layouts.shop.app')
 
-@section('content')
-<div class="wrap-breadcrumb">
-    <ul>
-        <li class="item-link"><a href="{{ url('/') }}" class="link">Home</a></li>
-        <li class="item-link"><span>Shop</span></li>
-    </ul>
-</div>
 
-            
+@push('custome-css')
+<style>   
+    .widget ul li a{
+        font-size: 14px;
+        line-height: 40px;
+        color: #444444;
+        text-decoration:none;
+        font-weight: 600;
+    }
+    .widget ul li{
+        list-style: none;
+        float: left;
+        width: 100%;
+    }
+    .widget ul{
+        padding: 0;
+        margin: 0;
+    }
+    .widget.categories-widget .widget-title{
+        padding-bottom: 13px;
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    .widget.categories-widget ul li{
+        display: block;
+        width: 100%;
+        float: left;
+    }
+    .widget.categories-widget .sub-cate{
+        padding-left: 33px;
+    }
+    .widget.categories-widget .has-child-cate:not(.open) .sub-cate{
+        display: none;
+    }
+    .has-child-cate .toggle-control{
+        position: relative;
+        width: 10px;
+        font-size: 0;
+        display: inline-block;
+        float: left;
+        height: 40px;
+    }
+    .has-child-cate .toggle-control:hover{
+        cursor: pointer;
+    }
+    .has-child-cate .toggle-control::before{
+        content: '';
+        display: block;
+        width: 10px;
+        height: 2px;
+        background-color: #444444;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+    }
+    .has-child-cate:not(.open) .toggle-control::after{
+        content: '';
+        display: block;
+        width: 2px;
+        height: 10px;
+        background-color: #444444;
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+    }
+    .widget .has-child-cate > a{
+        display: inline-block;
+        float: left;
+        width: calc(100% - 10px);
+        width: -webkit-calc(100% - 10px);
+        width: -moz-calc(100% - 10px);
+    }
+    .widget.categories-widget .widget-content>ul>li:last-child{
+        margin-bottom: 10px;
+    }
+</style>
+@endpush
+
+@section('content')         
 <div class="row">
-
-    <div class="col-lg-9 col-md-8 col-sm-8 col-xs-12 main-content-area">
-
-        <div class="wrap-shop-control" style="margin-top: 0;">
-
-            <h1 class="shop-title">All Categories</h1>
-
-            <div class="wrap-right">
-
-                <div class="sort-item orderby ">
-                    <select name="orderby" class="use-chosen select-order-type" >
-                        <option value="" selected="selected">Default sorting</option>
-                        <option value="popularity">Sort by popularity</option>
-                        <option value="rating">Sort by average rating</option>
-                        <option value="date">Sort by newness</option>
-                        <option value="price">Sort by price: low to high</option>
-                        <option value="price-desc">Sort by price: high to low</option>
-                    </select>
-                </div>
-
-                <div class="sort-item product-per-page">
-                    <select name="post-per-page" class="use-chosen select-pagination-nom" >
-                        <option value="3" selected="selected">3 per page</option>
-                        <option value="12" >12 per page</option>
-                        <option value="16">16 per page</option>
-                        <option value="18">18 per page</option>
-                        <option value="21">21 per page</option>
-                        <option value="24">24 per page</option>
-                        <option value="30">30 per page</option>
-                        <option value="32">32 per page</option>
-                    </select>
-                </div>
+    <div class="col-lg-9 col-md-8 col-sm-8 col-xs-12">
+        <nav class="navbar navbar-expand-sm navbar-light bg-light mb-2">
+            <div class="container-fluid">
+                <h1 class="navbar-brand shop-title" style="margin: 0;">All Categories</h1>
                 
-                <div class="change-display-mode">
-                    <a href="#" data-grid-type="grid" class="grid-mode display-mode active"><i class="fa fa-th"></i>Grid</a>
-                    <a href="#" data-grid-type="list" class="list-mode display-mode"><i class="fa fa-th-list"></i>List</a>
+                <div class="row d-flex">
+                    <div class="col-4">
+                        <select name="orderby" class="form-control select-order-type" >
+                            <option value="" selected="selected">Default sorting</option>
+                            <option value="popularity">!Sort by popularity</option>
+                            <option value="rating">!Sort by average rating</option>
+                            <option value="date">Sort by newness</option>
+                            <option value="price">Sort by price: low to high</option>
+                            <option value="price-desc">Sort by price: high to low</option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <select class="form-control select-pagination-nom" >
+                            <option value="3" selected="selected">3 per page</option>
+                            <option value="12" >12 per page</option>
+                            <option value="16">16 per page</option>
+                            <option value="18">18 per page</option>
+                            <option value="21">21 per page</option>
+                            <option value="24">24 per page</option>
+                            <option value="30">30 per page</option>
+                            <option value="32">32 per page</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-4 d-flex justify-content-around">
+                        <button data-grid-type="grid" class="btn btn-sm btn-dark display-mode active">
+                            <i class="fa fa-th"></i> Grid
+                        </button>
+                        <button data-grid-type="list" class="btn btn-sm btn-dark display-mode">
+                            <i class="fa fa-th-list"></i> List
+                        </button>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </nav><!-- /.navbar -->
+
+        <div class="products-container">    
+            <div id="productsSpinner" style="margin-top: 120px">
+                <div class="d-flex justify-content-center">
+                    <span class="loader center-block"></span>
                 </div>
-
-            </div><!-- /.wrap-right -->
-
-        </div><!--end wrap shop control-->
-
-        <div class="row">   
-            
-            <div id="productsSpinner" class="col-xs-12" style="margin-top: 120px">
-                <div class="loader center-block"></div>
             </div>
 
-            <ul class="product-list grid-products equal-container">
-                
-            </ul>
-        </div><!-- /.row -->
+            <div class="row product-list">  
+            </div><!-- /.row -->
+        </div><!-- /.products-container -->
 
         <div class="pagination-container">
-          
         </div><!-- /.pagination-container --> 
-
     </div><!--end main products area-->
 
     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 sitebar">
@@ -91,140 +166,9 @@
                         </li>
                         @endif
                     @endforeach
-                </ul>
-            </div>
+                </ul><!-- /.list-category -->
+            </div><!-- /.widget-content -->
         </div><!-- Categories widget-->
-        
-        {{--
-            <div class="widget mercado-widget filter-widget brand-widget">
-                <h2 class="widget-title">Brand</h2>
-                <div class="widget-content">
-                    <ul class="list-style vertical-list list-limited" data-show="6">
-                        <li class="list-item"><a class="filter-link active" href="#">Fashion Clothings</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Laptop Batteries</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Printer & Ink</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">CPUs & Prosecsors</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Sound & Speaker</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Shop Smartphone & Tablets</a></li>
-                        <li class="list-item default-hiden"><a class="filter-link " href="#">Printer & Ink</a></li>
-                        <li class="list-item default-hiden"><a class="filter-link " href="#">CPUs & Prosecsors</a></li>
-                        <li class="list-item default-hiden"><a class="filter-link " href="#">Sound & Speaker</a></li>
-                        <li class="list-item default-hiden"><a class="filter-link " href="#">Shop Smartphone & Tablets</a></li>
-                        <li class="list-item"><a data-label='Show less<i class="fa fa-angle-up" aria-hidden="true"></i>' class="btn-control control-show-more" href="#">Show more<i class="fa fa-angle-down" aria-hidden="true"></i></a></li>
-                    </ul>
-                </div>
-            </div><!-- brand widget-->
-        --}}
-        
-        {{--
-        <div class="widget mercado-widget filter-widget price-filter">
-            <h2 class="widget-title">Price</h2>
-            <div class="widget-content">
-                <div id="slider-range"></div>
-                <p>
-                    <label for="amount">Price:</label>
-                    <input type="text" id="amount" readonly style="max-width: 150px">
-                    <button class="filter-submit">Filter</button>
-                </p>
-            </div>
-        </div><!-- Price-->
-        --}}
-
-        {{--
-            <div class="widget mercado-widget filter-widget">
-                <h2 class="widget-title">Color</h2>
-                <div class="widget-content">
-                    <ul class="list-style vertical-list has-count-index">
-                        <li class="list-item"><a class="filter-link " href="#">Red <span>(217)</span></a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Yellow <span>(179)</span></a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Black <span>(79)</span></a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Blue <span>(283)</span></a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Grey <span>(116)</span></a></li>
-                        <li class="list-item"><a class="filter-link " href="#">Pink <span>(29)</span></a></li>
-                    </ul>
-                </div>
-            </div><!-- Color -->
-
-            <div class="widget mercado-widget filter-widget">
-                <h2 class="widget-title">Size</h2>
-                <div class="widget-content">
-                    <ul class="list-style inline-round ">
-                        <li class="list-item"><a class="filter-link active" href="#">s</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">M</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">l</a></li>
-                        <li class="list-item"><a class="filter-link " href="#">xl</a></li>
-                    </ul>
-                    <div class="widget-banner">
-                        <figure><img src="{{ asset('shop_assets/images/size-banner-widget.jpg') }}" width="270" height="331" alt=""></figure>
-                    </div>
-                </div>
-            </div><!-- Size -->
-
-            <div class="widget mercado-widget widget-product">
-                <h2 class="widget-title">Popular Products</h2>
-                <div class="widget-content">
-                    <ul class="products">
-                        <li class="product-item">
-                            <div class="product product-widget-style">
-                                <div class="thumbnnail">
-                                    <a href="detail.html" title="Radiant-360 R6 Wireless Omnidirectional Speaker [White]">
-                                        <figure><img src="{{ asset('shop_assets/images/products/digital_01.jpg') }}" alt=""></figure>
-                                    </a>
-                                </div>
-                                <div class="product-info">
-                                    <a href="#" class="product-name"><span>Radiant-360 R6 Wireless Omnidirectional Speaker...</span></a>
-                                    <div class="wrap-price"><span class="product-price">$168.00</span></div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li class="product-item">
-                            <div class="product product-widget-style">
-                                <div class="thumbnnail">
-                                    <a href="detail.html" title="Radiant-360 R6 Wireless Omnidirectional Speaker [White]">
-                                        <figure><img src="{{ asset('shop_assets/images/products/digital_17.jpg') }}" alt=""></figure>
-                                    </a>
-                                </div>
-                                <div class="product-info">
-                                    <a href="#" class="product-name"><span>Radiant-360 R6 Wireless Omnidirectional Speaker...</span></a>
-                                    <div class="wrap-price"><span class="product-price">$168.00</span></div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li class="product-item">
-                            <div class="product product-widget-style">
-                                <div class="thumbnnail">
-                                    <a href="detail.html" title="Radiant-360 R6 Wireless Omnidirectional Speaker [White]">
-                                        <figure><img src="{{ asset('shop_assets/images/products/digital_18.jpg') }}" alt=""></figure>
-                                    </a>
-                                </div>
-                                <div class="product-info">
-                                    <a href="#" class="product-name"><span>Radiant-360 R6 Wireless Omnidirectional Speaker...</span></a>
-                                    <div class="wrap-price"><span class="product-price">$168.00</span></div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li class="product-item">
-                            <div class="product product-widget-style">
-                                <div class="thumbnnail">
-                                    <a href="detail.html" title="Radiant-360 R6 Wireless Omnidirectional Speaker [White]">
-                                        <figure><img src="{{ asset('shop_assets/images/products/digital_20.jpg') }}" alt=""></figure>
-                                    </a>
-                                </div>
-                                <div class="product-info">
-                                    <a href="#" class="product-name"><span>Radiant-360 R6 Wireless Omnidirectional Speaker...</span></a>
-                                    <div class="wrap-price"><span class="product-price">$168.00</span></div>
-                                </div>
-                            </div>
-                        </li>
-
-                    </ul>
-                </div>
-            </div><!-- brand widget-->
-        --}}
-
     </div><!--end sitebar-->
 
 </div><!--end row-->
@@ -244,20 +188,40 @@ $(document).ready(function () {
 
     function create_product_el (product) {
         let el_product = `
-        <li class="product-el col-lg-4 col-md-6 col-sm-6 col-xs-6 ">
-            <div class="product product-style-3 equal-elem ">
-                <div class="product-thumnail">
-                    <a href="{{ url('/shop') }}/${product.slug}" title="${product[`${lang_prefix}_name`]}">
-                        <figure><img src="{{ url('/') }}/${product.main_image}" alt="${product[`${lang_prefix}_name`]}"></figure>
-                    </a>
-                </div>
-                <div class="product-info">
-                    <a href="#" class="product-name"><span>${product[`${lang_prefix}_name`]}</span></a>
-                    <div class="wrap-price"><span class="product-price">${product.price} SR</span></div>
-                    <a href="#" class="btn add-to-cart">Add To Cart</a>
-                </div>
-            </div>
-        </li>  
+        <div class="product-el col-lg-4 col-md-6 col-sm-12 mb-2"> 
+            <div class="card" style="height: 100%;">
+                <a href="{{ url('/shop') }}/${product.slug}" title="${product[`${lang_prefix}_name`]}">
+                    <img style="object-fit: cover;" class="card-img-top" src="{{ url('/') }}/${product.main_image}" alt="${product[`${lang_prefix}_name`]}">
+                </a>
+                <div class="card-body">
+                    <div class="card-body">
+                        <p class="card-text" data-bs-toggle="tooltip" data-bs-placement="top" title="${product[`${lang_prefix}_name`]}" style="height: 50px; text-overflow: ellipsis; margin: 0; overflow: hidden" !style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            ${product[`${lang_prefix}_name`]}
+                        </p>
+                        <h5 class="card-text text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">
+                                ${product.price} SR
+                            </small>
+                        </div><!-- /.d-flex -->
+                    </div><!-- /.card-body -->
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+        </div><!-- /.col-lg-4 -->
         `;
 
         return el_product;
@@ -265,29 +229,46 @@ $(document).ready(function () {
 
     function create_horz_product_el (product) {
         let el_product = `
-        <li class="product-el col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+        <div class="product-el !card col-12 col-sm-12 mb-2"> 
             <div class="row product product-style-3 equal-elem ">
-                <div class="col-md-3" style="overflow: hidden">
-                    <div class="product-thumnail">
-                        <a href="{{ url('/shop') }}/${product.slug}" title="${product[`${lang_prefix}_name`]}">
-                            <figure><img style="!width: 200px" src="{{ url('/') }}/${product.main_image}" alt="${product[`${lang_prefix}_name`]}"></figure>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-6 !col-lg-3 product-info" style="padding-top: 25px">
-                    <a href="#" class="product-name">
-                        <h3>${product[`${lang_prefix}_name`]}</h3>
-                        <p>${(product[`${lang_prefix}_small_description`]).slice(0, 25)}</p>
+                <div class="col-md-4">
+                    <a href="{{ url('/shop') }}/${product.slug}" title="${product[`${lang_prefix}_name`]}">
+                        <img class="img-thumbnail" src="{{ url('/') }}/${product.main_image}" alt="${product[`${lang_prefix}_name`]}">
                     </a>
                 </div>
-                <div class="col-md-3 !col-lg-3">
-                    <div class="wrap-price">
-                        <h3 class="product-price text-center">${product.price} SR</h3>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h3>${product[`${lang_prefix}_name`]}</h3>
+                        <p>${ (product[`${lang_prefix}_small_description`]).length > 25 ? (product[`${lang_prefix}_small_description`]).slice(0, 25) + ' ...' : (product[`${lang_prefix}_small_description`])}</p>
+
+                        <h5 class="card-text text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </h5>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                            </div>
+                            <h5 class="text-muted">
+                                ${product.price} SR
+                            </h5>
+                        </div><!-- /.d-flex -->
                     </div>
-                    <a href="#" class="btn add-to-cart">Add To Cart</a>
                 </div>
             </div>
-        </li>
+            
+            <hr />
+        </div>
         `;
         
         return el_product;
@@ -307,29 +288,30 @@ $(document).ready(function () {
          * "path"
          */
         $('.wrap-pagination-info').remove();
-        const nom_of_pages = products.total / products.per_page;
+        
+        const nom_of_pages = Math.ceil(products.total / products.per_page);
         let buttons_el = '';
+
         for ($i = 1; $i <= nom_of_pages; $i++) {
             buttons_el += `
-                <li class="page-number-il ${$i === products.current_page ? 'active' : '' }" data-target-page="${$i}"><span class="page-number-item ${$i === products.current_page ? 'current' : ''}">${$i}</a></li>
+                <li class="page-item ${$i === products.current_page ? 'active' : '' }" data-target-page="${$i}">
+                    <span class="page-link ${$i === products.current_page ? 'current' : ''}">${$i}</span>
+                </li>
             `;
         }
 
         const pagination_el = `
-        <div class="wrap-pagination-info">
-            <ul class="page-numbers">
+        <nav class="wrap-pagination-info">
+            <ul class="pagination">
                 ${buttons_el}
             </ul>
-            <p class="result-count">Showing ${products.per_page} of ${products.total} result</p>
-        </div>
+        </nav>
         `;
 
         $('.pagination-container').append(pagination_el);
     }
 
     function call_products (page_nom = 1, category = '', pagination = 3, orderby_type = '') {
-        
-        // $(window).scrollTop(0);
         $("html, body").animate({ scrollTop: 100 }, "slow");
         $('.product-el').remove();
         $('#productsSpinner').show();
@@ -354,11 +336,11 @@ $(document).ready(function () {
             });
         }, 100);    
     }
-    
+
     call_products();
 
     // pagination event
-    $('.pagination-container').on('click', '.page-number-il', function () {
+    $('.pagination-container').on('click', '.page-item', function () {
         if (!$(this).hasClass('active') && !is_request_sent) {
             is_request_sent = true;
             let target_page = $(this).data('target-page');
@@ -375,7 +357,7 @@ $(document).ready(function () {
             call_products(1, target_category_id, pagination, orderby_type);
 
             let category_name = $(this).data('category-name');
-            $('.shop-title').text(category_name);
+            $('.shop-title').text(category_name.length > 20 ? category_name.slice(0, 20) + '...': category_name);
         }
     });
 
@@ -408,6 +390,18 @@ $(document).ready(function () {
             is_request_sent = true;
             grid_type       = $(this).data('grid-type');
             call_products(1, target_category_id, pagination, orderby_type);
+        }
+    });
+
+    // toggle categories
+    $(document).on('click',".widget .has-child-cate .toggle-control", function(el){
+        el.preventDefault();
+        var _this = $(this);
+        if(_this.parent().hasClass('open')){
+            _this.parent().removeClass('open');
+        }else {
+            _this.closest('.widget-content').find('.open').removeClass('open');
+            _this.parent().addClass('open');
         }
     });
 

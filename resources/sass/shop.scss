@@ -1,6 +1,12 @@
+// Font-Awesome
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/regular";
+@import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~@fortawesome/fontawesome-free/scss/brands";
+
 .loader {
     border: 12px solid #f3f3f3; /* Light grey */
-    border-top: 12px solid #ff2832; /* Blue */
+    border-top: 12px solid #444; /* Blue */
     border-radius: 50%;
     width: 100px;
     height: 100px;
