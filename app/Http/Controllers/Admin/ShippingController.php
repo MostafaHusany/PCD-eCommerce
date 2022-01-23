@@ -27,6 +27,9 @@ class ShippingController extends Controller
             ->addColumn('active', function ($row_object) {
                 return view('admin.shipping.incs._active', compact('row_object'));
             })
+            ->addColumn('orders', function ($row_object) {
+                return $row_object->orders()->count();
+            })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.shipping.incs._actions', compact('row_object'));
             });
@@ -114,14 +117,13 @@ class ShippingController extends Controller
     public function dataAjax(Request $request) {
     	$data = [];
 
-        if($request->has('q')){
+        if($request->has('q')) {
             $search = $request->q;
-            $data = ProductCategory::select("id", "ar_title", "en_title")
-            		->orWhere('ar_title','LIKE',"%$search%")
-            		->orWhere('en_title','LIKE',"%$search%")
-                    ->orWhere('id', $search)
+            $data = Shipping::select("id", "title", 'cost')
+            		->where('title','LIKE',"%$search%")
             		->get();
         }
+
         return response()->json($data);
     }
 }

@@ -10,7 +10,8 @@ class Order extends Model
      * status :
      * -1 مرتجع
      */
-    protected $fillable = ['status', 'note', 'meta', 'sub_total', 'total', 'customer_id', 'code'];
+    protected $fillable = ['status', 'note', 'meta', 'sub_total', 'total', 'customer_id',
+     'code', 'shipping_cost', 'is_free_shipping', 'shipping_id'];
 
     public function customer () {
         return $this->belongsTo(Customer::class, 'customer_id');
@@ -22,5 +23,9 @@ class Order extends Model
 
     public function products () {
         return $this->belongsToMany(Product::class, 'order_products', 'order_id', 'product_id')->withPivot('price_when_order');
+    }
+
+    public function shipping () {
+        return $this->belongsTo(Shipping::class, 'shipping_id');
     }
 }

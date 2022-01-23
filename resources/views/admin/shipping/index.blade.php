@@ -50,6 +50,7 @@
                 <th>Title</th>
                 <th>Cost Type</th>
                 <th>Cost</th>
+                <th>Orders</th>
                 <th>Active</th>
                 <th>Actions</th>
             </thead>
@@ -100,6 +101,7 @@ $(function () {
             { data: 'title', name: 'title' },
             { data: 'cost_type', name: 'cost_type' },
             { data: 'cost', name: 'cost' },
+            { data: 'orders', name: 'orders' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],

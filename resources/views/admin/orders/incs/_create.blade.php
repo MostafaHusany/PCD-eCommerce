@@ -56,6 +56,7 @@
         <div class="product-pahse">
             <input type="hidden" id="products_quantity" value="">
             <input type="hidden" id="products" value="">
+            <!-- <input type="hidden" id="shipping" value=""> -->
 
             <div class="form-group row">
                 <label for="find-products" class="col-sm-2 col-form-label">Select Products</label>
@@ -88,17 +89,54 @@
                         <td>Actions</td>
                     </tr>
                     <tbody id="selected_product_table">
-                    <tr>
-                        <td class="text-center" colspan="6">
-                            <h3>Total</h3>
-                        </td>
-                        <td id="selected_products_sub_total">---</td>
-                    </tr>
+                        <tr>
+                            <td class="text-center" colspan="7">
+                                <h3>Shipping</h3>
+                            </td>
+                            <td>
+                               <span id="selected_shipping_cost" data-cost="" data-cost-type=""> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="7">
+                                <h3>Total</h3>
+                            </td>
+                            <td>
+                                <span id="selected_products_sub_total"> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div><!-- /.product-pahse -->
         
+        <div class="form-group row">
+            <label for="" class="col-2">Shipping</label>
+            <div class="form-group col-4">
+                <select id="shipping" data-prefix="" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="shippingErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.form-group -->
+
+            <div class="form-group col-4">
+                <input type="number" min="0" value="0" id="shipping_cost" data-prefix="" class="form-control">
+                <div style="padding: 5px 7px; display: none" id="shipping_costErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.form-group -->
+
+            <div class="form-group col-2" style="padding: 5px 0px;">
+                <input type="hidden" id="is_free_shipping">
+                <div class="custom-control custom-switch" value="0">
+                    <input type="checkbox" class="custom-control-input" data-prefix="" id="is_free_shipping_toggle">
+                    <label class="custom-control-label" for="is_free_shipping_toggle">Free Shipping</label>
+                </div>
+                
+                <div style="padding: 5px 7px; display: none" id="is_free_shippingErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.form-group -->
+        </div><!-- /.form-group -->
 
         <button !id="createorder" class="create-object btn btn-primary float-right">Create Order</button>
     </form>

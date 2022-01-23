@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Order;
 use App\Product;
+use App\Shipping;
 use App\OrderProduct;
 
 class OrdersController extends Controller
@@ -115,8 +116,10 @@ class OrdersController extends Controller
 
     public function store (Request $request) {
         $validator = Validator::make($request->all(), [
-            'customer' => 'required|exists:customers,id',
-            'products.*' => 'required|exists:products,id'
+            'customer'      => 'required|exists:customers,id',
+            'products.*'    => 'required|exists:products,id',
+            'shipping'   => 'required|exists:shippings,id',
+            'is_free_shipping' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -137,12 +140,30 @@ class OrdersController extends Controller
          * we need to disabel the composite product
          * */
 
-         
+        
+        /**
+         * Shipping cost : 
+         * 
+         * we want to add shipping cost to the total, but first we need 
+         * to make sure that the cuser didn't edit the cost, so we need 
+         * to check if the used sent a new shipping_cost, and than we make sure
+         * that this cost differ than the cost from the shipping boject
+         * if it's differs we update the shipping cost
+         * 
+         * first get the shipping object
+         * check if the user sent a new 
+         */
+        $target_shipping = Shipping::find($request->shipping);
+        $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
+
         $new_order = Order::create([
             'code'          => 'ad-' . time(), 
             'customer_id'   => $request->customer,
             'sub_total'     => 0,
-            'total'         => 0
+            'total'         => 0,
+            'shipping_id'   => $request->shipping,
+            'is_free_shipping'  => $request->is_free_shipping,
+            'shipping_cost'     => $shipping_cost
         ]);
         // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
@@ -150,7 +171,7 @@ class OrdersController extends Controller
         $this->create_requested_order($new_order, $products_id, $products_quantity);
         
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
-    }// end :: store
+    }
 
     public function update (Request $request, $id) {
         // dd($request->all());
@@ -337,7 +358,7 @@ class OrdersController extends Controller
             $total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
         }
 
-        $target_order->total     = $total;
+        $target_order->total     = $total + $target_order->shipping_cost;
         $target_order->sub_total = $total;
         $target_order->meta      = $meta;
         $target_order->save();
