@@ -112,3 +112,36 @@
         </li>
     </ul>
 </li>
+
+
+<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/sold-products') ? 'menu-is-opening menu-open' : '' }}">
+    <a href="#" class="nav-link">
+        <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
+        <i class="nav-icon fas fa-sliders-h"></i>
+        <p>
+            Settings
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" !style="display: block;">
+        <li class="nav-item">
+            <a href="{{ route('admin.shipping.index') }}" class="nav-link {{ Request::is('admin/shipping') ? 'active' : '' }}" >
+                <i class="nav-icon fas fa-shipping-fast"></i>
+                <p>Shipping</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Fees</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-percentage"></i>
+                
+                <p>Taxes</p>
+            </a>
+        </li>
+    </ul>
+</li>

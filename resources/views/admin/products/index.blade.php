@@ -113,9 +113,8 @@
     @include('admin.products.incs._edit')
 
     {{--
-    @include('admin.products.incs._create_composite_product')
+    @include('admin.products.incs._composite_product_upgrade_option')
     --}}
-    
 
 </div>
 @endsection

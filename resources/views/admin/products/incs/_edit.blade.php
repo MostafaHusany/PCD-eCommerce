@@ -213,6 +213,8 @@ $(function () {
             $('.edit-selected-product-child').remove();
             $('#edit-is_composite').val('0').trigger('change');
             $('#edit-reserved_quantity').val(1);
+            $('#edit-main_image').val('');
+            $('#edit-images').val('');
         } 
     });
 

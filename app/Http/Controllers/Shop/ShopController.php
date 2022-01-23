@@ -13,11 +13,6 @@ class ShopController extends Controller
     public function index () {
         $main_categories = ProductCategory::where('is_main', 1)->get();
 
-        // foreach ($main_categories as $category) {
-        //     echo $category->children()->count() . ' <br/>';
-        // }
-        // dd($main_categories);
-
         return view ('shop.shop', compact('main_categories'));
     }
 

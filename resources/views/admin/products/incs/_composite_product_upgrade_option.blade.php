@@ -2,7 +2,7 @@
 <div style="!display: none" id="createCompositeObjectCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Composite Product</h5>
+            <h5>Upgrade Option Product</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#createCompositeObjectCard" data-target-card="#objectsCard">
@@ -15,52 +15,22 @@
     <div>
         <input type="hidden" id="targetCompositeProduct" /> 
 
-        <div class="row">
-            <div class="col-sm-9">
-                <div class="form-group">
-                    <label for="targetCategoryGroup"></label>
-                    <select name="targetCategoryGroup" id="targetCategoryGroup" class="form-controle" multiple="multiple"></select>
-                </div>
-
-                <div class="list-group categoy-product-category">
-                </div>
+        <div class="row form-group">
+            <div class="col-3">
+                <label for="">Category</label>
             </div>
+            <div class="col-8">
+                <select name="" id="" class="form-control"></select>
+            </div>
+        </div><!-- /.row --> 
 
-            <div class="col-sm-3">
-                <table class="table">
-                    <tr>
-                        <td>Name</td>
-                        <td>Price</td>
-                    </tr>
-                    <tbody id="compositeProductCost"></tbody>
-                </table><!-- /.table -->
-
-                <hr />
-
-                <div class="form-group">
-                    <div class="row">
-                        <label class="col-sm-6">Total</label>
-                        <span id="compositeProductsTotal" class="col-sm-6">---</span>
-                    </div><!-- /.row -->
-                </div><!-- /.form-group -->
-                
-                <div class="form-group">
-                    <div class="row">
-                        <label class="col-sm-6">Price For Customer</label>
-                        <div class="col-sm-6">
-                            <input id="composite_product_price" style="width: 100px;margin-top: 10px;" type="number" />
-                        </div>
-                    </div><!-- /.row -->
-
-                    <div style="display: none" id="composite_product_priceErr" style="padding: 3px 5px" class="alert alert-danger mt-3">
-                        Please enter price
-                    </div>
-                </div><!-- /.form-group -->
-
-                <button id="createCompositeProductBtn" class="btn btn-primary btn-block">Create Composite Product</button>
+        <div class="form-group">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                    The current link item
+                </a>
             </div>
         </div>
-
     </div>
 </div>
 

@@ -84,6 +84,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('shipping', 'ShippingController', ['names' => [
+        'index'     => 'admin.shipping.index',
+        'store'     => 'admin.shipping.store',
+        'show'      => 'admin.shipping.show',
+        'edit'      => 'admin.shipping.edit',
+        'update'    => 'admin.shipping.update',
+        'destroy'   => 'admin.shipping.destroy'
+        ]
+    ]);
+
     // fast ajax search
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');
