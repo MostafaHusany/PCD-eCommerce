@@ -91,16 +91,54 @@
                         <td>Actions</td>
                     </tr>
                     <tbody id="edit-selected_product_table">
-                    <tr>
-                        <td class="text-center" colspan="6">
-                            <h3>Total</h3>
-                        </td>
-                        <td id="edit-selected_products_sub_total">---</td>
-                    </tr>
+                        <tr>
+                            <td class="text-center" colspan="7">
+                                <h3>Shipping</h3>
+                            </td>
+                            <td>
+                               <span id="edit-selected_shipping_cost" data-cost="" data-cost-type=""> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="7">
+                                <h3>Total</h3>
+                            </td>
+                            <td>
+                                <span id="edit-selected_products_sub_total">---</span> SAR
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div><!-- /.product-pahse -->
+
+        
+        <div class="form-group row">
+            <label for="" class="col-2">Shipping</label>
+            <div class="form-group col-4">
+                <select id="edit-shipping" data-prefix="edit-" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-shippingErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.form-group -->
+
+            <div class="form-group col-4">
+                <input type="number" min="0" value="0" id="edit-shipping_cost" data-prefix="edit-" class="form-control">
+                <div style="padding: 5px 7px; display: none" id="edit-shipping_costErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.form-group -->
+
+            <div class="form-group col-2" style="padding: 5px 0px;">
+                <input type="hidden" id="edit-is_free_shipping">
+                <div class="custom-control custom-switch" value="0">
+                    <input type="checkbox" class="custom-control-input" data-prefix="edit-" id="edit-is_free_shipping_toggle">
+                    <label class="custom-control-label" for="edit-is_free_shipping_toggle">Free Shipping</label>
+                </div>
+                
+                <div style="padding: 5px 7px; display: none" id="edit-is_free_shippingErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.form-group -->
+        </div><!-- /.form-group -->
         
 
         <button !id="createorder" class="update-object btn btn-warning float-right">Update Order</button>

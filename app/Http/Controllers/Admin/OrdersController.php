@@ -93,7 +93,9 @@ class OrdersController extends Controller
                 // 'all_products'  => $target_order->products,
                 'products'      => $target_order->products()->distinct()->get(),
                 // 'products'      => $target_order->products,
-                'products_meta' => $target_order->meta
+                'products_meta' => $target_order->meta,
+                'shipping'      => $target_order->shipping,
+                'shipping_cost' => $target_order->shipping_cost
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -184,7 +186,10 @@ class OrdersController extends Controller
 
     protected function updateOrder (Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            
+            'customer'      => 'required|exists:customers,id',
+            'products.*'    => 'required|exists:products,id',
+            'shipping'   => 'required|exists:shippings,id',
+            'is_free_shipping' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -210,6 +215,17 @@ class OrdersController extends Controller
           * */
         // dd($request->all());
         $target_order       = Order::find($id);
+
+        $target_shipping = Shipping::find($request->shipping);
+        $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
+
+        $target_order->update([
+            'customer_id'   => $request->customer,
+            'shipping_id'   => $request->shipping,
+            'is_free_shipping'  => $request->is_free_shipping,
+            'shipping_cost'     => $shipping_cost
+        ]);
+
         if ($target_order->status !== -1) {
             $order_meta         = (array) json_decode($target_order->meta);
             $order_quantity     = (array) $order_meta['products_quantity'];

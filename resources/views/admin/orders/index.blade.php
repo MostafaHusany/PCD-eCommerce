@@ -292,6 +292,13 @@ $(function () {
         $('#edit-id').val(data.id);
         $('#edit-products_quantity').val(JSON.stringify(edit_selected_products));
         $('#edit-products').val(JSON.stringify(Object.keys(edit_selected_products)));
+
+        edit_shipping_cost = data.shipping_cost;
+        var shipping_option = new Option(data.shipping.title, data.shipping.id, false, true);
+        $('#edit-shipping').append(shipping_option).trigger('change');
+        $('#edit-shipping_cost').val(data.shipping_cost);
+        // edit_shipping_cost
+
     }
 
     $('#dataTable').on('change', '.c-activation-btn', function () {
@@ -391,6 +398,8 @@ $(function () {
 
     });
 
+    
+    let edit_shipping_cost = null;// a global variable to show order shipping cost value in edit form 
     const shipping_object = (function () {
         /**
          * #shipping select2 field to find targted shipping system
@@ -399,6 +408,7 @@ $(function () {
          * #is_free_shipping the hidden field where we store the real value of the is_free_shipping value
          * #selected_shipping_cost an span where we show the cost of the shipping
          */
+
         let events = function () {
             $('#shipping, #edit-shipping').select2({
                 allowClear: true,
@@ -421,10 +431,10 @@ $(function () {
                     cache: true
                 }
             }).change(function () {
-
                 let prefix      = $(this).data('prefix');
                 let shipping_id = $(this).val();
 
+                console.log('test shipping', prefix, shipping_id);
                 if (shipping_id !== null || shipping_id === '') {
                     $('#createOrderLoddingSpinner').show();
 
@@ -432,9 +442,11 @@ $(function () {
                     .then(res => {
                         $('#createOrderLoddingSpinner').hide();
 
+                        console.log(edit_shipping_cost);
                         const target_shipping = res.data.data;
+                        target_shipping.cost  = edit_shipping_cost != null ? edit_shipping_cost : target_shipping.cost;
                         set_shipping_fields(prefix, target_shipping);
-                        
+                        edit_shipping_cost = null;
                     });
                 } else {
                     set_shipping_fields(prefix);
@@ -468,7 +480,7 @@ $(function () {
                 
                 console.log(shipping_val, $(this).prop('checked'), $(this).val());
 
-                if (shipping_val !== '') {
+                if (shipping_val != '' && shipping_val != null) {
                     let is_free_shipping = $(this).prop('checked');
                     
                     if (is_free_shipping) {
@@ -476,9 +488,9 @@ $(function () {
                         $(`#${prefix}selected_shipping_cost`).css('text-decoration', 'line-through');
                         $(`#${prefix}is_free_shipping`).val(1);
                     } else {
-                        let shipping_cost    = $('#selected_shipping_cost').data('cost');
+                        let shipping_cost    = $(`#${prefix}selected_shipping_cost`).data('cost');
                         $(`#${prefix}shipping_cost`).val(shipping_cost).removeAttr('disabled');
-                        $('#selected_shipping_cost').text(shipping_cost);                
+                        $(`#${prefix}selected_shipping_cost`).text(shipping_cost);                
                         $(`#${prefix}selected_shipping_cost`).css('text-decoration', '');
                         $(`#${prefix}is_free_shipping`).val(0);
                     }
@@ -492,9 +504,10 @@ $(function () {
                 }
             });
 
-            $('#shipping_cost').on('keyup change', function () {
+            $('#shipping_cost, #edit-shipping_cost').on('keyup change', function () {
+                let prefix          = $(this).data('prefix');
                 const shipping_cost = $(this).val();
-                const selected_shipping_cost = $('#selected_shipping_cost').data('cost');
+                const selected_shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
                 
                 if (shipping_cost < selected_shipping_cost) {
                     $(this).css('color', 'red');
@@ -502,7 +515,7 @@ $(function () {
                     $(this).css('color', '');
                 }
 
-                $('#selected_shipping_cost').text(shipping_cost);                
+                $(`#${prefix}selected_shipping_cost`).text(shipping_cost);                
             });
         }
 
@@ -525,7 +538,8 @@ $(function () {
         }
 
         return {
-            events : events
+            events : events,
+            edit_shipping_cost
         }
     })();
 

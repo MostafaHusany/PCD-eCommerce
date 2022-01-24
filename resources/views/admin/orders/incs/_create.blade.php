@@ -112,6 +112,7 @@
             </div>
         </div><!-- /.product-pahse -->
         
+        <!-- START SHIPPING PHASE -->
         <div class="form-group row">
             <label for="" class="col-2">Shipping</label>
             <div class="form-group col-4">
@@ -137,6 +138,7 @@
                 </div>
             </div><!-- /.form-group -->
         </div><!-- /.form-group -->
+        <!-- END SHIPPING PHASE -->
 
         <button !id="createorder" class="create-object btn btn-primary float-right">Create Order</button>
     </form>
