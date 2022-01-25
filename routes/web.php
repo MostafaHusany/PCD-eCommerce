@@ -94,6 +94,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('fees', 'FeesController', ['names' => [
+        'index'     => 'admin.fees.index',
+        'store'     => 'admin.fees.store',
+        'show'      => 'admin.fees.show',
+        'edit'      => 'admin.fees.edit',
+        'update'    => 'admin.fees.update',
+        'destroy'   => 'admin.fees.destroy'
+        ]
+    ]);
+
     Route::resource('taxes', 'TaxesController', ['names' => [
         'index'     => 'admin.taxes.index',
         'store'     => 'admin.taxes.store',

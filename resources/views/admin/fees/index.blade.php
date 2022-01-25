@@ -58,9 +58,9 @@
         </table>
     </div><!-- /.card --> 
     
-    @include('admin.taxes.incs._create')
+    @include('admin.fees.incs._create')
 
-    @include('admin.taxes.incs._edit')
+    @include('admin.fees.incs._edit')
     
 
 </div>
@@ -73,11 +73,11 @@ $(function () {
     
     const objects_dynamic_table = new DynamicTable(
         {
-            index_route   : "{{ route('admin.taxes.index') }}",
-            store_route   : "{{ route('admin.taxes.store') }}",
-            show_route    : "{{ url('admin/taxes') }}",
-            update_route  : "{{ url('admin/taxes') }}",
-            destroy_route : "{{ url('admin/taxes') }}",
+            index_route   : "{{ route('admin.fees.index') }}",
+            store_route   : "{{ route('admin.fees.store') }}",
+            show_route    : "{{ url('admin/fees') }}",
+            update_route  : "{{ url('admin/fees') }}",
+            destroy_route : "{{ url('admin/fees') }}",
         },
         '#dataTable',
         {
@@ -149,7 +149,7 @@ $(function () {
     $('#dataTable').on('change', '.c-activation-btn', function () {
         let target_id = $(this).data('user-target');
         
-        axios.post(`{{url('admin/taxes')}}/${target_id}?activate_taxe=true`, {
+        axios.post(`{{url('admin/fees')}}/${target_id}?activate_taxe=true`, {
             _token : "{{ csrf_token() }}",
             _method : 'PUT',
             activate_customer : true
