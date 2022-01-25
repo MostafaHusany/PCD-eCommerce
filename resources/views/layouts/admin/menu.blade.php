@@ -114,7 +114,7 @@
 </li>
 
 
-<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/sold-products') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
         <i class="nav-icon fas fa-sliders-h"></i>
@@ -131,15 +131,14 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
+            <a href="#" class="nav-link {{ Request::is('not-yet') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-tags"></i>
                 <p>Fees</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
+            <a href="{{ route('admin.taxes.index') }}" class="nav-link {{ Request::is('admin/taxes') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-percentage"></i>
-                
                 <p>Taxes</p>
             </a>
         </li>

@@ -13,7 +13,7 @@ class ShopController extends Controller
     public function index () {
         $main_categories = ProductCategory::where('is_main', 1)->get();
 
-        return view ('shop.shop', compact('main_categories'));
+        return view ('shop_old.shop', compact('main_categories'));
     }
 
     public function prodects (Request $request) {

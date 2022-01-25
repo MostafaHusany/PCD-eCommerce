@@ -94,6 +94,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('taxes', 'TaxesController', ['names' => [
+        'index'     => 'admin.taxes.index',
+        'store'     => 'admin.taxes.store',
+        'show'      => 'admin.taxes.show',
+        'edit'      => 'admin.taxes.edit',
+        'update'    => 'admin.taxes.update',
+        'destroy'   => 'admin.taxes.destroy'
+        ]
+    ]);
+
     // fast ajax search
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');
