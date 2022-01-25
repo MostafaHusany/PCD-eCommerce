@@ -21,8 +21,15 @@ class ShippingController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            // ->addColumn('cost_type', function ($row_object) {
+            //     return view('admin.shipping.incs._cost_type', compact('row_object'));
+            // })
+            
             ->addColumn('cost_type', function ($row_object) {
-                return view('admin.shipping.incs._cost_type', compact('row_object'));
+                return $row_object->cost_type == 0 ? 'package' : 'per-item';
+            })
+            ->addColumn('is_fixed', function ($row_object) {
+                return $row_object->is_fixed == 0 ? 'percentage' : 'fixed';
             })
             ->addColumn('active', function ($row_object) {
                 return view('admin.shipping.incs._active', compact('row_object'));

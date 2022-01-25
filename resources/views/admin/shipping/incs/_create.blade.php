@@ -35,7 +35,7 @@
             <label for="cost_type" class="col-sm-2 col-form-label">Cost Type</label>
             <div class="col-sm-10">
                 <select  tabindex="3" class="form-control" id="cost_type">
-                    <option selected="selected" value="0">On Package</option>
+                    <option selected="selected" value="0">Per Package</option>
                     <option value="1">Per item</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="cost_typeErr" class="err-msg mt-2 alert alert-danger">
@@ -44,10 +44,19 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="cost" class="col-sm-2 col-form-label">Cost In SAR</label>
-            <div class="col-sm-10">
-                <input  tabindex="4" type="number" min="0" value="1" step="0.5" class="form-control" id="cost">
+            <label for="cost" class="col-sm-2 col-form-label">Cost</label>
+            <div class="col-sm-5">
+                <input tabindex="4" type="number" min="0" value="1" step="0.5" class="form-control" id="cost">
                 <div style="padding: 5px 7px; display: none" id="costErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+
+            <div class="col-sm-5">
+                <select tabindex="5" class="form-control" id="is_fixed">
+                    <option value="0">Percentage</option>
+                    <option value="1">Fixed</option>
+                </select>
+                <div style="padding: 5px 7px; display: none" id="is_fixedErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
@@ -61,7 +70,7 @@
         <div class="form-group row">
             <label for="categories" class="col-sm-2 col-form-label">Free For Categories</label>
             <div class="col-sm-10">
-                <select tabindex="5" id="categories" class="form-control" multiple="multiple"></select>
+                <select tabindex="6" id="categories" class="form-control" multiple="multiple"></select>
                 <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -70,12 +79,12 @@
         <div class="form-group row">
             <label for="free_on_cost_above" class="col-sm-2 col-form-label">Free For Cost Above</label>
             <div class="col-sm-10">
-                <input tabindex="6" id="free_on_cost_above" class="form-control" type="number" min="0">
+                <input tabindex="7" id="free_on_cost_above" class="form-control" type="number" min="0">
                 <div style="padding: 5px 7px; display: none" id="free_on_cost_aboveErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div>
 
-        <button tabindex="7" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button tabindex="8" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
     </form>
 </div>

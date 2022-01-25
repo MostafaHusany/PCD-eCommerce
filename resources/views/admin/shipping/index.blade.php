@@ -48,8 +48,9 @@
             <thead>
                 <th>#</th>
                 <th>Title</th>
-                <th>Cost Type</th>
                 <th>Cost</th>
+                <th>Cost Type</th>
+                <th>System</th>
                 <th>Orders</th>
                 <th>Active</th>
                 <th>Actions</th>
@@ -93,14 +94,15 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'title', 'description', 'cost', 'cost_type', 'free_on_cost_above', 'meta'],
+            fields_list     : ['id', 'title', 'description', 'cost', 'cost_type', 'is_fixed', 'free_on_cost_above', 'meta'],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
             { data: 'title', name: 'title' },
-            { data: 'cost_type', name: 'cost_type' },
             { data: 'cost', name: 'cost' },
+            { data: 'cost_type', name: 'cost_type' },
+            { data: 'is_fixed', name: 'is_fixed' },
             { data: 'orders', name: 'orders' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
