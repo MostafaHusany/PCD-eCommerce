@@ -147,7 +147,6 @@ $(function () {
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
             fields_list     : ['id', 'customer', 'products', 'products_quantity', 'shipping', 'shipping_cost', 'is_free_shipping'],
-            // fields_list     : [],
             imgs_fields     : []
         },
         [

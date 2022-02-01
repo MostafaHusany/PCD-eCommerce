@@ -22,7 +22,7 @@ class FeesController extends Controller
 
             $datatable_model = Datatables::of($model)
             ->addColumn('is_active', function ($row_object) {
-                return view('admin.taxes.incs._active', compact('row_object'));
+                return view('admin.fees.incs._active', compact('row_object'));
             })
             ->addColumn('cost_type', function ($row_object) {
                 return $row_object->cost_type == 0 ? 'package' : 'per-item';
@@ -31,7 +31,7 @@ class FeesController extends Controller
                 return $row_object->is_fixed == 0 ? 'percentage' : 'fixed';
             })
             ->addColumn('actions', function ($row_object) {
-                return view('admin.taxes.incs._actions', compact('row_object'));
+                return view('admin.fees.incs._actions', compact('row_object'));
             });
 
             return $datatable_model->make(true);

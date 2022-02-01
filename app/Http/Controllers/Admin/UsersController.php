@@ -32,7 +32,6 @@ class UsersController extends Controller
             $datatable_model = Datatables::of($model)
             ->addColumn('actions', function ($row_object) {
                 return view('admin.users.incs._actions', compact('row_object'));
-                return 1;
             });
 
             return $datatable_model->make(true);

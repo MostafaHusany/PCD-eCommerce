@@ -156,167 +156,176 @@ $(document).ready(function () {
         remove the item from the list
         in next phase the item updates should be done asynchrnised
      */
-     
-    let selected_products = {};
+    const create_special_options = (function  () {
+        let selected_products = {};
 
-    $('#find-products').select2({
-        allowClear: true,
-        width: '100%',
-        placeholder: 'Select products',
-        ajax: {
-            url: '{{ url("admin/products-search") }}/?all_products=true',
-            dataType: 'json',
-            delay: 150,
-            processResults: function (data) {
-                return {
-                    results:  $.map(data, function (item) {
+        function startet_event () {
+            $('#find-products').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select products',
+                ajax: {
+                    url: '{{ url("admin/products-search") }}/?all_products=true',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
                         return {
-                            text: `${item.ar_name} / ${item.en_name} , quantity : (${item.quantity})`,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    }).change(function (e) {
-        let target_product_id = $(this).val();
-        
-        if (!(target_product_id in selected_products)) {
-            if (target_product_id !== '') {
-                $('#createOrderLoddingSpinner').show(500);
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.ar_name} / ${item.en_name} , quantity : (${item.quantity})`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }).change(function (e) {
+                let target_product_id = $(this).val();
                 
-                get_selected_product(target_product_id)
-                .then(target_product => {
-                    if (target_product != null) {
-                        create_selected_product_row(target_product);
-                        $('#find-products').val('').trigger('change');
+                if (!(target_product_id in selected_products)) {
+                    if (target_product_id !== '') {
+                        $('#createOrderLoddingSpinner').show(500);
                         
-                        $('#createOrderLoddingSpinner').hide(500);
+                        get_selected_product(target_product_id)
+                        .then(target_product => {
+                            if (target_product != null) {
+                                create_selected_product_row(target_product);
+                                $('#find-products').val('').trigger('change');
+                                
+                                $('#createOrderLoddingSpinner').hide(500);
+                        
+                                selected_products[target_product_id] = {
+                                    quantity : 1,
+                                    price    : target_product.price
+                                } 
+
+                                update_products_hidden_field();
+                            }
+                        });
+                    }// end :: if            
+                } else {
+                    $('#createOrderWarningAlert').text('Product is already in the list').slideDown(500);
+                    $(`.selected-product-row-${target_product_id}`).css('border', '1px solid red');
+                    
+                    setTimeout(() => {
+                        $('#createOrderWarningAlert').text('').slideUp(500);
+                        $(`.selected-product-row-${target_product_id}`).css('border', '');
+                    }, 3000);
+                }
+            });
+
+            // the selected product quantity, price change event, anf remove item event
+            $('#selected_product_table').on('change', '.selected_product_quantity', function () {
+                let target_id   = $(this).data('target');
+                let price       = selected_products[target_id].price;
+                let quantity    = selected_products[target_id].quantity = $(this).val();
+
+                let original_quantity = $(`#selected_product_o_quantity_${target_id}`).data('quantity');
+                $(`#selected_product_o_quantity_${target_id}`).text(original_quantity - quantity);
                 
-                        selected_products[target_product_id] = {
-                            quantity : 1,
-                            price    : target_product.price
-                        } 
-
-                        update_products_hidden_field();
-                    }
-                });
-            }// end :: if            
-        } else {
-            $('#createOrderWarningAlert').text('Product is already in the list').slideDown(500);
-            $(`.selected-product-row-${target_product_id}`).css('border', '1px solid red');
+                // update item sub total price
+                $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR');
+                
+                update_products_hidden_field();
+            }).on('change', '.selected_product_price', function () {
+                let target_id      = $(this).data('target');
+                let original_price = $(this).data('original-price');
+                let quantity       = selected_products[target_id].quantity;
+                let price          = selected_products[target_id].price = $(this).val();
             
-            setTimeout(() => {
-                $('#createOrderWarningAlert').text('').slideUp(500);
-                $(`.selected-product-row-${target_product_id}`).css('border', '');
-            }, 3000);
+                price < original_price && $(`#selected_product_price_${target_id}`).css('color', 'red');
+                price >= original_price && $(`#selected_product_price_${target_id}`).css('color', 'green');
+
+                // update item sub total price
+                $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR')
+                
+                update_products_hidden_field();
+            }).on('click', '.remove_selected_item', function () {
+                let target_id = $(this).data('target');
+
+                $(`.selected-product-row-${target_id}`).remove();
+                delete selected_products[target_id];
+                
+                update_products_hidden_field();
+            });
+
+            // clear old session
+            $('.toggle-btn').click(function () {
+                let target_card  = $(this).data('target-card');
+
+                if (target_card === '#createObjectCard') {
+                    selected_products = {};
+                    $('#products').val('');
+                    $('#products_quantity').val('');
+                    $('.selected-product-rows').remove();
+                }
+            });
         }
-    });
 
-    // the selected product quantity, price change event, anf remove item event
-    $('#selected_product_table').on('change', '.selected_product_quantity', function () {
-        let target_id   = $(this).data('target');
-        let price       = selected_products[target_id].price;
-        let quantity    = selected_products[target_id].quantity = $(this).val();
+        async function get_selected_product (target_product_id) {
+            const request  = axios.get(`{{ url('admin/products') }}/${target_product_id}?get_p=true`);
+            const target_product = request.then(res => {
+                if (res.data.success) {
+                    return res.data.data
+                }
 
-        let original_quantity = $(`#selected_product_o_quantity_${target_id}`).data('quantity');
-        $(`#selected_product_o_quantity_${target_id}`).text(original_quantity - quantity);
-        
-        // update item sub total price
-        $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR');
-        
-        update_products_hidden_field();
-    }).on('change', '.selected_product_price', function () {
-        let target_id      = $(this).data('target');
-        let original_price = $(this).data('original-price');
-        let quantity       = selected_products[target_id].quantity;
-        let price          = selected_products[target_id].price = $(this).val();
-    
-        price < original_price && $(`#selected_product_price_${target_id}`).css('color', 'red');
-        price >= original_price && $(`#selected_product_price_${target_id}`).css('color', 'green');
+                return null;
+            });
 
-        // update item sub total price
-        $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR')
-        
-        update_products_hidden_field();
-    }).on('click', '.remove_selected_item', function () {
-        let target_id = $(this).data('target');
+            return target_product;
+        } 
 
-        $(`.selected-product-row-${target_id}`).remove();
-        delete selected_products[target_id];
-        
-        update_products_hidden_field();
-    });
-
-    // clear old session
-    $('.toggle-btn').click(function () {
-        let target_card  = $(this).data('target-card');
-
-        if (target_card === '#createObjectCard') {
-            selected_products = {};
-            $('#products').val('');
-            $('#products_quantity').val('');
-            $('.selected-product-rows').remove();
-        }
-    });
-
-    async function get_selected_product (target_product_id) {
-        const request  = axios.get(`{{ url('admin/products') }}/${target_product_id}?get_p=true`);
-        const target_product = request.then(res => {
-            if (res.data.success) {
-                return res.data.data
-            }
-
-            return null;
-        });
-
-        return target_product;
-    } 
-
-    function create_selected_product_row (target_product) {
-        let product_tr = `
-            <tr class="selected-product-rows selected-product-row-${target_product.id}">
-                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
-                <td>${target_product.ar_name} / ${target_product.en_name}</td>
-                <td>${target_product.sku}</td>
-                <td>${target_product.price}</td>
-                <td>
-                    <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
-                        id="selected_product_price_${target_product.id}"
-                        data-target="${target_product.id}" data-original-price="${target_product.price}" 
-                        min="0"/>
-                    SR
-                </td>
-                <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
-                    ${target_product.quantity - 1}
-                </td>
-                <td>
-                    <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
-                        id="selected_product_quantity_${target_product.id}" 
-                        data-target="${target_product.id}" data-max="${target_product.quantity}"
-                        min="1" max="${target_product.quantity}" />
+        function create_selected_product_row (target_product) {
+            let product_tr = `
+                <tr class="selected-product-rows selected-product-row-${target_product.id}">
+                    <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                    <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                    <td>${target_product.sku}</td>
+                    <td>${target_product.price}</td>
+                    <td>
+                        <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
+                            id="selected_product_price_${target_product.id}"
+                            data-target="${target_product.id}" data-original-price="${target_product.price}" 
+                            min="0"/>
+                        SR
                     </td>
-                <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
-                <td>
-                    <button class="remove_selected_item btn btn-sm btn-danger"
-                        data-target="${target_product.id}"
-                    >
-                        <i class="fas fa-minus-circle"></i>
-                    </button>
-                </td>
-            </tr>
-        `; 
+                    <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                        ${target_product.quantity - 1}
+                    </td>
+                    <td>
+                        <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
+                            id="selected_product_quantity_${target_product.id}" 
+                            data-target="${target_product.id}" data-max="${target_product.quantity}"
+                            min="1" max="${target_product.quantity}" />
+                        </td>
+                    <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                    <td>
+                        <button class="remove_selected_item btn btn-sm btn-danger"
+                            data-target="${target_product.id}"
+                        >
+                            <i class="fas fa-minus-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+            `; 
 
-        $('#selected_product_table').prepend(product_tr);
-    } 
-    
-    function update_products_hidden_field () {
-        console.log(selected_products, Object.keys(selected_products));
+            $('#selected_product_table').prepend(product_tr);
+        } 
+        
+        function update_products_hidden_field () {
+            console.log(selected_products, Object.keys(selected_products));
 
-        $('#products_quantity').val(JSON.stringify(selected_products));
-        $('#products').val(JSON.stringify(Object.keys(selected_products)));
-    }
+            $('#products_quantity').val(JSON.stringify(selected_products));
+            $('#products').val(JSON.stringify(Object.keys(selected_products)));
+        }
+
+        return {
+            startet_event : startet_event
+        }
+    })();
+
+    create_special_options.startet_event();
 
 });
 </script>
