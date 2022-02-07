@@ -1,496 +1,408 @@
 <!DOCTYPE html>
-<html lang="{{ LaravelLocalization::getCurrentLocale() }}" !dir="{{ LaravelLocalization::getCurrentLocaleDirection() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Home</title>	
-        <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
-        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic,900,900italic&amp;subset=latin,latin-ext" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Open%20Sans:300,400,400italic,600,600italic,700,700italic&amp;subset=latin,latin-ext" rel="stylesheet">
-        
-        {{--
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/animate.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/font-awesome.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/owl.carousel.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/flexslider.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/chosen.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/style.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('shop_assets/css/color-01.css') }}">
-        --}}
+<html lang="en">
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/shop.css') }}">
-        <style>
-            .breadcrumb-container {
-                background-color: #f8f9fa;
-                margin: 10px 0;
-                padding: 0px 10px;
-                border-radius: 5px;
-            }
-        </style>
-        @stack('custome-css')
-    </head>
-    <body class="home-page home-01 ">
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="Anil z" name="author">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Shopwise is Powerful features and You Can Use The Perfect Build this Template For Any eCommerce Website. The template is built for sell Fashion Products, Shoes, Bags, Cosmetics, Clothes, Sunglasses, Furniture, Kids Products, Electronics, Stationery Products and Sporting Goods.">
+    <meta name="keywords" content="ecommerce, electronics store, Fashion store, furniture store,  bootstrap 4, clean, minimal, modern, online store, responsive, retail, shopping, ecommerce store">
 
-        {{--
-            <!-- mobile menu -->
-            <div class="mercado-clone-wrap">
-                <div class="mercado-panels-actions-wrap">
-                    <a class="mercado-close-btn mercado-close-panels" href="#">x</a>
-                </div>
-                <div class="mercado-panels"></div>
-            </div>
-            <!--header-->
-            <header id="header" class="header header-style-1">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="topbar-menu-area">
-                            <div class="container">
-                                <div class="topbar-menu left-menu">
-                                    <ul>
-                                        <li class="menu-item" >
-                                            <a title="Hotline: (+123) 456 789" href="#" ><span class="icon label-before fa fa-mobile"></span>Hotline: (+123) 456 789</a>
-                                        </li>
-                                    </ul>
+    <!-- SITE TITLE -->
+    <title>@yield('title')</title>
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('shop')}}/images/favicon.png">
+    <!-- Animation CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/css/animate.css">
+    <!-- Latest Bootstrap min CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/bootstrap/css/bootstrap.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/css/all.min.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/ionicons.min.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/themify-icons.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/linearicons.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/flaticon.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/simple-line-icons.css">
+    <!--- owl carousel CSS-->
+    <link rel="stylesheet" href="{{asset('shop')}}/owlcarousel/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/owlcarousel/css/owl.theme.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/owlcarousel/css/owl.theme.default.min.css">
+    <!-- Magnific Popup CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/css/magnific-popup.css">
+    <!-- Slick CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/css/slick.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/slick-theme.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/css/style.css">
+    <link rel="stylesheet" href="{{asset('shop')}}/css/responsive.css">
+
+</head>
+
+<!-- LOADER -->
+<div class="preloader">
+    <div class="lds-ellipsis">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<!-- END LOADER -->
+
+<!-- Home Popup Section -->
+<div class="modal fade subscribe_popup" id="onload-popup" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="ion-ios-close-empty"></i></span>
+                </button>
+                <div class="row g-0">
+                    <div class="col-sm-5">
+                        <div class="background_bg h-100" data-img-src="{{asset('shop')}}/images/popup_img.jpg"></div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="popup_content">
+                            <div class="popup-text">
+                                <div class="heading_s1">
+                                    <h4>Subscribe and Get 25% Discount!</h4>
                                 </div>
-                                <div class="topbar-menu right-menu">
-                                    <ul>
-                                        <li class="menu-item" ><a title="Register or Login" href="login.html">Login</a></li>
-                                        <li class="menu-item" ><a title="Register or Login" href="register.html">Register</a></li>
-                                        <li class="menu-item lang-menu menu-item-has-children parent">
-                                            <a title="English" href="#"><span class="img label-before"><img src="{{ asset('shop_assets/images/lang-' . LaravelLocalization::getCurrentLocale() . '.png') }}" alt="lang-en"></span>{{ LaravelLocalization::getCurrentLocaleName() }}<i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                                            <ul class="submenu lang" >
-                                            @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                                                <li class="menu-item">
-                                                    <a rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                                                        <img src="{{ asset('shop_assets/images/' . 'lang-' . $localeCode . '.png') }}"/>
-                                                        {{ $properties['native'] }}
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                                <!-- <li class="menu-item" ><a title="hungary" href="#"><span class="img label-before"><img src="{{ asset('shop_assets/images/lang-hun.png') }}" alt="lang-hun"></span>Hungary</a></li>
-                                                <li class="menu-item" ><a title="german" href="#"><span class="img label-before"><img src="{{ asset('shop_assets/images/lang-ger.png') }}" alt="lang-ger" ></span>German</a></li>
-                                                <li class="menu-item" ><a title="french" href="#"><span class="img label-before"><img src="{{ asset('shop_assets/images/lang-fra.png') }}" alt="lang-fre"></span>French</a></li>
-                                                <li class="menu-item" ><a title="canada" href="#"><span class="img label-before"><img src="{{ asset('shop_assets/images/lang-can.png') }}" alt="lang-can"></span>Canada</a></li> -->
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item menu-item-has-children parent" >
-                                            <a title="Dollar (USD)" href="#">Dollar (USD)<i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                                            <ul class="submenu curency" >
-                                                <li class="menu-item" >
-                                                    <a title="Pound (GBP)" href="#">Pound (GBP)</a>
-                                                </li>
-                                                <li class="menu-item" >
-                                                    <a title="Euro (EUR)" href="#">Euro (EUR)</a>
-                                                </li>
-                                                <li class="menu-item" >
-                                                    <a title="Dollar (USD)" href="#">Dollar (USD)</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <p>Subscribe to the newsletter to receive updates about new products.</p>
                             </div>
-                        </div>
-
-                        <div class="container">
-                            <div class="mid-section main-info-area">
-
-                                <div class="wrap-logo-top left-section">
-                                    <a href="index.html" class="link-to-home"><img src="{{ asset('shop_assets/images/logo-top-1.png') }}" alt="mercado"></a>
+                            <form method="post">
+                                <div class="form-group mb-3">
+                                    <input name="email" required type="email" class="form-control rounded-0" placeholder="Enter Your Email">
                                 </div>
-
-                                <div class="wrap-search center-section">
-                                    <div class="wrap-search-form">
-                                        <form action="#" id="form-search-top" name="form-search-top">
-                                            <input type="text" name="search" value="" placeholder="Search here...">
-                                            <button form="form-search-top" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                            <div class="wrap-list-cate">
-                                                <input type="hidden" name="product-cate" value="0" id="product-cate">
-                                                <a href="#" class="link-control">All Category</a>
-                                                <ul class="list-cate">
-                                                    <li class="level-0">All Category</li>
-                                                    <li class="level-1">-Electronics</li>
-                                                    <li class="level-2">Batteries & Chargens</li>
-                                                    <li class="level-2">Headphone & Headsets</li>
-                                                    <li class="level-2">Mp3 Player & Acessories</li>
-                                                    <li class="level-1">-Smartphone & Table</li>
-                                                    <li class="level-2">Batteries & Chargens</li>
-                                                    <li class="level-2">Mp3 Player & Headphones</li>
-                                                    <li class="level-2">Table & Accessories</li>
-                                                    <li class="level-1">-Electronics</li>
-                                                    <li class="level-2">Batteries & Chargens</li>
-                                                    <li class="level-2">Headphone & Headsets</li>
-                                                    <li class="level-2">Mp3 Player & Acessories</li>
-                                                    <li class="level-1">-Smartphone & Table</li>
-                                                    <li class="level-2">Batteries & Chargens</li>
-                                                    <li class="level-2">Mp3 Player & Headphones</li>
-                                                    <li class="level-2">Table & Accessories</li>
-                                                </ul>
-                                            </div>
-                                        </form>
-                                    </div>
+                                <div class="form-group mb-3">
+                                    <button class="btn btn-fill-line btn-block text-uppercase rounded-0" title="Subscribe" type="submit">Subscribe</button>
                                 </div>
-
-                                <div class="wrap-icon right-section">
-                                    <div class="wrap-icon-section wishlist">
-                                        <a href="#" class="link-direction">
-                                            <i class="fa fa-heart" aria-hidden="true"></i>
-                                            <div class="left-info">
-                                                <span class="index">0 item</span>
-                                                <span class="title">Wishlist</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="wrap-icon-section minicart">
-                                        <a href="#" class="link-direction">
-                                            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                            <div class="left-info">
-                                                <span class="index">4 items</span>
-                                                <span class="title">CART</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="wrap-icon-section show-up-after-1024">
-                                        <a href="#" class="mobile-navigation">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </a>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="nav-section header-sticky">
-                            <div class="header-nav-section">
-                                <div class="container">
-                                    <ul class="nav menu-nav clone-main-menu" id="mercado_haead_menu" data-menuname="Sale Info" >
-                                        <li class="menu-item"><a href="#" class="link-term">Weekly Featured</a><span class="nav-label hot-label">hot</span></li>
-                                        <li class="menu-item"><a href="#" class="link-term">Hot Sale items</a><span class="nav-label hot-label">hot</span></li>
-                                        <li class="menu-item"><a href="#" class="link-term">Top new items</a><span class="nav-label hot-label">hot</span></li>
-                                        <li class="menu-item"><a href="#" class="link-term">Top Selling</a><span class="nav-label hot-label">hot</span></li>
-                                        <li class="menu-item"><a href="#" class="link-term">Top rated items</a><span class="nav-label hot-label">hot</span></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="primary-nav-section">
-                                <div class="container">
-                                    <ul class="nav primary clone-main-menu" id="mercado_main" data-menuname="Main menu" >
-                                        <li class="menu-item home-icon">
-                                            <a href="{{ url('/') }}" class="link-term mercado-item-title"><i class="fa fa-home" aria-hidden="true"></i></a>
-                                        </li>
-                                        <li class="menu-item active">
-                                            <a href="about-us.html" class="link-term mercado-item-title">About Us</a>
-                                        </li>
-                                        <li class="menu-item">
-                                            <a href="{{ url('/shop') }}" class="link-term mercado-item-title">Shop</a>
-                                        </li>
-                                        <li class="menu-item">
-                                            <a href="cart.html" class="link-term mercado-item-title">Cart</a>
-                                        </li>
-                                        <li class="menu-item">
-                                            <a href="checkout.html" class="link-term mercado-item-title">Checkout</a>
-                                        </li>
-                                        <li class="menu-item">
-                                            <a href="contact-us.html" class="link-term mercado-item-title">Contact Us</a>
-                                        </li>																	
-                                    </ul>
+                            </form>
+                            <div class="chek-form">
+                                <div class="custome-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox3" value="">
+                                    <label class="form-check-label" for="exampleCheckbox3"><span>Don't show this popup again!</span></label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </header>
-        --}}
-
-        @include('shop.incs._navbar')
-
-        <main id="main">
-            <div class="container">
-                @include('shop.incs._breadcrumb')
-                
-                @yield('content')
             </div>
-        </main>
-        
-        {{--
-            <footer id="footer">
-                <div class="wrap-footer-content footer-style-1">
+        </div>
+    </div>
+</div>
+<!-- End Screen Load Popup Section -->
 
-                    <div class="wrap-function-info">
-                        <div class="container">
-                            <ul>
-                                <li class="fc-info-item">
-                                    <i class="fa fa-truck" aria-hidden="true"></i>
-                                    <div class="wrap-left-info">
-                                        <h4 class="fc-name">Free Shipping</h4>
-                                        <p class="fc-desc">Free On Oder Over $99</p>
+<!-- START HEADER -->
+<header class="header_wrap fixed-top header_with_topbar">
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                        <div class="lng_dropdown me-2">
+                            <select name="countries" class="custome_select">
+                                <option value='en' data-image="{{asset('shop')}}/images/eng.png" data-title="English">English</option>
+                                <option value='fn' data-image="{{asset('shop')}}/images/fn.png" data-title="France">France</option>
+                                <option value='us' data-image="{{asset('shop')}}/images/us.png" data-title="United States">United States</option>
+                            </select>
+                        </div>
+                        <div class="me-3">
+                            <select name="countries" class="custome_select">
+                                <option value='USD' data-title="USD">USD</option>
+                                <option value='EUR' data-title="EUR">EUR</option>
+                                <option value='GBR' data-title="GBR">GBR</option>
+                            </select>
+                        </div>
+                        <ul class="contact_detail text-center text-lg-start">
+                            <li><i class="ti-mobile"></i><span>123-456-7890</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center text-md-end">
+                        <ul class="header_list">
+                            <li><a href="compare.html"><i class="ti-control-shuffle"></i><span>Compare</span></a></li>
+                            <li><a href="wishlist.html"><i class="ti-heart"></i><span>Wishlist</span></a></li>
+                            <li><a href="login.html"><i class="ti-user"></i><span>Login</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom_header dark_skin main_menu_uppercase">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <a class="navbar-brand" href="index.html">
+                    <img class="logo_light" src="{{asset('shop')}}/images/logo_light.png" alt="logo" />
+                    <img class="logo_dark" src="{{asset('shop')}}/images/logo_dark.png" alt="logo" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-expanded="false">
+                    <span class="ion-android-menu"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="dropdown">
+                            <a data-bs-toggle="dropdown" class="nav-link dropdown-toggle active" href="#">Home</a>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <li><a class="dropdown-item nav-link nav_item active" href="index.html">Fashion 1</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="index-2.html">Fashion 2</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="index-3.html">Furniture 1</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="index-4.html">Furniture 2</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="index-5.html">Electronics 1</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="index-6.html">Electronics 2</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Pages</a>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <li><a class="dropdown-item nav-link nav_item" href="about.html">About Us</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="contact.html">Contact Us</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="faq.html">Faq</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="404.html">404 Error Page</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="login.html">Login</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="signup.html">Register</a></li>
+                                    <li><a class="dropdown-item nav-link nav_item" href="term-condition.html">Terms and Conditions</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="dropdown dropdown-mega-menu">
+                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Products</a>
+                            <div class="dropdown-menu">
+                                <ul class="mega-menu d-lg-flex">
+                                    <li class="mega-menu-col col-lg-3">
+                                        <ul>
+                                            <li class="dropdown-header">Woman's</li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-list-left-sidebar.html">Vestibulum sed</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-left-sidebar.html">Donec porttitor</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-right-sidebar.html">Donec vitae facilisis</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-list.html">Curabitur tempus</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-load-more.html">Vivamus in tortor</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="mega-menu-col col-lg-3">
+                                        <ul>
+                                            <li class="dropdown-header">Men's</li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-cart.html">Donec vitae ante ante</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="checkout.html">Etiam ac rutrum</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="wishlist.html">Quisque condimentum</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="compare.html">Curabitur laoreet</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="order-completed.html">Vivamus in tortor</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="mega-menu-col col-lg-3">
+                                        <ul>
+                                            <li class="dropdown-header">Kid's</li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail.html">Donec vitae facilisis</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-left-sidebar.html">Quisque condimentum</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-right-sidebar.html">Etiam ac rutrum</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-thumbnails-left.html">Donec vitae ante ante</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-thumbnails-left.html">Donec porttitor</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="mega-menu-col col-lg-3">
+                                        <ul>
+                                            <li class="dropdown-header">Accessories</li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail.html">Donec vitae facilisis</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-left-sidebar.html">Quisque condimentum</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-right-sidebar.html">Etiam ac rutrum</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-thumbnails-left.html">Donec vitae ante ante</a></li>
+                                            <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-thumbnails-left.html">Donec porttitor</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="d-lg-flex menu_banners row g-3 px-3">
+                                    <div class="col-sm-4">
+                                        <div class="header-banner">
+                                            <img src="{{asset('shop')}}/images/menu_banner1.jpg" alt="menu_banner1">
+                                            <div class="banne_info">
+                                                <h6>10% Off</h6>
+                                                <h4>New Arrival</h4>
+                                                <a href="#">Shop now</a>
+                                            </div>
+                                        </div>
                                     </div>
-
+                                    <div class="col-sm-4">
+                                        <div class="header-banner">
+                                            <img src="{{asset('shop')}}/images/menu_banner2.jpg" alt="menu_banner2">
+                                            <div class="banne_info">
+                                                <h6>15% Off</h6>
+                                                <h4>Men's Fashion</h4>
+                                                <a href="#">Shop now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="header-banner">
+                                            <img src="{{asset('shop')}}/images/menu_banner3.jpg" alt="menu_banner3">
+                                            <div class="banne_info">
+                                                <h6>23% Off</h6>
+                                                <h4>Kids Fashion</h4>
+                                                <a href="#">Shop now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Blog</a>
+                            <div class="dropdown-menu dropdown-reverse">
+                                <ul>
+                                    <li>
+                                        <a class="dropdown-item menu-link dropdown-toggler" href="#">Grids</a>
+                                        <div class="dropdown-menu">
+                                            <ul>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-three-columns.html">3 columns</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-four-columns.html">4 columns</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-left-sidebar.html">Left Sidebar</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-right-sidebar.html">right Sidebar</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-standard-left-sidebar.html">Standard Left Sidebar</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-standard-right-sidebar.html">Standard right Sidebar</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item menu-link dropdown-toggler" href="#">Masonry</a>
+                                        <div class="dropdown-menu">
+                                            <ul>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-masonry-three-columns.html">3 columns</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-masonry-four-columns.html">4 columns</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-masonry-left-sidebar.html">Left Sidebar</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-masonry-right-sidebar.html">right Sidebar</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item menu-link dropdown-toggler" href="#">Single Post</a>
+                                        <div class="dropdown-menu">
+                                            <ul>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-single.html">Default</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-single-left-sidebar.html">left sidebar</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-single-slider.html">slider post</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-single-video.html">video post</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-single-audio.html">audio post</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item menu-link dropdown-toggler" href="#">List</a>
+                                        <div class="dropdown-menu">
+                                            <ul>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-list-left-sidebar.html">left sidebar</a></li>
+                                                <li><a class="dropdown-item nav-link nav_item" href="blog-list-right-sidebar.html">right sidebar</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="dropdown dropdown-mega-menu">
+                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Shop</a>
+                            <div class="dropdown-menu">
+                                <ul class="mega-menu d-lg-flex">
+                                    <li class="mega-menu-col col-lg-9">
+                                        <ul class="d-lg-flex">
+                                            <li class="mega-menu-col col-lg-4">
+                                                <ul>
+                                                    <li class="dropdown-header">Shop Page Layout</li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-list.html">shop List view</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-list-left-sidebar.html">shop List Left Sidebar</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-list-right-sidebar.html">shop List Right Sidebar</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-left-sidebar.html">Left Sidebar</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-right-sidebar.html">Right Sidebar</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-load-more.html">Shop Load More</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="mega-menu-col col-lg-4">
+                                                <ul>
+                                                    <li class="dropdown-header">Other Pages</li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-cart.html">Cart</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="checkout.html">Checkout</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="my-account.html">My Account</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="wishlist.html">Wishlist</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="compare.html">compare</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="order-completed.html">Order Completed</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="mega-menu-col col-lg-4">
+                                                <ul>
+                                                    <li class="dropdown-header">Product Pages</li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail.html">Default</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-left-sidebar.html">Left Sidebar</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-right-sidebar.html">Right Sidebar</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="shop-product-detail-thumbnails-left.html">Thumbnails Left</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="mega-menu-col col-lg-3">
+                                        <div class="header_banner">
+                                            <div class="header_banner_content">
+                                                <div class="shop_banner">
+                                                    <div class="banner_img overlay_bg_40">
+                                                        <img src="{{asset('shop')}}/images/shop_banner.jpg" alt="shop_banner" />
+                                                    </div>
+                                                    <div class="shop_bn_content">
+                                                        <h5 class="text-uppercase shop_subtitle">New Collection</h5>
+                                                        <h3 class="text-uppercase shop_title">Sale 30% Off</h3>
+                                                        <a href="#" class="btn btn-white rounded-0 btn-sm text-uppercase">Shop Now</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a class="nav-link nav_item" href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <ul class="navbar-nav attr-nav align-items-center">
+                    <li><a href="javascript:void(0);" class="nav-link search_trigger"><i class="linearicons-magnifier"></i></a>
+                        <div class="search_wrap">
+                            <span class="close-search"><i class="ion-ios-close-empty"></i></span>
+                            <form>
+                                <input type="text" placeholder="Search" class="form-control" id="search_input">
+                                <button type="submit" class="search_icon"><i class="ion-ios-search-strong"></i></button>
+                            </form>
+                        </div>
+                        <div class="search_overlay"></div>
+                    </li>
+                    <li class="dropdown cart_dropdown"><a class="nav-link cart_trigger" href="#" data-bs-toggle="dropdown"><i class="linearicons-cart"></i><span class="cart_count">2</span></a>
+                        <div class="cart_box dropdown-menu dropdown-menu-right">
+                            <ul class="cart_list">
+                                <li>
+                                    <a href="#" class="item_remove"><i class="ion-close"></i></a>
+                                    <a href="#"><img src="{{asset('shop')}}/images/cart_thamb1.jpg" alt="cart_thumb1">Variable product 001</a>
+                                    <span class="cart_quantity"> 1 x <span class="cart_amount"> <span class="price_symbole">$</span></span>78.00</span>
                                 </li>
-                                <li class="fc-info-item">
-                                    <i class="fa fa-recycle" aria-hidden="true"></i>
-                                    <div class="wrap-left-info">
-                                        <h4 class="fc-name">Guarantee</h4>
-                                        <p class="fc-desc">30 Days Money Back</p>
-                                    </div>
-
-                                </li>
-                                <li class="fc-info-item">
-                                    <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
-                                    <div class="wrap-left-info">
-                                        <h4 class="fc-name">Safe Payment</h4>
-                                        <p class="fc-desc">Safe your online payment</p>
-                                    </div>
-
-                                </li>
-                                <li class="fc-info-item">
-                                    <i class="fa fa-life-ring" aria-hidden="true"></i>
-                                    <div class="wrap-left-info">
-                                        <h4 class="fc-name">Online Suport</h4>
-                                        <p class="fc-desc">We Have Support 24/7</p>
-                                    </div>
-
+                                <li>
+                                    <a href="#" class="item_remove"><i class="ion-close"></i></a>
+                                    <a href="#"><img src="{{asset('shop')}}/images/cart_thamb2.jpg" alt="cart_thumb2">Ornare sed consequat</a>
+                                    <span class="cart_quantity"> 1 x <span class="cart_amount"> <span class="price_symbole">$</span></span>81.00</span>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-                    <!--End function info-->
-
-                    <div class="main-footer-content">
-
-                        <div class="container">
-
-                            <div class="row">
-
-                                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                    <div class="wrap-footer-item">
-                                        <h3 class="item-header">Contact Details</h3>
-                                        <div class="item-content">
-                                            <div class="wrap-contact-detail">
-                                                <ul>
-                                                    <li>
-                                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                                        <p class="contact-txt">45 Grand Central Terminal New York,NY 1017 United State USA</p>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fa fa-phone" aria-hidden="true"></i>
-                                                        <p class="contact-txt">(+123) 456 789 - (+123) 666 888</p>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fa fa-envelope" aria-hidden="true"></i>
-                                                        <p class="contact-txt">Contact@yourcompany.com</p>
-                                                    </li>											
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-
-                                    <div class="wrap-footer-item">
-                                        <h3 class="item-header">Hot Line</h3>
-                                        <div class="item-content">
-                                            <div class="wrap-hotline-footer">
-                                                <span class="desc">Call Us toll Free</span>
-                                                <b class="phone-number">(+123) 456 789 - (+123) 666 888</b>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="wrap-footer-item footer-item-second">
-                                        <h3 class="item-header">Sign up for newsletter</h3>
-                                        <div class="item-content">
-                                            <div class="wrap-newletter-footer">
-                                                <form action="#" class="frm-newletter" id="frm-newletter">
-                                                    <input type="email" class="input-email" name="email" value="" placeholder="Enter your email address">
-                                                    <button class="btn-submit">Subscribe</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12 box-twin-content ">
-                                    <div class="row">
-                                        <div class="wrap-footer-item twin-item">
-                                            <h3 class="item-header">My Account</h3>
-                                            <div class="item-content">
-                                                <div class="wrap-vertical-nav">
-                                                    <ul>
-                                                        <li class="menu-item"><a href="#" class="link-term">My Account</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Brands</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Gift Certificates</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Affiliates</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Wish list</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="wrap-footer-item twin-item">
-                                            <h3 class="item-header">Infomation</h3>
-                                            <div class="item-content">
-                                                <div class="wrap-vertical-nav">
-                                                    <ul>
-                                                        <li class="menu-item"><a href="#" class="link-term">Contact Us</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Returns</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Site Map</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Specials</a></li>
-                                                        <li class="menu-item"><a href="#" class="link-term">Order History</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                    <div class="wrap-footer-item">
-                                        <h3 class="item-header">We Using Safe Payments:</h3>
-                                        <div class="item-content">
-                                            <div class="wrap-list-item wrap-gallery">
-                                                <img src="{{ asset('shop_assets/images/payment.png') }}" style="max-width: 260px;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                    <div class="wrap-footer-item">
-                                        <h3 class="item-header">Social network</h3>
-                                        <div class="item-content">
-                                            <div class="wrap-list-item social-network">
-                                                <ul>
-                                                    <li><a href="#" class="link-to-item" title="twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                                    <li><a href="#" class="link-to-item" title="facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                                    <li><a href="#" class="link-to-item" title="pinterest"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
-                                                    <li><a href="#" class="link-to-item" title="instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                                                    <li><a href="#" class="link-to-item" title="vimeo"><i class="fa fa-vimeo" aria-hidden="true"></i></a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                    <div class="wrap-footer-item">
-                                        <h3 class="item-header">Dowload App</h3>
-                                        <div class="item-content">
-                                            <div class="wrap-list-item apps-list">
-                                                <ul>
-                                                    <li><a href="#" class="link-to-item" title="our application on apple store"><figure><img src="{{ asset('shop_assets/images/brands/apple-store.png') }}" alt="apple store" width="128" height="36"></figure></a></li>
-                                                    <li><a href="#" class="link-to-item" title="our application on google play store"><figure><img src="{{ asset('shop_assets/images/brands/google-play-store.png') }}" alt="google play store" width="128" height="36"></figure></a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="cart_footer">
+                                <p class="cart_total"><strong>Subtotal:</strong> <span class="cart_price"> <span class="price_symbole">$</span></span>159.00</p>
+                                <p class="cart_buttons"><a href="#" class="btn btn-fill-line rounded-0 view-cart">View Cart</a><a href="#" class="btn btn-fill-out rounded-0 checkout">Checkout</a></p>
                             </div>
                         </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+<!-- END HEADER -->
 
-                        <div class="wrap-back-link">
-                            <div class="container">
-                                <div class="back-link-box">
-                                    <h3 class="backlink-title">Quick Links</h3>
-                                    <div class="back-link-row">
-                                        <ul class="list-back-link" >
-                                            <li><span class="row-title">Mobiles:</span></li>
-                                            <li><a href="#" class="redirect-back-link" title="mobile">Mobiles</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="yphones">YPhones</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Gianee Mobiles GL">Gianee Mobiles GL</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Karbonn">Mobiles Karbonn</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Viva">Mobiles Viva</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Intex">Mobiles Intex</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Micrumex">Mobiles Micrumex</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Bsus">Mobiles Bsus</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Samsyng">Mobiles Samsyng</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Mobiles Lenova">Mobiles Lenova</a></li>
-                                        </ul>
+@yield('content')
 
-                                        <ul class="list-back-link" >
-                                            <li><span class="row-title">Tablets:</span></li>
-                                            <li><a href="#" class="redirect-back-link" title="Plesc YPads">Plesc YPads</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Samsyng Tablets" >Samsyng Tablets</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Qindows Tablets" >Qindows Tablets</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Calling Tablets" >Calling Tablets</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Micrumex Tablets" >Micrumex Tablets</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Lenova Tablets Bsus" >Lenova Tablets Bsus</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Tablets iBall" >Tablets iBall</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Tablets Swipe" >Tablets Swipe</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Tablets TVs, Audio" >Tablets TVs, Audio</a></li>
-                                        </ul>
-
-                                        <ul class="list-back-link" >
-                                            <li><span class="row-title">Fashion:</span></li>
-                                            <li><a href="#" class="redirect-back-link" title="Sarees Silk" >Sarees Silk</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="sarees Salwar" >sarees Salwar</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Suits Lehengas" >Suits Lehengas</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Biba Jewellery" >Biba Jewellery</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Rings Earrings" >Rings Earrings</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Diamond Rings" >Diamond Rings</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Loose Diamond Shoes" >Loose Diamond Shoes</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="BootsMen Watches" >BootsMen Watches</a></li>
-                                            <li><a href="#" class="redirect-back-link" title="Women Watches" >Women Watches</a></li>
-                                        </ul>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="coppy-right-box">
-                        <div class="container">
-                            <div class="coppy-right-item item-left">
-                                <p class="coppy-right-text">Copyright © 2020 Surfside Media. All rights reserved</p>
-                            </div>
-                            <div class="coppy-right-item item-right">
-                                <div class="wrap-nav horizontal-nav">
-                                    <ul>
-                                        <li class="menu-item"><a href="about-us.html" class="link-term">About us</a></li>								
-                                        <li class="menu-item"><a href="privacy-policy.html" class="link-term">Privacy Policy</a></li>
-                                        <li class="menu-item"><a href="terms-conditions.html" class="link-term">Terms & Conditions</a></li>
-                                        <li class="menu-item"><a href="return-policy.html" class="link-term">Return Policy</a></li>								
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        --}}
-
-        {{--
-            <script src="{{ asset('shop_assets/js/jquery-1.12.4.minb8ff.js?ver=1.12.4') }}"></script>
-            <script src="{{ asset('shop_assets/js/jquery-ui-1.12.4.minb8ff.js?ver=1.12.4') }}"></script>
-            <script src="{{ asset('shop_assets/js/bootstrap.min.js') }}"></script>
-            <script src="{{ asset('shop_assets/js/jquery.flexslider.js') }}"></script>
-            <script src="{{ asset('shop_assets/js/chosen.jquery.min.js') }}"></script>
-            <script src="{{ asset('shop_assets/js/owl.carousel.min.js') }}"></script>
-            <script src="{{ asset('shop_assets/js/jquery.countdown.min.js') }}"></script>
-            <script src="{{ asset('shop_assets/js/jquery.sticky.js') }}"></script>
-            <script src="{{ asset('shop_assets/js/functions.js') }}"></script>
-        --}}
-
-        <script src="{{ asset('js/app.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-        
-        @stack('custome-js')
-    </body>
-</html>
+@extends('layouts.shop.footer')

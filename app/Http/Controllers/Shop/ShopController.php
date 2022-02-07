@@ -14,7 +14,7 @@ class ShopController extends Controller
         // call here to safe time on database ->with('children')
         $main_categories = ProductCategory::where('is_main', 1)->with('children')->get();
 
-        return view ('shop_old.shop', compact('main_categories'));
+        return view ('shop.index', compact('main_categories'));
     }
 
     public function prodects (Request $request) {

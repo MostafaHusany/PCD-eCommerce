@@ -120,25 +120,3 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/products-categories-search', 'ProductCategoriesController@dataAjax');
     Route::get('/shipping-search', 'ShippingController@dataAjax');
 });
-
-Route::group([
-        'namespace' => 'Shop',
-        'prefix' => LaravelLocalization::setLocale(),
-        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
-    ], function(){
-    Route::get('/', 'HomeController@index');
-    Route::get('/shop', 'ShopController@index');
-    Route::get('/shop/{slug}', 'ShopController@show');
-});
-
-use Illuminate\Support\Facades\Mail;
-use App\Mail\Customers\AccountActivation;
-
-Route::get('test_mail', function () {
-    Mail::to('mostafa.husany@goo.com')->send(new AccountActivation());
-    return new AccountActivation();
-});
-
-Route::get('/home-sadas/asdasd', ['as' => 'home', function() {
-    dd(str_contains(Request::path(), 'home'));
-}]);
