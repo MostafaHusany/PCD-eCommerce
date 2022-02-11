@@ -92,7 +92,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'ar_title', 'en_title', 'ar_description', 'en_description', 'is_main', 'category_id', 'rule'],
+            fields_list     : ['id', 'ar_title', 'en_title', 'ar_description', 'en_description', 'is_main', 'category_id', 'rule', 'custome_fields'],
             imgs_fields     : []
         },
         [
@@ -154,34 +154,133 @@ $(function () {
         return is_valide;
     };
 
-    $('#dataTable').on('change', '.c-activation-btn', function () {
-        let target_id = $(this).data('user-target');
+    objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
+        fields_id_list.forEach(el_id => {
+            $(`#${prefix + el_id}`).val(data[el_id]).change();
+        });
+
+        custome_fields = [];
+        $('.custome_ro_el').remove();
+        $('#edit-custome_fields').val(JSON.stringify([]));
         
-        axios.post(`{{url('admin/customers')}}/${target_id}`, {
-            _token : "{{ csrf_token() }}",
-            _method : 'PUT',
-            activate_customer : true
-        }).then(res => {
-            if (!res.data.success) {
-                $(this).prop('checked', !$(this).prop('checked'));
-                $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+        data.attributes.forEach(attribute => {
+            index_custome_events.create_custome_field_row_el(attribute, 'edit-');
+            let meta = JSON.parse(attribute.meta);
+            let data = {
+                id : attribute.id,
+                field_title : attribute.title,
+                field_type  : attribute.type,
+            };
 
-                setTimeout(() => {
-                    $('#dangerAlert').text('').slideUp(500);
-                }, 3000);
+            if (data.field_type == 'options') {
+                data['field_options'] = meta.options;
+            } else if (data.field_type == 'number') {
+                data['field_number_from']   = meta.number.field_number_from;
+                data['field_number_to']     = meta.number.field_number_to;
+                data['field_number_metric'] = meta.number.field_number_metric;
             }
-        })// axios
-    })
+            
+            custome_fields.push(data);
+            $('#edit-custome_fields').val(JSON.stringify(custome_fields));
+        }); 
+    };
 
-    $('#is_main').change(function () {
-        let target = $(this).data('target');
-        if ($(this).val() === '1') {
-            $(target).attr('disabled', 'disabled');
-        } else {
-            $(target).attr('disabled', '');
-            $(target).removeAttr('disabled');
+    const index_custome_events =  (function () {
+        function start_events () {
+            // custome attribute for category
+            $('#field_options, #edit-field_options').select2({
+                tags  : true,
+                width : '100%'
+            });
+
+            $('#dataTable').on('change', '.c-activation-btn', function () {
+                let target_id = $(this).data('user-target');
+                
+                axios.post(`{{url('admin/customers')}}/${target_id}`, {
+                    _token : "{{ csrf_token() }}",
+                    _method : 'PUT',
+                    activate_customer : true
+                }).then(res => {
+                    if (!res.data.success) {
+                        $(this).prop('checked', !$(this).prop('checked'));
+                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                })// axios
+            })
+
+            $('#is_main').change(function () {
+                let target = $(this).data('target');
+                if ($(this).val() === '1') {
+                    $(target).attr('disabled', 'disabled');
+                } else {
+                    $(target).attr('disabled', '');
+                    $(target).removeAttr('disabled');
+                }
+            });
+
+            $('#category_id, #edit-category_id, #s-category').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select categories',
+                ajax: {
+                    url: '{{ url("admin/products-categories-search") }}?is_main=true',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item['ar_title']} || ${item['en_title']}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
         }
-    });
+
+        function create_custome_field_row_el (data, prefix = '') {
+            
+            let meta = JSON.parse(data.meta);
+            let field_values  = data.type == 'options' ? 
+                            meta.options.join(',') 
+                                : 
+                            'start from : ' + meta.number.field_number_from  + ' <br/> end to : ' + meta.number.field_number_to + ' <br/> metric : ' + meta.number.field_number_metric;
+            
+            let new_field_row = `
+                <tr class="custome_ro_el" id="edit-custome_row_field-${data.id}">
+                    <td>${data.title}</td>
+                    <td>${data.type}</td>
+                    <td>
+                        ${
+                            field_values
+                        }
+                    </td>
+                    <td>
+                        <button data-target="${data.id}" class="remove-tr-el btn btn-sm btn-danger">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+            $(`#${prefix}fields_container`).prepend(new_field_row);
+        }
+
+        return {
+            start_events : start_events,
+            create_custome_field_row_el : create_custome_field_row_el
+        }
+    })();
+
+    index_custome_events.start_events();
  
 });
 </script>
