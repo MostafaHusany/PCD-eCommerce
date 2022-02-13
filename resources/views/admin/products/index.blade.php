@@ -151,7 +151,8 @@ $(function () {
             fields_list     : ['id', 'ar_name', 'ar_small_description', 'ar_description',
                                'en_name', 'en_small_description', 'en_description', 'sku', 'categories',
                                'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
-                                'is_active', 'is_composite', 'child_products', 'child_products_quantity'],
+                                'is_active', 'is_composite', 'child_products', 'child_products_quantity',
+                                'custome_attr_id', 'custome_field_attr'],
             imgs_fields     : ['main_image', 'images']
         },
         [
@@ -303,8 +304,10 @@ $(function () {
         
         data.categories.forEach(category => {
             var category_option = new Option(`${category['ar_title']} || ${category['en_title']}`, category.id, true, true);
-            $('#edit-categories').append(category_option).trigger('change');
+            $('#edit-categories').append(category_option)
         });
+        $('#edit-categories').trigger('change');
+
 
         // $('#child_products').val()
 
@@ -333,103 +336,262 @@ $(function () {
             });
         } 
 
+        // store custome field values in global variable
+        // after rendering the custome fields
+        // get the data and show it in the fields
+        window.custome_field_values = data.product_custome_fields;
     }
 
-    $('#dataTable').on('change', '.c-activation-btn', function () {
-        let target_id = $(this).data('user-target');
-        
-        axios.post(`{{url('admin/products')}}/${target_id}`, {
-            _token : "{{ csrf_token() }}",
-            _method : 'PUT',
-            activate_product : true
-        }).then(res => {
-            if (!res.data.success) {
-                $(this).prop('checked', !$(this).prop('checked'));
-                $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+    const index_custome_events =  (function () {
+        function start_events () {
+            $('#dataTable').on('change', '.c-activation-btn', function () {
+                let target_id = $(this).data('user-target');
+                
+                axios.post(`{{url('admin/products')}}/${target_id}`, {
+                    _token : "{{ csrf_token() }}",
+                    _method : 'PUT',
+                    activate_product : true
+                }).then(res => {
+                    if (!res.data.success) {
+                        $(this).prop('checked', !$(this).prop('checked'));
+                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
 
-                setTimeout(() => {
-                    $('#dangerAlert').text('').slideUp(500);
-                }, 3000);
-            }
-        })// axios
-    })
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                })// axios
+            })
 
-    $('#is_main').change(function () {
-        let target = $(this).data('target');
-        if ($(this).val() === '1') {
-            $(target).attr('disabled', 'disabled');
-        } else {
-            $(target).attr('disabled', '');
-            $(target).removeAttr('disabled');
-        }
-    });
+            $('#is_main').change(function () {
+                let target = $(this).data('target');
+                if ($(this).val() === '1') {
+                    $(target).attr('disabled', 'disabled');
+                } else {
+                    $(target).attr('disabled', '');
+                    $(target).removeAttr('disabled');
+                }
+            });
 
-    $('#categories, #edit-categories, #s-category').select2({
-        allowClear: true,
-        width: '100%',
-        placeholder: 'Select categories',
-        ajax: {
-            url: '{{ url("admin/products-categories-search") }}',
-            dataType: 'json',
-            delay: 150,
-            processResults: function (data) {
-                return {
-                    results:  $.map(data, function (item) {
+            $('#categories, #edit-categories, #s-category').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select categories',
+                ajax: {
+                    url: '{{ url("admin/products-categories-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
                         return {
-                            text: `${item['ar_title']} || ${item['en_title']}`,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    });
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item['ar_title']} || ${item['en_title']}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
 
-    $('#main_image, #images,#edit-main_image, #edit-images').jPreview();
+            $('#main_image, #images,#edit-main_image, #edit-images').jPreview();
 
-    /**
-     * Composite Products Events
-     * 1/2/2022
-     * I desided to make this an upgrade option, and use a traditional way for
-     * selecting the composite product components
-     */
-    $('#is_composite, #edit-is_composite').change(function () {
-        let is_composite  = $(this).val();
-        let first_target  = $(this).data('first-target');
-        let second_target = $(this).data('second-target');
-        
-        if (is_composite == 1) {
-            $(first_target).slideDown(500);
-            $(second_target).slideUp(500);
-        } else {
-            $(second_target).slideDown(500);
-            $(first_target).slideUp(500);
-            // $('#child_products, #edit-child_products').val('').change();
-        }
-    });
+            /**
+            * Composite Products Events
+            * 1/2/2022
+            * I desided to make this an upgrade option, and use a traditional way for
+            * selecting the composite product components
+            */
+            $('#is_composite, #edit-is_composite').change(function () {
+                let is_composite  = $(this).val();
+                let first_target  = $(this).data('first-target');
+                let second_target = $(this).data('second-target');
+                
+                if (is_composite == 1) {
+                    $(first_target).slideDown(500);
+                    $(second_target).slideUp(500);
+                } else {
+                    $(second_target).slideDown(500);
+                    $(first_target).slideUp(500);
+                    // $('#child_products, #edit-child_products').val('').change();
+                }
+            });
 
-    $('#find_child_products, #edit-find_child_products').select2({
-        allowClear: true,
-        width: '100%',
-        placeholder: 'Select products, by name, id, or sku',
-        ajax: {
-            url: '{{ url("admin/products-search") }}',
-            dataType: 'json',
-            delay: 150,
-            processResults: function (data) {
-                return {
-                    results:  $.map(data, function (item) {
+            $('#find_child_products, #edit-find_child_products').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select products, by name, id, or sku',
+                ajax: {
+                    url: '{{ url("admin/products-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
                         return {
-                            text: `${item['en_name']} / ${item['ar_name']} , valied quantity (${item['quantity']})`,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item['en_name']} / ${item['ar_name']} , valied quantity (${item['quantity']})`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // start custome field events 
+            custome_fields_events();
         }
-    });
+
+        function custome_fields_events () {
+            $('#categories').change(function () {
+                /**
+                    Get category custome attributes
+                 */
+                let categoreis_id = $(this).val();
+                
+                $('.custome-field-el').remove();
+                $('#customrFieldLoddingSpinner').show();
+
+                // axios.get(`{{ url('admin/products-categories') }}/0`, { params: { categoreis_id: categoreis_id,  group_acc : true }})
+                get_product_categories_with_attr(categoreis_id)
+                .then(res => {
+                    if (res.data.success) {
+                        const categoreis = res.data.data;
+                        
+                        categoreis.forEach(category => {
+                            render_custome_field_el (category);
+                            get_custome_fields_arr();
+                        });
+                    }
+                    
+                    $('#customrFieldLoddingSpinner').hide();
+                });
+            });
+
+            $('#edit-categories').change(function () {
+                /**
+                    # Get category custome attributes
+                    # In the edit version we need to add additional option !
+                    this option is about how to show the stored data of the product custome field
+                    not just the default fields
+                 */
+                let categoreis_id = $(this).val();
+                
+                // remove old custome-field
+                $('.edit-custome-field-el').remove();
+                // so a silly animation effect while waiting for the response
+                $('#edit-customrFieldLoddingSpinner').show();
+
+                get_product_categories_with_attr(categoreis_id)
+                .then(res => {
+                    if (res.data.success) {
+                        const categoreis = res.data.data;
+                        
+                        categoreis.forEach(category => {
+                            render_custome_field_el (category, 'edit-');
+                            get_custome_fields_arr('edit-');
+                        });
+
+                        console.log('test edit custome field :: ', custome_field_values);
+                        custome_field_values.forEach(custome_field_val_obj => {
+                            $(`[data-attr-id=${custome_field_val_obj.id}]`).val(custome_field_val_obj.value);
+                        });
+                    }
+                    
+                    $('#edit-customrFieldLoddingSpinner').hide();
+                });
+            });
+
+            $('#custome-field-container').on('change keyup', '.custome-field', function () {
+                get_custome_fields_arr();
+            });
+        }
+
+        async function get_product_categories_with_attr (categoreis_id) {
+            const resposne = await axios.get(`{{ url('admin/products-categories') }}/0`, 
+                                { 
+                                    params: { categoreis_id: categoreis_id,  group_acc : true 
+                                }
+                            });
+
+            return resposne;
+        }
+
+        function render_custome_field_el (category, prefix = '') {
+            let custome_field_el    = '';
+            let category_attributes = category.attributes;
+
+            category_attributes.forEach(attribute => {
+                if (attribute.type == 'options') {
+                    let meta = JSON.parse(attribute.meta);
+                    
+                    let options_tr = '';
+                    meta.options.forEach(option => {
+                        options_tr += `<option>${option}</option>`
+                    });
+
+                    custome_field_el += `
+                        <div class="custome-field-el form-group row">
+                            <label for="" class="col-sm-2 text-capitalize">${attribute.title}</label>
+                            <div class="col-sm-10">
+                                <select class="form-control custome-field" data-attr-id="${attribute.id}">
+                                    ${options_tr}
+                                </select>
+                            </div><!-- /.col-sm-10 -->
+                        </div><!-- /.form-group -->
+                    `;
+
+                } else if (attribute.type == 'number') {
+                    let meta = JSON.parse(attribute.meta);
+
+                    custome_field_el += `
+                        <div class="form-group row">
+                            <label for="" class="col-sm-2 text-capitalize">${attribute.title}</label>
+                            <div class="col-sm-10">
+                                <input class="form-control custome-field" data-attr-id="${attribute.id}" type="number" value="${meta.number.field_number_from}" min="${meta.number.field_number_from}" max="${meta.number.field_number_to}">
+                            </div><!-- /.col-sm-10 -->
+                        </div><!-- /.form-group -->
+                    `;
+                }// end :: if
+            });
+
+            let custome_field_container = `
+                <div class="${prefix}custome-field-el" style="padding: 15px 10px;
+                margin: 10px 0;
+                border: 2px solid #ddd;
+                border-radius: 10px;">
+                    <h4>${category.en_title}</h4>
+                    <hr/>
+                    ${custome_field_el}
+                </div>
+            `;
+
+            category_attributes.length && $(`#${prefix}custome-field-container`).append(custome_field_container);
+        }
+
+        function get_custome_fields_arr (prefix = '') {
+            let custome_field = Array.from($('.custome-field'));
+            let custome_field_vals = {};
+            let custome_field_ids  = [];
+
+            custome_field.forEach(field => {
+                custome_field_ids.push($(field).data('attr-id'));
+                custome_field_vals[$(field).data('attr-id')] = $(field).val();
+            });
+
+            $(`#${prefix}custome_attr_id`).val(JSON.stringify(custome_field_ids));
+            $(`#${prefix}custome_field_attr`).val(JSON.stringify(custome_field_vals));
+        }
+
+        return {
+            start_events : start_events
+        }
+    })();
+
+
+    index_custome_events.start_events();
 
     {{--
     $('#dataTable').on('click', '.composite-object', function () {

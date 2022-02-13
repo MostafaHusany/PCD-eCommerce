@@ -23,4 +23,8 @@ class ProductCategory extends Model
     public function attributes () {
         return $this->hasMany(CategoryAttribute::class, 'category_id');
     }
+
+    public function product_custome_fields () {
+        return $this->hasMany(ProductCustomeField::class, 'category_id');
+    }
 }

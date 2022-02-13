@@ -185,6 +185,17 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+        
+        <div class="form-group" id="edit-custome-field-container">
+            <input type="hidden" id="edit-custome_attr_id">
+            <input type="hidden" id="edit-custome_field_attr">
+
+            <div class="d-flex justify-content-center mb-3">
+                <div id="edit-customrFieldLoddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div><!-- /.justify-content-center -->
+        </div><!-- /.form-group -->
 
 
         <button class="update-object btn btn-warning float-right">Update Product</button>

@@ -50,6 +50,11 @@ class ProductCategoriesController extends Controller
     }
 
     public function show (Request $request, $id) {
+        if (isset($request->group_acc)) {
+            $targted_categoreis = $this->target_model->whereIn('id', $request->categoreis_id)->with('attributes')->get();
+            return response()->json(['data' => $targted_categoreis, 'success' => isset($targted_categoreis)]);
+        }
+
         $target_object = ProductCategory::find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
