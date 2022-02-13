@@ -42,4 +42,8 @@ class Product extends Model
     public function orders () {
         return $this->belongsToMany(Order::class, 'order_products', 'product_id', 'order_id');
     }
+
+    public function product_custome_fields () {
+        return $this->hasMany(ProductCustomeField::class, 'product_id');
+    }
 }

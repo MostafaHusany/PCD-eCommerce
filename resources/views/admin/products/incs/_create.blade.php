@@ -54,20 +54,11 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
-
-        <div class="form-group row">
-            <label for="categories" class="col-sm-2 col-form-label">Category</label>
-            <div class="col-sm-10">
-                <select type="text" tabindex="7" name="categories[]" class="form-control"  multiple="multiple" id="categories"></select>
-                <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
         
         <div class="form-group row">
             <label for="is_composite" class="col-sm-2 col-form-label">Product Type</label>
             <div class="col-sm-10">
-                <select tabindex="8" id="is_composite" name="is_composite" data-first-target=".child-products-container" data-second-target="#productQuantityContainer" class="form-control">
+                <select tabindex="7" id="is_composite" name="is_composite" data-first-target=".child-products-container" data-second-target="#productQuantityContainer" class="form-control">
                     <option value="0">Usual product</option>
                     <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
                 </select>
@@ -79,7 +70,7 @@
         <div class="child-products-container form-group row" style="display: none;">
             <label for="reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
             <div class="col-sm-10">
-                <input type="number" tabindex="9"  class="form-control" min="0" id="reserved_quantity" value="1">
+                <input type="number" tabindex="8"  class="form-control" min="0" id="reserved_quantity" value="1">
                 <div style="padding: 5px 7px; display: none" id="reserved_quantityErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -185,6 +176,26 @@
                 <div style="padding: 5px 7px; display: none" id="imagesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
+        </div><!-- /.form-group -->
+        
+        <div class="form-group row">
+            <label for="categories" class="col-sm-2 col-form-label">Category</label>
+            <div class="col-sm-10">
+                <select type="text" tabindex="15" name="categories[]" class="form-control"  multiple="multiple" id="categories"></select>
+                <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group" id="custome-field-container">
+            <input type="hidden" id="custome_attr_id">
+            <input type="hidden" id="custome_field_attr">
+
+            <div class="d-flex justify-content-center mb-3">
+                <div id="customrFieldLoddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div><!-- /.justify-content-center -->
         </div><!-- /.form-group -->
 
         <button tabindex="15" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>

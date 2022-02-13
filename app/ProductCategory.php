@@ -19,4 +19,12 @@ class ProductCategory extends Model
     public function products () {
         return $this->belongsToMany(Product::class, 'r_category_products', 'category_id', 'product_id');
     }
+
+    public function attributes () {
+        return $this->hasMany(CategoryAttribute::class, 'category_id');
+    }
+
+    public function product_custome_fields () {
+        return $this->hasMany(ProductCustomeField::class, 'category_id');
+    }
 }

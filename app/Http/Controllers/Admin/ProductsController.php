@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Product;
 use App\ProductCategory;
+use App\CategoryAttribute;
+use App\ProductCustomeField;
 
 class ProductsController extends Controller
 {
@@ -102,6 +104,7 @@ class ProductsController extends Controller
         if (isset($target_object) && isset($request->fast_acc)) {
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
             $target_object->categories;
+            $target_object->product_custome_fields;
             $target_object->children = $target_object->is_composite ? $target_object->children()->distinct()->get() : null;
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
@@ -114,6 +117,7 @@ class ProductsController extends Controller
     }
 
     public function store (Request $request) {
+        // dd($request->all());
         // START VALIDATION
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|unique:products,ar_name|max:255',
@@ -134,7 +138,7 @@ class ProductsController extends Controller
 
         $child_products          = $request->is_composite == 1 ? (array) json_decode($request->child_products) : [];
         $child_products_quantity = $request->is_composite == 1 ? (array) json_decode($request->child_products_quantity) : [];
-        // dd($child_products, $child_products_quantity, $request->reserved_quantity);
+        
         if ($request->is_composite == 1) {
             /**
              * I want to make sure that products quantity is valied
@@ -149,6 +153,7 @@ class ProductsController extends Controller
         }
         // END VALIDATION
 
+        
         $data = $request->except(['main_image', 'price_after_sale', 'is_active', 'reserved_quantity']);
         
         $main_image = $request->file('main_image')[0];
@@ -178,6 +183,10 @@ class ProductsController extends Controller
         
         $categories = explode(',', $request->categories);
         $this->sync_product_categories($categories, $new_object);
+
+        // start record custome_fields ... 
+        $this->create_products_custome_fields ($new_object, $request->custome_attr_id, $request->custome_field_attr);
+        
 
         if ($request->is_composite == 1) {
             $new_object->children()->sync($child_products);
@@ -402,6 +411,28 @@ class ProductsController extends Controller
         }
 
         return $msg;
+    }
+
+    private function create_products_custome_fields ($target_object, $custome_attr_id, $custome_field_attr) {
+        $custome_attr_id    = (array) json_decode($custome_attr_id);
+        $custome_field_attr = (array) json_decode($custome_field_attr);
+        $get_targted_attr   = CategoryAttribute::whereIn('id', $custome_attr_id)->get(); // ProductCustomeField
+        
+        $custome_field_vals = [];
+        foreach ($get_targted_attr as $attr) {
+            $data = [
+                'title' => $attr->title,
+                'value' => $custome_field_attr[$attr->id],
+                'type'  => $attr->type,
+                'product_id'  => $target_object->id,
+                'category_id' => $attr->category_id,
+                'category_attribute_id' => $attr->id,
+            ];
+
+            $custome_field_vals[] = $data;
+        }
+        
+        ProductCustomeField::insert($custome_field_vals);
     }
     // END   HELPER FUNCTIONS 
 

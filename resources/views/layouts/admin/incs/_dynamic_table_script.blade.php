@@ -77,6 +77,7 @@ class DynamicTable {
                 url : this_objct.routs.index_route,
                 data: this_objct.search_function
             },
+            "order": [[ 0, "desc" ]],
         });
         
         // view manuplation model
