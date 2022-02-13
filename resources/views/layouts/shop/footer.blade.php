@@ -131,7 +131,8 @@
 <script src="{{asset('shop')}}/js/jquery.elevatezoom.js"></script>
 <!-- scripts js -->
 <script src="{{asset('shop')}}/js/scripts.js"></script>
-
+<script src="{{asset('shop')}}/js/custom.js"></script>
+@yield('script')
 </body>
 
 </html>
