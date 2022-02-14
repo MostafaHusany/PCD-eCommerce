@@ -206,162 +206,176 @@
 @push('page_scripts')
 <script>
 $(function () {
-    let selected_child_products          = [];
-    let selected_child_products_quantity = {};
-
-    // clear old session 
-    $('.toggle-btn').click(function () {
-        let target_card = $(this).data('target-card');
-        if (target_card === '#createObjectCard') {
-            selected_child_products          = [];
-            selected_child_products_quantity = {};
-            update_child_products_input_field();
-            $('.selected-product-child').remove();
-            $('#is_composite').val('0').trigger('change');
-            $('#reserved_quantity').val(1);
-        } 
-    });
-
-    $('#find_child_products').change(function () {
-        let target_product_id     = $(this).val();
-        let total_parent_quantity = $('#reserved_quantity').val();
+    
+    const create_form_custome_option = (function () {
         
-        if (target_product_id !== '' && target_product_id != null && ! (target_product_id in selected_child_products_quantity)) {
-            $('#childrenProductsLoddingSpinner').show(500);
-            // send request to the server and get product data
-            axios.get(`{{ url('admin/products') }}/${target_product_id}?fast_acc=true`)
-            .then(res => {
-                /**
-                    1- track the selected quantity
-                    2- track removed product
-                    3- update selected product list
+        let selected_child_products          = [];
+        let selected_child_products_quantity = {};
 
-                    "#selected_child_product_container" selected products table container
-                    ".selected-product-child" child product row general class
-                    "#selectd_child_product_${id}" child product row specific id
-
-                    "selected-product-child-quantity" child product row quantity field
-                    "selectd_child_product_quantityt_${id}" child product row quantity secific field
-
-                    ".remove-selected-product-child" remove child product row
-
-                 */
-                const target_product = res.data.data;
-                const product_row = `
-                    <tr class="selected-product-child" id="selectd_child_product_${target_product.id}"
-                        data-original-quantity="${target_product.quantity}" 
-                    >
-                        <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
-                        <td>${target_product.ar_name} / ${target_product.en_name}</td>
-                        <td>${target_product.sku}</td>
-                        <td>${target_product.price}</td>
-                        <td id="selectd_child_product_quantity_${target_product.id}" >
-                            ${target_product.quantity - total_parent_quantity}
-                        </td>
-                        <td>
-                            <input class="selected-product-child-quantity" 
-                                value="1"
-                                style="width: 100px;" type="number" min="1" step="1" max="${target_product.quantity}"
-                                data-target="${target_product.id}"
-                                data-original-quantity="${target_product.quantity}" 
-                            />
-                        </td>
-                        <td id="selectd_child_product_total_quantity_${target_product.id}" >
-                            ${1 * total_parent_quantity}
-                        </td>
-                        <td>
-                            <button class="remove-selected-product-child btn btn-sm btn-danger"
-                                data-target="${target_product.id}"
-                            >
-                                <i class="fas fa-minus-circle"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-
-                $('#selected_child_product_container').prepend(product_row);
-                update_selected_child_products (target_product.id, 1);
-                $('#find_child_products').val('').trigger('change');
-                $('#childrenProductsLoddingSpinner').hide(500);
+        function starter_event () {
+            // clear old session 
+            $('.toggle-btn').click(function () {
+                let target_card = $(this).data('target-card');
+                if (target_card === '#createObjectCard') {
+                    selected_child_products          = [];
+                    selected_child_products_quantity = {};
+                    update_child_products_input_field();
+                    $('.selected-product-child').remove();
+                    $('#is_composite').val('0').trigger('change');
+                    $('#reserved_quantity').val(1);
+                } 
             });
 
+            $('#find_child_products').change(function () {
+                let target_product_id     = $(this).val();
+                let total_parent_quantity = $('#reserved_quantity').val();
+                
+                if (target_product_id !== '' && target_product_id != null && ! (target_product_id in selected_child_products_quantity)) {
+                    $('#childrenProductsLoddingSpinner').show(500);
+                    // send request to the server and get product data
+                    axios.get(`{{ url('admin/products') }}/${target_product_id}?fast_acc=true`)
+                    .then(res => {
+                        /**
+                            1- track the selected quantity
+                            2- track removed product
+                            3- update selected product list
 
-        } else if (target_product_id in selected_child_products_quantity) {
-            $(`#selectd_child_product_${target_product_id}`).css('border', '1px solid red');
-            $('#find_child_productsErr').text('product already exits in the list').slideDown(500);
+                            "#selected_child_product_container" selected products table container
+                            ".selected-product-child" child product row general class
+                            "#selectd_child_product_${id}" child product row specific id
 
-            setTimeout(() => {
-                $(`#selectd_child_product_${target_product_id}`).css('border', '');
-                $('#find_child_productsErr').text('').slideUp(500);
-            }, 3000);
-        }// end :: if
-    });
+                            "selected-product-child-quantity" child product row quantity field
+                            "selectd_child_product_quantityt_${id}" child product row quantity secific field
 
-    $('#reserved_quantity').on('change keyup', function () {
-        const total_parent_quantity = $(this).val();
+                            ".remove-selected-product-child" remove child product row
 
-        selected_child_products.forEach(product_id => {
-            const original_valied_quantity = $(`#selectd_child_product_${product_id}`).data('original-quantity');
+                        */
+                        const target_product = res.data.data;
+                        const product_row = `
+                            <tr class="selected-product-child" id="selectd_child_product_${target_product.id}"
+                                data-original-quantity="${target_product.quantity}" 
+                            >
+                                <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                                <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                                <td>${target_product.sku}</td>
+                                <td>${target_product.price}</td>
+                                <td id="selectd_child_product_quantity_${target_product.id}" >
+                                    ${target_product.quantity - total_parent_quantity}
+                                </td>
+                                <td>
+                                    <input class="selected-product-child-quantity" 
+                                        value="1"
+                                        style="width: 100px;" type="number" min="1" step="1" max="${target_product.quantity}"
+                                        data-target="${target_product.id}"
+                                        data-original-quantity="${target_product.quantity}" 
+                                    />
+                                </td>
+                                <td id="selectd_child_product_total_quantity_${target_product.id}" >
+                                    ${1 * total_parent_quantity}
+                                </td>
+                                <td>
+                                    <button class="remove-selected-product-child btn btn-sm btn-danger"
+                                        data-target="${target_product.id}"
+                                    >
+                                        <i class="fas fa-minus-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+
+                        $('#selected_child_product_container').prepend(product_row);
+                        update_selected_child_products (target_product.id, 1);
+                        $('#find_child_products').val('').trigger('change');
+                        $('#childrenProductsLoddingSpinner').hide(500);
+                    });
+
+
+                } else if (target_product_id in selected_child_products_quantity) {
+                    $(`#selectd_child_product_${target_product_id}`).css('border', '1px solid red');
+                    $('#find_child_productsErr').text('product already exits in the list').slideDown(500);
+
+                    setTimeout(() => {
+                        $(`#selectd_child_product_${target_product_id}`).css('border', '');
+                        $('#find_child_productsErr').text('').slideUp(500);
+                    }, 3000);
+                }// end :: if
+            });
+
+            $('#reserved_quantity').on('change keyup', function () {
+                const total_parent_quantity = $(this).val();
+
+                selected_child_products.forEach(product_id => {
+                    const original_valied_quantity = $(`#selectd_child_product_${product_id}`).data('original-quantity');
+                    
+                    let left_quantity  = original_valied_quantity - (selected_child_products_quantity[product_id] * total_parent_quantity);
+                    let total_quantity = selected_child_products_quantity[product_id] * total_parent_quantity;
+                    console.log(product_id, total_parent_quantity, original_valied_quantity, selected_child_products_quantity[product_id]);
+
+                    left_quantity <= 0 ? $(`#selectd_child_product_quantity_${product_id}`).css('color', 'red') : $(`#selectd_child_product_quantity_${product_id}`).css('color', '') ; 
+                    $(`#selectd_child_product_quantity_${product_id}`).text(left_quantity);
+                    $(`#selectd_child_product_total_quantity_${product_id}`).text(total_quantity);
+
+                });
+            });
+
+            $('#selected_child_product_container').on('change keyup', '.selected-product-child-quantity', function () {
+                const original_valied_quantity = $(this).data('original-quantity');
+                const selected_quantity_value  = $(this).val();
+                const targted_product_id       = $(this).data('target');
+                const total_parent_quantity    = $('#reserved_quantity').val();
+
+                let left_quantity  = original_valied_quantity - (selected_quantity_value * total_parent_quantity);
+                let total_quantity = selected_quantity_value * total_parent_quantity;
+
+                left_quantity <= 0 ? $(`#selectd_child_product_quantity_${targted_product_id}`).css('color', 'red') : $(`#selectd_child_product_quantity_${targted_product_id}`).css('color', '') ; 
+                $(`#selectd_child_product_quantity_${targted_product_id}`).text(left_quantity);
+                $(`#selectd_child_product_total_quantity_${targted_product_id}`).text(total_quantity);
+
+                // update quantity list
+                update_selected_child_products (targted_product_id, selected_quantity_value)
+            });
+
+            $('#selected_child_product_container').on('click', '.remove-selected-product-child', function (e) {
+                e.preventDefault();
+                let targted_product_id = $(this).data('target');
+                
+                $(`#selectd_child_product_${targted_product_id}`).remove();
+                remove_selected_child_products (targted_product_id)
+            });
+        }
+        
+        function update_selected_child_products (targted_product_id, selected_quantity_value) {
+            !selected_child_products.includes(targted_product_id) && selected_child_products.push(targted_product_id);
+            selected_child_products_quantity[targted_product_id] = parseInt(selected_quantity_value);
             
-            let left_quantity  = original_valied_quantity - (selected_child_products_quantity[product_id] * total_parent_quantity);
-            let total_quantity = selected_child_products_quantity[product_id] * total_parent_quantity;
-            console.log(product_id, total_parent_quantity, original_valied_quantity, selected_child_products_quantity[product_id]);
+            console.log(selected_child_products_quantity, selected_child_products);
+            update_child_products_input_field()
+        }
 
-            left_quantity <= 0 ? $(`#selectd_child_product_quantity_${product_id}`).css('color', 'red') : $(`#selectd_child_product_quantity_${product_id}`).css('color', '') ; 
-            $(`#selectd_child_product_quantity_${product_id}`).text(left_quantity);
-            $(`#selectd_child_product_total_quantity_${product_id}`).text(total_quantity);
+        function remove_selected_child_products (targted_product_id) {
+            selected_child_products = selected_child_products.filter(product_id => product_id != targted_product_id);
+            // selected_child_products.pop(targted_product_id);
+            delete selected_child_products_quantity[targted_product_id];
+            
+            console.log(selected_child_products_quantity, selected_child_products);
+            update_child_products_input_field()
+        }
 
-        });
-    });
+        function update_child_products_input_field () {
+            $('#child_products').val(JSON.stringify(selected_child_products));
+            $('#child_products_quantity').val(JSON.stringify(selected_child_products_quantity));
 
-    $('#selected_child_product_container').on('change keyup', '.selected-product-child-quantity', function () {
-        const original_valied_quantity = $(this).data('original-quantity');
-        const selected_quantity_value  = $(this).val();
-        const targted_product_id       = $(this).data('target');
-        const total_parent_quantity    = $('#reserved_quantity').val();
-
-        let left_quantity  = original_valied_quantity - (selected_quantity_value * total_parent_quantity);
-        let total_quantity = selected_quantity_value * total_parent_quantity;
-
-        left_quantity <= 0 ? $(`#selectd_child_product_quantity_${targted_product_id}`).css('color', 'red') : $(`#selectd_child_product_quantity_${targted_product_id}`).css('color', '') ; 
-        $(`#selectd_child_product_quantity_${targted_product_id}`).text(left_quantity);
-        $(`#selectd_child_product_total_quantity_${targted_product_id}`).text(total_quantity);
-
-        // update quantity list
-        update_selected_child_products (targted_product_id, selected_quantity_value)
-    });
-
-    $('#selected_child_product_container').on('click', '.remove-selected-product-child', function (e) {
-        e.preventDefault();
-        let targted_product_id = $(this).data('target');
+            console.log($('#child_products').val(), $('#child_products_quantity').val());
+        }
         
-        $(`#selectd_child_product_${targted_product_id}`).remove();
-        remove_selected_child_products (targted_product_id)
-    });
+        return {
+            starter_event : starter_event
+        }
+    })();
 
-    function update_selected_child_products (targted_product_id, selected_quantity_value) {
-        !selected_child_products.includes(targted_product_id) && selected_child_products.push(targted_product_id);
-        selected_child_products_quantity[targted_product_id] = parseInt(selected_quantity_value);
-        
-        console.log(selected_child_products_quantity, selected_child_products);
-        update_child_products_input_field()
-    }
+    create_form_custome_option.starter_event()
+    
 
-    function remove_selected_child_products (targted_product_id) {
-        selected_child_products = selected_child_products.filter(product_id => product_id != targted_product_id);
-        // selected_child_products.pop(targted_product_id);
-        delete selected_child_products_quantity[targted_product_id];
-        
-        console.log(selected_child_products_quantity, selected_child_products);
-        update_child_products_input_field()
-    }
-
-    function update_child_products_input_field () {
-        $('#child_products').val(JSON.stringify(selected_child_products));
-        $('#child_products_quantity').val(JSON.stringify(selected_child_products_quantity));
-
-        console.log($('#child_products').val(), $('#child_products_quantity').val());
-    }
 });
 </script>
 @endpush
