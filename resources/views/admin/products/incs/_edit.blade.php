@@ -57,15 +57,6 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-categories" class="col-sm-2 col-form-label">Category</label>
-            <div class="col-sm-10">
-                <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="SKU"></select>
-                <div style="padding: 5px 7px; display: none" id="edit-categoriesErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        
-        <div class="form-group row">
             <label for="edit-is_composite" class="col-sm-2 col-form-label">Product Type</label>
             <div class="col-sm-10">
                 <select tabindex="8" name="edit-is_composite" data-first-target=".edit-child-products-container" data-second-target="#edit-productQuantityContainer" class="form-control" id="edit-is_composite">
@@ -186,6 +177,15 @@
             </div>
         </div><!-- /.form-group -->
         
+        <div class="form-group row">
+            <label for="edit-categories" class="col-sm-2 col-form-label">Category</label>
+            <div class="col-sm-10">
+                <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="SKU"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-categoriesErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
         <div class="form-group" id="edit-custome-field-container">
             <input type="hidden" id="edit-custome_attr_id">
             <input type="hidden" id="edit-custome_field_attr">

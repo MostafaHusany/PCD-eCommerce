@@ -297,6 +297,9 @@ class ProductsController extends Controller
             $this->update_reserved_products($target_object);
         }
         
+        // start record custome_fields ... 
+        $this->create_products_custome_fields ($target_object, $request->custome_attr_id, $request->custome_field_attr);
+
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
 
@@ -414,6 +417,9 @@ class ProductsController extends Controller
     }
 
     private function create_products_custome_fields ($target_object, $custome_attr_id, $custome_field_attr) {
+        // delete old custome_field if exists, case update
+        $target_object->product_custome_fields()->delete();
+
         $custome_attr_id    = (array) json_decode($custome_attr_id);
         $custome_field_attr = (array) json_decode($custome_field_attr);
         $get_targted_attr   = CategoryAttribute::whereIn('id', $custome_attr_id)->get(); // ProductCustomeField

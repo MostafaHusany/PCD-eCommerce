@@ -494,14 +494,17 @@ $(function () {
                             get_custome_fields_arr('edit-');
                         });
 
-                        console.log('test edit custome field :: ', custome_field_values);
                         custome_field_values.forEach(custome_field_val_obj => {
-                            $(`[data-attr-id=${custome_field_val_obj.id}]`).val(custome_field_val_obj.value);
+                            $(`[data-attr-id="${custome_field_val_obj.category_attribute_id}"]`).val(custome_field_val_obj.value);
                         });
                     }
                     
                     $('#edit-customrFieldLoddingSpinner').hide();
                 });
+            });
+
+            $('#edit-custome-field-container').on('change keyup', '.custome-field', function () {
+                get_custome_fields_arr('edit-');
             });
 
             $('#custome-field-container').on('change keyup', '.custome-field', function () {
