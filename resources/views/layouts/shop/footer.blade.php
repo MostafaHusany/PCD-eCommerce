@@ -103,9 +103,12 @@
 
 <a href="#" class="scrollup" style="display: none;"><i class="ion-ios-arrow-up"></i></a>
 
+
 <!-- Latest jQuery -->
 <script src="{{asset('shop')}}/js/jquery-3.6.0.min.js"></script>
 <!-- popper min js -->
+<script src="{{asset('shop')}}/js/jquery-ui.js"></script>
+
 <script src="{{asset('shop')}}/js/popper.min.js"></script>
 <!-- Latest compiled and minified Bootstrap -->
 <script src="{{asset('shop')}}/bootstrap/js/bootstrap.min.js"></script>

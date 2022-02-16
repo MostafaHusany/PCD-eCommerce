@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Product;
 use Illuminate\Http\Request;
 use Cart;
 
@@ -34,4 +35,13 @@ class CartController extends Controller
 
         return view ('shop.cart',compact('totalPrice'));
     }
+    public function update_quantity($quantity, $row_Id)
+    {
+        Cart::update($row_Id, $quantity);
+            $totalPrice =  Cart::subtotal();
+            $items = Cart::content();
+            return response()->json(['items_count' => $items, 'totalPrice' => $totalPrice ,"row_Id" => $row_Id]);
+    }
+
+
 }
