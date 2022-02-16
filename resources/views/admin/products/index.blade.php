@@ -593,7 +593,6 @@ $(function () {
         }
     })();
 
-
     index_custome_events.start_events();
 
     {{--

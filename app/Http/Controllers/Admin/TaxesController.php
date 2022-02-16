@@ -43,6 +43,11 @@ class TaxesController extends Controller
     }
 
     public function show (Request $request, $id) {
+        if (isset($request->get_all_taxe)) {
+            $all_tax = Taxe::where('is_active', 1)->get();
+            return response()->json(['data' => $all_tax, 'success' => isset($all_tax)]);
+        }
+
         $target_object = Taxe::find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
