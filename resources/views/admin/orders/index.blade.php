@@ -300,103 +300,164 @@ $(function () {
 
     }
 
-    $('#dataTable').on('change', '.c-activation-btn', function () {
-        let target_id = $(this).data('user-target');
-        
-        axios.post(`{{url('admin/customers')}}/${target_id}`, {
-            _token : "{{ csrf_token() }}",
-            _method : 'PUT',
-            activate_customer : true
-        }).then(res => {
-            if (!res.data.success) {
-                $(this).prop('checked', !$(this).prop('checked'));
-                $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
-
-                setTimeout(() => {
-                    $('#dangerAlert').text('').slideUp(500);
-                }, 3000);
-            }
-        })// axios
-    }).on('click', '.restore-object', function () {
-        console.log('test restore');
-        $('#loddingSpinner').show(500);
-
-        let target_order_id   = $(this).data('object-id');
-        let target_order_code = $(this).data('object-name');
-        
-        let flag = confirm(`Are you sure you want to restor "${target_order_code}"`);
-        
-        if (flag) {
-            axios.post(`{{ url('admin/orders') }}/${target_order_id}`, {
-                _method  : 'DELETE',
-                '_token' : $('meta[name="csrf-token"]').attr('content'),
-                restore_product : true
-            }).then(res => {
+    const index_custome_events =  (function () {
+        function start_events () {
+            $('#dataTable').on('change', '.c-activation-btn', function () {
+                let target_id = $(this).data('user-target');
                 
-                $('#loddingSpinner').hide(500);
-                
-                if (res.data.success) {
-                    objects_dynamic_table.table_object.draw();
+                axios.post(`{{url('admin/customers')}}/${target_id}`, {
+                    _token : "{{ csrf_token() }}",
+                    _method : 'PUT',
+                    activate_customer : true
+                }).then(res => {
+                    if (!res.data.success) {
+                        $(this).prop('checked', !$(this).prop('checked'));
+                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
 
-                    $('#warningAlert').text('You restored the order successfully').slideDown();
-                    setTimeout(() => {
-                        $('#warningAlert').text('').slideUp();
-                    }, 3000);
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                })// axios
+            }).on('click', '.restore-object', function () {
+                console.log('test restore');
+                $('#loddingSpinner').show(500);
+
+                let target_order_id   = $(this).data('object-id');
+                let target_order_code = $(this).data('object-name');
+                
+                let flag = confirm(`Are you sure you want to restor "${target_order_code}"`);
+                
+                if (flag) {
+                    axios.post(`{{ url('admin/orders') }}/${target_order_id}`, {
+                        _method  : 'DELETE',
+                        '_token' : $('meta[name="csrf-token"]').attr('content'),
+                        restore_product : true
+                    }).then(res => {
+                        
+                        $('#loddingSpinner').hide(500);
+                        
+                        if (res.data.success) {
+                            objects_dynamic_table.table_object.draw();
+
+                            $('#warningAlert').text('You restored the order successfully').slideDown();
+                            setTimeout(() => {
+                                $('#warningAlert').text('').slideUp();
+                            }, 3000);
+                        }// end :: if
+                    });
                 }// end :: if
             });
-        }// end :: if
-    });
 
-    $('#customer, #edit-customer').select2({
-        // allowClear: true,
-        width: '100%',
-        placeholder: 'Select customers',
-        ajax: {
-            url: '{{ url("admin/customers-search") }}',
-            dataType: 'json',
-            delay: 150,
-            processResults: function (data) {
-                return {
-                    results:  $.map(data, function (item) {
+            $('#customer, #edit-customer').select2({
+                // allowClear: true,
+                width: '100%',
+                placeholder: 'Select customers',
+                ajax: {
+                    url: '{{ url("admin/customers-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
                         return {
-                            text: `${item.first_name} ${item.second_name} , email : (${item.email}) , phone : (${item.phone})`,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    }).change(function () {
-        /** 
-         * Here we will check the 
-         * 
-         * */
-        let prefix      = $(this).data('prefix');
-        let customer_id = $(this).val();
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.first_name} ${item.second_name} , email : (${item.email}) , phone : (${item.phone})`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }).change(function () {
+                /** 
+                 * Here we will check the 
+                 * 
+                 * */
+                let prefix      = $(this).data('prefix');
+                let customer_id = $(this).val();
 
-        if (customer_id !== null) {
-            axios.get(`{{url("admin/customers")}}/${customer_id}?fast_acc=true`)
+                if (customer_id !== null) {
+                    axios.get(`{{url("admin/customers")}}/${customer_id}?fast_acc=true`)
+                    .then(res => {
+                        console.log('test :: #customer, #edit-customer ', res.data.data, res.data.data.email, res.data.data.phone, res.data.data.city, res.data.data.address);
+                        if (res.data.success) {
+                            $(`#${prefix}customer_name`).text(res.data.data.first_name + ' ' + res.data.data.second_name);
+                            $(`#${prefix}customer_email`).text(res.data.data.email);
+                            $(`#${prefix}customer_phone`).text(res.data.data.phone);
+                            $(`#${prefix}customer_city`).text(res.data.data.city);
+                            $(`#${prefix}customer_address`).text(res.data.data.address);
+                        }
+                    });
+                } else {
+                    $('#customer_name').text('---');
+                    $('#customer_email').text('---');
+                    $('#customer_phone').text('---');
+                    $('#customer_city').text('---');
+                    $('#customer_address').text('---');
+                }
+
+            });
+
+            // Load taxes ratio
+            /**
+             * When the user press the create btn, send a request to the server
+             * and ask the server for the latest tax ratios
+             * the ratio will be stored in global variable
+             * than every time the user request new product in the order astimate the tax on all
+             * products, and show the tax value for each product, and total
+             * 
+             * get_taxes_ratios is a function that gets taxes data from the server and reset the
+             * taxe_ration global variable
+             */
+            
+            get_taxes_ratios();
+
+        }
+
+        function get_taxes_ratios () {
+            /**
+             * Get taxes value from the server, and set a tax global variable.
+             */
+            window.tax_ration = [];
+
+            axios.get("{{ url('admin/taxes') }}/0", { params: { get_all_taxe: true }})
             .then(res => {
-                console.log(res.data.data, res.data.data.email, res.data.data.phone, res.data.data.city, res.data.data.address);
                 if (res.data.success) {
-                    $(`#${prefix}customer_name`).text(res.data.data.first_name + ' ' + res.data.data.second_name);
-                    $(`#${prefix}customer_email`).text(res.data.data.email);
-                    $(`#${prefix}customer_phone`).text(res.data.data.phone);
-                    $(`#${prefix}customer_city`).text(res.data.data.city);
-                    $(`#${prefix}customer_address`).text(res.data.data.address);
+                    window.tax_ration = res.data.data;
+                    // products_column_header
+                    let products_tax_td = '';
+                    let tax_info_table_td = '';
+                    tax_ration.forEach(tax_obj => {
+                        /**
+                            # Add tax column to products table
+                        */
+                        products_tax_td += tax_obj.cost_type === 1 ? `
+                            <td>${tax_obj.title}</td>
+                        ` : '';
+
+                        tax_info_table_td += `
+                        <tr>
+                            <td>${tax_obj.title}</td>
+                            <td>${tax_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                            <td>${tax_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                            <td>${tax_obj.cost}</td>
+                            <td id="total-cost-type-${tax_obj.id}">---</td>
+                        </tr>
+                        `;
+                    });
+                    $('#products_table_header').after(products_tax_td);
+                    $('#taxes_list_table_container').append(tax_info_table_td);
                 }
             });
-        } else {
-            $('#customer_name').text('---');
-            $('#customer_email').text('---');
-            $('#customer_phone').text('---');
-            $('#customer_city').text('---');
-            $('#customer_address').text('---');
         }
+        
+        return {
+            start_events : start_events
+        }
+    })();
 
-    });
-
+    index_custome_events.start_events();
     
     let edit_shipping_cost = null;// a global variable to show order shipping cost value in edit form 
     const shipping_object = (function () {
@@ -433,15 +494,12 @@ $(function () {
                 let prefix      = $(this).data('prefix');
                 let shipping_id = $(this).val();
 
-                console.log('test shipping', prefix, shipping_id);
                 if (shipping_id !== null || shipping_id === '') {
                     $('#createOrderLoddingSpinner').show();
 
                     axios.get(`{{url("admin/shipping")}}/${shipping_id}?fast_acc=true`)
                     .then(res => {
                         $('#createOrderLoddingSpinner').hide();
-
-                        console.log(edit_shipping_cost);
                         const target_shipping = res.data.data;
                         target_shipping.cost  = edit_shipping_cost != null ? edit_shipping_cost : target_shipping.cost;
                         set_shipping_fields(prefix, target_shipping);
