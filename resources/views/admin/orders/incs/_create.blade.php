@@ -75,8 +75,8 @@
 
             <div id="createOrderWarningAlert" style="display: none" class="alert alert-warning"></div>
 
-            <div class="form-group">
-                <table class="table" style="font-size: 12px;">
+            <div class="form-group" style="height: 400px; overflow: scroll;">
+                <table class="table" style="font-size: 12px; width: max-content; ">
                     <thead>
                         <tr>
                             <td>Img</td>
@@ -96,6 +96,34 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- START SHIPPING PHASE -->
+            <div class="form-group row">
+                <label for="" class="col-2">Shipping</label>
+                <div class="form-group col-4">
+                    <select id="shipping" data-prefix="" class="form-control"></select>
+                    <div style="padding: 5px 7px; display: none" id="shippingErr" class="err-msg mt-2 alert alert-danger">
+                    </div>
+                </div><!-- /.form-group -->
+
+                <div class="form-group col-4">
+                    <input type="number" min="0" value="0" id="shipping_cost" data-prefix="" class="form-control">
+                    <div style="padding: 5px 7px; display: none" id="shipping_costErr" class="err-msg mt-2 alert alert-danger">
+                    </div>
+                </div><!-- /.form-group -->
+
+                <div class="form-group col-2" style="padding: 5px 0px;">
+                    <input type="hidden" id="is_free_shipping">
+                    <div class="custom-control custom-switch" value="0">
+                        <input type="checkbox" class="custom-control-input" data-prefix="" id="is_free_shipping_toggle">
+                        <label class="custom-control-label" for="is_free_shipping_toggle">Free Shipping</label>
+                    </div>
+                    
+                    <div style="padding: 5px 7px; display: none" id="is_free_shippingErr" class="err-msg mt-2 alert alert-danger">
+                    </div>
+                </div><!-- /.form-group -->
+            </div><!-- /.form-group -->
+            <!-- END SHIPPING PHASE -->
 
             <hr/>
             
@@ -121,11 +149,14 @@
                         <thead>
                             <tr>
                                 <th>Taxe</th>
-                                <th>Type</th>
+                                <th>Calculation Type</th>
+                                <th>Cost Type</th>
                                 <th>Value</th>
                                 <th>Total</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
+                        <tbody id="fees_list_table_container"></tbody>
                     </table>
                 </div><!-- /.col-6 -->
             </div>
@@ -155,7 +186,16 @@
                             <h5>Taxes Total</h5>
                         </td>
                         <td>
-                            <span id="selected_taxe_cost" data-cost="" data-cost-type=""> --- </span> SAR
+                            <span id="selected_taxe_cost"> --- </span> SAR
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="7">
+                            <h5>Fee Total</h5>
+                        </td>
+                        <td>
+                            <span id="selected_fee_cost"> --- </span> SAR
                         </td>
                         <td></td>
                     </tr>
@@ -171,35 +211,6 @@
                 </table>
             </div>
         </div><!-- /.product-pahse -->
-        
-
-        <!-- START SHIPPING PHASE -->
-        <div class="form-group row">
-            <label for="" class="col-2">Shipping</label>
-            <div class="form-group col-4">
-                <select id="shipping" data-prefix="" class="form-control"></select>
-                <div style="padding: 5px 7px; display: none" id="shippingErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div><!-- /.form-group -->
-
-            <div class="form-group col-4">
-                <input type="number" min="0" value="0" id="shipping_cost" data-prefix="" class="form-control">
-                <div style="padding: 5px 7px; display: none" id="shipping_costErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div><!-- /.form-group -->
-
-            <div class="form-group col-2" style="padding: 5px 0px;">
-                <input type="hidden" id="is_free_shipping">
-                <div class="custom-control custom-switch" value="0">
-                    <input type="checkbox" class="custom-control-input" data-prefix="" id="is_free_shipping_toggle">
-                    <label class="custom-control-label" for="is_free_shipping_toggle">Free Shipping</label>
-                </div>
-                
-                <div style="padding: 5px 7px; display: none" id="is_free_shippingErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div><!-- /.form-group -->
-        </div><!-- /.form-group -->
-        <!-- END SHIPPING PHASE -->
 
         <button !id="createorder" class="create-object btn btn-primary float-right">Create Order</button>
     </form>
@@ -370,10 +381,6 @@ $(document).ready(function () {
             });
         }
 
-        function order_calculation () {
-
-        }
-
         async function get_selected_product (target_product_id) {
             const request  = axios.get(`{{ url('admin/products') }}/${target_product_id}?get_p=true`);
             const target_product = request.then(res => {
@@ -394,8 +401,9 @@ $(document).ready(function () {
             * get fees list and calculate the fees
             */
 
-            let tax_tr = '';
             let total_product_cost = 0;
+
+            let tax_tr = '';
             window.tax_ration.forEach(tax_obj => {
                 if (tax_obj.cost_type === 1) {
                     if (tax_obj.is_fixed) {
@@ -408,6 +416,23 @@ $(document).ready(function () {
                             <td id="product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost * target_product.price / 100}</td>
                         `;
                         total_product_cost += tax_obj.cost * target_product.price / 100;
+                    }
+                }// end :: if
+            });
+
+            let fee_tr = '';
+            window.fees_ration.forEach(fee_obj => {
+                if (fee_obj.cost_type === 1) {
+                    if (fee_obj.is_fixed) {
+                        fee_tr += `
+                            <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost}</td>
+                        `;
+                        total_product_cost += fee_obj.cost;
+                    } else {
+                        fee_tr += `
+                            <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost * target_product.price / 100}</td>
+                        `;
+                        total_product_cost += fee_obj.cost * target_product.price / 100;
                     }
                 }// end :: if
             });
@@ -434,6 +459,7 @@ $(document).ready(function () {
                             min="1" max="${target_product.quantity}" />
                         </td>
                     <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                    ${fee_tr}
                     ${tax_tr}
                     <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
                         ${target_product.price + total_product_cost}
@@ -452,12 +478,29 @@ $(document).ready(function () {
         } 
         
         function update_products_hidden_field () {
-            console.log(selected_products, Object.keys(selected_products));
-
             $('#products_quantity').val(JSON.stringify(selected_products));
             $('#products').val(JSON.stringify(Object.keys(selected_products)));
 
-            calculate_taxes();
+            calculate_products_cost();
+        }
+
+        function calculate_products_cost () {
+            /**
+             * calculate sub total, and total 
+            */
+            let sub_total = 0;
+            let total_taxes = calculate_taxes();
+            let total_fees  = calculate_fees();
+            let shipping_obj = get_shipping();
+            
+            let selected_products_keys = Object.keys(selected_products);
+            selected_products_keys.forEach(product_key => {
+                sub_total += selected_products[product_key]['price'] 
+                            * selected_products[product_key]['quantity'];
+            });
+            
+            $('#selected_products_sub_total').text(sub_total);
+            $('#selected_products_total').text(sub_total + total_taxes + total_fees);
         }
 
         function calculate_taxes () {
@@ -469,8 +512,6 @@ $(document).ready(function () {
                 tax list : window.tax_ration
                 selected products : selected_products 
              */
-
-            console.log('tax list', tax_ration, selected_products);
             let all_total_tax = 0;
             selected_products_keys = Object.keys(selected_products);
             tax_ration.forEach(tax_obj => {
@@ -501,6 +542,71 @@ $(document).ready(function () {
             });
             
             $('#selected_taxe_cost').text(all_total_tax);
+
+            return all_total_tax;
+        }
+        
+        function calculate_fees () {
+            /**
+                get the products list, and the fee list and 
+                start calculation tax and sum the results and
+                show in the card. 
+
+                fees list : window.fees_ration
+                selected products : selected_products 
+            */
+            let all_total_fees = 0;
+            selected_products_keys = Object.keys(selected_products);
+            fees_ration.forEach(fee_object => {
+                let total_fee_obj = 0;
+                
+                // calculate the tax depending on it's type and calculation rules
+                if (fee_object.cost_type == 1) {
+                    selected_products_keys.forEach(product_key => {
+                        let product_obj_total_tax = 0;
+
+                        if (fee_object.is_fixed) {
+                            product_obj_total_tax += fee_object.cost * selected_products[product_key]['quantity'];
+                        } else {
+                            product_obj_total_tax += fee_object.cost * selected_products[product_key]['price'] * selected_products[product_key]['quantity'] / 100;
+                        }
+
+                        $(`#product-total-fee-${product_key}-${fee_object.id}`).text(product_obj_total_tax);
+                        $(`#product-total-fee-${product_key}`).text(product_obj_total_tax + selected_products[product_key]['quantity'] * selected_products[product_key]['price']);
+                        total_fee_obj += product_obj_total_tax;
+                    });
+                } else {
+                    total_fee_obj += fee_object.cost;
+                }
+
+                all_total_fees += total_fee_obj;
+
+                $(`#fee-total-cost-type-${fee_object.id}`).text(total_fee_obj);
+            });
+
+            $('#selected_fee_cost').text(all_total_fees);
+
+            return all_total_fees;
+        }
+
+        function get_shipping () {
+            /*
+                selected_shipping_cost
+                cost
+                cost-type
+                is_free_shipping
+            */
+            
+            const shipping_data = {
+                shipping_cost : $('#selected_shipping_cost').data('cost'),
+                shipping_type : $('#selected_shipping_cost').data('cost-type'),
+                is_free_shipping : $('#selected_shipping_cost').data('is_free_shipping')
+
+            };
+
+            console.log(shipping_data);
+
+            return shipping_data;
         }
 
         return {

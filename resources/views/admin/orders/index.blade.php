@@ -302,53 +302,6 @@ $(function () {
 
     const index_custome_events =  (function () {
         function start_events () {
-            $('#dataTable').on('change', '.c-activation-btn', function () {
-                let target_id = $(this).data('user-target');
-                
-                axios.post(`{{url('admin/customers')}}/${target_id}`, {
-                    _token : "{{ csrf_token() }}",
-                    _method : 'PUT',
-                    activate_customer : true
-                }).then(res => {
-                    if (!res.data.success) {
-                        $(this).prop('checked', !$(this).prop('checked'));
-                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
-
-                        setTimeout(() => {
-                            $('#dangerAlert').text('').slideUp(500);
-                        }, 3000);
-                    }
-                })// axios
-            }).on('click', '.restore-object', function () {
-                console.log('test restore');
-                $('#loddingSpinner').show(500);
-
-                let target_order_id   = $(this).data('object-id');
-                let target_order_code = $(this).data('object-name');
-                
-                let flag = confirm(`Are you sure you want to restor "${target_order_code}"`);
-                
-                if (flag) {
-                    axios.post(`{{ url('admin/orders') }}/${target_order_id}`, {
-                        _method  : 'DELETE',
-                        '_token' : $('meta[name="csrf-token"]').attr('content'),
-                        restore_product : true
-                    }).then(res => {
-                        
-                        $('#loddingSpinner').hide(500);
-                        
-                        if (res.data.success) {
-                            objects_dynamic_table.table_object.draw();
-
-                            $('#warningAlert').text('You restored the order successfully').slideDown();
-                            setTimeout(() => {
-                                $('#warningAlert').text('').slideUp();
-                            }, 3000);
-                        }// end :: if
-                    });
-                }// end :: if
-            });
-
             $('#customer, #edit-customer').select2({
                 // allowClear: true,
                 width: '100%',
@@ -399,6 +352,60 @@ $(function () {
 
             });
 
+            $('#dataTable').on('change', '.c-activation-btn', function () {
+                let target_id = $(this).data('user-target');
+                
+                axios.post(`{{url('admin/customers')}}/${target_id}`, {
+                    _token : "{{ csrf_token() }}",
+                    _method : 'PUT',
+                    activate_customer : true
+                }).then(res => {
+                    if (!res.data.success) {
+                        $(this).prop('checked', !$(this).prop('checked'));
+                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                })// axios
+            }).on('click', '.restore-object', function () {
+                console.log('test restore');
+                $('#loddingSpinner').show(500);
+
+                let target_order_id   = $(this).data('object-id');
+                let target_order_code = $(this).data('object-name');
+                
+                let flag = confirm(`Are you sure you want to restor "${target_order_code}"`);
+                
+                if (flag) {
+                    axios.post(`{{ url('admin/orders') }}/${target_order_id}`, {
+                        _method  : 'DELETE',
+                        '_token' : $('meta[name="csrf-token"]').attr('content'),
+                        restore_product : true
+                    }).then(res => {
+                        
+                        $('#loddingSpinner').hide(500);
+                        
+                        if (res.data.success) {
+                            objects_dynamic_table.table_object.draw();
+
+                            $('#warningAlert').text('You restored the order successfully').slideDown();
+                            setTimeout(() => {
+                                $('#warningAlert').text('').slideUp();
+                            }, 3000);
+                        }// end :: if
+                    });
+                }// end :: if
+            });
+
+            // make selected fee free
+            $('#fees_list_table_container').on('change', '.c-activation-btn', function () {
+                let target_fee_id = $(this).data('target');
+                console.log('fee id : ', target_fee_id);
+            });
+
+
             // Load taxes ratio
             /**
              * When the user press the create btn, send a request to the server
@@ -412,7 +419,52 @@ $(function () {
              */
             
             get_taxes_ratios();
+            get_fees_ratios();
 
+        }
+
+        function get_fees_ratios () {
+            /**
+             * Get taxes value from the server, and set a tax global variable.
+             */
+            window.fees_ration = [];
+
+            axios.get("{{ url('admin/fees') }}/0", { params: { get_all_fees: true }})
+            .then(res => {
+                if (res.data.success) {
+                    window.fees_ration = res.data.data;
+                    // products_column_header
+                    console.log('fee list : ', fees_ration);
+                    let products_fee_td = '';
+                    let fee_info_table_td = '';
+                    fees_ration.forEach(fee_obj => {
+                        /**
+                            # Add tax column to products table
+                        */
+                        products_fee_td += fee_obj.cost_type === 1 ? `
+                            <td>${fee_obj.title}</td>
+                        ` : '';
+
+                        fee_info_table_td += `
+                        <tr>
+                            <td>${fee_obj.title}</td>
+                            <td>${fee_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                            <td>${fee_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                            <td>${fee_obj.cost}</td>
+                            <td id="fee-total-cost-type-${fee_obj.id}">---</td>
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input class="c-activation-btn custom-control-input" id="customSwitch${fee_obj.id}" data-target="${fee_obj.id}" type="checkbox" checked="true">
+                                    <label class="custom-control-label" for="customSwitch${fee_obj.id}"></label>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    });
+                    $('#products_table_header').after(products_fee_td);
+                    $('#fees_list_table_container').append(fee_info_table_td);
+                }
+            });
         }
 
         function get_taxes_ratios () {
@@ -451,6 +503,8 @@ $(function () {
                 }
             });
         }
+
+        
         
         return {
             start_events : start_events
@@ -586,10 +640,14 @@ $(function () {
             
             $(`#${prefix}is_free_shipping`).val(0);
             $(`#${prefix}is_free_shipping_toggle`).prop('checked', false);
+
             $(`#${prefix}shipping`).val(shipping.id);
-            $(`#${prefix}shipping_cost`).val(shipping.cost).removeAttr('disabled');;
+            $(`#${prefix}shipping_cost`).val(shipping.cost).removeAttr('disabled');
+
             $(`#${prefix}selected_shipping_cost`).text(shipping.cost)
-                .data('cost', shipping.cost).data('cost-type', shipping.cost_type)
+                .data('cost', shipping.cost)
+                .data('cost-type', shipping.cost_type)
+                .data('is_free_shipping', false)
                 .css('text-decoration', '');
 
         }
