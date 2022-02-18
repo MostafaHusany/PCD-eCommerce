@@ -49,8 +49,9 @@
                 <th>#</th>
                 <th>Title</th>
                 <th>Cost</th>
-                <th>Cost Type</th>
-                <th>System</th>
+                <th>Free Taxes</th>
+                <!-- <th>Cost Type</th>
+                <th>System</th> -->
                 <th>Orders</th>
                 <th>Active</th>
                 <th>Actions</th>
@@ -94,15 +95,20 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'title', 'description', 'cost', 'cost_type', 'is_fixed', 'free_on_cost_above', 'meta'],
+            fields_list     : ['id', 'title', 'description', 'cost', 'free_on_cost_above', 'meta', 'is_free_taxes'
+                                    // , 'cost_type', 'is_fixed'
+                                ],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
             { data: 'title', name: 'title' },
             { data: 'cost', name: 'cost' },
+            { data: 'is_free_taxes', name : 'is_free_taxes'},
+            {{--
             { data: 'cost_type', name: 'cost_type' },
             { data: 'is_fixed', name: 'is_fixed' },
+            --}}
             { data: 'orders', name: 'orders' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
@@ -134,12 +140,12 @@ $(function () {
             $(`#${prefix}descriptionErr`).slideDown(500);
         }
 
-        if (data.get('cost_type') === '' || data.get('cost_type') === null) {
-            is_valide = false;
-            let err_msg = 'cost type is required';
-            $(`#${prefix}cost_typeErr`).text(err_msg);
-            $(`#${prefix}cost_typeErr`).slideDown(500);
-        }
+        // if (data.get('cost_type') === '' || data.get('cost_type') === null) {
+        //     is_valide = false;
+        //     let err_msg = 'cost type is required';
+        //     $(`#${prefix}cost_typeErr`).text(err_msg);
+        //     $(`#${prefix}cost_typeErr`).slideDown(500);
+        // }
         
         if (data.get('cost') == 0 || data.get('cost') === '') {
             is_valide = false;

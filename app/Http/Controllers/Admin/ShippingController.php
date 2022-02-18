@@ -21,16 +21,19 @@ class ShippingController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('is_free_taxes', function ($row_object) {
+                return $row_object->is_free_taxes ? 'Free Tax' : 'With Taxes';
+            })
             // ->addColumn('cost_type', function ($row_object) {
             //     return view('admin.shipping.incs._cost_type', compact('row_object'));
             // })
             
-            ->addColumn('cost_type', function ($row_object) {
-                return $row_object->cost_type == 0 ? 'package' : 'per-item';
-            })
-            ->addColumn('is_fixed', function ($row_object) {
-                return $row_object->is_fixed == 0 ? 'percentage' : 'fixed';
-            })
+            // ->addColumn('cost_type', function ($row_object) {
+            //     return $row_object->cost_type == 0 ? 'package' : 'per-item';
+            // })
+            // ->addColumn('is_fixed', function ($row_object) {
+            //     return $row_object->is_fixed == 0 ? 'percentage' : 'fixed';
+            // })
             ->addColumn('active', function ($row_object) {
                 return view('admin.shipping.incs._active', compact('row_object'));
             })
@@ -62,7 +65,7 @@ class ShippingController extends Controller
         $validator = Validator::make($request->all(), [
             'title'         => 'required|unique:shippings,title|max:255',
             'description'   => 'required|max:500',
-            'cost_type'     => 'required',
+            // 'cost_type'     => 'required',
             'cost'          => 'required'
         ]);
 
@@ -99,7 +102,7 @@ class ShippingController extends Controller
         $validator = Validator::make($request->all(), [
             'title'         => 'required|max:255|unique:shippings,title,' . $id,
             'description'   => 'required|max:500',
-            'cost_type'     => 'required',
+            // 'cost_type'     => 'required',
             'cost'          => 'required'
         ]);
 
