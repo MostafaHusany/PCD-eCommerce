@@ -64,5 +64,38 @@ $(document).ready(function () {
         });
     });
  
+    $('body').on('click', '.delete-cart', function () {
+        var self = $(this);
+        var rowId = self.data('row-id');
+        $.ajax({
+            url: "/cart_destroy_item/" + rowId,
+            type: 'GET',
+            success: function (response) {
+                $("#items_count").html(response.items_count);
+                $("#updatePrice").html(response.totalPrice);
+             
+                self.parents('tr').remove();
+            }
+        });
 
+    });
+
+    $('body').on('click', '.update-cart', function () {
+        $('.update-quantity').each(function (index, value) {
+             var self = $(value);
+            var quantity = self.val();
+            var rowId = self.data('row-id');
+            var price = self.data('price');
+
+            $.get('/update_quantity/' + quantity + '/' + rowId, function (data) {
+                if (data.fail) {
+                } else {
+                    console.log(data);
+                    $('.totalAmount_' + rowId).text(price * quantity );
+                    $("#updatePrice").html(data.totalPrice);
+
+                }
+            });
+        })
+    });
 });

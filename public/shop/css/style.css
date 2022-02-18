@@ -182,7 +182,6 @@ button:focus:not(:focus-visible) {
 	border-width: 1px;
 	cursor: pointer;
 	line-height: normal;
-	padding: 12px 35px;
 	text-transform: capitalize;
 	transition: all 0.3s ease-in-out;
 }

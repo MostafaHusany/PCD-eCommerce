@@ -1,7 +1,9 @@
 <?php
 
+use App\CategoryAttribute;
 use App\Product;
 use App\ProductCategory;
+use App\ProductCustomeField;
 
 if (!function_exists('categories')) {
     function categories()
@@ -40,5 +42,18 @@ if (!function_exists('product_details')) {
     function product_details($id)
     {
         return Product::findOrFail($id);
+    }
+}
+
+if (!function_exists('category_attributes')) {
+    function category_attributes()
+    {
+        return CategoryAttribute::get();
+    }
+}
+if (!function_exists('product_custome_fields')) {
+    function product_custome_fields()
+    {
+        return ProductCustomeField::get();
     }
 }

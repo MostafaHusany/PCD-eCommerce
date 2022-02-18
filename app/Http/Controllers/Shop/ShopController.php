@@ -57,4 +57,9 @@ class ShopController extends Controller
 
         return view('shop.show', compact('product'));
     } 
+
+    public function products(){
+        $products = Product::all();
+        return view('shop.products',compact('products'));
+    }
 }

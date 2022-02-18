@@ -35,6 +35,8 @@
     <!-- Magnific Popup CSS -->
     <link rel="stylesheet" href="{{asset('shop')}}/css/magnific-popup.css">
     <!-- Slick CSS -->
+    <link rel="stylesheet" href="{{asset('shop')}}/css/jquery-ui.css">
+
     <link rel="stylesheet" href="{{asset('shop')}}/css/slick.css">
     <link rel="stylesheet" href="{{asset('shop')}}/css/slick-theme.css">
     <!-- Style CSS -->
@@ -104,19 +106,36 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="dropdown">
-                            <a data-bs-toggle="dropdown" class="nav-link " href="#">Home</a>
-
+                            <a  class="nav-link" href="{{route('index')}}">Home</a>
+                        </li>
+                        <li class="dropdown">
+                            <a class="nav-link" href="{{route('products')}}">All products</a>
                         </li>
 
-                        @foreach(categories() as $category)
-                        <li><a class="nav-link nav_item" href="{{route('category', $category->id)}}">
-                                @if(get_lang() == 'ar')
-                                {{$category->ar_title}}
-                                @elseif(get_lang() == 'en')
-                                {{$category->en_title}}
-                                @endif
-                            </a></li>
-                        @endforeach
+                        <li class="dropdown">
+                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">title one</a>
+                            <div class="dropdown-menu">
+                                <ul> 
+                                @foreach(categories() as $category)
+                                <li><a class="dropdown-item nav-link nav_item"
+                                 href="{{route('category', $category->id)}}">   
+                                  @if(get_lang() == 'ar')
+                                        {{$category->ar_title}}
+                                        @elseif(get_lang() == 'en')
+                                        {{$category->en_title}}
+                                        @endif</a></li> 
+                                @endforeach
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="nav-link" href="">Title two</a>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="nav-link" href="">Title three</a>
+                        </li>
                     </ul>
                 </div>
                 <ul class="navbar-nav attr-nav align-items-center">
@@ -148,7 +167,8 @@
                             <div class="cart_footer">
                                 <p class="cart_total"><strong>Subtotal:</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
                                 <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">View Cart</a>
-                                <a href="#" class="btn btn-fill-out rounded-0 checkout">Checkout</a></p>
+                                    <a href="#" class="btn btn-fill-out rounded-0 checkout">Checkout</a>
+                                </p>
                             </div>
                             @endif
                         </div>

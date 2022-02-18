@@ -34,11 +34,14 @@
                                 <td class="product-price" data-title="Price">{{$item->price}}</td>
                                 <td class="product-quantity" data-title="Quantity"><div class="quantity">
                                 <input type="button" value="-" class="minus">
-                                <input type="text" name="quantity" value="{{$item->qty}}" title="Qty" class="qty" size="4">
+                                <input type="number" name="quantity" data-price="{{ $item->price }}"
+                                 data-row-id="{{ $item->rowId }}"
+                                  class="update-quantity" value="{{$item->qty}}" title="Qty" class="qty" size="4">
                                 <input type="button" value="+" class="plus">
                               </div></td>
-                              	<td class="product-subtotal" data-title="Total">{{$item->qty * $item->price}}</td>
-                                <td class="product-remove" data-title="Remove"><a href="#"><i class="ti-close"></i></a></td>
+                              	<td class="product-subtotal totalAmount_{{ $item->rowId }}" data-title="Total">{{$item->qty * $item->price}}</td>
+                                <td class="product-remove delete-cart" data-title="Remove" data-row-id="{{ $item->rowId }}">
+                                    <a href="javascript:void(0);"><i class="ti-close"></i></a></td>
                             </tr>
                             @endforeach
             
@@ -49,7 +52,7 @@
                             	<td colspan="6" class="px-0">
                                 	<div class="row g-0 align-items-center">
                                         <div class="col-lg-8 col-md-6  text-start  text-md-end">
-                                            <button class="btn btn-line-fill btn-sm" type="submit">Update Cart</button>
+                                        <a class="btn btn-line-fill btn-sm update-cart"> Update Cart</a>
                                         </div>
                                     </div>
                                 </td>
@@ -70,7 +73,7 @@
                             <tbody>
                                 <tr>
                                     <td class="cart_total_label">Cart Subtotal</td>
-                                    <td class="cart_total_amount">{{$totalPrice}}</td>
+                                    <td class="cart_total_amount" id="updatePrice">{{$totalPrice}}</td>
                                 </tr>
                                 <!-- <tr>
                                     <td class="cart_total_label">Shipping</td>
