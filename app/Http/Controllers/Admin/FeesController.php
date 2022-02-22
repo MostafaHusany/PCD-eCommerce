@@ -41,6 +41,11 @@ class FeesController extends Controller
     }
 
     public function show (Request $request, $id) {
+        if (isset($request->get_all_fees)) {
+            $all_Fees = Fee::where('is_active', 1)->get();
+            return response()->json(['data' => $all_Fees, 'success' => isset($all_Fees)]);
+        }
+
         $target_object = Fee::find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {

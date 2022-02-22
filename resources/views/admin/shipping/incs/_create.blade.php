@@ -31,6 +31,7 @@
             </div>
         </div><!-- /.form-group -->
 
+        {{--
         <div class="form-group row">
             <label for="cost_type" class="col-sm-2 col-form-label">Cost Type</label>
             <div class="col-sm-10">
@@ -42,15 +43,29 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+        --}}
+
+        <div class="form-group row">
+            <label for="is_free_taxes" class="col-sm-2 col-form-label">Is Free Taxes ?</label>
+            <div class="col-sm-10">
+                <select  tabindex="3" class="form-control" id="is_free_taxes">
+                    <option selected="selected" value="1">Free Taxes</option>
+                    <option value="0">Add Taxes</option>
+                </select>
+                <div style="padding: 5px 7px; display: none" id="is_free_taxesErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div>
 
         <div class="form-group row">
             <label for="cost" class="col-sm-2 col-form-label">Cost</label>
-            <div class="col-sm-5">
+            <div class="col-sm-10">
                 <input tabindex="4" type="number" min="0" value="1" step="0.5" class="form-control" id="cost">
                 <div style="padding: 5px 7px; display: none" id="costErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
 
+            {{--
             <div class="col-sm-5">
                 <select tabindex="5" class="form-control" id="is_fixed">
                     <option value="0">Percentage</option>
@@ -59,6 +74,7 @@
                 <div style="padding: 5px 7px; display: none" id="is_fixedErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
+            --}}
         </div><!-- /.form-group -->
 
         <hr />
@@ -85,6 +101,6 @@
             </div>
         </div>
 
-        <button tabindex="8" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button tabindex="8" class="create-object btn btn-primary float-right">Create {{ $object_title }}</button>
     </form>
 </div>
