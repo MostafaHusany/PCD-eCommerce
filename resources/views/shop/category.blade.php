@@ -77,15 +77,16 @@ Home Page
                                     </div>
                                     <div class="list_product_action_box">
                                         <ul class="list_none pr_action_btn">
-                                            <li class="add-to-cart"> <a class="item_to_cart" href="" 
-                                            data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" 
-                                            data-id="{{ $product->id }}" data-price="{{ $product->price }}"
-                                            aria-label="{{ $product->name }}"><i class="icon-basket-loaded">
-                                            </i>Add To Cart</a></li>
+                                            <li class="add-to-cart"> <a class="item_to_cart" href="" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" data-price="{{ $product->price }}" aria-label="{{ $product->name }}"><i class="icon-basket-loaded">
+                                                    </i>Add To Cart</a></li>
 
                                             <li><a href="shop-compare.html" class="popup-ajax"><i class="icon-shuffle"></i></a></li>
                                             <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                            <li><a href="#"><i class="icon-heart"></i></a></li>
+                                            @guest
+                                            <li><a href="{{route('Login')}}"><i class="icon-heart"></i></a></li>
+                                            @else
+                                            <li id="favorite"><a href="javascript:void(0)"><i class="icon-heart add-to-favorite @if(checkFavorite($product->id))favorite @endif" data-product-id="{{ $product->id }}"></i></a></li>
+                                            @endguest
                                         </ul>
                                     </div>
                                 </div>
