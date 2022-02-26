@@ -47,8 +47,8 @@
         <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
                 <th>#</th>
-                <th>ar_title</th>
-                <th>en_title</th>
+                <th>AR Title</th>
+                <th>EN Title</th>
                 <th>Image</th>
                 <th>Actions</th>
             </thead>

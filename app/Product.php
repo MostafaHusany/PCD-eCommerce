@@ -10,7 +10,7 @@ class Product extends Model
                             'en_name', 'en_small_description', 'en_description',
                             'quantity', 'reserved_quantity', 'price_after_sale', 'price', 'sku', 'slug',
                             'main_image', 'images', 'meta', 'category_id',
-                            'is_active', 'is_composite'];
+                            'is_active', 'is_composite', 'brand_id'];
 
     public function getFormatedPrice () {
         return $this->price . ' SR';
@@ -45,5 +45,9 @@ class Product extends Model
 
     public function product_custome_fields () {
         return $this->hasMany(ProductCustomeField::class, 'product_id');
+    }
+
+    public function brands () {
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 }

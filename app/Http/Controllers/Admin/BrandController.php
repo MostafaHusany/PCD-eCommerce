@@ -34,9 +34,12 @@ class BrandController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
-                ->addColumn('actions', function ($row_object) {
-                    return view('admin.brands.incs._actions', compact('row_object'));
-                });
+            ->addColumn('image', function ($row_object) {
+                return view('admin.brands.incs._image', compact('row_object'));
+            })
+            ->addColumn('actions', function ($row_object) {
+                return view('admin.brands.incs._actions', compact('row_object'));
+            });
             return $datatable_model->make(true);
         }
         $brands = Brand::all();

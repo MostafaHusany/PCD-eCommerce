@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         'destroy' => 'admin.products-categories.destroy'
         ]
     ]);
+    
     Route::resource('brands', 'BrandController', ['names' => [
         'index' => 'admin.brands.index',
         'store' => 'admin.brands.store',
