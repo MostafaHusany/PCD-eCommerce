@@ -148,13 +148,15 @@ class OrdersController extends Controller
          * Shipping cost : 
          * 
          * we want to add shipping cost to the total, but first we need 
-         * to make sure that the cuser didn't edit the cost, so we need 
-         * to check if the used sent a new shipping_cost, and than we make sure
+         * to make sure that the user didn't edit the cost, so we need 
+         * to check if the user sent a new shipping_cost, and than we make sure
          * that this cost differ than the cost from the shipping boject
          * if it's differs we update the shipping cost
          * 
          * first get the shipping object
          * check if the user sent a new 
+         * 
+         * Calculate Taxe & Fees
          */
         $target_shipping = Shipping::find($request->shipping);
         $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
