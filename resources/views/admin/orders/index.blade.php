@@ -146,7 +146,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'customer', 'products', 'products_quantity', 'shipping', 'shipping_cost', 'is_free_shipping'],
+            fields_list     : ['id', 'customer', 'products', 'products_quantity', 'shipping', 'shipping_cost', 'is_free_shipping', 'fees'],
             imgs_fields     : []
         },
         [
@@ -419,7 +419,7 @@ $(function () {
              */
             
             get_taxes_ratios();
-            get_fees_ratios();
+            // get_fees_ratios();
 
         }
 
@@ -555,7 +555,7 @@ $(function () {
                     .then(res => {
                         $('#createOrderLoddingSpinner').hide();
                         const target_shipping = res.data.data;
-                        target_shipping.cost  = edit_shipping_cost != null ? edit_shipping_cost : target_shipping.cost;
+                        target_shipping.cost  = edit_shipping_cost != null ? edit_shipping_cost : target_shipping.cost_with_tax;
                         set_shipping_fields(prefix, target_shipping);
                         edit_shipping_cost = null;
                     });
@@ -588,21 +588,27 @@ $(function () {
                  */
                 let prefix           = $(this).data('prefix');
                 let shipping_val     = $(`#${prefix}shipping`).val();
-                
-                console.log(shipping_val, $(this).prop('checked'), $(this).val());
 
                 if (shipping_val != '' && shipping_val != null) {
                     let is_free_shipping = $(this).prop('checked');
                     
                     if (is_free_shipping) {
                         $(`#${prefix}shipping_cost`).val(0).attr('disabled', 'disabled');
-                        $(`#${prefix}selected_shipping_cost`).css('text-decoration', 'line-through');
+                        
+                        $(`#${prefix}selected_shipping_cost`)
+                            .data('is_free_shipping', true)
+                            .css('text-decoration', 'line-through');
+                        
                         $(`#${prefix}is_free_shipping`).val(1);
                     } else {
-                        let shipping_cost    = $(`#${prefix}selected_shipping_cost`).data('cost');
+                        let shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
                         $(`#${prefix}shipping_cost`).val(shipping_cost).removeAttr('disabled');
-                        $(`#${prefix}selected_shipping_cost`).text(shipping_cost);                
-                        $(`#${prefix}selected_shipping_cost`).css('text-decoration', '');
+                                      
+                        $(`#${prefix}selected_shipping_cost`)
+                            .text(shipping_cost)
+                            .data('is_free_shipping', false)
+                            .css('text-decoration', '');
+                        
                         $(`#${prefix}is_free_shipping`).val(0);
                     }
                 } else {
@@ -634,7 +640,7 @@ $(function () {
         function set_shipping_fields (prefix = '', shipping = {
             id : '',
             cost : 0,
-            cost_type : ''
+            is_free_taxes : ''
         }) {
             
             
@@ -646,7 +652,6 @@ $(function () {
 
             $(`#${prefix}selected_shipping_cost`).text(shipping.cost)
                 .data('cost', shipping.cost)
-                .data('cost-type', shipping.cost_type)
                 .data('is_free_shipping', false)
                 .css('text-decoration', '');
 

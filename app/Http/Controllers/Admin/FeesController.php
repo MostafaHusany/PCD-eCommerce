@@ -41,9 +41,16 @@ class FeesController extends Controller
     }
 
     public function show (Request $request, $id) {
+        if(isset($request->get_selected_fees)) {
+            $fees_ids = json_decode($request->fees_ids);
+            $selected_fees = Fee::where('is_active', 1)->whereIn('id', $fees_ids)->get();
+
+            return response()->json(['data' => $selected_fees, 'success' => isset($selected_fees)]);
+        }
+
         if (isset($request->get_all_fees)) {
-            $all_Fees = Fee::where('is_active', 1)->get();
-            return response()->json(['data' => $all_Fees, 'success' => isset($all_Fees)]);
+            $all_fees = Fee::where('is_active', 1)->get();
+            return response()->json(['data' => $all_fees, 'success' => isset($all_fees)]);
         }
 
         $target_object = Fee::find($id);
@@ -127,6 +134,7 @@ class FeesController extends Controller
             $search = $request->q;
             $data = Fee::select("id", "title")
             		->where('title','LIKE',"%$search%")
+                    ->where('is_active', 1)
             		->get();
         }
         return response()->json($data);
