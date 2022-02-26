@@ -59,7 +59,9 @@ class ShopController extends Controller
     } 
 
     public function products(){
+        $categoryProducts = ProductCategory::where('is_main','1')->get();
         $products = Product::all();
-        return view('shop.products',compact('products'));
+        $title="all_products";
+        return view('shop.products',compact('products','categoryProducts','title'));
     }
 }

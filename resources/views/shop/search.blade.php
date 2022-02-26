@@ -1,20 +1,15 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Home Page
+Search result
 @endsection
 
 
 @section('content')
-@if($title == 'all_products')
 @include('shop.incs.breadcramp', [
-'name' => 'All Products',
+'name' => 'Search result',
 ])
-@else
-@include('shop.incs.product-breadcramp', [
-'name' => $currentCategory,
-])
-@endif
+
 <!-- START MAIN CONTENT -->
 <div class="main_content">
 
@@ -22,7 +17,9 @@ Home Page
     <div class="section">
         <div class="container">
             <div class="row">
-                <div class="col-lg-9">
+                @if(count($products)>0)
+
+                <div class="col-lg-12">
                     <div class="row align-items-center mb-4 pb-1">
                         <div class="col-12">
                             <div class="product_header">
@@ -47,7 +44,6 @@ Home Page
                         </div>
                     </div>
                     <div class="row shop_container">
-                        @if(isset($products ))
                         @foreach($products as $product)
                         <div class="col-md-4 col-6">
                             <div class="product">
@@ -112,84 +108,12 @@ Home Page
                             </div>
                         </div>
                         @endforeach
-                        @else
-                        <p>There is no products</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-lg-3 order-lg-first mt-4 pt-2 mt-lg-0 pt-lg-0">
-                    <div class="sidebar">
-                        <div class="widget">
-                            @csrf
-                            @if(count($categoryProducts)>0)
-                            <h5 class="widget_title">Categories</h5>
-                            <ul class="widget_categories">
-                                @foreach($categoryProducts as $category)
-                                <li class="dropdown cssState">
-                                    <a href="{{route('category',$category->id)}}">
-                                        <span class="categories_name">
-                                            @if(get_lang() == 'ar')
-                                            {{substr($category->ar_title, 0, 20)}}
-                                            @elseif(get_lang() == 'en')
-                                            {{substr($category->en_title, 0, 20)}}
-                                            @endif
-                                        </span>
-                                    </a>
-                                    </span><span class="categories_num"> ({{count($category->products)}})</span>
-
-                                </li>
-
-                                @endforeach
-                            </ul>
-                            @else
-                            <h5 class="widget_title">options</h5>
-                            <form action="{{route('option_filter')}}" method="post">
-                                @csrf
-                                <ul>
-                                    @foreach($currentCategory->attributes as $custom)
-                                    <li class="dropdown cssState">{{$custom->title}}</li>
-                                    <ul>
-                                        @php
-                                        $meta = (array) json_decode($custom->meta);
-                                        if ($custom->type === 'options') {
-                                        $options = $meta['options'];
-                                        foreach($options as $option) {
-                                        @endphp
-                                        <div class="custome-checkbox">
-                                            <input class="form-check-input" type="checkbox" name="checkbox[]" id="{{$option}}" value="{{$option}}">
-                                            <label class="form-check-label" for="{{$option}}"><span>{{$option}}</span></label>
-                                        </div>
-                                        @php
-                                        }
-                                        } else if ($custom->type === 'number'){
-                                        @endphp
-                                        <div class="widget">
-                                            <h5 class="widget_title">Filter</h5>
-                                            <div class="filter_price">
-                                                <div id="price_filter" data-min="0" data-max="5000" 
-                                                data-min-value="{{$meta['number']->field_number_from}}" data-max-value="{{$meta['number']->field_number_to}}" data-price-sign="{{$meta['number']->field_number_metric}}"></div>
-                                                <div class="price_range">
-                                                    <span>{{$meta['number']->field_number_metric}}: <span id="flt_price"></span></span>
-                                                    <input type="hidden" name="price_first" id="price_first">
-                                                    <input type="hidden" name="price_second" id="price_second">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @php
-                                        }
-                                        @endphp
-                                    </ul>
-                                    @endforeach
-                                </ul>
-                                <button class="btn btn-danger" type="submit">filter</button>
-                            </form>
-                            @endif
-                        </div>
-                        <br>
-
                     </div>
                 </div>
             </div>
+            @else
+            <p class="text-center">There is no products</p>
+            @endif
         </div>
     </div>
     <!-- END SECTION SHOP -->

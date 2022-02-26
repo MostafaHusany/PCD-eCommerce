@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+@if(get_lang() == 'ar')
+<html lang="ar" dir="rtl">
+@else
 <html lang="en">
+@endif
 
 <head>
     <!-- Meta -->
@@ -40,9 +44,12 @@
     <link rel="stylesheet" href="{{asset('shop')}}/css/slick.css">
     <link rel="stylesheet" href="{{asset('shop')}}/css/slick-theme.css">
     <!-- Style CSS -->
+
     <link rel="stylesheet" href="{{asset('shop')}}/css/style.css">
     <link rel="stylesheet" href="{{asset('shop')}}/css/responsive.css">
-
+    @if(get_lang() == 'ar')
+    <link rel="stylesheet" href="{{asset('shop')}}/css/rtl-style.css">
+    @endif
 </head>
 
 <!-- LOADER -->
@@ -85,8 +92,18 @@
                     <div class="text-center text-md-end">
                         <ul class="header_list">
                             <li><a href="compare.html"><i class="ti-control-shuffle"></i><span>Compare</span></a></li>
-                            <li><a href="wishlist.html"><i class="ti-heart"></i><span>Wishlist</span></a></li>
-                            <li><a href="login.html"><i class="ti-user"></i><span>Login</span></a></li>
+                            @guest
+                            <li><a href="{{route('Login')}}"><i class="ti-heart"></i><span>Wishlist</span></a></li>
+                            @else
+                            <li><a href="{{route('wishlist')}}"><i class="ti-heart"></i><span>Wishlist</span></a></li>
+                            @endguest
+                            @auth
+                            <li><a href="{{route('profile')}}"><i class="ti-user"></i><span>
+                                        profile</span></a></li>
+                            @else
+                            <li><a href="{{route('Login')}}"><i class="ti-user"></i><span>
+                                        Login</span></a></li>
+                            @endauth
                         </ul>
                     </div>
                 </div>
@@ -96,7 +113,7 @@
     <div class="bottom_header dark_skin main_menu_uppercase">
         <div class="container">
             <nav class="navbar navbar-expand-lg">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{route('index')}}">
                     <img class="logo_light" src="{{asset('shop')}}/images/logo_light.png" alt="logo" />
                     <img class="logo_dark" src="{{asset('shop')}}/images/logo_dark.png" alt="logo" />
                 </a>
@@ -106,7 +123,7 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="dropdown">
-                            <a  class="nav-link" href="{{route('index')}}">Home</a>
+                            <a class="nav-link" href="{{route('index')}}">Home</a>
                         </li>
                         <li class="dropdown">
                             <a class="nav-link" href="{{route('products')}}">All products</a>
@@ -115,16 +132,15 @@
                         <li class="dropdown">
                             <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">title one</a>
                             <div class="dropdown-menu">
-                                <ul> 
-                                @foreach(categories() as $category)
-                                <li><a class="dropdown-item nav-link nav_item"
-                                 href="{{route('category', $category->id)}}">   
-                                  @if(get_lang() == 'ar')
-                                        {{$category->ar_title}}
-                                        @elseif(get_lang() == 'en')
-                                        {{$category->en_title}}
-                                        @endif</a></li> 
-                                @endforeach
+                                <ul>
+                                    @foreach(categories() as $category)
+                                    <li><a class="dropdown-item nav-link nav_item" href="{{route('category', $category->id)}}">
+                                            @if(get_lang() == 'ar')
+                                            {{$category->ar_title}}
+                                            @elseif(get_lang() == 'en')
+                                            {{$category->en_title}}
+                                            @endif</a></li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </li>
@@ -136,14 +152,32 @@
                         <li class="dropdown">
                             <a class="nav-link" href="">Title three</a>
                         </li>
+                        <li class="dropdown ">
+                            <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                                <span class="mr-1">
+                                    <span class="user-name text-bold-700"> {{App::getLocale()}}</span>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <ul>
+                                    @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                    <li><a class="dropdown-item" rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                                            {{ $properties['native'] }}</a></li>
+                                    @endforeach
+                                </ul>
+
+                            </div>
+                        </li>
+
                     </ul>
                 </div>
                 <ul class="navbar-nav attr-nav align-items-center">
                     <li><a href="javascript:void(0);" class="nav-link search_trigger"><i class="linearicons-magnifier"></i></a>
                         <div class="search_wrap">
                             <span class="close-search"><i class="ion-ios-close-empty"></i></span>
-                            <form>
-                                <input type="text" placeholder="Search" class="form-control" id="search_input">
+                            <form action="{{route('Search')}}" method="post">
+                                @csrf
+                                <input type="text" placeholder="Search" name="search" class="form-control" id="search_input">
                                 <button type="submit" class="search_icon"><i class="ion-ios-search-strong"></i></button>
                             </form>
                         </div>

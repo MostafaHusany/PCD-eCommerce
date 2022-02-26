@@ -1,9 +1,11 @@
 <?php
 
 use App\CategoryAttribute;
+use App\Favorite;
 use App\Product;
 use App\ProductCategory;
 use App\ProductCustomeField;
+use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('categories')) {
     function categories()
@@ -55,5 +57,18 @@ if (!function_exists('product_custome_fields')) {
     function product_custome_fields()
     {
         return ProductCustomeField::get();
+    }
+}
+if (!function_exists('meta')) {
+    function meta($meta)
+    {
+        return (array) Json_decode($meta)
+        ;
+    }
+}
+if (!function_exists('checkFavorite')) {
+    function checkFavorite($product_id)
+    {
+        return Favorite::where('product_id',$product_id)->where('user_id',Auth()->user()->id)->first();
     }
 }
