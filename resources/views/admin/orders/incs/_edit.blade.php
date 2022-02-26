@@ -96,7 +96,7 @@
                                 <h3>Shipping</h3>
                             </td>
                             <td>
-                               <span id="edit-selected_shipping_cost" data-cost="" data-cost-type=""> --- </span> SAR
+                               <span id="edit-selected_shipping_cost" data-cost="" data-is-free-taxes=""> --- </span> SAR
                             </td>
                             <td></td>
                         </tr>

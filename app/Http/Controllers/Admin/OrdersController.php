@@ -117,6 +117,7 @@ class OrdersController extends Controller
     }
 
     public function store (Request $request) {
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',

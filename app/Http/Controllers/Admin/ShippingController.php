@@ -55,6 +55,7 @@ class ShippingController extends Controller
         $target_object = Shipping::find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
+            $target_object->cost_with_tax = $target_object->getCost();
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
@@ -130,6 +131,7 @@ class ShippingController extends Controller
         if($request->has('q')) {
             $search = $request->q;
             $data = Shipping::select("id", "title", 'cost')
+                    ->where('is_active', 1)
             		->where('title','LIKE',"%$search%")
             		->get();
         }

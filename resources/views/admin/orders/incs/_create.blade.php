@@ -122,9 +122,40 @@
                     <div style="padding: 5px 7px; display: none" id="is_free_shippingErr" class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div><!-- /.form-group -->
+
             </div><!-- /.form-group -->
             <!-- END SHIPPING PHASE -->
 
+            <!-- START FEES PHASE -->
+            <div class="form-group row">
+                <label for="fees" class="col-2">Fees</label>
+                <div class="form-group col-10">
+                    <select id="fees" data-prefix="" class="form-control" multiple="multiple"></select>
+                    <div style="padding: 5px 7px; display: none" id="feesErr" class="err-msg mt-2 alert alert-danger">
+                    </div>
+                </div><!-- /.form-group -->
+                {{--
+                    <div class="form-group col-10">
+                        <input type="number" min="0" value="0" id="fees_cost" data-prefix="" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="fees_costErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div><!-- /.form-group -->
+                    
+                    <div class="form-group col-2" style="padding: 5px 0px;">
+                        <input type="hidden" id="is_free_fees">
+                        <div class="custom-control custom-switch" value="0">
+                            <input type="checkbox" class="custom-control-input" data-prefix="" id="is_free_fees_toggle">
+                            <label class="custom-control-label" for="is_free_fees_toggle">Free Fees</label>
+                        </div>
+                        
+                        <div style="padding: 5px 7px; display: none" id="is_free_feesErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div><!-- /.form-group -->
+                --}}
+            </div><!-- /.form-group -->
+            <!-- END FEES PHASE -->
+            
+            
             <hr/>
             
             <div class="form-group row">
@@ -143,17 +174,24 @@
                         <tbody id="taxes_list_table_container"></tbody>
                     </table>
                 </div><!-- /.col-6 -->
+
                 <div class="col-6">
                     <h4>Fees</h4>
+                    {{--
+                    <div class="form-group">
+                        <select id="fees" data-prefix="" class="form-control" multiple="multiple"></select>
+                        <div style="padding: 5px 7px; display: none" id="feesErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div><!-- /.form-group -->
+                    --}}
                     <table class="table" style="font-size: 12px">
                         <thead>
                             <tr>
-                                <th>Taxe</th>
+                                <th>Fee</th>
                                 <th>Calculation Type</th>
                                 <th>Cost Type</th>
                                 <th>Value</th>
                                 <th>Total</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="fees_list_table_container"></tbody>
@@ -177,7 +215,7 @@
                             <h5>Shipping Total</h5>
                         </td>
                         <td>
-                            <span id="selected_shipping_cost" data-cost="" data-cost-type=""> --- </span> SAR
+                            <span id="selected_shipping_cost" data-cost=""> --- </span> SAR
                         </td>
                         <td></td>
                     </tr>
@@ -231,6 +269,8 @@ $(document).ready(function () {
     const create_special_options = (function  () {
         let selected_products = {};
         let tax_total = 0;
+        let fees_ration = [];
+
 
         function startet_event () {
             /**
@@ -333,6 +373,77 @@ $(document).ready(function () {
                 }
             });
 
+            $('#fees').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select Fees',
+                ajax: {
+                    url: '{{ url("admin/fees-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.title}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }).change(function () {
+                let prefix   = $(this).data('prefix');
+                let fees_ids = $(this).val();
+
+                if (fees_ids !== null || fees_ids === '') {
+                    $('#createOrderLoddingSpinner').show();
+                    
+                    axios.get(`{{url("admin/fees")}}/0?get_selected_fees=true`, {
+                        params: {
+                            fees_ids: JSON.stringify(fees_ids),
+                        },
+                    })
+                    .then(res => {
+                        $('#createOrderLoddingSpinner').hide();
+                        console.log(res.data, res.data.success);
+                        if (res.data.success) {
+                            fees_ration = res.data.data;
+                            let products_fee_td = '';
+                            let fee_info_table_td = '';
+
+                            $('.fee-create-form-tr').remove();
+                            fees_ration.forEach(fee_obj => {
+                                /**
+                                    # Add tax column to products table
+                                */
+                                // products_fee_td += fee_obj.cost_type === 1 ? `
+                                //     <td>${fee_obj.title}</td>
+                                // ` : '';
+
+                                fee_info_table_td += `
+                                <tr class="fee-create-form-tr">
+                                    <td>${fee_obj.title}</td>
+                                    <td>${fee_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                                    <td>${fee_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                                    <td>${fee_obj.cost}</td>
+                                    <td id="fee-total-cost-type-${fee_obj.id}">---</td>
+                                </tr>
+                                `;
+                            });
+                            // $('#products_table_header').after(products_fee_td);
+                            $('#fees_list_table_container').append(fee_info_table_td);
+                            calculate_fees();
+                        }
+                    });
+                } else {
+                    // set_shipping_fields(prefix);
+                }
+                
+                // reset is_free_shipping
+            });
+
             // the selected product quantity, price change event, anf remove item event
             $('#selected_product_table').on('change keyup', '.selected_product_quantity', function () {
                 let target_id   = $(this).data('target');
@@ -421,21 +532,21 @@ $(document).ready(function () {
             });
 
             let fee_tr = '';
-            window.fees_ration.forEach(fee_obj => {
-                if (fee_obj.cost_type === 1) {
-                    if (fee_obj.is_fixed) {
-                        fee_tr += `
-                            <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost}</td>
-                        `;
-                        total_product_cost += fee_obj.cost;
-                    } else {
-                        fee_tr += `
-                            <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost * target_product.price / 100}</td>
-                        `;
-                        total_product_cost += fee_obj.cost * target_product.price / 100;
-                    }
-                }// end :: if
-            });
+            // window.fees_ration.forEach(fee_obj => {
+            //     if (fee_obj.cost_type === 1) {
+            //         if (fee_obj.is_fixed) {
+            //             fee_tr += `
+            //                 <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost}</td>
+            //             `;
+            //             total_product_cost += fee_obj.cost;
+            //         } else {
+            //             fee_tr += `
+            //                 <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost * target_product.price / 100}</td>
+            //             `;
+            //             total_product_cost += fee_obj.cost * target_product.price / 100;
+            //         }
+            //     }// end :: if
+            // });
 
             let product_tr = `
                 <tr class="selected-product-rows selected-product-row-${target_product.id}">
@@ -484,6 +595,15 @@ $(document).ready(function () {
             calculate_products_cost();
         }
 
+        function get_sub_total () {
+            let sub_total = 0;
+            selected_products_keys.forEach(product_key => {
+                sub_total += selected_products[product_key]['price'] 
+                            * selected_products[product_key]['quantity'];
+            });
+            return sub_total;
+        }
+
         function calculate_products_cost () {
             /**
              * calculate sub total, and total 
@@ -498,6 +618,8 @@ $(document).ready(function () {
                 sub_total += selected_products[product_key]['price'] 
                             * selected_products[product_key]['quantity'];
             });
+
+            // if (shipping_obj.)
             
             $('#selected_products_sub_total').text(sub_total);
             $('#selected_products_total').text(sub_total + total_taxes + total_fees);
@@ -533,7 +655,9 @@ $(document).ready(function () {
                         total_tax_obj += product_obj_total_tax;
                     });
                 } else {
-                    total_tax_obj += tax_obj.cost;
+                    // total_tax_obj += tax_obj.cost;
+                    total_tax_obj += tax_obj.is_fixed ? tax_obj.cost : get_sub_total() * tax_obj.cost / 100;
+
                 }
                 
                 // show total tax
@@ -576,7 +700,7 @@ $(document).ready(function () {
                         total_fee_obj += product_obj_total_tax;
                     });
                 } else {
-                    total_fee_obj += fee_object.cost;
+                    total_fee_obj += fee_object.is_fixed ? fee_object.cost : get_sub_total() * fee_object.cost / 100;
                 }
 
                 all_total_fees += total_fee_obj;
@@ -599,7 +723,6 @@ $(document).ready(function () {
             
             const shipping_data = {
                 shipping_cost : $('#selected_shipping_cost').data('cost'),
-                shipping_type : $('#selected_shipping_cost').data('cost-type'),
                 is_free_shipping : $('#selected_shipping_cost').data('is_free_shipping')
 
             };
