@@ -1,20 +1,20 @@
 <!-- need to remove -->
 <li class="nav-item">
-    <a href="{{ route('home') }}" class="nav-link" >
+    <a href="{{ route('home') }}" class="nav-link">
         <i class="nav-icon fas fa-tachometer-alt"></i>
         <p>Home</p>
     </a>
 </li>
 
 <li class="nav-item">
-    <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}" >
+    <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}">
         <i class="nav-icon fas fa-headset"></i>
         <p>Users</p>
     </a>
 </li>
 
 <li class="nav-item">
-    <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}" >
+    <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}">
         <i class="nav-icon fas fa-users"></i>
         <p>Customers</p>
     </a>
@@ -68,6 +68,14 @@
                 <p>Categories</p>
             </a>
         </li>
+
+        <li class="nav-item">
+            <a href="{{ route('admin.brands.index') }}" class="nav-link {{ Request::is('admin/brands') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>Brands</p>
+            </a>
+        </li>
+
         <li class="nav-item">
             <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is('admin/products') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-boxes"></i>
@@ -81,9 +89,9 @@
 {{--
 <li class="nav-item">
     <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}" >
-        <i class="nav-icon fas fa-dolly"></i>
-        <p>Orders</p>
-    </a>
+<i class="nav-icon fas fa-dolly"></i>
+<p>Orders</p>
+</a>
 </li>
 --}}
 
@@ -99,7 +107,7 @@
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
         <li class="nav-item">
-            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}" >
+            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-dolly"></i>
                 <p>Orders</p>
             </a>
@@ -125,7 +133,7 @@
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
         <li class="nav-item">
-            <a href="{{ route('admin.shipping.index') }}" class="nav-link {{ Request::is('admin/shipping') ? 'active' : '' }}" >
+            <a href="{{ route('admin.shipping.index') }}" class="nav-link {{ Request::is('admin/shipping') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-shipping-fast"></i>
                 <p>Shipping</p>
             </a>
