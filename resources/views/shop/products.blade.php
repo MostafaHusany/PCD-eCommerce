@@ -166,8 +166,7 @@ Home Page
                                         <div class="widget">
                                             <h5 class="widget_title">Filter</h5>
                                             <div class="filter_price">
-                                                <div id="price_filter" data-min="0" data-max="5000" 
-                                                data-min-value="{{$meta['number']->field_number_from}}" data-max-value="{{$meta['number']->field_number_to}}" data-price-sign="{{$meta['number']->field_number_metric}}"></div>
+                                                <div id="price_filter" data-min="0" data-max="5000" data-min-value="{{$meta['number']->field_number_from}}" data-max-value="{{$meta['number']->field_number_to}}" data-price-sign="{{$meta['number']->field_number_metric}}"></div>
                                                 <div class="price_range">
                                                     <span>{{$meta['number']->field_number_metric}}: <span id="flt_price"></span></span>
                                                     <input type="hidden" name="price_first" id="price_first">
@@ -184,6 +183,20 @@ Home Page
                                 <button class="btn btn-danger" type="submit">filter</button>
                             </form>
                             @endif
+                            <br>
+                            <form action="{{route('brand_filter')}}" method="post">
+                                @csrf
+                                <h5 class="widget_title">Brands</h5>
+                                @foreach(brands() as $brand)
+                                <div class="custome-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="brands[]" id="{{ $brand->id}}" value="{{$brand->id}}">
+                                    <label class="form-check-label" for="{{$brand->id}}"><span>{{$brand->en_title}}</span></label>
+                                </div>
+                                @endforeach
+                                <br>
+                                <button class="btn btn-danger" type="submit">filter</button>
+                            </form>
+
                         </div>
                         <br>
 

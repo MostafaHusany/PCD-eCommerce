@@ -22,14 +22,14 @@ class CategoryController extends Controller
         return view('shop.products', compact('categoryProducts', 'currentCategory', 'title'));
     }
 
-    public function filter(Request $request)
+    public function brand_filter(Request $request)
     {
-        $attribute = $request->attribute;
-        $data = Product::orderBy('id', 'desc');
-        if ($attribute != "0") {
-            $category_ids = CategoryAttribute::where('id', $attribute)->pluck('category_id')
-                ->toArray();
-            $data = $data->where('name', $attribute);
+        $brands = $request->brands;
+        if ($brands) {
+            $products = Product::whereIn('brand_id', $brands)->get();
+            return view('shop.search', compact( 'products'));
+        }else{
+            return redirect()->back();
         }
     }
 

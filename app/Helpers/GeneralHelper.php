@@ -1,5 +1,6 @@
 <?php
 
+use App\Brand;
 use App\CategoryAttribute;
 use App\Favorite;
 use App\Product;
@@ -70,5 +71,12 @@ if (!function_exists('checkFavorite')) {
     function checkFavorite($product_id)
     {
         return Favorite::where('product_id',$product_id)->where('user_id',Auth()->user()->id)->first();
+    }
+}
+
+if (!function_exists('brands')) {
+    function brands()
+    {
+        return Brand::get();
     }
 }

@@ -14,7 +14,7 @@ Route::group([
         Route::get('/{slug}', 'ShopController@show')->name('product.detail');
     });
     Route::get('category/{id}', 'CategoryController@category')->name('category');
-    Route::post('filter/', 'CategoryController@filter')->name('filter');
+    Route::post('brand_filter/', 'CategoryController@brand_filter')->name('brand_filter');
     Route::post('option_filter/', 'CategoryController@option_filter')->name('option_filter');
     Route::post('/Search', 'CategoryController@Search')->name('Search');
 
