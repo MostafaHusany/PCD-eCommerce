@@ -24,10 +24,16 @@ class CategoryController extends Controller
 
     public function brand_filter(Request $request)
     {
+        $title = "category";
         $brands = $request->brands;
         if ($brands) {
             $products = Product::whereIn('brand_id', $brands)->get();
-            return view('shop.search', compact( 'products'));
+            $categoryProducts = ProductCategory::get();
+            $currentCategory = ProductCategory::first();
+
+            return view('shop.products', compact('categoryProducts', 'products', 'currentCategory', 'title'));
+
+            // return view('shop.search', compact( 'products'));
         }else{
             return redirect()->back();
         }
