@@ -97,7 +97,8 @@ class OrdersController extends Controller
                 // 'products'      => $target_order->products,
                 'products_meta' => $target_order->meta,
                 'shipping'      => $target_order->shipping,
-                'shipping_cost' => $target_order->shipping_cost
+                'shipping_cost' => $target_order->shipping_cost,
+                'is_free_shipping' => $target_order->is_free_shipping
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -109,7 +110,12 @@ class OrdersController extends Controller
                 // 'all_products'  => $target_order->products,
                 'products'      => $target_order->products()->distinct()->get(),
                 'order_products'      => $target_order->order_products,
-                'products_meta' => $target_order->meta
+                'products_meta' => $target_order->meta,
+                'shipping'      => $target_order->shipping,
+                'shipping_cost' => $target_order->shipping_cost,
+                'is_free_shipping' => $target_order->is_free_shipping,
+                'taxe' =>$target_order->taxe,
+                'fee' =>$target_order->fee
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -403,6 +409,7 @@ class OrdersController extends Controller
         // dd($tax_total, $target_order);
         $target_order->sub_total = $total;
         $target_order->taxe      = $tax_total;
+        $target_order->fee       = $fee_total;
         $target_order->total     = $total + $target_order->shipping_cost + $tax_total + $fee_total;
         $target_order->meta      = json_encode($meta);
         $target_order->save();
