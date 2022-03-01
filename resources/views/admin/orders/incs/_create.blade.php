@@ -303,7 +303,109 @@ $(document).ready(function () {
                 add the products ids' and the quntityt as json in the hidden
                 fields.
 
-             */
+            */
+            $('#shipping').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select Shipping',
+                ajax: {
+                    url: '{{ url("admin/shipping-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.title}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }).change(function () {
+                let shipping_id = $(this).val();
+
+                if (shipping_id !== null || shipping_id === '') {
+                    $('#createOrderLoddingSpinner').show();
+
+                    axios.get(`{{url("admin/shipping")}}/${shipping_id}?fast_acc=true`)
+                    .then(res => {
+                        $('#createOrderLoddingSpinner').hide();
+                        const target_shipping = res.data.data;
+                        target_shipping.cost  = target_shipping.cost_with_tax;
+                        set_shipping_fields(target_shipping);
+                        edit_shipping_cost = null;
+                        calculate_products_cost();
+
+                    });
+                } else {
+                    set_shipping_fields();
+                }
+                
+                // reset is_free_shipping
+            });
+
+            $('#is_free_shipping_toggle').on('change', function () {
+                /**
+                 * When the user check free_shipping ...
+                 * we set the shipping cost to zero, and disable shipping_cost
+                 * 
+                 * If the user didn't select shipping show the user an error message 
+                 */
+                let shipping_val = $(`#shipping`).val();
+
+                if (shipping_val != '' && shipping_val != null) {
+                    let is_free_shipping = $(this).prop('checked');
+                    
+                    if (is_free_shipping) {
+                        $(`#shipping_cost`).val(0).attr('disabled', 'disabled');
+                        
+                        $(`#selected_shipping_cost`)
+                            .data('is_free_shipping', true)
+                            .css('text-decoration', 'line-through');
+                        
+                        $(`#is_free_shipping`).val(1);
+                    } else {
+                        let shipping_cost = $(`#selected_shipping_cost`).data('cost');
+                        $(`#shipping_cost`).val(shipping_cost).removeAttr('disabled');
+                                      
+                        $(`#selected_shipping_cost`)
+                            .text(shipping_cost)
+                            .data('is_free_shipping', false)
+                            .css('text-decoration', '');
+                        
+                        $(`#is_free_shipping`).val(0);
+                    }
+                } else {
+                    $(this).prop('checked', false);
+                    $(`#is_free_shipping`).val(0);
+                    $(`#shippingErr`).text('please select shipping').slideDown();
+                    setTimeout(() => {
+                        $(`#shippingErr`).text('').slideUp();
+                    }, 3000);
+                }
+
+                calculate_products_cost();
+            });
+
+            $('#shipping_cost').on('keyup change', function () {
+                let prefix          = $(this).data('prefix');
+                const shipping_cost = $(this).val();
+                const selected_shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
+                
+                if (shipping_cost < selected_shipping_cost) {
+                    $(this).css('color', 'red');
+                } else {
+                    $(this).css('color', '');
+                }
+
+                $(`#${prefix}selected_shipping_cost`).text(shipping_cost);      
+                
+                calculate_products_cost();          
+            });
+            
             $('#find-products').select2({
                 allowClear: true,
                 width: '100%',
@@ -434,7 +536,7 @@ $(document).ready(function () {
                             });
                             // $('#products_table_header').after(products_fee_td);
                             $('#fees_list_table_container').append(fee_info_table_td);
-                            calculate_fees();
+                            calculate_products_cost();
                         }
                     });
                 } else {
@@ -606,12 +708,15 @@ $(document).ready(function () {
 
         function calculate_products_cost () {
             /**
-             * calculate sub total, and total 
+             * # Calculate sub total, and total 
+             * Here we get all costs products sub total, feesm taxes and shipping
+             * and than calculate teh total
             */
             let sub_total = 0;
             let total_taxes = calculate_taxes();
             let total_fees  = calculate_fees();
             let shipping_obj = get_shipping();
+            let shipping_cost = shipping_obj.is_free_shipping ? 0 : parseInt(shipping_obj.shipping_cost);
             
             let selected_products_keys = Object.keys(selected_products);
             selected_products_keys.forEach(product_key => {
@@ -620,9 +725,10 @@ $(document).ready(function () {
             });
 
             // if (shipping_obj.)
-            
+            // console.log('test total', total_taxes, total_fees, shipping_obj);
+            // console.log(sub_total + total_taxes + total_fees + shipping_cost);
             $('#selected_products_sub_total').text(sub_total);
-            $('#selected_products_total').text(sub_total + total_taxes + total_fees);
+            $('#selected_products_total').text(sub_total + total_taxes + total_fees + shipping_cost);
         }
 
         function calculate_taxes () {
@@ -722,14 +828,35 @@ $(document).ready(function () {
             */
             
             const shipping_data = {
-                shipping_cost : $('#selected_shipping_cost').data('cost'),
+                // shipping_cost : $('#selected_shipping_cost').data('cost'),
+                shipping_cost    : $('#shipping_cost').val(),
                 is_free_shipping : $('#selected_shipping_cost').data('is_free_shipping')
-
             };
 
-            console.log(shipping_data);
+            console.log('get_shipping::fun shipping data = ', shipping_data);
 
             return shipping_data;
+        }
+
+        // start helper functions
+        function set_shipping_fields (shipping = {
+            id : '',
+            cost : 0,
+            is_free_taxes : ''
+        }) {
+            
+            
+            $(`#is_free_shipping`).val(0);
+            $(`#is_free_shipping_toggle`).prop('checked', false);
+
+            $(`#shipping`).val(shipping.id);
+            $(`#shipping_cost`).val(shipping.cost).removeAttr('disabled');
+
+            $(`#selected_shipping_cost`).text(shipping.cost)
+                .data('cost', shipping.cost)
+                .data('is_free_shipping', false)
+                .css('text-decoration', '');
+
         }
 
         return {

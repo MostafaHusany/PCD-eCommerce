@@ -524,7 +524,7 @@ $(function () {
          */
 
         let events = function () {
-            $('#shipping, #edit-shipping').select2({
+            $('#edit-shipping').select2({
                 allowClear: true,
                 width: '100%',
                 placeholder: 'Select Shipping',
@@ -579,7 +579,7 @@ $(function () {
                 }
             });
 
-            $('#is_free_shipping_toggle, #edit-is_free_shipping_toggle').on('change', function () {
+            $('#edit-is_free_shipping_toggle').on('change', function () {
                 /**
                  * When the user check free_shipping ...
                  * we set the shipping cost to zero, and disable shipping_cost
@@ -621,7 +621,7 @@ $(function () {
                 }
             });
 
-            $('#shipping_cost, #edit-shipping_cost').on('keyup change', function () {
+            $('#edit-shipping_cost').on('keyup change', function () {
                 let prefix          = $(this).data('prefix');
                 const shipping_cost = $(this).val();
                 const selected_shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
