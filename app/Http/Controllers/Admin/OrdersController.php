@@ -115,7 +115,9 @@ class OrdersController extends Controller
                 'shipping_cost' => $target_order->shipping_cost,
                 'is_free_shipping' => $target_order->is_free_shipping,
                 'taxe' =>$target_order->taxe,
-                'fee' =>$target_order->fee
+                'fee' =>$target_order->fee,
+                'sub_total' =>$target_order->sub_total,
+                'total' =>$target_order->total,
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -187,6 +189,7 @@ class OrdersController extends Controller
         // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
         $products_id        = json_decode($request->products);
+        
         $this->create_requested_order($new_order, $products_id, $products_quantity, $targted_fees_ids);
         // dd($new_order);
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
@@ -297,6 +300,13 @@ class OrdersController extends Controller
             }
 
             $target_order->status = -1;
+            
+            $target_order->shipping_cost = 0;
+            $target_order->sub_total = 0;
+            $target_order->taxe      = 0;
+            $target_order->fee       = 0;
+            $target_order->total     = 0;
+
             $target_order->save();
             
         } else {
@@ -384,7 +394,6 @@ class OrdersController extends Controller
                 ];
             }
 
-            
             $new_order_product = OrderProduct::insert($data);
             $this->update_product_quantity($product, $targted_product_quantity['quantity']);
             $product->save();
@@ -473,6 +482,11 @@ class OrdersController extends Controller
     }
 
     private function restore_order_meta ($target_order) {
+        /**
+         * Store the restored items in the meta of 
+         * the order, we use this in restoring all the 
+         * order products.
+         * */ 
         $target_order_meta    = (array) json_decode($target_order->meta);
         $requested_quantity   = (array) $target_order_meta['products_quantity'];
         $restored_quantity    = [];

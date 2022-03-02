@@ -142,56 +142,12 @@
 
             let sub_total_val = 0;
             let total_quantity = 0;
-            data.products.forEach(product => {
-                let tmp_row = `
-                    <tr class="show-order-product-tr">
-                        <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
-                        <td>${product.ar_name} / ${product.en_name}</td>
-                        <td>${product.sku}</td>
-                        <td>${order_meta.products_prices[product.id]}</td>
-                        <td>${order_meta.products_quantity[product.id].quantity}</td>
-                        <td>
-                            <span class="text-danger">${order_meta.restored_quantity[product.id]}</span>
-                        </td>
-                        <td>${parseFloat(order_meta.products_prices[product.id] * (order_meta.products_quantity[product.id].quantity - order_meta.restored_quantity[product.id]) ).toFixed(2)} SR</td>
-                    </tr>
-                `;
-
-                $('#show-selected_product_table').prepend(tmp_row);
-                sub_total_val += order_meta.products_prices[product.id] * order_meta.products_quantity[product.id].quantity;
-                total_quantity += parseInt(order_meta.products_quantity[product.id].quantity);
-            });
-            $('#show-selected_products_sub_total').text(parseFloat(sub_total_val).toFixed(2) + " SR")
+            
+            $('#show-selected_products_sub_total').text(data.sub_total + " SR")
             $('#show-selected_shipping_cost').text(data.shipping_cost);
-
-            // get taxes total 
-            let tax_total = 0;
-            order_meta.taxes.forEach(tax => {
-                // console.log(tax);
-                if (tax.cost_type) {
-                    tax_total += tax.is_fixed ? tax.cost * total_quantity : sub_total_val * tax.cost / 100 ;
-                } else {
-                    tax_total += tax.is_fixed ? tax.cost : sub_total_val * tax.cost / 100 ;
-                }
-            });
-            $('#show-selected_taxe_cost').text(tax_total + ' ' + data.taxe);
             $('#show-selected_taxe_cost').text(data.taxe);
-
-            // get fees total
-            let fee_total = 0;
-            order_meta.fees.forEach(fee => {
-                // console.log(tax);
-                if (fee.cost_type) {
-                    fee_total += fee.is_fixed ? fee.cost * total_quantity : sub_total_val * fee.cost / 100 ;
-                } else {
-                    fee_total += fee.is_fixed ? fee.cost : sub_total_val * fee.cost / 100 ;
-                }
-            });
-            $('#show-selected_fee_cost').text(fee_total + ' ' + data.fee);
             $('#show-selected_fee_cost').text(data.fee);
-
-            // show total
-            $('#show-selected_products_total').text(sub_total_val + data.taxe + data.fee + data.shipping_cost);
+            $('#show-selected_products_total').text(data.total);
             
             $('#objectsCard').slideUp(500);
             $('#showObjectCard').slideDown(500);
