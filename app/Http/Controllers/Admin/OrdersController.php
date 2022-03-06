@@ -127,7 +127,6 @@ class OrdersController extends Controller
     }
 
     public function store (Request $request) {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -188,7 +187,7 @@ class OrdersController extends Controller
         ]);
         // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
-        $products_id        = json_decode($request->products);
+        $products_id        = (array) json_decode($request->products);
         
         $this->create_requested_order($new_order, $products_id, $products_quantity, $targted_fees_ids);
         // dd($new_order);
@@ -369,7 +368,7 @@ class OrdersController extends Controller
 
     private function create_requested_order ($target_order, $products_id, $products_quantity, $targted_fees_ids = []) {
         // dd($products_id, $products_quantity);
-        $total      = 0;
+        $sub_total      = 0;
         $meta       = ['products_id' => $products_id, 'products_quantity' => $products_quantity,
                     'products_prices' => [], 'restored_quantity' => [], 'taxes' => [], 'fees' => []];
         $products   = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
@@ -400,26 +399,26 @@ class OrdersController extends Controller
 
             $meta['products_prices'][$product->id]      = $targted_product_quantity['price'];
             $meta['restored_quantity'][$product->id]    = 0;
-            $total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
+            $sub_total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
         }
 
         // START CALCULATE TAXES
-        $tax_result = $this->calculate_taxe($products_count, $total);
+        $tax_result = $this->calculate_taxe($products_count, $sub_total);
         $tax_total  = $tax_result['total_tax'];
         $meta['taxes'] = $tax_result['tax_meta'];
 
         // START CALCULATE FEES
         // $targted_fees_ids;
-        $fee_result = $this->calculate_fees($products_count, $total, $targted_fees_ids);
+        $fee_result = $this->calculate_fees($products_count, $sub_total, $targted_fees_ids);
         $fee_total  = $fee_result['fee_total'];
         $meta['fees'] = $fee_result['fee_meta'];
         // dd($fee_result);
 
         // dd($tax_total, $target_order);
-        $target_order->sub_total = $total;
+        $target_order->sub_total = $sub_total;
         $target_order->taxe      = $tax_total;
         $target_order->fee       = $fee_total;
-        $target_order->total     = $total + $target_order->shipping_cost + $tax_total + $fee_total;
+        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
         $target_order->meta      = json_encode($meta);
         $target_order->save();
     }
@@ -449,7 +448,7 @@ class OrdersController extends Controller
         $tax_meta = [];
         foreach ($targted_taxes as $tax) {
             $tax_meta[] = $tax; 
-            if ($tax->cost_type) {
+            if ($tax->cost_type) {// per item
                 // loop through the products and get the tax cost for each product
                 $tax_total += $tax->is_fixed ? $tax->cost * $products_count : $sub_total * $tax->cost / 100 ;
             } else {
