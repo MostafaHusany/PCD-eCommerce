@@ -201,7 +201,7 @@
                             <div class="cart_footer">
                                 <p class="cart_total"><strong>Subtotal:</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
                                 <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">View Cart</a>
-                                    <a href="#" class="btn btn-fill-out rounded-0 checkout">Checkout</a>
+                                    <a href="{{route('checkout')}}" class="btn btn-fill-out rounded-0 checkout">Checkout</a>
                                 </p>
                             </div>
                             @endif

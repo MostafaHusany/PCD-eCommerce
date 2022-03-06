@@ -325,7 +325,7 @@
                                                 <ul>
                                                     <li class="dropdown-header">Other Pages</li>
                                                     <li><a class="dropdown-item nav-link nav_item" href="shop-cart.html">Cart</a></li>
-                                                    <li><a class="dropdown-item nav-link nav_item" href="checkout.html">Checkout</a></li>
+                                                    <li><a class="dropdown-item nav-link nav_item" href="{{route('checkout')}}">Checkout</a></li>
                                                     <li><a class="dropdown-item nav-link nav_item" href="my-account.html">My Account</a></li>
                                                     <li><a class="dropdown-item nav-link nav_item" href="wishlist.html">Wishlist</a></li>
                                                     <li><a class="dropdown-item nav-link nav_item" href="compare.html">compare</a></li>

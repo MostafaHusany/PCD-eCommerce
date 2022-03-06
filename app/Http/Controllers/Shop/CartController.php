@@ -43,5 +43,8 @@ class CartController extends Controller
             return response()->json(['items_count' => $items, 'totalPrice' => $totalPrice ,"row_Id" => $row_Id]);
     }
 
+    public function checkout(){
+        return view('shop.checkout');
+    }
 
 }
