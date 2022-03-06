@@ -250,6 +250,24 @@ $(function () {
             // total quantity of the value still in the storage, and the requested of the order_product sumed togather
             const total_quantity = parseInt(target_product.quantity) + selected_quantity;
 
+            let total_product_cost = 0;
+            let tax_tr = '';
+            window.tax_ration.forEach(tax_obj => {
+                if (tax_obj.cost_type === 1) {
+                    if (tax_obj.is_fixed) {
+                        tax_tr += `
+                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost}</td>
+                        `;
+                        total_product_cost += tax_obj.cost;
+                    } else {
+                        tax_tr += `
+                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost * target_product.price / 100}</td>
+                        `;
+                        total_product_cost += tax_obj.cost * target_product.price / 100;
+                    }
+                }// end :: if
+            });
+
             let product_tr = `
                 <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
                     <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
@@ -274,6 +292,10 @@ $(function () {
                     </td>
                     <td id="selected_product_td_sub_total_${target_product.id}">
                         ${parseFloat(edit_selected_products[target_product.id].price * edit_selected_products[target_product.id].quantity).toFixed(2)} SR
+                    </td>
+                    ${tax_tr}
+                    <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
+                        ${target_product.price + total_product_cost}
                     </td>
                     <td>
                         <button class="remove_selected_item btn btn-sm btn-danger"
@@ -399,13 +421,6 @@ $(function () {
                 }// end :: if
             });
 
-            // make selected fee free
-            $('#fees_list_table_container').on('change', '.c-activation-btn', function () {
-                let target_fee_id = $(this).data('target');
-                console.log('fee id : ', target_fee_id);
-            });
-
-
             // Load taxes ratio
             /**
              * When the user press the create btn, send a request to the server
@@ -423,50 +438,6 @@ $(function () {
 
         }
 
-        function get_fees_ratios () {
-            /**
-             * Get taxes value from the server, and set a tax global variable.
-             */
-            window.fees_ration = [];
-
-            axios.get("{{ url('admin/fees') }}/0", { params: { get_all_fees: true }})
-            .then(res => {
-                if (res.data.success) {
-                    window.fees_ration = res.data.data;
-                    // products_column_header
-                    console.log('fee list : ', fees_ration);
-                    let products_fee_td = '';
-                    let fee_info_table_td = '';
-                    fees_ration.forEach(fee_obj => {
-                        /**
-                            # Add tax column to products table
-                        */
-                        products_fee_td += fee_obj.cost_type === 1 ? `
-                            <td>${fee_obj.title}</td>
-                        ` : '';
-
-                        fee_info_table_td += `
-                        <tr>
-                            <td>${fee_obj.title}</td>
-                            <td>${fee_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
-                            <td>${fee_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
-                            <td>${fee_obj.cost}</td>
-                            <td id="fee-total-cost-type-${fee_obj.id}">---</td>
-                            <td>
-                                <div class="custom-control custom-switch">
-                                    <input class="c-activation-btn custom-control-input" id="customSwitch${fee_obj.id}" data-target="${fee_obj.id}" type="checkbox" checked="true">
-                                    <label class="custom-control-label" for="customSwitch${fee_obj.id}"></label>
-                                </div>
-                            </td>
-                        </tr>
-                        `;
-                    });
-                    $('#products_table_header').after(products_fee_td);
-                    $('#fees_list_table_container').append(fee_info_table_td);
-                }
-            });
-        }
-
         function get_taxes_ratios () {
             /**
              * Get taxes value from the server, and set a tax global variable.
@@ -480,6 +451,7 @@ $(function () {
                     // products_column_header
                     let products_tax_td = '';
                     let tax_info_table_td = '';
+                    let edit_tax_info_table_td = '';
                     tax_ration.forEach(tax_obj => {
                         /**
                             # Add tax column to products table
@@ -497,15 +469,24 @@ $(function () {
                             <td id="total-cost-type-${tax_obj.id}">---</td>
                         </tr>
                         `;
+
+                        edit_tax_info_table_td += `
+                        <tr>
+                            <td>${tax_obj.title}</td>
+                            <td>${tax_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                            <td>${tax_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                            <td>${tax_obj.cost}</td>
+                            <td id="edit-total-cost-type-${tax_obj.id}">---</td>
+                        </tr>
+                        `;
                     });
-                    $('#products_table_header').after(products_tax_td);
+                    $('#products_table_header, #edit-products_table_header').after(products_tax_td);
                     $('#taxes_list_table_container').append(tax_info_table_td);
+                    $('#edit-taxes_list_table_container').append(edit_tax_info_table_td);
                 }
             });
         }
 
-        
-        
         return {
             start_events : start_events
         }
@@ -524,48 +505,7 @@ $(function () {
          */
 
         let events = function () {
-            $('#edit-shipping').select2({
-                allowClear: true,
-                width: '100%',
-                placeholder: 'Select Shipping',
-                ajax: {
-                    url: '{{ url("admin/shipping-search") }}',
-                    dataType: 'json',
-                    delay: 150,
-                    processResults: function (data) {
-                        return {
-                            results:  $.map(data, function (item) {
-                                return {
-                                    text: `${item.title}`,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            }).change(function () {
-                let prefix      = $(this).data('prefix');
-                let shipping_id = $(this).val();
-
-                if (shipping_id !== null || shipping_id === '') {
-                    $('#createOrderLoddingSpinner').show();
-
-                    axios.get(`{{url("admin/shipping")}}/${shipping_id}?fast_acc=true`)
-                    .then(res => {
-                        $('#createOrderLoddingSpinner').hide();
-                        const target_shipping = res.data.data;
-                        target_shipping.cost  = edit_shipping_cost != null ? edit_shipping_cost : target_shipping.cost_with_tax;
-                        set_shipping_fields(prefix, target_shipping);
-                        edit_shipping_cost = null;
-                    });
-                } else {
-                    set_shipping_fields(prefix);
-                }
-                
-                // reset is_free_shipping
-            });
-
+            
             // clear shipping session
             $('.toggle-btn').click(function () {
                 let target_card  = $(this).data('target-card');
@@ -579,81 +519,6 @@ $(function () {
                 }
             });
 
-            $('#edit-is_free_shipping_toggle').on('change', function () {
-                /**
-                 * When the user check free_shipping ...
-                 * we set the shipping cost to zero, and disable shipping_cost
-                 * 
-                 * If the user didn't select shipping show the user an error message 
-                 */
-                let prefix           = $(this).data('prefix');
-                let shipping_val     = $(`#${prefix}shipping`).val();
-
-                if (shipping_val != '' && shipping_val != null) {
-                    let is_free_shipping = $(this).prop('checked');
-                    
-                    if (is_free_shipping) {
-                        $(`#${prefix}shipping_cost`).val(0).attr('disabled', 'disabled');
-                        
-                        $(`#${prefix}selected_shipping_cost`)
-                            .data('is_free_shipping', true)
-                            .css('text-decoration', 'line-through');
-                        
-                        $(`#${prefix}is_free_shipping`).val(1);
-                    } else {
-                        let shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
-                        $(`#${prefix}shipping_cost`).val(shipping_cost).removeAttr('disabled');
-                                      
-                        $(`#${prefix}selected_shipping_cost`)
-                            .text(shipping_cost)
-                            .data('is_free_shipping', false)
-                            .css('text-decoration', '');
-                        
-                        $(`#${prefix}is_free_shipping`).val(0);
-                    }
-                } else {
-                    $(this).prop('checked', false);
-                    $(`#${prefix}is_free_shipping`).val(0);
-                    $(`#${prefix}shippingErr`).text('please select shipping').slideDown();
-                    setTimeout(() => {
-                        $(`#${prefix}shippingErr`).text('').slideUp();
-                    }, 3000);
-                }
-            });
-
-            $('#edit-shipping_cost').on('keyup change', function () {
-                let prefix          = $(this).data('prefix');
-                const shipping_cost = $(this).val();
-                const selected_shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
-                
-                if (shipping_cost < selected_shipping_cost) {
-                    $(this).css('color', 'red');
-                } else {
-                    $(this).css('color', '');
-                }
-
-                $(`#${prefix}selected_shipping_cost`).text(shipping_cost);                
-            });
-        }
-
-        // start helper functions
-        function set_shipping_fields (prefix = '', shipping = {
-            id : '',
-            cost : 0,
-            is_free_taxes : ''
-        }) {
-            
-            
-            $(`#${prefix}is_free_shipping`).val(0);
-            $(`#${prefix}is_free_shipping_toggle`).prop('checked', false);
-
-            $(`#${prefix}shipping`).val(shipping.id);
-            $(`#${prefix}shipping_cost`).val(shipping.cost).removeAttr('disabled');
-
-            $(`#${prefix}selected_shipping_cost`).text(shipping.cost)
-                .data('cost', shipping.cost)
-                .data('is_free_shipping', false)
-                .css('text-decoration', '');
 
         }
 
