@@ -405,8 +405,76 @@ $(document).ready(function () {
                 
                 calculate_products_cost();          
             });
-            // end shipping events
             
+            $('#find-products').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select products',
+                ajax: {
+                    url: '{{ url("admin/products-search") }}/?all_products=true',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.ar_name} / ${item.en_name} , quantity : (${item.quantity})`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }).change(function (e) {
+                let target_product_id = $(this).val();
+                // before adding the product make sure that the product is not already selected
+                if (!(target_product_id in selected_products)) {
+                    if (target_product_id !== '') {
+                        $('#createOrderLoddingSpinner').show(500);
+                        
+                        /** 
+                            # Here we get the targted product info, and 
+                            than show the product info in the table ...
+                        */
+                        get_selected_product(target_product_id)
+                        .then(target_product => {
+                            if (target_product != null) {
+                                create_selected_product_row(target_product);
+                                $('#find-products').val('').trigger('change');
+                                
+                                $('#createOrderLoddingSpinner').hide(500);
+                        
+                                selected_products[target_product_id] = {
+                                    quantity : 1,
+                                    price    : target_product.price
+                                } 
+
+                                update_products_hidden_field();
+                                // call the tax calculation function here ...
+                                /**
+                                 * Call the the global cariable were we store the tax list
+                                 * loop through the tax, create column for tax name,
+                                 * 
+                                 * notice that we need to create a product row, and the single product we 
+                                 * will calculate the each product tax..
+                                 * 
+                                 * so we need a function to calculate the total only not each product tax 
+                                 */
+                            }
+                        });
+                    }// end :: if            
+                } else {
+                    $('#createOrderWarningAlert').text('Product is already in the list').slideDown(500);
+                    $(`.selected-product-row-${target_product_id}`).css('border', '1px solid red');
+                    
+                    setTimeout(() => {
+                        $('#createOrderWarningAlert').text('').slideUp(500);
+                        $(`.selected-product-row-${target_product_id}`).css('border', '');
+                    }, 3000);
+                }
+            });
+
             $('#fees').select2({
                 allowClear: true,
                 width: '100%',
@@ -476,65 +544,6 @@ $(document).ready(function () {
                 }
                 
                 // reset is_free_shipping
-            });
-
-            $('#find-products').select2({
-                allowClear: true,
-                width: '100%',
-                placeholder: 'Select products',
-                ajax: {
-                    url: '{{ url("admin/products-search") }}/?all_products=true',
-                    dataType: 'json',
-                    delay: 150,
-                    processResults: function (data) {
-                        return {
-                            results:  $.map(data, function (item) {
-                                return {
-                                    text: `${item.ar_name} / ${item.en_name} , quantity : (${item.quantity})`,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            }).change(function (e) {
-                let target_product_id = $(this).val();
-                // before adding the product make sure that the product is not already selected
-                if (!(target_product_id in selected_products)) {
-                    if (target_product_id !== '') {
-                        $('#createOrderLoddingSpinner').show(500);
-                        
-                        /** 
-                            # Here we get the targted product info, and 
-                            than show the product info in the table ...
-                        */
-                        get_selected_product(target_product_id)
-                        .then(target_product => {
-                            if (target_product != null) {
-                                create_selected_product_row(target_product);
-                                $('#find-products').val('').trigger('change');
-                                
-                                $('#createOrderLoddingSpinner').hide(500);
-                        
-                                selected_products[target_product_id] = {
-                                    quantity : 1,
-                                    price    : target_product.price
-                                } 
-
-                                update_products_hidden_field();
-                            }
-                        });
-                    }// end :: if            
-                } else {
-                    $('#createOrderWarningAlert').text('Product is already in the list').slideDown(500);
-                    $(`.selected-product-row-${target_product_id}`).css('border', '1px solid red');
-                    
-                    setTimeout(() => {
-                        $('#createOrderWarningAlert').text('').slideUp(500);
-                        $(`.selected-product-row-${target_product_id}`).css('border', '');
-                    }, 3000);
-                }
             });
 
             // the selected product quantity, price change event, anf remove item event
@@ -624,6 +633,23 @@ $(document).ready(function () {
                 }// end :: if
             });
 
+            let fee_tr = '';
+            // window.fees_ration.forEach(fee_obj => {
+            //     if (fee_obj.cost_type === 1) {
+            //         if (fee_obj.is_fixed) {
+            //             fee_tr += `
+            //                 <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost}</td>
+            //             `;
+            //             total_product_cost += fee_obj.cost;
+            //         } else {
+            //             fee_tr += `
+            //                 <td id="product-total-fee-${target_product.id}-${fee_obj.id}">${fee_obj.cost * target_product.price / 100}</td>
+            //             `;
+            //             total_product_cost += fee_obj.cost * target_product.price / 100;
+            //         }
+            //     }// end :: if
+            // });
+
             let product_tr = `
                 <tr class="selected-product-rows selected-product-row-${target_product.id}">
                     <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
@@ -646,6 +672,7 @@ $(document).ready(function () {
                             min="1" max="${target_product.quantity}" />
                         </td>
                     <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                    ${fee_tr}
                     ${tax_tr}
                     <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
                         ${target_product.price + total_product_cost}

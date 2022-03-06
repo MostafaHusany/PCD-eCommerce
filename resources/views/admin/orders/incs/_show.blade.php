@@ -58,12 +58,48 @@
                         <td>Sub Total Price</td>
                     </tr>
                     <tbody id="show-selected_product_table">
-                    <tr>
-                        <td class="text-center" colspan="6">
-                            <h3>Total</h3>
-                        </td>
-                        <td id="show-selected_products_sub_total">---</td>
-                    </tr>
+                        <tr>
+                            <td class="text-center" colspan="6">
+                                <h3>Sub Total</h3>
+                            </td>
+                            <td id="show-selected_products_sub_total">---</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="6">
+                                <h5>Shipping Total</h5>
+                            </td>
+                            <td>
+                                <span id="show-selected_shipping_cost" data-cost=""> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="6">
+                                <h5>Taxes Total</h5>
+                            </td>
+                            <td>
+                                <span id="show-selected_taxe_cost"> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="6">
+                                <h5>Fee Total</h5>
+                            </td>
+                            <td>
+                                <span id="show-selected_fee_cost"> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" colspan="6">
+                                <h5>Total</h5>
+                            </td>
+                            <td>
+                                <span id="show-selected_products_total"> --- </span> SAR
+                            </td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -95,7 +131,8 @@
         .then(res => {
             const data = res.data.data;
             const order_meta = JSON.parse(data.products_meta);
-            console.log('data, and order_meta', data, order_meta);
+            // console.log('show order data :: ', data, data.shipping);
+            console.log('show order meta :: ', order_meta);
             // get customer data
             $('#show-customer_name').text(`${data.customer.first_name} ${data.customer.second_name}`);
             $('#show-customer_email').text(data.customer.email);
@@ -103,28 +140,14 @@
             $('#show-customer_city').text(data.customer.city);
             $('#show-customer_address').text(data.customer.address);
 
-            let total_val = 0;
-            data.products.forEach(product => {
-                let tmp_row = `
-                    <tr class="show-order-product-tr">
-                        <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
-                        <td>${product.ar_name} / ${product.en_name}</td>
-                        <td>${product.sku}</td>
-                        <td>${order_meta.products_prices[product.id]}</td>
-                        <td>${order_meta.products_quantity[product.id].quantity}</td>
-                        <td>
-                            <span class="text-danger">${order_meta.restored_quantity[product.id]}</span>
-                        </td>
-                        <td>${parseFloat(order_meta.products_prices[product.id] * (order_meta.products_quantity[product.id].quantity - order_meta.restored_quantity[product.id]) ).toFixed(2)} SR</td>
-                    </tr>
-                `;
-
-                $('#show-selected_product_table').prepend(tmp_row);
-                total_val += order_meta.products_prices[product.id] * order_meta.products_quantity[product.id].quantity;
-            });
-
-            $('#show-selected_products_sub_total').text(parseFloat(total_val).toFixed(2) + " SR")
-
+            let sub_total_val = 0;
+            let total_quantity = 0;
+            
+            $('#show-selected_products_sub_total').text(data.sub_total + " SR")
+            $('#show-selected_shipping_cost').text(data.shipping_cost);
+            $('#show-selected_taxe_cost').text(data.taxe);
+            $('#show-selected_fee_cost').text(data.fee);
+            $('#show-selected_products_total').text(data.total);
             
             $('#objectsCard').slideUp(500);
             $('#showObjectCard').slideDown(500);

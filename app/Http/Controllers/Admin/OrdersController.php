@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Validator;
 
+use App\Fee;
+use App\Taxe;
 use App\Order;
 use App\Product;
 use App\Shipping;
@@ -95,7 +97,8 @@ class OrdersController extends Controller
                 // 'products'      => $target_order->products,
                 'products_meta' => $target_order->meta,
                 'shipping'      => $target_order->shipping,
-                'shipping_cost' => $target_order->shipping_cost
+                'shipping_cost' => $target_order->shipping_cost,
+                'is_free_shipping' => $target_order->is_free_shipping
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -107,7 +110,14 @@ class OrdersController extends Controller
                 // 'all_products'  => $target_order->products,
                 'products'      => $target_order->products()->distinct()->get(),
                 'order_products'      => $target_order->order_products,
-                'products_meta' => $target_order->meta
+                'products_meta' => $target_order->meta,
+                'shipping'      => $target_order->shipping,
+                'shipping_cost' => $target_order->shipping_cost,
+                'is_free_shipping' => $target_order->is_free_shipping,
+                'taxe' =>$target_order->taxe,
+                'fee' =>$target_order->fee,
+                'sub_total' =>$target_order->sub_total,
+                'total' =>$target_order->total,
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -117,7 +127,6 @@ class OrdersController extends Controller
     }
 
     public function store (Request $request) {
-        dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -156,10 +165,16 @@ class OrdersController extends Controller
          * first get the shipping object
          * check if the user sent a new 
          * 
-         * Calculate Taxe & Fees
+         * # Calculate Taxe & Fees
+         * We need to create a new columns in the order tables
+         * Also we will store the selected tax and fees in this order in the meta
          */
         $target_shipping = Shipping::find($request->shipping);
         $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
+        // get taxe
+        // $taxes = Taxe::where('is_active', 1)->get(); 
+        // get fees
+        $targted_fees_ids = explode(',', $request->fees);
 
         $new_order = Order::create([
             'code'          => 'ad-' . time(), 
@@ -172,9 +187,10 @@ class OrdersController extends Controller
         ]);
         // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
-        $products_id        = json_decode($request->products);
-        $this->create_requested_order($new_order, $products_id, $products_quantity);
+        $products_id        = (array) json_decode($request->products);
         
+        $this->create_requested_order($new_order, $products_id, $products_quantity, $targted_fees_ids);
+        // dd($new_order);
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
     }
 
@@ -283,6 +299,13 @@ class OrdersController extends Controller
             }
 
             $target_order->status = -1;
+            
+            $target_order->shipping_cost = 0;
+            $target_order->sub_total = 0;
+            $target_order->taxe      = 0;
+            $target_order->fee       = 0;
+            $target_order->total     = 0;
+
             $target_order->save();
             
         } else {
@@ -343,15 +366,18 @@ class OrdersController extends Controller
         $target_product->save();
     }
 
-    private function create_requested_order ($target_order, $products_id, $products_quantity) {
+    private function create_requested_order ($target_order, $products_id, $products_quantity, $targted_fees_ids = []) {
         // dd($products_id, $products_quantity);
-        $total      = 0;
-        $meta       = ['products_id' => $products_id, 'products_quantity' => $products_quantity, 'products_prices' => [], 'restored_quantity' => []];
+        $sub_total      = 0;
+        $meta       = ['products_id' => $products_id, 'products_quantity' => $products_quantity,
+                    'products_prices' => [], 'restored_quantity' => [], 'taxes' => [], 'fees' => []];
         $products   = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
+        $products_count = 0;
 
         foreach ($products as $product) {
             $targted_product_quantity = (array) $products_quantity[$product->id];
             $data = [];
+            $products_count += (int) $targted_product_quantity['quantity']; 
             
             for ($i = 0; $i < $targted_product_quantity['quantity']; $i++) {
                 $data[] = [
@@ -367,23 +393,99 @@ class OrdersController extends Controller
                 ];
             }
 
-            
             $new_order_product = OrderProduct::insert($data);
             $this->update_product_quantity($product, $targted_product_quantity['quantity']);
             $product->save();
 
             $meta['products_prices'][$product->id]      = $targted_product_quantity['price'];
             $meta['restored_quantity'][$product->id]    = 0;
-            $total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
+            $sub_total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
         }
 
-        $target_order->total     = $total + $target_order->shipping_cost;
-        $target_order->sub_total = $total;
-        $target_order->meta      = $meta;
+        // START CALCULATE TAXES
+        $tax_result = $this->calculate_taxe($products_count, $sub_total);
+        $tax_total  = $tax_result['total_tax'];
+        $meta['taxes'] = $tax_result['tax_meta'];
+
+        // START CALCULATE FEES
+        // $targted_fees_ids;
+        $fee_result = $this->calculate_fees($products_count, $sub_total, $targted_fees_ids);
+        $fee_total  = $fee_result['fee_total'];
+        $meta['fees'] = $fee_result['fee_meta'];
+        // dd($fee_result);
+
+        // dd($tax_total, $target_order);
+        $target_order->sub_total = $sub_total;
+        $target_order->taxe      = $tax_total;
+        $target_order->fee       = $fee_total;
+        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
+        $target_order->meta      = json_encode($meta);
         $target_order->save();
     }
 
+    private function calculate_taxe ($products_count, $sub_total) {
+        /**
+         * Get all active taxes, 
+         * loop in the taxe, and notice that there is
+         * severals types of taxes, a per-item per-package
+         * a percnentage and fixed
+         * and we need calculate the tax in right way
+         * 
+         * check if the tax per item or per package, 
+         * if per-item we need to loop through the products 
+        */
+        
+        $targted_taxes  = Taxe::where('is_active', 1)->get();
+        $tax_total = 0;
+        /**
+         * We need to store the selected taxe
+         * and store it in the meta to have a history 
+         * about the tax that been added intime for this 
+         * order. $tax_meta = [$tax_obj, $tax_obj, ....];
+         *  
+        */
+
+        $tax_meta = [];
+        foreach ($targted_taxes as $tax) {
+            $tax_meta[] = $tax; 
+            if ($tax->cost_type) {// per item
+                // loop through the products and get the tax cost for each product
+                $tax_total += $tax->is_fixed ? $tax->cost * $products_count : $sub_total * $tax->cost / 100 ;
+            } else {
+                // just add the cost on the package
+                $tax_total += $tax->is_fixed ? $tax->cost : $sub_total * $tax->cost / 100 ;
+            }
+        }
+        
+        return ['total_tax' => $tax_total, 'tax_meta' => $tax_meta];
+    }
+
+    private function calculate_fees ($products_count, $sub_total, $targted_fees_ids) {
+        // get targted fees
+        $targted_fees = Fee::whereIn('id', $targted_fees_ids)->get();
+        $fee_total = 0;
+
+        $fee_meta = [];
+        foreach ($targted_fees as $fee) {
+            $fee_meta[] = $fee; 
+            if ($fee->cost_type) {
+                // loop through the products and get the fee cost for each product
+                $fee_total += $fee->is_fixed ? $fee->cost * $products_count : $sub_total * $fee->cost / 100 ;
+            } else {
+                // just add the cost on the package
+                $fee_total += $fee->is_fixed ? $fee->cost : $sub_total * $fee->cost / 100 ;
+            }
+        }
+        
+        return ['fee_total' => $fee_total, 'fee_meta' => $fee_meta];
+    }
+
     private function restore_order_meta ($target_order) {
+        /**
+         * Store the restored items in the meta of 
+         * the order, we use this in restoring all the 
+         * order products.
+         * */ 
         $target_order_meta    = (array) json_decode($target_order->meta);
         $requested_quantity   = (array) $target_order_meta['products_quantity'];
         $restored_quantity    = [];
