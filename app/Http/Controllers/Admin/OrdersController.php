@@ -18,7 +18,6 @@ use App\OrderProduct;
 class OrdersController extends Controller
 {
     public function index (Request $request) {
-        
         if ($request->ajax()) {
             $model = Order::query()->orderBy('id', 'desc');
             
@@ -170,12 +169,12 @@ class OrdersController extends Controller
          * Also we will store the selected tax and fees in this order in the meta
          */
         $target_shipping = Shipping::find($request->shipping);
-        $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
+        $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ?
+         (float) $request->shipping_cost : $target_shipping->cost;
         // get taxe
         // $taxes = Taxe::where('is_active', 1)->get(); 
         // get fees
         $targted_fees_ids = explode(',', $request->fees);
-
         $new_order = Order::create([
             'code'          => 'ad-' . time(), 
             'customer_id'   => $request->customer,
@@ -185,9 +184,11 @@ class OrdersController extends Controller
             'is_free_shipping'  => $request->is_free_shipping,
             'shipping_cost'     => $shipping_cost
         ]);
+
         // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
         $products_id        = (array) json_decode($request->products);
+
         
         $this->create_requested_order($new_order, $products_id, $products_quantity, $targted_fees_ids);
         // dd($new_order);
@@ -366,7 +367,8 @@ class OrdersController extends Controller
         $target_product->save();
     }
 
-    private function create_requested_order ($target_order, $products_id, $products_quantity, $targted_fees_ids = []) {
+    private function create_requested_order ($target_order, $products_id, $products_quantity, 
+    $targted_fees_ids = []) {
         // dd($products_id, $products_quantity);
         $sub_total      = 0;
         $meta       = ['products_id' => $products_id, 'products_quantity' => $products_quantity,
@@ -378,7 +380,7 @@ class OrdersController extends Controller
             $targted_product_quantity = (array) $products_quantity[$product->id];
             $data = [];
             $products_count += (int) $targted_product_quantity['quantity']; 
-            
+ 
             for ($i = 0; $i < $targted_product_quantity['quantity']; $i++) {
                 $data[] = [
                     'order_id'   => $target_order->id,

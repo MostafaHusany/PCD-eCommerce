@@ -262,6 +262,7 @@ PAGE JS
 	   }  
 		
 	});
+
 	
 	$('.more_slide_open').slideUp();	
     $('.more_categories').on('click', function (){
@@ -415,6 +416,7 @@ PAGE JS
 		$('.carousel_slider').each( function() {
 			var $carousel = $(this);
 			$carousel.owlCarousel({
+				rtl:true,
 				dots : $carousel.data("dots"),
 				loop : $carousel.data("loop"),
 				items: $carousel.data("items"),
@@ -440,6 +442,7 @@ PAGE JS
 		$('.slick_slider').each( function() {
 			var $slick_carousel = $(this);
 			$slick_carousel.slick({
+				rtl:true,
 				arrows: $slick_carousel.data("arrows"),
 				dots: $slick_carousel.data("dots"),
 				infinite: $slick_carousel.data("infinite"),
@@ -750,6 +753,7 @@ PAGE JS
 		var c = $filter_selector.data("price-sign");
 		$filter_selector.slider({
 			range: true,
+			isRTL: true,
 			min: $filter_selector.data("min"),
 			max: $filter_selector.data("max"),
 			values: [ a, b ],
@@ -817,6 +821,7 @@ PAGE JS
 			$("#onload-popup").modal('show', {}, 500);
 		}, 3000);
 		
-	});	
+	});
+	
 	
 })(jQuery);

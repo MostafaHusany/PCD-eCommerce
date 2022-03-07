@@ -70,6 +70,7 @@ class CategoryController extends Controller
             }
             $title = "category";
             $products = $products[0];
+            $categoryProducts = [];
             return view('shop.products', compact('categoryProducts', 'products', 'currentCategory', 'title'));
         } else {
             return redirect()->back();
