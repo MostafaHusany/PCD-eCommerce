@@ -17,7 +17,7 @@ class Shipping extends Model
         return $this->hasMany(Order::class, 'shipping_id');
     }
 
-    public function getCost () {
+    public function get_cost () {
         /**
          * Check if the shipping is not free tax
          * get all active taxes and calculate taxes for the shipping

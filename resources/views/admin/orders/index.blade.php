@@ -224,7 +224,7 @@ $(function () {
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-        // console.log(data, edit_selected_products);
+        console.log(data, edit_selected_products);
         // clear ol session
         edit_selected_products = {};
         $('.edit-selected-product-rows').remove();
@@ -480,7 +480,7 @@ $(function () {
                         </tr>
                         `;
                     });
-                    $('#products_table_header, #edit-products_table_header').after(products_tax_td);
+                    $('#products_table_header, #edit-products_table_header, #show-products_table_header').after(products_tax_td);
                     $('#taxes_list_table_container').append(tax_info_table_td);
                     $('#edit-taxes_list_table_container').append(edit_tax_info_table_td);
                 }

@@ -15,8 +15,12 @@ use App\Product;
 use App\Shipping;
 use App\OrderProduct;
 
+use App\Traits\MakeOrder;
+
 class OrdersController extends Controller
 {
+    use MakeOrder;
+
     public function index (Request $request) {
         if ($request->ajax()) {
             $model = Order::query()->orderBy('id', 'desc');
@@ -97,7 +101,9 @@ class OrdersController extends Controller
                 'products_meta' => $target_order->meta,
                 'shipping'      => $target_order->shipping,
                 'shipping_cost' => $target_order->shipping_cost,
-                'is_free_shipping' => $target_order->is_free_shipping
+                'is_free_shipping' => $target_order->is_free_shipping,
+                'taxe' =>$target_order->taxe,
+                'fee' =>$target_order->fee,
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);
@@ -126,6 +132,7 @@ class OrdersController extends Controller
     }
 
     public function store (Request $request) {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -136,6 +143,22 @@ class OrdersController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
+        
+        // products_quantity contains the quantity and the prices of eacg product in the order 
+        $products_quantity  = (array) json_decode($request->products_quantity);
+        $products_id        = (array) json_decode($request->products);
+        $targted_fees_ids   = explode(',', $request->fees);
+        
+        $target_shipping = Shipping::find($request->shipping);
+        
+        $new_order = $this->create_customer_order($request->customer, 
+            [$target_shipping->id, $request->is_free_shipping, $target_shipping->get_cost()],
+            [$products_id, $products_quantity],
+            $targted_fees_ids
+        );
+
+        return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
+
 
         /**
          * create an order
@@ -168,6 +191,7 @@ class OrdersController extends Controller
          * We need to create a new columns in the order tables
          * Also we will store the selected tax and fees in this order in the meta
          */
+        
         $target_shipping = Shipping::find($request->shipping);
         $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ?
          (float) $request->shipping_cost : $target_shipping->cost;

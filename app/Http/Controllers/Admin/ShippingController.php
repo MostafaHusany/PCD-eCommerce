@@ -55,7 +55,7 @@ class ShippingController extends Controller
         $target_object = Shipping::find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
-            $target_object->cost_with_tax = $target_object->getCost();
+            $target_object->cost_with_tax = $target_object->get_cost();
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
