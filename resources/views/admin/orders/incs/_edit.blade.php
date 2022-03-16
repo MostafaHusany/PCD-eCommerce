@@ -309,6 +309,14 @@ $(document).ready(function () {
         const set_products_data = (input_products_list, input_products_meta) => {
             products_list = input_products_list;
             products_meta = input_products_meta;
+
+            let keys = Object.keys(products_meta);
+            keys.forEach(key => {
+                products_meta[key] = {
+                    quantity : parseInt(products_meta[key].quantity),
+                    price    : parseFloat(products_meta[key].price)
+                }
+            });
             
             // re-calculate sub-total
             _calculate_order_sub_total();
@@ -456,7 +464,7 @@ $(document).ready(function () {
                     fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? fee_obj.cost 
                         : fee_obj.cost * sub_total / 100;
                 }
-                console.log(fee_obj.cost_type, fee_obj.is_fixed, fee_obj.cost , total_quantity, fee_obj.cost * parseInt(total_quantity));
+                
                 fees_data.fees_total += fees_data.each_fees_total[fee_obj.id];
             });
 
@@ -521,26 +529,26 @@ $(document).ready(function () {
          */
         
         // private method :: create tax column for product row
-        const _create_product_tax_columns = (target_product) => {
+        const _create_product_tax_columns = (target_product_id, target_product_meta) => {
             let tax_tr = '';
             let total_product_cost = 0;
-
+            
             window.tax_ration.forEach(tax_obj => {
                 if (tax_obj.cost_type === 1) {
                     if (tax_obj.is_fixed) {
                         tax_tr += `
-                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">
-                                ${tax_obj.cost}
+                            <td id="edit-product-total-tax-${target_product_id}-${tax_obj.id}">
+                                ${parseFloat(tax_obj.cost * target_product_meta.quantity).toFixed(2)}
                             </td>
                         `;
-                        total_product_cost += tax_obj.cost;
+                        total_product_cost += tax_obj.cost * target_product_meta.quantity;
                     } else {
                         tax_tr += `
-                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">
-                                ${tax_obj.cost * target_product.price / 100}
+                            <td id="edit-product-total-tax-${target_product_id}-${tax_obj.id}">
+                                ${parseFloat(tax_obj.cost * target_product_meta.price * target_product_meta.quantity / 100).toFixed(2)}
                             </td>
                         `;
-                        total_product_cost += tax_obj.cost * target_product.price / 100;
+                        total_product_cost += tax_obj.cost * target_product_meta.price * target_product_meta.quantity / 100;
                     }
                 }// end :: if
             });
@@ -578,34 +586,38 @@ $(document).ready(function () {
 
             products_list.forEach(target_product => {
                 
-                let { tax_tr, total_product_cost } = _create_product_tax_columns (target_product);
-
+                let { tax_tr, total_product_cost } = _create_product_tax_columns (target_product.id, products_meta[target_product.id]);
+                let {quantity, price} = products_meta[target_product.id];
                 let product_tr = `
                     <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
+                        
                         <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
                         <td>${target_product.ar_name} / ${target_product.en_name}</td>
                         <td>${target_product.sku}</td>
+
                         <td>${target_product.price}</td>
                         <td>
-                            <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
+                            <input style="width: 80px" class="selected_product_price" type="number" value="${price}" step="1"
                                 id="selected_product_price_${target_product.id}"
                                 data-target="${target_product.id}" data-original-price="${target_product.price}" 
                                 min="0"/>
                             SR
                         </td>
+                        
                         <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
-                            ${target_product.quantity - 1}
+                            ${target_product.quantity}
                         </td>
                         <td>
-                            <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
+                            <input style="width: 80px" class="selected_product_quantity" type="number" value="${quantity}" step="1"
                                 id="selected_product_quantity_${target_product.id}" 
                                 data-target="${target_product.id}" data-max="${target_product.quantity}"
                                 min="1" max="${target_product.quantity}" />
-                            </td>
+                        </td>
+
                         <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
                         ${tax_tr}
                         <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
-                            ${target_product.price + total_product_cost}
+                            ${parseFloat(quantity * price + total_product_cost).toFixed(2)}
                         </td>
                         <td>
                             <button class="remove_selected_item btn btn-sm btn-danger"
@@ -701,7 +713,6 @@ $(document).ready(function () {
                 $(`#edit-selected_shipping_cost`).text(shipping_data.cost);
 
                 if (shipping_data.is_free) {
-                    console.log('test is free');
                     $(`#edit-is_free_shipping`).val(1);
                     $(`#edit-is_free_shipping_toggle`).prop('checked', true);
                     $(`#edit-shipping_cost`).attr('disabled', 'disabled');
@@ -1001,7 +1012,7 @@ $(document).ready(function () {
         const edit_products_update = (input_products_list, input_products_meta) => {
             products_list = input_products_list;
             products_meta = input_products_meta;
-
+            
             storeObject.set_products_data (products_list, products_meta);
 
             viewObject.show_selected_products(products_list, products_meta);
