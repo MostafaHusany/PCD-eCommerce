@@ -224,102 +224,32 @@ $(function () {
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-        console.log(data, edit_selected_products);
-        // clear ol session
-        edit_selected_products = {};
-        $('.edit-selected-product-rows').remove();
-
-        const order_meta = JSON.parse(data.products_meta);
+        $('#edit-id').val(data.id);
         
-        // selected 
-        const products_quantity = (JSON.parse(data.products_meta))['products_quantity'];
-        $('#tmp-products_quantity').val(JSON.stringify(products_quantity));
-
+        // get customer data
         var customer_option = new Option(`${data.customer['first_name']} ${data.customer['second_name']}`, data.customer.id, false, true);
         $('#edit-customer').append(customer_option).trigger('change');
         
-        $('#edit-products').val('').trigger('change');
-        data.products.forEach(target_product => {
-            edit_selected_products[target_product.id] = {
-                price    : order_meta.products_prices[target_product.id],
-                quantity : order_meta.products_quantity[target_product.id].quantity,
-            };
-            
-            let selected_quantity = parseInt(edit_selected_products[target_product.id].quantity) - parseInt(order_meta.restored_quantity[target_product.id]);
-            selected_quantity = selected_quantity === 0 ? 1 : selected_quantity;
-            // total quantity of the value still in the storage, and the requested of the order_product sumed togather
-            const total_quantity = parseInt(target_product.quantity) + selected_quantity;
-
-            let total_product_cost = 0;
-            let tax_tr = '';
-            window.tax_ration.forEach(tax_obj => {
-                if (tax_obj.cost_type === 1) {
-                    if (tax_obj.is_fixed) {
-                        tax_tr += `
-                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost}</td>
-                        `;
-                        total_product_cost += tax_obj.cost;
-                    } else {
-                        tax_tr += `
-                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost * target_product.price / 100}</td>
-                        `;
-                        total_product_cost += tax_obj.cost * target_product.price / 100;
-                    }
-                }// end :: if
-            });
-
-            let product_tr = `
-                <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
-                    <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
-                    <td>${target_product.ar_name} / ${target_product.en_name}</td>
-                    <td>${target_product.sku}</td>
-                    <td>${target_product.price}</td>
-                    <td>
-                        <input style="width: 80px" class="selected_product_price" type="number" value="${edit_selected_products[target_product.id].price}" step="1"
-                            id="selected_product_price_${target_product.id}"
-                            data-target="${target_product.id}" data-original-price="${target_product.price}" 
-                            min="0"/>
-                        SR
-                    </td>
-                    <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${total_quantity}">
-                        ${target_product.quantity}
-                    </td>
-                    <td>
-                        <input style="width: 80px" class="selected_product_quantity" type="number" value="${selected_quantity}" step="1"
-                            id="selected_product_quantity_${target_product.id}" 
-                            data-target="${target_product.id}" data-max="${total_quantity}"
-                            min="1" max="${total_quantity}" />
-                    </td>
-                    <td id="selected_product_td_sub_total_${target_product.id}">
-                        ${parseFloat(edit_selected_products[target_product.id].price * edit_selected_products[target_product.id].quantity).toFixed(2)} SR
-                    </td>
-                    ${tax_tr}
-                    <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
-                        ${target_product.price + total_product_cost}
-                    </td>
-                    <td>
-                        <button class="remove_selected_item btn btn-sm btn-danger"
-                            data-target="${target_product.id}"
-                        >
-                            <i class="fas fa-minus-circle"></i>
-                        </button>
-                    </td>
-                </tr>
-            `; 
-
-            $('#edit-selected_product_table').prepend(product_tr);
+        // get products meta
+        const order_meta = JSON.parse(data.products_meta);
+        const products_quantity = (JSON.parse(data.products_meta))['products_quantity'];
+        EditControllerObject.edit_products_update(data.products, products_quantity);
+        
+        // get fees data
+        $('#edit-fees').val('').trigger('change');
+        order_meta.fees.forEach(fee_obj => {
+            let tmp = new Option(fee_obj.title, fee_obj.id, false, true);
+            // fee_list.push($tmp)
+            // console.log(fee_obj);
+            $('#edit-fees').append(tmp);
         });
+        $('#edit-fees').trigger('change');
 
-        $('#edit-id').val(data.id);
-        $('#edit-products_quantity').val(JSON.stringify(edit_selected_products));
-        $('#edit-products').val(JSON.stringify(Object.keys(edit_selected_products)));
-
+        // get shippinf data
         edit_shipping_cost = data.shipping_cost;
         var shipping_option = new Option(data.shipping.title, data.shipping.id, false, true);
         $('#edit-shipping').append(shipping_option).trigger('change');
         $('#edit-shipping_cost').val(data.shipping_cost);
-        // edit_shipping_cost
-
     }
 
     const index_custome_events =  (function () {
@@ -494,18 +424,9 @@ $(function () {
 
     index_custome_events.start_events();
     
-    let edit_shipping_cost = null;// a global variable to show order shipping cost value in edit form 
     const shipping_object = (function () {
-        /**
-         * #shipping select2 field to find targted shipping system
-         * #shipping_cost number field to edit the shipping field
-         * #is_free_shipping_toggle the checkbox field where we can activate/disabled free shipping
-         * #is_free_shipping the hidden field where we store the real value of the is_free_shipping value
-         * #selected_shipping_cost an span where we show the cost of the shipping
-         */
 
-        let events = function () {
-            
+        let events = function () { 
             // clear shipping session
             $('.toggle-btn').click(function () {
                 let target_card  = $(this).data('target-card');
@@ -518,13 +439,10 @@ $(function () {
                     $('#selected_shipping_cost').text('---').css('text-decoartion', '');
                 }
             });
-
-
         }
 
         return {
             events : events,
-            edit_shipping_cost
         }
     })();
 

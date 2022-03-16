@@ -11,6 +11,11 @@ use App\Shipping;
 use App\OrderProduct;
 
 trait MakeOrder {
+    /**
+     * # In case of order updates : 
+     * Can we reuse the create_customer_order , or should we build another method
+     * Lets build another method in hope no bugs happen in between 
+     */
     public function create_customer_order ($customer_id, 
                                             Array $shipping_data, // [shipping_id, is_free_shipping, shipping_cost]
                                             Array $products_data, // [products_id, products_quantity]
@@ -38,14 +43,87 @@ trait MakeOrder {
         ]);
 
         $this->update_order_calculation($new_order, $products_data, $fees_ids);
-        // dd($new_order);
+        
         return $new_order;
+    }
+
+    public function update_customer_order ($target_order_id,
+                                            $customer_id,
+                                            Array $shipping_data, // [shipping_id, is_free_shipping, shipping_cost]
+                                            Array $products_data, // [products_id, products_quantity]
+                                            Array $fees_ids = []      // list of fees ids
+                                        ) 
+    {
+        /**
+         * 
+         */
+
+        $target_order = Order::find($target_order_id);
+
+        if ($target_order->status !== -1) {
+            /** 
+             *  # If order is not already restored, restore all order products
+             **/
+            $order_meta         = (array) json_decode($target_order->meta);
+            $order_quantity     = (array) $order_meta['products_quantity'];
+            $order_restored_q   = (array) $order_meta['restored_quantity'];
+            $target_products    = $target_order->products()->distinct()->get();
+
+            // restore old qunatity
+            foreach ($target_products as $target_product) {
+                $target_product_quantity = (array) $order_quantity[$target_product->id];
+                $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
+            }
+        }
+
+        /** 
+         * # Update main order data like ...
+         * customer_id, shipping_id, is_free_shipping and shipping_cost
+         * */
+        $target_order->update([ 
+            'customer_id'   => $customer_id,
+            
+            'shipping_id'       => $shipping_data[0],
+            'is_free_shipping'  => $shipping_data[1],
+            'shipping_cost'     => $shipping_data[2],
+            
+            'sub_total'     => 0,
+            'total'         => 0,
+        ]);
+
+        // delete old order products linked to this order
+        $target_order->order_products()->delete();
+
+        
+        $this->update_order_calculation($target_order, $products_data, $fees_ids);
+        
+        return $target_order;
+
+    }
+
+    private function restore_reserved_products ($target_product, $order_quantity) {
+        if ($target_product->is_composite === 1) {
+            $target_children = $target_product->children;        
+            $parent_product_meta = (array) json_decode($target_product->meta);
+            $products_quantity   = (array) $parent_product_meta['products_quantity'];
+    
+
+            foreach ($target_children as $child_product) {
+                $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
+
+                $child_product->reserved_quantity += $requested_quantity;
+                $child_product->save();
+            }
+        }
+
+        $target_product->quantity += $order_quantity;
+        $target_product->save();
     }
 
     private function update_order_calculation ($target_order, $products_data, Array $fees_ids) {
         /* 
             # Array $products_data [products_id => [1, 2, ...], 
-                                    products_quantity => [product_id => [quantityt => 2]] ]
+                                    products_quantity => [product_id => [quantity => 2, price => 0.0]] ]
         */
         
         $meta = [ 
@@ -110,15 +188,18 @@ trait MakeOrder {
         $target_order->sub_total = $sub_total;
         $target_order->taxe      = $tax_total;
         $target_order->fee       = $fee_total;
-        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total;// + $fee_total;
+        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
         $target_order->meta      = json_encode($meta);
         $target_order->save();
 
     }// end :: update_order_calculation
 
-    public function update_product_quantity ($target_product, $order_quantity) {
+    private function update_product_quantity ($target_product, $order_quantity) {
 
         /**
+         * # This method is used to update the 
+         * quantiy of the products.
+         * 
          * # Check if the product is a composit product
          * and change the children products quantity.
          */
@@ -137,7 +218,7 @@ trait MakeOrder {
         
         $target_product->quantity -= $order_quantity;
         $target_product->save();
-    }
+    }// end :: update_product_quantity
 
     private function calculate_all_taxe ($products_count, $sub_total) {
         /**
@@ -179,7 +260,7 @@ trait MakeOrder {
         }
         
         return ['total_tax' => $tax_total, 'tax_meta' => $tax_meta];
-    }
+    }// end :: calculate_all_taxe
 
     private function calculate_all_fees ($products_count, $sub_total, $targted_fees_ids) {
         // get targted fees
@@ -204,6 +285,6 @@ trait MakeOrder {
         }
         
         return ['fee_total' => $fee_total, 'fee_meta' => $fee_meta];
-    }
+    }// end :: calculate_all_fees
 
 }
