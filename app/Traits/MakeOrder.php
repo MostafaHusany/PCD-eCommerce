@@ -110,7 +110,7 @@ trait MakeOrder {
         $target_order->sub_total = $sub_total;
         $target_order->taxe      = $tax_total;
         $target_order->fee       = $fee_total;
-        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total;// + $fee_total;
+        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
         $target_order->meta      = json_encode($meta);
         $target_order->save();
 
@@ -119,6 +119,9 @@ trait MakeOrder {
     public function update_product_quantity ($target_product, $order_quantity) {
 
         /**
+         * # This method is used to update the 
+         * quantiy of the products.
+         * 
          * # Check if the product is a composit product
          * and change the children products quantity.
          */

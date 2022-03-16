@@ -461,7 +461,7 @@ $(document).ready(function () {
             });
 
             total = sub_total + tax_data.taxe_total + fees_data.fees_total;
-            total += shipping_data.is_free ? 0 : parseInt(shipping_data.cost);
+            total += shipping_data.is_free ? 0 : parseFloat(shipping_data.cost);
         }
         
         // update product price NOT USED !!
