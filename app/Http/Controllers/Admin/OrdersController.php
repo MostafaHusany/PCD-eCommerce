@@ -158,78 +158,10 @@ class OrdersController extends Controller
         );
 
         return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
-
-
-        /**
-         * create an order
-         * and create for each product quantityt order product
-         * while creating an order product subtract the quantity required from the original quantity of the product
-         * 
-         * Notice : I need to store the price history of the product
-         * to make it easy as possible, store the history as a meta data
-         * 
-         * We have a special case ! composite products 
-         * we need to check if the product that we suptracting quantity from is beign 
-         * used for a composite product , and if the product is finshed from the storage 
-         * we need to disabel the composite product
-         * */
-
-        
-        /**
-         * Shipping cost : 
-         * 
-         * we want to add shipping cost to the total, but first we need 
-         * to make sure that the user didn't edit the cost, so we need 
-         * to check if the user sent a new shipping_cost, and than we make sure
-         * that this cost differ than the cost from the shipping boject
-         * if it's differs we update the shipping cost
-         * 
-         * first get the shipping object
-         * check if the user sent a new 
-         * 
-         * # Calculate Taxe & Fees
-         * We need to create a new columns in the order tables
-         * Also we will store the selected tax and fees in this order in the meta
-         */
-        
-        $target_shipping = Shipping::find($request->shipping);
-        $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ?
-         (float) $request->shipping_cost : $target_shipping->cost;
-        // get taxe
-        // $taxes = Taxe::where('is_active', 1)->get(); 
-        // get fees
-        $targted_fees_ids = explode(',', $request->fees);
-        $new_order = Order::create([
-            'code'          => 'ad-' . time(), 
-            'customer_id'   => $request->customer,
-            'sub_total'     => 0,
-            'total'         => 0,
-            'shipping_id'   => $request->shipping,
-            'is_free_shipping'  => $request->is_free_shipping,
-            'shipping_cost'     => $shipping_cost
-        ]);
-
-        // products_quantity contains the quantity and the prices of eacg product in the order 
-        $products_quantity  = (array) json_decode($request->products_quantity);
-        $products_id        = (array) json_decode($request->products);
-
-        
-        $this->create_requested_order($new_order, $products_id, $products_quantity, $targted_fees_ids);
-        // dd($new_order);
-        return response()->json(['data' => $new_order, 'success' => isset($new_order)]);
     }
 
     public function update (Request $request, $id) {
-        // dd($request->all());
-        // if (isset($request->activate_customer)) {
-        //     return $this->updateActivation($id);
-        // }
-
-        return $this->updateOrder($request, $id);
-    }
-
-    protected function updateOrder (Request $request, $id) {
-        // dd($request->all());
+        
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -241,62 +173,22 @@ class OrdersController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        /**
-         * Need to update order, total, & subTotal
-         * Need to delete removed product_order, and add new product_order
-         * Notice that we created product_order by number of quantityt
-         * Need to delete order that not exists any more
-         */
-        
-         /**
-          * 1- get target order 
-          * 2- get target order meta
-          * 3- get order quantity
-          * 4- get targted products
-          * 5- delete old order_products
-          * 6- restore old unatity
-          * 7- create requested order
-          * 8- update the restore if order was restored
-          * */
-        // dd($request->all());
-        $target_order       = Order::find($id);
-
-        $targted_fees_ids = explode(',', $request->fees);
-        $target_shipping = Shipping::find($request->shipping);
-        $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
-        // dd($targted_fees_ids);
-        $target_order->update([
-            'customer_id'   => $request->customer,
-            'shipping_id'   => $request->shipping,
-            'is_free_shipping'  => $request->is_free_shipping,
-            'shipping_cost'     => $shipping_cost
-        ]);
-
-        if ($target_order->status !== -1) {
-            $order_meta         = (array) json_decode($target_order->meta);
-            $order_quantity     = (array) $order_meta['products_quantity'];
-            $order_restored_q   = (array) $order_meta['restored_quantity'];
-            $target_products    = $target_order->products()->distinct()->get();
-
-            // restore old qunatity
-            foreach ($target_products as $target_product) {
-                $target_product_quantity = (array) $order_quantity[$target_product->id];
-                $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
-            }
-        }
-
-        // delete old orders
-        $target_order->order_products()->delete();
-        
-        // create updated order
+        // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
-        $products_id        = json_decode($request->products);
-        $this->create_requested_order($target_order, $products_id, $products_quantity, $targted_fees_ids);
+        $products_id        = (array) json_decode($request->products);
+        $targted_fees_ids   = explode(',', $request->fees);
         
-        if ($target_order->status == -1) {
-            $target_order->status = 0;
-            $target_order->save();
-        }
+        // dd($request->all(), $products_quantity, $products_id, $targted_fees_ids);
+
+        $target_shipping = Shipping::find($request->shipping);
+        
+        $target_order = $this->update_customer_order(
+            $id,
+            $request->customer, 
+            [$target_shipping->id, $request->is_free_shipping, $target_shipping->get_cost()],
+            [$products_id, $products_quantity],
+            $targted_fees_ids
+        );
 
         return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
     }
@@ -372,140 +264,6 @@ class OrdersController extends Controller
 
         $target_product->quantity -= $order_quantity;
         $target_product->save();
-    }
-
-    private function restore_reserved_products ($target_product, $order_quantity) {
-        if ($target_product->is_composite === 1) {
-            $target_children = $target_product->children;        
-            $parent_product_meta = (array) json_decode($target_product->meta);
-            $products_quantity   = (array) $parent_product_meta['products_quantity'];
-    
-
-            foreach ($target_children as $child_product) {
-                $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
-
-                $child_product->reserved_quantity += $requested_quantity;
-                $child_product->save();
-            }
-        }
-
-        $target_product->quantity += $order_quantity;
-        $target_product->save();
-    }
-
-    private function create_requested_order ($target_order, $products_id, $products_quantity, 
-    $targted_fees_ids = []) {
-        // dd($products_id, $products_quantity);
-        $sub_total      = 0;
-        $meta       = ['products_id' => $products_id, 'products_quantity' => $products_quantity,
-                    'products_prices' => [], 'restored_quantity' => [], 'taxes' => [], 'fees' => []];
-        $products   = Product::whereIn('id', $products_id)->where('quantity', '>', 0)->get();
-        $products_count = 0;
-
-        foreach ($products as $product) {
-            $targted_product_quantity = (array) $products_quantity[$product->id];
-            $data = [];
-            $products_count += (int) $targted_product_quantity['quantity']; 
- 
-            for ($i = 0; $i < $targted_product_quantity['quantity']; $i++) {
-                $data[] = [
-                    'order_id'   => $target_order->id,
-                    'product_id' => $product->id, 
-                    'ar_name'    => $product->ar_name,
-                    'en_name'    => $product->en_name,
-                    'sku'        => $product->sku,
-                    'price_when_order'  => $targted_product_quantity['price'],
-                    'created_at' => $target_order->created_at,
-                    'updated_at' => $target_order->updated_at,
-                    'code'       => $target_order->code
-                ];
-            }
-
-            $new_order_product = OrderProduct::insert($data);
-            $this->update_product_quantity($product, $targted_product_quantity['quantity']);
-            $product->save();
-
-            $meta['products_prices'][$product->id]      = $targted_product_quantity['price'];
-            $meta['restored_quantity'][$product->id]    = 0;
-            $sub_total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
-        }
-
-        // START CALCULATE TAXES
-        $tax_result = $this->calculate_taxe($products_count, $sub_total);
-        $tax_total  = $tax_result['total_tax'];
-        $meta['taxes'] = $tax_result['tax_meta'];
-
-        // START CALCULATE FEES
-        // $targted_fees_ids;
-        $fee_result = $this->calculate_fees($products_count, $sub_total, $targted_fees_ids);
-        $fee_total  = $fee_result['fee_total'];
-        $meta['fees'] = $fee_result['fee_meta'];
-        // dd($fee_result);
-
-        // dd($tax_total, $target_order);
-        $target_order->sub_total = $sub_total;
-        $target_order->taxe      = $tax_total;
-        $target_order->fee       = $fee_total;
-        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
-        $target_order->meta      = json_encode($meta);
-        $target_order->save();
-    }
-
-    private function calculate_taxe ($products_count, $sub_total) {
-        /**
-         * Get all active taxes, 
-         * loop in the taxe, and notice that there is
-         * severals types of taxes, a per-item per-package
-         * a percnentage and fixed
-         * and we need calculate the tax in right way
-         * 
-         * check if the tax per item or per package, 
-         * if per-item we need to loop through the products 
-        */
-        
-        $targted_taxes  = Taxe::where('is_active', 1)->get();
-        $tax_total = 0;
-        /**
-         * We need to store the selected taxe
-         * and store it in the meta to have a history 
-         * about the tax that been added intime for this 
-         * order. $tax_meta = [$tax_obj, $tax_obj, ....];
-         *  
-        */
-
-        $tax_meta = [];
-        foreach ($targted_taxes as $tax) {
-            $tax_meta[] = $tax; 
-            if ($tax->cost_type) {// per item
-                // loop through the products and get the tax cost for each product
-                $tax_total += $tax->is_fixed ? $tax->cost * $products_count : $sub_total * $tax->cost / 100 ;
-            } else {
-                // just add the cost on the package
-                $tax_total += $tax->is_fixed ? $tax->cost : $sub_total * $tax->cost / 100 ;
-            }
-        }
-        
-        return ['total_tax' => $tax_total, 'tax_meta' => $tax_meta];
-    }
-
-    private function calculate_fees ($products_count, $sub_total, $targted_fees_ids) {
-        // get targted fees
-        $targted_fees = Fee::whereIn('id', $targted_fees_ids)->get();
-        $fee_total = 0;
-
-        $fee_meta = [];
-        foreach ($targted_fees as $fee) {
-            $fee_meta[] = $fee; 
-            if ($fee->cost_type) {
-                // loop through the products and get the fee cost for each product
-                $fee_total += $fee->is_fixed ? $fee->cost * $products_count : $sub_total * $fee->cost / 100 ;
-            } else {
-                // just add the cost on the package
-                $fee_total += $fee->is_fixed ? $fee->cost : $sub_total * $fee->cost / 100 ;
-            }
-        }
-        
-        return ['fee_total' => $fee_total, 'fee_meta' => $fee_meta];
     }
 
     private function restore_order_meta ($target_order) {

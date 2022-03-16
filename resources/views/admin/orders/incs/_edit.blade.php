@@ -423,8 +423,8 @@ $(document).ready(function () {
              */
             products_list.forEach(product => {
                 let { price, quantity } = products_meta[product.id];
-                tmp_sub_total  += price * quantity;
-                total_quantity += quantity;
+                tmp_sub_total  += price * parseInt(quantity);
+                total_quantity += parseInt(quantity);
             });
 
             sub_total = tmp_sub_total;
@@ -456,7 +456,7 @@ $(document).ready(function () {
                     fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? fee_obj.cost 
                         : fee_obj.cost * sub_total / 100;
                 }
-
+                console.log(fee_obj.cost_type, fee_obj.is_fixed, fee_obj.cost , total_quantity, fee_obj.cost * parseInt(total_quantity));
                 fees_data.fees_total += fees_data.each_fees_total[fee_obj.id];
             });
 
@@ -851,6 +851,10 @@ $(document).ready(function () {
                 
                 // update storage products meta
                 storeObject.update_products_meta(products_meta);
+    
+                // update form products_quantity hidden field,
+                // Notice that we need change the name to products_meta
+                viewObject.update_product_hidden_fields(products_meta);
             })
             .on('change keyup', '.selected_product_quantity', function () {
                 let target_id   = $(this).data('target');
@@ -862,6 +866,10 @@ $(document).ready(function () {
                 
                 // update storage products meta
                 storeObject.update_products_meta(products_meta);
+                
+                // update form products_quantity hidden field,
+                // Notice that we need change the name to products_meta
+                viewObject.update_product_hidden_fields(products_meta);
             })
 
 
