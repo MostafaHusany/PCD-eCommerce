@@ -36,7 +36,8 @@ Cart content
                                 <td class="product-quantity" data-title="Quantity">
                                     <div class="quantity">
                                         <input type="button" value="-" class="minus">
-                                        <input type="number" name="quantity" data-price="{{ $item->price }}" data-row-id="{{ $item->rowId }}" class="update-quantity" value="{{$item->qty}}" title="Qty" class="qty" size="4">
+                                        <input type="number" name="quantity" data-price="{{ $item->price }}" data-row-id="{{ $item->rowId }}" 
+                                          value="{{$item->qty}}" title="Qty" class="qty update-product-quantity" size="4">
                                         <input type="button" value="+" class="plus">
                                     </div>
                                 </td>
@@ -65,6 +66,14 @@ Cart content
             </div>
         </div>
         <div class="row">
+            <div class="col-12">
+                <div class="medium_divider"></div>
+                <div class="divider center_icon"><i class="ti-shopping-cart-full"></i></div>
+                <div class="medium_divider"></div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-12">
                 <div class="border p-3 p-md-4">
                     <div class="heading_s1 mb-3">
@@ -88,10 +97,12 @@ Cart content
                             </tbody>
                         </table>
                     </div>
-                    <a href="#" class="btn btn-fill-out">Proceed To CheckOut</a>
+                    <a href="{{route('checkout')}}" class="btn btn-fill-out">Proceed To CheckOut</a>
                 </div>
             </div>
         </div>
+
+
 
     </div>
 </div>

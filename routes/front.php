@@ -19,11 +19,13 @@ Route::group([
     Route::post('/Search', 'CategoryController@Search')->name('Search');
 
     Route::get('add_to_cart','CartController@add_to_cart')->name('add_to_cart');
+    Route::get('shipping_price','CartController@shipping_price')->name('shipping_price');
     Route::get('cart_destroy/{id}','CartController@cart_destroy')->name('cart_destroy');
     Route::get('cart','CartController@cart')->name('cart');
     Route::get('update_quantity/{quantity}/{row_id}', 'CartController@update_quantity');
     Route::get('/cart_destroy_item/{row_id}', 'CartController@cart_destroy')->name('cart_destroy');
-    Route::get('/checkout', 'CartController@checkout')->name('checkout');
+    Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('auth');
+    Route::post('/create_order', 'CartController@create_order')->name('create_order')->middleware('auth');
 
     Route::get('Login', 'UserController@Login')->name('Login');
     Route::get('register', 'UserController@register')->name('register');
@@ -35,11 +37,16 @@ Route::group([
     Route::post('forget-password', 'UserController@submitForgetPasswordForm')->name('forget.password.post'); 
     Route::get('reset-password/{token}', 'UserController@showResetPasswordForm')->name('reset.password.get');
     Route::post('reset-password', 'UserController@submitResetPasswordForm')->name('reset.password.post');
+    Route::get('order-details/{id}', 'UserController@orderDetails')->name('order.details');
 
 
 
     Route::get('add-to-favorite/{id}','FavoriteController@addToFavorite')->name('add-to-favorite');
     Route::get('remove_favorite/{id}','FavoriteController@remove_favorite')->name('remove_favorite');
     Route::get('wishlist','FavoriteController@wishlist')->name('wishlist');
+
+    Route::get('thanks',function(){
+        return view('shop.thanks');
+    })->name('thanks');
 
 });

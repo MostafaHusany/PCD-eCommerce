@@ -80,3 +80,18 @@ if (!function_exists('brands')) {
         return Brand::get();
     }
 }
+
+if(!function_exists('upload_image'))
+{
+    function upload_image($file, $prefix)
+    {
+        if($file){
+            $files = $file;
+            $imageName = $prefix.rand(3,999).'-'.time().'.'.$files->extension();
+            $image = "storage/".$imageName;
+            $files->move(public_path('storage'), $imageName);
+            $getValue = $image;
+            return $getValue;
+        }
+    }
+}

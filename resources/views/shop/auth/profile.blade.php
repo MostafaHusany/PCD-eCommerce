@@ -21,10 +21,7 @@
                     <div class="dashboard_menu">
                         <ul class="nav nav-tabs flex-column" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false"><i class="ti-layout-grid2"></i>Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="ti-shopping-cart-full"></i>Orders</a>
+                                <a class="nav-link active" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="ti-shopping-cart-full"></i>Orders</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="ti-location-pin"></i>My Address</a>
@@ -35,9 +32,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="change-password-tab" data-bs-toggle="tab" href="#change-password" role="tab" aria-controls="change-password" aria-selected="true"><i class="ti-id-badge"></i>change password</a>
                             </li>
-                            <li class="nav-item">                           
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
-                              document.getElementById('logout-form').submit();" ><i class="ti-lock"></i>Logout</a>
+                              document.getElementById('logout-form').submit();"><i class="ti-lock"></i>Logout</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
@@ -58,17 +55,7 @@
                             @lang(\Session::get('err'))
                         </div>
                         @endif
-                        <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>Dashboard</h3>
-                                </div>
-                                <div class="card-body">
-                                    <p>From your account dashboard. you can easily check &amp; view your <a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your <a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing addresses</a> and <a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and account details.</a></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        <div class="tab-pane fade  active show" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                             <div class="card">
                                 <div class="card-header">
                                     <h3>Orders</h3>
@@ -86,52 +73,47 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @if(count($user->orders)>0)
+                                                @foreach($user->orders()->paginate(10) as $order)
                                                 <tr>
-                                                    <td>#1234</td>
-                                                    <td>March 15, 2020</td>
-                                                    <td>Processing</td>
-                                                    <td>$78.00 for 1 item</td>
-                                                    <td><a href="#" class="btn btn-fill-out btn-sm">View</a></td>
+                                                    <td>{{$order->id}}</td>
+                                                    <td>{{ $order->created_at->format('d/m/Y')}}</td>
+                                                    <td>{{$order->status}}</td>
+                                                    <td>{{$order->total}}</td>
+                                                    <td><a href="{{route('order.details',$order->id)}}" class="btn btn-fill-out btn-sm">View</a></td>
                                                 </tr>
-                                                <tr>
-                                                    <td>#2366</td>
-                                                    <td>June 20, 2020</td>
-                                                    <td>Completed</td>
-                                                    <td>$81.00 for 1 item</td>
-                                                    <td><a href="#" class="btn btn-fill-out btn-sm">View</a></td>
-                                                </tr>
+                                                @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
+                                </div>
+                                <div class="container text-center">
+                                    {!! $user->orders()->paginate(10)->render() !!}
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="card mb-3 mb-lg-0">
-                                        <div class="card-header">
-                                            <h3>Billing Address</h3>
-                                        </div>
-                                        <div class="card-body">
-                                            <address>House #15<br>Road #1<br>Block #C <br>Angali <br> Vedora <br>1212</address>
-                                            <p>New York</p>
-                                            <a href="#" class="btn btn-fill-out">Edit</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                @if(count($user->addresses)>0)
+                                @foreach($user->addresses as $address)
                                 <div class="col-lg-6">
                                     <div class="card">
                                         <div class="card-header">
                                             <h3>Shipping Address</h3>
                                         </div>
                                         <div class="card-body">
-                                            <address>House #15<br>Road #1<br>Block #C <br>Angali <br> Vedora <br>1212</address>
-                                            <p>New York</p>
-                                            <a href="#" class="btn btn-fill-out">Edit</a>
+                                            <address>Address : {{$address->address}}
+                                                <br>City : {{$address->city}}
+                                                <br>State : {{$address->state}}
+                                                <br>Phone : {{$address->phone}}
+                                                <br>zip code : {{$address->zipcode}}
+                                            </address>
                                         </div>
                                     </div>
                                 </div>
+                                @endforeach
+                                @endif
                             </div>
                         </div>
                         <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
@@ -147,7 +129,7 @@
                                         <div class="row">
                                             <div class="form-group col-md-12 mb-3">
                                                 <label>Display Name <span class="required">*</span></label>
-                                                <input  value="{{old('name', $user->name)}}" class="form-control" name="name" type="text">
+                                                <input value="{{old('name', $user->name)}}" class="form-control" name="name" type="text">
                                                 @error('name')
                                                 <p class="text-muted alert alert-danger mt-1">
                                                     {{ $message }}
@@ -157,7 +139,7 @@
 
                                             <div class="form-group col-md-12 mb-3">
                                                 <label>Email Address <span class="required">*</span></label>
-                                                <input  value="{{old('email', $user->email)}}" class="form-control" name="email" type="email">
+                                                <input value="{{old('email', $user->email)}}" class="form-control" name="email" type="email">
                                                 @error('email')
                                                 <p class="text-muted alert alert-danger mt-1">
                                                     {{ $message }}

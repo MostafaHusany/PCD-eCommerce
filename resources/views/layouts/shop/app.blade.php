@@ -47,19 +47,22 @@
     <link rel="stylesheet" href="{{asset('shop')}}/css/rtl-style.css">
     @else
     <style>
-        .carousel-inner{
+        .carousel-inner {
             margin-left: 320px;
         }
-        </style>
+    </style>
     @endif
 
 
 </head>
 @if(get_lang() == 'ar')
-     <body dir="rtl">
+
+<body dir="rtl">
     @else
+
     <body>
-@endif
+        @endif
+
         <!-- LOADER -->
         <div class="preloader">
             <div class="lds-ellipsis">
@@ -217,7 +220,24 @@
                             </li>
                         </ul>
                     </nav>
+
                 </div>
+            </div>
+            <div class="alert alert-primary d-none" id="item_added" role="alert">
+                Item Added to cart successfully
+            </div>
+            <div class="alert alert-primary d-none" id="favorite_item" role="alert">
+                Item Added to favorite successfully
+            </div>
+            <div class="alert alert-primary d-none" id="item_removed" role="alert">
+                Item Removed from cart successfully
+            </div>
+
+            <div class="alert alert-danger  d-none" id="item_not_added" role="alert">
+                Required quantity not available now
+            </div>
+            <div class="alert alert-danger  d-none" id="item_in_favorite" role="alert">
+                Item Added to favorite before
             </div>
         </header>
         <!-- END HEADER -->

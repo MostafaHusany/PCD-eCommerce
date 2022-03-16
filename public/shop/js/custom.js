@@ -10,7 +10,6 @@ $(document).ready(function () {
         var price = self.data("price");
         var quantity = self.data("quantity");
         var id = self.data("id");
-        console.log(quantity);
         $.ajax({
             url: "/add_to_cart",
             type: "GET",
@@ -38,11 +37,16 @@ $(document).ready(function () {
                         </li>
                         </div>`;
                         $("#cart-content").append(add_product_to_cart);
-                        $(".total-cart").removeClass("d-none");
+                        $("#item_added").removeClass("d-none");
+                        setTimeout(() => {
+                            $("#item_added").addClass("d-none");
+                        }, 3000);
                     });
-                } else if (response.success == "error") {
-                    let toast = new bootstrap.Toast(toastRemoving);
-                    toast.show();
+                } else if (response.status == "error") {
+                    $("#item_not_added").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#item_not_added").addClass("d-none");
+                    }, 3000);
                 }
             },
         });
@@ -60,6 +64,10 @@ $(document).ready(function () {
                 self.parents(".single").remove();
                 $("#items_count").html(response.items_count);
                 $("#totalPrice").html(response.totalPrice);
+                $("#item_removed").removeClass("d-none");
+                setTimeout(() => {
+                    $("#item_removed").addClass("d-none");
+                }, 3000);
             },
         });
     });
@@ -74,6 +82,10 @@ $(document).ready(function () {
                 $("#items_count").html(response.items_count);
                 $("#updatePrice").html(response.totalPrice);
                 self.parents("tr").remove();
+                $("#item_removed").removeClass("d-none");
+                setTimeout(() => {
+                    $("#item_removed").addClass("d-none");
+                }, 3000);
             },
         });
     });
@@ -99,14 +111,22 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     $("#favorite i").addClass("favorite");
+                    $("#favorite_item").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#favorite_item").addClass("d-none");
+                    }, 3000);
                 } else if (response.error) {
+                    $("#item_in_favorite").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#item_in_favorite").addClass("d-none");
+                    }, 3000);
                 }
             },
         });
     });
 
     $("body").on("click", ".update-cart", function () {
-        $(".update-quantity").each(function (index, value) {
+        $(".update-product-quantity").each(function (index, value) {
             var self = $(value);
             var quantity = self.val();
             var rowId = self.data("row-id");
@@ -117,12 +137,35 @@ $(document).ready(function () {
                 function (data) {
                     if (data.fail) {
                     } else {
-                        console.log(data);
+                        console.log(data.totalPrice);
                         $(".totalAmount_" + rowId).text(price * quantity);
                         $("#updatePrice").html(data.totalPrice);
                     }
                 }
             );
+        });
+    });
+
+    $("#shipping").change(function () {
+        $("#shipping_price").empty();
+        $("#order_price").empty();
+        var val = $(this).val();
+
+        $.ajax({
+            type: "get", // the method (could be GET btw)
+            url: "shipping_price",
+            data: {
+                val: val,
+            },
+            success: function (response) {
+                console.log(response);
+                $("#shipping_price").html(response.get_cost);
+                $("#totlal_price").html(response.totlal_price);
+
+                $(".shipping_price_field").val(response.get_cost);
+                $("#shipping_id_field").val(response.id);
+                $("#total_price").val(response.totlal_price);
+            },
         });
     });
 });

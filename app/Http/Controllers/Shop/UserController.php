@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\shop\ChangePasswordRequest;
 use App\Http\Requests\shop\UpdateProfileRequest;
+use App\Order;
 use Hash;
 use Mail;
 use Illuminate\Support\Str;
@@ -118,5 +119,10 @@ class UserController extends Controller
         DB::table('password_resets')->where(['email' => $request->email])->delete();
 
         return redirect()->route('Login')->with('success', 'Your password has been changed!');
+    }
+
+    public function orderDetails($id){
+        $order = Order::with('order_products')->find($id);
+        return view('shop.orderDetail',compact('order'));
     }
 }
