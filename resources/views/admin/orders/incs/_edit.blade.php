@@ -102,13 +102,13 @@
         <div class="form-group row">
             <label for="" class="col-2">Shipping</label>
             <div class="form-group col-4">
-                <select id="edit-shipping" data-prefix="edit-" class="form-control"></select>
+                <select id="edit-shipping" class="form-control"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-shippingErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div><!-- /.form-group -->
 
             <div class="form-group col-4">
-                <input type="number" min="0" value="0" id="edit-shipping_cost" data-prefix="edit-" class="form-control">
+                <input type="number" min="0" value="0" id="edit-shipping_cost" class="form-control">
                 <div style="padding: 5px 7px; display: none" id="edit-shipping_costErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div><!-- /.form-group -->
@@ -116,7 +116,7 @@
             <div class="form-group col-2" style="padding: 5px 0px;">
                 <input type="hidden" id="edit-is_free_shipping">
                 <div class="custom-control custom-switch" value="0">
-                    <input type="checkbox" class="custom-control-input" data-prefix="edit-" id="edit-is_free_shipping_toggle">
+                    <input type="checkbox" class="custom-control-input" id="edit-is_free_shipping_toggle">
                     <label class="custom-control-label" for="edit-is_free_shipping_toggle">Free Shipping</label>
                 </div>
                 
@@ -189,7 +189,7 @@
                         <h5>Shipping Total</h5>
                     </td>
                     <td>
-                        <span id="edit-selected_shipping_cost" data-cost=""> --- </span> SAR
+                        <span id="edit-selected_shipping_cost"> --- </span> SAR
                     </td>
                     <td></td>
                 </tr>
@@ -241,13 +241,633 @@ $(document).ready(function () {
         in next phase the item updates should be done asynchrnised
      */
      
-    const edit_special_options = (function  () {
-        window.edit_selected_products = {};
-        let tax_total = 0;
-        let fees_ration = [];
-        let edit_shipping_cost = null;
+    const StoreObject = (function () {
+        /**
+         * # Here we will store :
+         * products_list all selected products will be stored here
+         * products_meta each products selected quantity and price
+         * shipping_data ....
+         * 
+         * taxes data the tax value for each selected tax, and the total of tax
+         * 
+         */
 
-        function starter_event () {
+        let products_list = [];
+        let products_meta = {
+            /**
+                product_id : {
+                    quantity : 1,
+                    price    : product.price
+                }
+            */
+        };
+
+        let shipping_data = {
+            // id, is_free, cost
+            id      : null,
+            cost    : 0,
+            is_free : 0
+        };
+
+        const tax_data = {
+            taxe_total       : 0,
+            each_taxes_total : {},
+        };
+        
+        const fees_data = {
+            selected_fees   : [],
+            each_fees_total : {},
+            fees_total      : 0
+        };
+
+        let sub_total    = 0;
+        let total        = 0;
+
+        // request product by id from the server
+        const request_product = async (product_id) => {
+            const response = await axios.get(`{{ url('admin/products') }}/${product_id}`, { params: { get_p : true }});
+            return await response.data;
+        };
+
+        const request_shipping = async (shipping_id) => {
+            const response = await axios.get(`{{ url("admin/shipping") }}/${shipping_id}`, { params: { fast_acc : true }});
+            return await response.data;
+        } 
+
+        const request_fees = async (fees_ids) => {
+            const response = await axios.get(`{{ url("admin/fees") }}/0`, {
+                        params: {
+                            fees_ids: JSON.stringify(fees_ids),
+                            get_selected_fees : true
+                        }
+                    });
+
+            return await response.data;
+        }
+
+        //  START PRODUCTS DATA EDITING
+        const set_products_data = (input_products_list, input_products_meta) => {
+            products_list = input_products_list;
+            products_meta = input_products_meta;
+            
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+        };
+
+        // add new product to products list
+        const add_new_product = (new_product) => {
+            // update order products list and meta
+            products_list.push(new_product);
+            products_meta[new_product.id] = {
+                quantity : 1,
+                price    : new_product.price
+            };
+
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+
+            return { products_list, products_meta};
+        };
+
+        // remove product from products list
+        const remove_product = (product_id) => {
+            products_list = products_list.filter(product => product.id != product_id);
+            delete products_meta[product_id];
+
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+
+            return { products_list, products_meta};
+        };
+
+        // update products meta
+        const update_products_meta = (new_products_meta) => {
+            /**
+             * # We use this method to update product price or quantity.
+             */
+            products_meta = new_products_meta;
+            
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+        };
+        
+        // update product quantity
+        const update_product_quantity = (product_id, quantity) => {
+            products_meta[product_id].quantity = quantity;
+            
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+
+            return products_meta;
+        };
+        
+        // shipping methods
+        const shipping_methods = {
+            add_shipping : (shipping_obj) => {
+                shipping_data = {
+                    id      : shipping_obj.id,
+                    cost    : shipping_obj.cost_with_tax,
+                    is_free : 0
+                }
+                _calculate_order_sub_total();
+                return shipping_data;
+            },
+
+            delete_shipping : () => {
+                shipping_data = {
+                    id      : null,
+                    cost    : 0,
+                    is_free : 0
+                };
+                _calculate_order_sub_total();
+            },
+
+            // update shipping cost
+            update_shipping_cost : (cost) => {
+                shipping_data.cost = cost;
+                _calculate_order_sub_total();
+                return shipping_data;
+            },
+
+            // toggle shipping is_free 
+            toggle_shipping_is_free : () => {
+                shipping_data.is_free = !shipping_data.is_free;
+                _calculate_order_sub_total();
+                return shipping_data;
+            }
+        };
+
+        // fees methods
+        const fees_methods = {
+            update_fees_list : (new_fees_list) => {
+                fees_data.selected_fees = new_fees_list;
+
+                _calculate_order_sub_total();
+
+                return fees_data;
+            },
+
+            get_fees_data : () => {
+                return fees_data;
+            }
+        }
+
+        // START ORDER CALCULATIONS
+        // update order sub-total
+        const _calculate_order_sub_total = () => {
+            let tmp_sub_total = 0;
+            let total_quantity = 0
+            /**
+             * Loop throgh the products_list
+             * calculate product sub-total, and tax
+             */
+            products_list.forEach(product => {
+                let { price, quantity } = products_meta[product.id];
+                tmp_sub_total  += price * quantity;
+                total_quantity += quantity;
+            });
+
+            sub_total = tmp_sub_total;
+
+            // also we will calculate the taxes here !!
+            // loop in the global variable of tax, and than 
+            // calculate the tax for each product and store it 
+            tax_data.taxe_total = 0;
+            window.tax_ration.forEach(tax_obj => {
+                // per item
+                if (tax_obj.cost_type == 1) {
+                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? tax_obj.cost * total_quantity
+                        : tax_obj.cost * sub_total / 100;
+                } else {
+                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? tax_obj.cost 
+                        : tax_obj.cost * sub_total / 100;
+                }// end :: if
+                
+                tax_data.taxe_total += tax_data.each_taxes_total[tax_obj.id];
+            });
+
+            // also we will calculate fees sub-total here
+            fees_data.fees_total = 0;
+            fees_data.selected_fees.forEach(fee_obj => {
+                if (fee_obj.cost_type == 1) {
+                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? fee_obj.cost * total_quantity
+                        : tax_obj.cost * sub_total / 100;
+                } else {
+                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? fee_obj.cost 
+                        : fee_obj.cost * sub_total / 100;
+                }
+
+                fees_data.fees_total += fees_data.each_fees_total[fee_obj.id];
+            });
+
+            total = sub_total + tax_data.taxe_total + fees_data.fees_total;
+            total += shipping_data.is_free ? 0 : parseInt(shipping_data.cost);
+        }
+        
+        // update product price NOT USED !!
+        const update_product_price = (product_id, price) => {
+            products_meta[product_id].price = price;
+            
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+
+            return products_meta;
+        };
+
+        // START GETTERS
+        const get_sub_total = () => {
+            return sub_total;
+        }
+
+        const get_taxes_total = () => {
+            return tax_data;
+        }
+
+        const get_total = () => {
+            return total;
+        }
+        
+        // check if product already exists
+        const is_in_products_list = (product_id) => {
+            return (product_id in products_meta)
+        };
+        
+        return {
+            // async methods
+            request_product,
+            request_shipping,
+            request_fees,
+
+            set_products_data,
+            add_new_product,
+            remove_product,
+            is_in_products_list,
+            update_products_meta,
+            
+            shipping_methods,//add_shipping,
+            fees_methods,
+
+            // getters
+            get_sub_total,
+            get_taxes_total,
+            get_total
+        };
+    })();
+
+    const ViewObject = (function (storeObject) {
+        /**
+         * # General purpose element selectore
+         * '.edit-selected-product-rows' => tr product 
+         */
+        
+        // private method :: create tax column for product row
+        const _create_product_tax_columns = (target_product) => {
+            let tax_tr = '';
+            let total_product_cost = 0;
+
+            window.tax_ration.forEach(tax_obj => {
+                if (tax_obj.cost_type === 1) {
+                    if (tax_obj.is_fixed) {
+                        tax_tr += `
+                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">
+                                ${tax_obj.cost}
+                            </td>
+                        `;
+                        total_product_cost += tax_obj.cost;
+                    } else {
+                        tax_tr += `
+                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">
+                                ${tax_obj.cost * target_product.price / 100}
+                            </td>
+                        `;
+                        total_product_cost += tax_obj.cost * target_product.price / 100;
+                    }
+                }// end :: if
+            });
+
+            return {tax_tr, total_product_cost};
+        }
+
+        // private method :: update tax column for product row
+        const _update_product_tax_column = (product_id, product_price, product_quantity) => {
+            let total_tax_cost = 0;
+
+            window.tax_ration.forEach(tax_obj => {
+                if (tax_obj.cost_type === 1) {
+                    if (tax_obj.is_fixed) {
+                        $(`#edit-product-total-tax-${product_id}-${tax_obj.id}`).text(parseFloat(tax_obj.cost * product_quantity).toFixed(2));
+                        total_tax_cost += product_quantity * tax_obj.cost;
+                    } else {
+                        $(`#edit-product-total-tax-${product_id}-${tax_obj.id}`).text(parseFloat(tax_obj.cost * product_quantity * product_price / 100).toFixed(2))
+                        total_tax_cost += tax_obj.cost * product_quantity * product_price / 100;
+                    }
+                }// end :: if
+            });
+
+            return total_tax_cost;
+        }
+
+        // show selected product table
+        const show_selected_products = (products_list, products_meta) => {     
+            /**
+             * This method is used to show selcted ptoducts in products table
+             * It take a list of products, and meta that store the quantityt and the price
+             * */   
+            // clear old products table
+            $('.edit-selected-product-rows').remove();
+
+            products_list.forEach(target_product => {
+                
+                let { tax_tr, total_product_cost } = _create_product_tax_columns (target_product);
+
+                let product_tr = `
+                    <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
+                        <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                        <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                        <td>${target_product.sku}</td>
+                        <td>${target_product.price}</td>
+                        <td>
+                            <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
+                                id="selected_product_price_${target_product.id}"
+                                data-target="${target_product.id}" data-original-price="${target_product.price}" 
+                                min="0"/>
+                            SR
+                        </td>
+                        <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                            ${target_product.quantity - 1}
+                        </td>
+                        <td>
+                            <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
+                                id="selected_product_quantity_${target_product.id}" 
+                                data-target="${target_product.id}" data-max="${target_product.quantity}"
+                                min="1" max="${target_product.quantity}" />
+                            </td>
+                        <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                        ${tax_tr}
+                        <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
+                            ${target_product.price + total_product_cost}
+                        </td>
+                        <td>
+                            <button class="remove_selected_item btn btn-sm btn-danger"
+                                data-target="${target_product.id}"
+                            >
+                                <i class="fas fa-minus-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `; 
+
+                $('#edit-selected_product_table').prepend(product_tr); 
+                $('#edit-find-products').val('').trigger('change');
+            });
+
+            // show the sub-total after showing the products
+            update_sub_total();
+        };
+
+        // show alert that the product already exists
+        const alert_product_exists = (product_id) => {
+            $('#edit-createOrderWarningAlert').text('Product is already in the list').slideDown(500);
+            $(`.edit-selected-product-row-${product_id}`).css('border', '1px solid red');
+            
+            setTimeout(() => {
+                $('#edit-createOrderWarningAlert').text('').slideUp(500);
+                $(`.edit-selected-product-row-${product_id}`).css('border', '');
+            }, 3000);
+        };
+
+        const update_product_row = (product_id, product_quantity, product_price) => {
+            // update the product number
+            /**
+             * get product price and quanity, and orogonal quantity
+             * 
+             * update each of the product left quantity, sub_total, tax, total
+             */
+            
+            let original_quantity = $(`#selected_product_o_quantity_${product_id}`).data('quantity');
+            $(`#selected_product_o_quantity_${product_id}`).text(original_quantity - product_quantity);
+            
+            // update item sub-total price
+            $(`#selected_product_td_sub_total_${product_id}`).text(parseFloat(product_price * product_quantity).toFixed(2) + ' SR');
+
+            // update tax fields
+            let total_tax_cost = _update_product_tax_column (product_id, product_price, product_quantity);
+
+            // update all total
+            $(`#product-total-cost-${product_id}`).text(parseFloat(total_tax_cost + product_price * product_quantity).toFixed(2));
+
+            update_sub_total();
+        }; 
+
+        // update form meta data 
+        const update_product_hidden_fields = (selected_products) => {
+            $('#edit-products_quantity').val(JSON.stringify(selected_products));
+            $('#edit-products').val(JSON.stringify(Object.keys(selected_products)));
+        };
+        
+        // START TOTALS TABLE
+        const update_sub_total = () => {
+            // update sub-total 
+            let sub_total = storeObject.get_sub_total();
+            $('#edit-selected_products_sub_total').text(sub_total);
+
+            // update tax table, and tax sub-total
+            let tax_data  = storeObject.get_taxes_total();
+            let tax_keys = Object.keys(tax_data.each_taxes_total);
+            tax_keys.forEach(tax_id => {
+                // show total tax
+                $(`#edit-total-cost-type-${tax_id}`).text(tax_data.each_taxes_total[tax_id]);
+                
+                $('#edit-selected_taxe_cost').text(tax_data.taxe_total);
+            });
+
+            let fees_data = storeObject.fees_methods.get_fees_data();
+            update_fees(fees_data);
+        }
+
+        // update shipping data
+        const update_shipping = (shipping_data = null) => {
+            // this method works with shipping select field, is_free, and shipping sub-total in totals table 
+            if (shipping_data == null) {
+                // if there is no shipping yet clear all fields
+                $(`#edit-is_free_shipping`).val(0);
+                $(`#edit-is_free_shipping_toggle`).prop('checked', false);
+
+                $(`#edit-shipping_cost`).val('').attr('disabled', 'disabled');
+                $(`#edit-selected_shipping_cost`).text('---').css('text-decoration', '');
+            } else {
+                
+                $(`#edit-shipping_cost`).val(shipping_data.cost);
+                $(`#edit-selected_shipping_cost`).text(shipping_data.cost);
+
+                if (shipping_data.is_free) {
+                    console.log('test is free');
+                    $(`#edit-is_free_shipping`).val(1);
+                    $(`#edit-is_free_shipping_toggle`).prop('checked', true);
+                    $(`#edit-shipping_cost`).attr('disabled', 'disabled');
+                    $(`#edit-selected_shipping_cost`).css('text-decoration', 'line-through')
+                } else {
+                    $(`#edit-is_free_shipping`).val(0);
+                    $(`#edit-is_free_shipping_toggle`).prop('checked', false);
+                    $(`#edit-shipping_cost`).removeAttr('disabled');
+                    $(`#edit-selected_shipping_cost`).css('text-decoration', '');
+                }
+            }
+            
+            update_total();
+        }
+
+        // update fees data
+        const update_fees = (fees_data) => {
+            
+            $('.fee-create-form-tr').remove();
+            
+            fees_data.selected_fees.forEach(fee_obj => {
+                let fee_info_table_td = `
+                    <tr class="fee-create-form-tr">
+                        <td>${fee_obj.title}</td>
+                        <td>${fee_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                        <td>${fee_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                        <td>${fee_obj.cost}</td>
+                        <td>${fees_data.each_fees_total[fee_obj.id]}</td>
+                    </tr>
+                `;
+                $('#edit-fees_list_table_container').append(fee_info_table_td);
+            });
+
+            $('#edit-selected_fee_cost').text(fees_data.fees_total);
+            
+            update_total();
+        }
+
+        const update_total = () => {
+            let total = storeObject.get_total();
+            $(`#edit-selected_products_total`).text(total);
+        }
+
+        return {
+            show_selected_products,
+            alert_product_exists,
+            update_product_row,
+            update_product_hidden_fields,
+            update_shipping,
+            update_fees
+        }
+    })(StoreObject);
+
+    window.EditControllerObject = (function (storeObject, viewObject) {
+        /**
+         * # Search and select customer 
+         * 
+         * # Search for a product, select the produst
+         * and show it the selected products table.
+         * 
+         * # Delete product from the selected products table
+         * 
+         * # Update products quantity
+         *  
+         * # Update products price
+         * 
+         * # Select shipping service
+         * 
+         * # Update shipping service price
+         * 
+         * # Make shipping free
+         */
+
+        let products_list = [];
+        let products_meta = {};
+
+        const products_events = () => {
+            
+            $('#edit-find-products').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select products',
+                ajax: {
+                    url: '{{ url("admin/products-search") }}/?all_products=true',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.ar_name} / ${item.en_name} , quantity : (${item.quantity})`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }).change(function (e) {
+                let target_product_id = $(this).val();
+                
+                if (!storeObject.is_in_products_list(target_product_id)) {
+                    storeObject.request_product(target_product_id)
+                    .then(res => {
+                        if (res.success) {
+                            // push data tp products_list
+                            ({products_list, products_meta} = storeObject.add_new_product(res.data));
+                            
+                            // show products list
+                            viewObject.show_selected_products(products_list, products_meta);
+
+                            // update form products_quantity hidden field,
+                            // Notice that we need change the name to products_meta
+                            viewObject.update_product_hidden_fields(products_meta);
+                        }
+                    });
+                } else {
+                    viewObject.alert_product_exists(target_product_id);
+                }// end :: if
+            });
+
+            /**
+             * product update price
+             * get the price of the product 
+             */
+            $('#edit-selected_product_table').on('click', '.remove_selected_item', function (e) {
+                e.preventDefault();
+                let target_product_id = $(this).data('target');
+
+                // delete product from product list
+                let {products_list, products_meta} = storeObject.remove_product(target_product_id);
+                
+                // show products list
+                viewObject.show_selected_products(products_list, products_meta);
+
+                // update form products_quantity hidden field,
+                // Notice that we need change the name to products_meta
+                viewObject.update_product_hidden_fields(products_meta)
+            })
+            .on('change keyup', '.selected_product_price', function () {
+                let target_id   = $(this).data('target');
+                let price       = products_meta[target_id].price = $(this).val();
+                let quantity    = products_meta[target_id].quantity;
+
+                // update product row numbers
+                viewObject.update_product_row(target_id, quantity, price);
+                
+                // update storage products meta
+                storeObject.update_products_meta(products_meta);
+            })
+            .on('change keyup', '.selected_product_quantity', function () {
+                let target_id   = $(this).data('target');
+                let price       = products_meta[target_id].price;
+                let quantity    = products_meta[target_id].quantity = $(this).val();
+
+                // update product row numbers
+                viewObject.update_product_row(target_id, quantity, price);
+                
+                // update storage products meta
+                storeObject.update_products_meta(products_meta);
+            })
+
+
+            /**
+             * Select and update shipping
+             */
             $('#edit-shipping').select2({
                 allowClear: true,
                 width: '100%',
@@ -273,85 +893,66 @@ $(document).ready(function () {
                 let shipping_id = $(this).val();
 
                 if (shipping_id !== null || shipping_id === '') {
-                    $('#createOrderLoddingSpinner').show();
+                    // $('#createOrderLoddingSpinner').show();
 
-                    axios.get(`{{url("admin/shipping")}}/${shipping_id}?fast_acc=true`)
+                    storeObject.request_shipping(shipping_id)
                     .then(res => {
-                        $('#createOrderLoddingSpinner').hide();
-                        const target_shipping = res.data.data;
-                        target_shipping.cost  = edit_shipping_cost != null ? edit_shipping_cost : target_shipping.cost_with_tax;
-                        set_shipping_fields(prefix, target_shipping);
-                        edit_shipping_cost = null;
-                        calculate_products_cost();
+                        if (res.success) {
+                            // add new shipping data
+                            let shipping_data = storeObject.shipping_methods.add_shipping(res.data);
+                            
+                            // show shipping data
+                            viewObject.update_shipping(shipping_data)
+                        }
                     });
                 } else {
-                    set_shipping_fields(prefix);
+                    // delete shipping
+                    storeObject.shipping_methods.delete_shipping();
+
+                    // clear shipping fields
+                    viewObject.update_shipping()
                 }
-                
-                calculate_products_cost();
             });
 
             $('#edit-is_free_shipping_toggle').on('change', function () {
-                /**
-                 * When the user check free_shipping ...
-                 * we set the shipping cost to zero, and disable shipping_cost
-                 * 
-                 * If the user didn't select shipping show the user an error message 
-                 */
-                let prefix           = $(this).data('prefix');
-                let shipping_val     = $(`#${prefix}shipping`).val();
+                
+                let shipping_val = $(`#edit-shipping`).val();
 
                 if (shipping_val != '' && shipping_val != null) {
-                    let is_free_shipping = $(this).prop('checked');
-                    
-                    if (is_free_shipping) {
-                        $(`#${prefix}shipping_cost`).val(0).attr('disabled', 'disabled');
-                        
-                        $(`#${prefix}selected_shipping_cost`)
-                            .data('is_free_shipping', true)
-                            .css('text-decoration', 'line-through');
-                        
-                        $(`#${prefix}is_free_shipping`).val(1);
-                    } else {
-                        let shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
-                        $(`#${prefix}shipping_cost`).val(shipping_cost).removeAttr('disabled');
-                                      
-                        $(`#${prefix}selected_shipping_cost`)
-                            .text(shipping_cost)
-                            .data('is_free_shipping', false)
-                            .css('text-decoration', '');
-                        
-                        $(`#${prefix}is_free_shipping`).val(0);
-                    }
+                    // update shipping object
+                    let shipping_data = storeObject.shipping_methods.toggle_shipping_is_free ();
+
+                    // update shipping view
+                    viewObject.update_shipping(shipping_data);
                 } else {
-                    $(this).prop('checked', false);
-                    $(`#${prefix}is_free_shipping`).val(0);
-                    $(`#${prefix}shippingErr`).text('please select shipping').slideDown();
-                    setTimeout(() => {
-                        $(`#${prefix}shippingErr`).text('').slideUp();
-                    }, 3000);
+                    // clear shipping fields
+                    viewObject.update_shipping()
                 }
-                
-                calculate_products_cost();
+            
             });
 
             $('#edit-shipping_cost').on('keyup change', function () {
-                let prefix          = $(this).data('prefix');
-                const shipping_cost = $(this).val();
-                const selected_shipping_cost = $(`#${prefix}selected_shipping_cost`).data('cost');
                 
-                if (shipping_cost < selected_shipping_cost) {
-                    $(this).css('color', 'red');
+                let shipping_val = $(`#edit-shipping`).val();
+
+                if (shipping_val != '' && shipping_val != null) {
+                    let shipping_cost = $(this).val();
+                    
+                    // update shipping object
+                    let shipping_data = storeObject.shipping_methods.update_shipping_cost (shipping_cost);
+
+                    // update shipping view
+                    viewObject.update_shipping(shipping_data);
                 } else {
-                    $(this).css('color', '');
+                    // clear shipping fields
+                    viewObject.update_shipping()
                 }
-
-                $(`#${prefix}selected_shipping_cost`).text(shipping_cost);     
-                
-                calculate_products_cost();           
             });
-            // end shipping events
 
+
+            /**
+             * Select and update fees
+             */
             $('#edit-fees').select2({
                 allowClear: true,
                 width: '100%',
@@ -373,390 +974,60 @@ $(document).ready(function () {
                     cache: true
                 }
             }).change(function () {
-                let prefix   = $(this).data('prefix');
                 let fees_ids = $(this).val();
 
                 if (fees_ids !== null || fees_ids === '') {
-                    $('#createOrderLoddingSpinner').show();
-                    
-                    axios.get(`{{url("admin/fees")}}/0?get_selected_fees=true`, {
-                        params: {
-                            fees_ids: JSON.stringify(fees_ids),
-                        },
-                    })
+                    storeObject.request_fees(fees_ids)
                     .then(res => {
-                        $('#createOrderLoddingSpinner').hide();
-                        if (res.data.success) {
-                            fees_ration = res.data.data;
-                            let products_fee_td = '';
-                            let fee_info_table_td = '';
+                        // store the selected fees
+                        let fees_data = storeObject.fees_methods.update_fees_list(res.data);
 
-                            $('.fee-create-form-tr').remove();
-                            
-                            fees_ration.forEach(fee_obj => {
-                                /**
-                                    # Add tax column to products table
-                                */
-                                fee_info_table_td += `
-                                <tr class="fee-create-form-tr">
-                                    <td>${fee_obj.title}</td>
-                                    <td>${fee_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
-                                    <td>${fee_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
-                                    <td>${fee_obj.cost}</td>
-                                    <td id="edit-fee-total-cost-type-${fee_obj.id}">---</td>
-                                </tr>
-                                `;
-                            });
-
-                            $('#edit-fees_list_table_container').append(fee_info_table_td);
-                            // calculate_products_cost();
-                        }
+                        // update the fees table and total
+                        viewObject.update_fees(fees_data);
                     });
                 }
-                // reset is_free_shipping
-            });
-
-            $('#edit-find-products').select2({
-                allowClear: true,
-                width: '100%',
-                placeholder: 'Select products',
-                ajax: {
-                    url: '{{ url("admin/products-search") }}/?all_products=true',
-                    dataType: 'json',
-                    delay: 150,
-                    processResults: function (data) {
-                        return {
-                            results:  $.map(data, function (item) {
-                                return {
-                                    text: `${item.ar_name} / ${item.en_name} , quantity : (${item.quantity})`,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            }).change(function (e) {
-                let target_product_id = $(this).val();
-                
-                if (!(target_product_id in edit_selected_products)) {
-                    if (target_product_id !== '') {
-                        $('#edit-createOrderLoddingSpinner').show(500);
-                        
-                        get_selected_product(target_product_id)
-                        .then(target_product => {
-                            if (target_product != null) {
-                                edit_create_selected_product_row(target_product);
-                                $('#edit-find-products').val('').trigger('change');
-                                
-                                $('#edit-createOrderLoddingSpinner').hide(500);
-                        
-                                edit_selected_products[target_product_id] = {
-                                    quantity : 1,
-                                    price    : target_product.price
-                                } 
-
-                                edit_update_products_hidden_field();
-                            }
-                        });
-                    }// end :: if            
-                } else {
-                    $('#edit-createOrderWarningAlert').text('Product is already in the list').slideDown(500);
-                    $(`.edit-selected-product-row-${target_product_id}`).css('border', '1px solid red');
-                    
-                    setTimeout(() => {
-                        $('#edit-createOrderWarningAlert').text('').slideUp(500);
-                        $(`.edit-selected-product-row-${target_product_id}`).css('border', '');
-                    }, 3000);
-                }
-            });
-
-            // the selected product quantity, price change event, anf remove item event
-            $('#edit-selected_product_table').on('change keyup', '.selected_product_quantity', function () {
-                let target_id   = $(this).data('target');
-                let price       = edit_selected_products[target_id].price;
-                let quantity    = edit_selected_products[target_id].quantity = $(this).val();
-
-                let original_quantity = $(`#selected_product_o_quantity_${target_id}`).data('quantity');
-                console.log('original_quantity : ', original_quantity);
-                $(`#selected_product_o_quantity_${target_id}`).text(original_quantity - quantity);
-                
-                // update item sub total price
-                $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR');
-                
-                edit_update_products_hidden_field();
-            }).on('change keyup', '.selected_product_price', function () {
-                let target_id      = $(this).data('target');
-                let original_price = $(this).data('original-price');
-                let quantity       = edit_selected_products[target_id].quantity;
-                let price          = edit_selected_products[target_id].price = $(this).val();
-            
-                price < original_price && $(`#selected_product_price_${target_id}`).css('color', 'red');
-                price >= original_price && $(`#selected_product_price_${target_id}`).css('color', 'green');
-
-                // update item sub total price
-                $(`#selected_product_td_sub_total_${target_id}`).text(parseFloat(price * quantity).toFixed(2) + ' SR')
-                
-                edit_update_products_hidden_field();
-            }).on('click', '.remove_selected_item', function (e) {
-                e.preventDefault();
-                let target_id = $(this).data('target');
-
-                $(`.edit-selected-product-row-${target_id}`).remove();
-                delete edit_selected_products[target_id];
-                
-                edit_update_products_hidden_field();
-            });
-        }
-
-        async function get_selected_product (target_product_id) {
-            const request  = axios.get(`{{ url('admin/products') }}/${target_product_id}?get_p=true`);
-            const target_product = request.then(res => {
-                if (res.data.success) {
-                    return res.data.data
-                }
-
-                return null;
-            });
-
-            return target_product;
-        } 
-
-        function edit_create_selected_product_row (target_product) {
-            let total_product_cost = 0;
-            let tax_tr = '';
-            window.tax_ration.forEach(tax_obj => {
-                if (tax_obj.cost_type === 1) {
-                    if (tax_obj.is_fixed) {
-                        tax_tr += `
-                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost}</td>
-                        `;
-                        total_product_cost += tax_obj.cost;
-                    } else {
-                        tax_tr += `
-                            <td id="edit-product-total-tax-${target_product.id}-${tax_obj.id}">${tax_obj.cost * target_product.price / 100}</td>
-                        `;
-                        total_product_cost += tax_obj.cost * target_product.price / 100;
-                    }
-                }// end :: if
-            });
-
-            let product_tr = `
-                <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
-                    <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
-                    <td>${target_product.ar_name} / ${target_product.en_name}</td>
-                    <td>${target_product.sku}</td>
-                    <td>${target_product.price}</td>
-                    <td>
-                        <input style="width: 80px" class="selected_product_price" type="number" value="${target_product.price}" step="1"
-                            id="selected_product_price_${target_product.id}"
-                            data-target="${target_product.id}" data-original-price="${target_product.price}" 
-                            min="0"/>
-                        SR
-                    </td>
-                    <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
-                        ${target_product.quantity - 1}
-                    </td>
-                    <td>
-                        <input style="width: 80px" class="selected_product_quantity" type="number" value="1" step="1"
-                            id="selected_product_quantity_${target_product.id}" 
-                            data-target="${target_product.id}" data-max="${target_product.quantity}"
-                            min="1" max="${target_product.quantity}" />
-                        </td>
-                    <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
-                    ${tax_tr}
-                    <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
-                        ${target_product.price + total_product_cost}
-                    </td>
-                    <td>
-                        <button class="remove_selected_item btn btn-sm btn-danger"
-                            data-target="${target_product.id}"
-                        >
-                            <i class="fas fa-minus-circle"></i>
-                        </button>
-                    </td>
-                </tr>
-            `; 
-
-            $('#edit-selected_product_table').prepend(product_tr);
-        } 
-        
-        function edit_update_products_hidden_field () {
-            console.log(edit_selected_products, Object.keys(edit_selected_products));
-
-            $('#edit-products_quantity').val(JSON.stringify(edit_selected_products));
-            $('#edit-products').val(JSON.stringify(Object.keys(edit_selected_products)));
-            calculate_products_cost()
-        }
-
-        function get_sub_total () {
-            let sub_total = 0;
-            selected_products_keys.forEach(product_key => {
-                sub_total += edit_selected_products[product_key]['price'] 
-                            * edit_selected_products[product_key]['quantity'];
-            });
-            return sub_total;
-        }
-
-        function calculate_products_cost () {
-            /**
-             * # Calculate sub total, and total 
-             * Here we get all costs products sub total, feesm taxes and shipping
-             * and than calculate teh total
-            */
-            let sub_total = 0;
-            let total_taxes = calculate_taxes();
-            let total_fees  = calculate_fees();
-            let shipping_obj = get_shipping();
-            let shipping_cost = shipping_obj.is_free_shipping ? 0 : parseInt(shipping_obj.shipping_cost);
-            
-            let selected_products_keys = Object.keys(edit_selected_products);
-            selected_products_keys.forEach(product_key => {
-                sub_total += edit_selected_products[product_key]['price'] 
-                            * edit_selected_products[product_key]['quantity'];
-            });
-
-            // if (shipping_obj.)
-            // console.log('test total', total_taxes, total_fees, shipping_obj);
-            // console.log(sub_total + total_taxes + total_fees + shipping_cost);
-            $('#edit-selected_products_sub_total').text(sub_total);
-            $('#edit-selected_products_total').text(sub_total + total_taxes + total_fees + shipping_cost);
-        }
-
-        function calculate_taxes () {
-            /**
-                get the products list, and the tax list and 
-                start calculation tax and sum the results and
-                show in the card. 
-
-                tax list : window.tax_ration
-                selected products : selected_products 
-             */
-            let all_total_tax = 0;
-            selected_products_keys = Object.keys(edit_selected_products);
-            tax_ration.forEach(tax_obj => {
-                let total_tax_obj = 0;
-
-                // calculate the tax depending on it's type and calculation rules
-                if (tax_obj.cost_type == 1) {
-                    selected_products_keys.forEach(product_key => {
-                        let product_obj_total_tax = 0;
-
-                        if (tax_obj.is_fixed) {
-                            product_obj_total_tax += tax_obj.cost * edit_selected_products[product_key]['quantity'];
-                        } else {
-                            product_obj_total_tax += tax_obj.cost * edit_selected_products[product_key]['price'] * edit_selected_products[product_key]['quantity'] / 100;
-                        }
-
-                        // get product tax cost 
-                        console.log('test tax cost : ', $(`#edit-product-total-tax-${product_key}-${tax_obj.id}`));
-                        $(`#edit-product-total-tax-${product_key}-${tax_obj.id}`).text(product_obj_total_tax);
-                        $(`#edit-product-total-cost-${product_key}`).text(product_obj_total_tax + edit_selected_products[product_key]['quantity'] * edit_selected_products[product_key]['price']);
-                        total_tax_obj += product_obj_total_tax;
-                    });
-                } else {
-                    // total_tax_obj += tax_obj.cost;
-                    total_tax_obj += tax_obj.is_fixed ? tax_obj.cost : get_sub_total() * tax_obj.cost / 100;
-
-                }
-                
-                // show total tax
-                $(`#edit-total-cost-type-${tax_obj.id}`).text(total_tax_obj);
-                all_total_tax += total_tax_obj;
             });
             
-            $('#edit-selected_taxe_cost').text(all_total_tax);
+        };
 
-            return all_total_tax;
-        }
-        
-        function calculate_fees () {
-            /**
-                get the products list, and the fee list and 
-                start calculation tax and sum the results and
-                show in the card. 
+        const edit_products_update = (input_products_list, input_products_meta) => {
+            products_list = input_products_list;
+            products_meta = input_products_meta;
 
-                fees list : window.fees_ration
-                selected products : selected_products 
-            */
-            let all_total_fees = 0;
-            selected_products_keys = Object.keys(edit_selected_products);
-            fees_ration.forEach(fee_object => {
-                let total_fee_obj = 0;
-                
-                // calculate the tax depending on it's type and calculation rules
-                if (fee_object.cost_type == 1) {
-                    selected_products_keys.forEach(product_key => {
-                        let product_obj_total_tax = 0;
+            storeObject.set_products_data (products_list, products_meta);
 
-                        if (fee_object.is_fixed) {
-                            product_obj_total_tax += fee_object.cost * edit_selected_products[product_key]['quantity'];
-                        } else {
-                            product_obj_total_tax += fee_object.cost * edit_selected_products[product_key]['price'] * edit_selected_products[product_key]['quantity'] / 100;
-                        }
+            viewObject.show_selected_products(products_list, products_meta);
 
-                        $(`#edit-product-total-fee-${product_key}-${fee_object.id}`).text(product_obj_total_tax);
-                        $(`#edit-product-total-fee-${product_key}`).text(product_obj_total_tax + edit_selected_products[product_key]['quantity'] * edit_selected_products[product_key]['price']);
-                        total_fee_obj += product_obj_total_tax;
-                    });
-                } else {
-                    total_fee_obj += fee_object.is_fixed ? fee_object.cost : get_sub_total() * fee_object.cost / 100;
-                }
-
-                all_total_fees += total_fee_obj;
-
-                $(`#edit-fee-total-cost-type-${fee_object.id}`).text(total_fee_obj);
-            });
-
-            $('#edit-selected_fee_cost').text(all_total_fees);
-
-            return all_total_fees;
+            // update form products_quantity hidden field,
+            // Notice that we need change the name to products_meta
+            viewObject.update_product_hidden_fields(products_meta);
         }
 
-        function get_shipping () {
-            /*
-                selected_shipping_cost
-                cost
-                cost-type
-                is_free_shipping
-            */
-            
-            const shipping_data = {
-                // shipping_cost : $('#selected_shipping_cost').data('cost'),
-                shipping_cost    : $('#shipping_cost').val(),
-                is_free_shipping : $('#selected_shipping_cost').data('is_free_shipping')
-            };
-            
-            return shipping_data;
-        }
+        const init = () => {
+            products_events();  
+        };
 
-        // start helper functions
-        function set_shipping_fields (prefix = '', shipping = {
-            id : '',
-            cost : 0,
-            is_free_taxes : ''
-        }) {
-            
-            
-            $(`#${prefix}is_free_shipping`).val(0);
-            $(`#${prefix}is_free_shipping_toggle`).prop('checked', false);
-
-            $(`#${prefix}shipping`).val(shipping.id);
-            $(`#${prefix}shipping_cost`).val(shipping.cost).removeAttr('disabled');
-
-            $(`#${prefix}selected_shipping_cost`).text(shipping.cost)
-                .data('cost', shipping.cost)
-                .data('is_free_shipping', false)
-                .css('text-decoration', '');
-
-        }
+        init();
 
         return {
-            starter_event
+            edit_products_update
+        }
+    })(StoreObject, ViewObject);
+
+    const edit_special_options = (function  () {
+        window.edit_selected_products = {};
+        
+        /**
+         * Is there is a way to put the data in fields and run a method that call the 
+         * the data from the fields to the storage object
+         * 
+         */
+        return {
+            // starter_event
         }
     })();
 
-    edit_special_options.starter_event();
+    // edit_special_options.starter_event();
 
 });
 </script>

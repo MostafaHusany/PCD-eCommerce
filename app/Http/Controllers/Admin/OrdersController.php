@@ -229,6 +229,7 @@ class OrdersController extends Controller
     }
 
     protected function updateOrder (Request $request, $id) {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -260,9 +261,10 @@ class OrdersController extends Controller
         // dd($request->all());
         $target_order       = Order::find($id);
 
+        $targted_fees_ids = explode(',', $request->fees);
         $target_shipping = Shipping::find($request->shipping);
         $shipping_cost   = isset($request->shipping_cost) && ((float) $request->shipping_cost) > 0 ? (float) $request->shipping_cost : $target_shipping->cost;
-
+        // dd($targted_fees_ids);
         $target_order->update([
             'customer_id'   => $request->customer,
             'shipping_id'   => $request->shipping,
@@ -289,7 +291,7 @@ class OrdersController extends Controller
         // create updated order
         $products_quantity  = (array) json_decode($request->products_quantity);
         $products_id        = json_decode($request->products);
-        $this->create_requested_order($target_order, $products_id, $products_quantity);
+        $this->create_requested_order($target_order, $products_id, $products_quantity, $targted_fees_ids);
         
         if ($target_order->status == -1) {
             $target_order->status = 0;

@@ -45,7 +45,7 @@ trait MakeOrder {
     private function update_order_calculation ($target_order, $products_data, Array $fees_ids) {
         /* 
             # Array $products_data [products_id => [1, 2, ...], 
-                                    products_quantity => [product_id => [quantityt => 2]] ]
+                                    products_quantity => [product_id => [quantity => 2, price => 0.0]] ]
         */
         
         $meta = [ 
@@ -137,7 +137,7 @@ trait MakeOrder {
         
         $target_product->quantity -= $order_quantity;
         $target_product->save();
-    }
+    }// end :: update_product_quantity
 
     private function calculate_all_taxe ($products_count, $sub_total) {
         /**
