@@ -604,17 +604,17 @@ $(document).ready(function () {
                             SR
                         </td>
                         
-                        <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity}">
+                        <td id="selected_product_o_quantity_${target_product.id}" data-quantity="${target_product.quantity + quantity}">
                             ${target_product.quantity}
                         </td>
                         <td>
                             <input style="width: 80px" class="selected_product_quantity" type="number" value="${quantity}" step="1"
                                 id="selected_product_quantity_${target_product.id}" 
                                 data-target="${target_product.id}" data-max="${target_product.quantity}"
-                                min="1" max="${target_product.quantity}" />
+                                min="1" max="${target_product.quantity + quantity}" />
                         </td>
 
-                        <td id="selected_product_td_sub_total_${target_product.id}">${target_product.price} SR</td>
+                        <td id="selected_product_td_sub_total_${target_product.id}">${parseFloat(quantity * price).toFixed(2)} SR</td>
                         ${tax_tr}
                         <td id="product-total-cost-${target_product.id}" style="font-weight: bold; color: red">
                             ${parseFloat(quantity * price + total_product_cost).toFixed(2)}

@@ -91,6 +91,7 @@ trait MakeOrder {
             
             'sub_total'     => 0,
             'total'         => 0,
+            'status'        => $target_order->status == -1 ? 0 : $target_order->status
         ]);
 
         // delete old order products linked to this order
