@@ -11,7 +11,7 @@ class Order extends Model
      * -1 مرتجع
      */
     protected $fillable = ['status', 'note', 'meta', 'sub_total', 'total', 'customer_id',
-     'code', 'shipping_cost', 'is_free_shipping', 'shipping_id'];
+     'code', 'shipping_cost', 'is_free_shipping', 'shipping_id', 'taxe', 'fee', 'address_id'];
 
     public function customer () {
         return $this->belongsTo(Customer::class, 'customer_id');
@@ -27,5 +27,13 @@ class Order extends Model
 
     public function shipping () {
         return $this->belongsTo(Shipping::class, 'shipping_id');
+    }
+
+    public function invoice () {
+        return $this->hasOne(Invoice::class, 'order_id');
+    }
+    
+    public function payment_status () {
+        return isset($this->invoice) ? $this->invoice->status : '---';
     }
 }

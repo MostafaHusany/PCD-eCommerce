@@ -124,6 +124,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('invoices', 'invoicesController', ['names' => [
+        // 'index'     => 'admin.invoices.index',
+        // 'store'     => 'admin.invoices.store',
+        'show'      => 'admin.invoices.show',
+        // 'edit'      => 'admin.invoices.edit',
+        // 'update'    => 'admin.invoices.update',
+        // 'destroy'   => 'admin.invoices.destroy'
+        ]
+    ]);
+
     // fast ajax search
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');

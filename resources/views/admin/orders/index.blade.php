@@ -105,6 +105,7 @@
                 <th>City</th>
                 <th>Status</th>
                 <th>Total</th>
+                <th>Payment</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
@@ -114,6 +115,7 @@
     @include('admin.orders.incs._show')
     @include('admin.orders.incs._create')
     @include('admin.orders.incs._edit')
+    @include('admin.orders.incs._invoice')
 
 
 </div>
@@ -158,6 +160,7 @@ $(function () {
             { data: 'city', name: 'city' },
             { data: 'status', name: 'status' },
             { data: 'total', name: 'total' },
+            { data: 'payment_status', name: 'payment_status' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
@@ -237,7 +240,7 @@ $(function () {
         
         // get fees data
         $('#edit-fees').val('').trigger('change');
-        console.log('edit-fees', order_meta.fees);
+        
         order_meta.fees.forEach(fee_obj => {
             let tmp = new Option(fee_obj.title, fee_obj.id, false, true);
             // fee_list.push($tmp)

@@ -102,6 +102,7 @@ class CartController extends Controller
 
     public function create_order(OrderRequest $request)
     {
+        // please use MakeOrder Trait here 
         $order = new Order();
         if ($request->address_id) {
             $order->address_id = $request->address_id;

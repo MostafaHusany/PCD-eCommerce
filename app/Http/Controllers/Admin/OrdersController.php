@@ -73,9 +73,9 @@ class OrdersController extends Controller
             ->addColumn('city', function ($row_object) {
                 return $row_object->customer->city;
             })
-            // ->addColumn('status', function ($row_object) {
-            //     return $row_object->customer->city;
-            // })
+            ->addColumn('payment_status', function ($row_object) {
+                return $row_object->payment_status();
+            })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.orders.incs._actions', compact('row_object'));
             });

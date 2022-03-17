@@ -52,6 +52,15 @@
                 edit
             </button>
 
+            <button class="dropdown-item show-invoice text-success" 
+                data-object-id="{{$row_object->id}}"
+                data-current-card="#objectsCard"    
+                data-target-card="#invoiceObjectsCard"    
+            >
+                <i class="fas fa-file-invoice-dollar"></i>
+                invoice
+            </button>
+
             <div class="dropdown-divider"></div>
 
             @if($row_object->status !== -1)

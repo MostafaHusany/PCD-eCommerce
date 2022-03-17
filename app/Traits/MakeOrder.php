@@ -7,6 +7,7 @@ use App\Fee;
 use App\Taxe;
 use App\Order;
 use App\Product;
+use App\Invoice;
 use App\Shipping;
 use App\OrderProduct;
 
@@ -42,8 +43,11 @@ trait MakeOrder {
             'total'         => 0,
         ]);
 
-        $this->update_order_calculation($new_order, $products_data, $fees_ids);
+        $new_order = $this->update_order_calculation($new_order, $products_data, $fees_ids);
         
+        // create an invoive for the order Invoice
+        $this->create_order_invoice($new_order);
+
         return $new_order;
     }
 
@@ -97,8 +101,9 @@ trait MakeOrder {
         // delete old order products linked to this order
         $target_order->order_products()->delete();
 
+        $target_order = $this->update_order_calculation($target_order, $products_data, $fees_ids);
         
-        $this->update_order_calculation($target_order, $products_data, $fees_ids);
+        $this->create_order_invoice($target_order);
         
         return $target_order;
 
@@ -155,6 +160,7 @@ trait MakeOrder {
         $target_order->meta      = json_encode($meta);
         $target_order->save();
 
+        return $target_order;
     }// end :: update_order_calculation
     
     private function create_order_sold_products ($target_order, $products_data) {
@@ -305,5 +311,30 @@ trait MakeOrder {
         
         return ['fee_total' => $fee_total, 'fee_meta' => $fee_meta];
     }// end :: calculate_all_fees
+
+    private function create_order_invoice ($target_order) {
+        /**
+         * Here we will create order invoice, 
+         * there is two choices for order ... 
+         * 1- the order don't have an invoice so we need to create the invoice
+         * 2- the order already has an invoice so we can update the invoice.
+         * 
+         * Notice there is this situation when the order is delivired and fully paid
+         * than the user want to restore the order, what sholud we do for the invoice ?!
+         */
+
+        // check if the order has an invoice 
+        $order_invoice = $target_order->invoice == null ? new Invoice() : $target_order->invoice;
+        // dd($target_order->tax);
+        $order_invoice->order_id    = $target_order->id;
+        $order_invoice->sub_total   = $target_order->sub_total;
+        $order_invoice->fee         = $target_order->fee;
+        $order_invoice->tax         = $target_order->taxe;
+        $order_invoice->shipping    = $target_order->is_free_shipping ? 0 : $target_order->shipping_cost;
+        $order_invoice->total       = $target_order->total;
+        $order_invoice->save();
+
+        return $order_invoice;
+    }
 
 }
