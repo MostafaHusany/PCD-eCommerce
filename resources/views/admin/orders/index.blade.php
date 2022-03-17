@@ -237,6 +237,7 @@ $(function () {
         
         // get fees data
         $('#edit-fees').val('').trigger('change');
+        console.log('edit-fees', order_meta.fees);
         order_meta.fees.forEach(fee_obj => {
             let tmp = new Option(fee_obj.title, fee_obj.id, false, true);
             // fee_list.push($tmp)

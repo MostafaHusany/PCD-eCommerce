@@ -69,10 +69,12 @@ trait MakeOrder {
             $order_restored_q   = (array) $order_meta['restored_quantity'];
             $target_products    = $target_order->products()->distinct()->get();
 
+            // dd($order_quantity, $target_products, $order_restored_q);
             // restore old qunatity
             foreach ($target_products as $target_product) {
                 $target_product_quantity = (array) $order_quantity[$target_product->id];
-                $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
+                // $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
+                $this->restore_reserved_products($target_product, $target_product_quantity['quantity']);
             }
         }
 
@@ -82,7 +84,7 @@ trait MakeOrder {
          * */
         $target_order->update([ 
             'customer_id'   => $customer_id,
-            
+
             'shipping_id'       => $shipping_data[0],
             'is_free_shipping'  => $shipping_data[1],
             'shipping_cost'     => $shipping_data[2],
@@ -101,6 +103,7 @@ trait MakeOrder {
 
     }
 
+    // main method used in the public and chain the methods down
     private function restore_reserved_products ($target_product, $order_quantity) {
         if ($target_product->is_composite === 1) {
             $target_children = $target_product->children;        
@@ -120,11 +123,49 @@ trait MakeOrder {
         $target_product->save();
     }
 
+    // main method used in the public and chain the methods down
     private function update_order_calculation ($target_order, $products_data, Array $fees_ids) {
         /* 
             # Array $products_data [products_id => [1, 2, ...], 
                                     products_quantity => [product_id => [quantity => 2, price => 0.0]] ]
         */
+        
+        // START CREAE SOLD-PRODUCTS RECORD FOR EACH PRODUCT IN THE ORDER
+        $results = $this->create_order_sold_products($target_order, $products_data);
+
+        $sub_total          = $results['sub_total'];
+        $products_count     = $results['products_count'];
+        $meta               = $results['meta'];
+
+        // START CALCULATE TAXES
+        $tax_result = $this->calculate_all_taxe($products_count, $sub_total);
+        $tax_total  = $tax_result['total_tax'];
+        $meta['taxes'] = $tax_result['tax_meta'];
+        
+        // START CALCULATE FEES
+        $fee_result = $this->calculate_all_fees($products_count, $sub_total, $fees_ids);
+        $fee_total  = $fee_result['fee_total'];
+        $meta['fees'] = $fee_result['fee_meta'];
+
+        $target_order->sub_total = $sub_total;
+        $target_order->taxe      = $tax_total;
+        $target_order->fee       = $fee_total;
+        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
+        $target_order->meta      = json_encode($meta);
+        $target_order->save();
+
+    }// end :: update_order_calculation
+    
+    private function create_order_sold_products ($target_order, $products_data) {
+        /**
+         * # Each order consist of group of products and we create for each 
+         * order a sold product record for better reports works. 
+         */
+        $products = Product::whereIn('id', $products_data[0])->where('quantity', '>', 0)->get();
+
+        $sub_total          = 0;
+        $products_count     = 0;
+        $products_quantity  = $products_data[1];
         
         $meta = [ 
             'products_id'       => $products_data[0], 
@@ -134,12 +175,6 @@ trait MakeOrder {
             'taxes' => [], 
             'fees'  => []
         ];
-
-        $products = Product::whereIn('id', $products_data[0])->where('quantity', '>', 0)->get();
-        
-        $sub_total          = 0;
-        $products_count     = 0;
-        $products_quantity  = $products_data[1];
 
         /**
          * # Create for each product in the order a sold_product item
@@ -166,6 +201,7 @@ trait MakeOrder {
 
             $new_order_product = OrderProduct::insert($data);
 
+            // this line need refactore because this calling the database in a loop !!
             $this->update_product_quantity($product, $targted_product_quantity['quantity']);
 
             $meta['products_prices'][$product->id]      = $product->price;
@@ -173,26 +209,8 @@ trait MakeOrder {
             $sub_total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
         }
 
-        // START CALCULATE TAXES
-        $tax_result = $this->calculate_all_taxe($products_count, $sub_total);
-        $tax_total  = $tax_result['total_tax'];
-        $meta['taxes'] = $tax_result['tax_meta'];
-        
-        // START CALCULATE FEES
-        $targted_fees_ids;
-        $fee_result = $this->calculate_all_fees($products_count, $sub_total, $fees_ids);
-        $fee_total  = $fee_result['fee_total'];
-        $meta['fees'] = $fee_result['fee_meta'];
-
-        // dd($tax_total, $target_order);
-        $target_order->sub_total = $sub_total;
-        $target_order->taxe      = $tax_total;
-        $target_order->fee       = $fee_total;
-        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
-        $target_order->meta      = json_encode($meta);
-        $target_order->save();
-
-    }// end :: update_order_calculation
+        return ['sub_total' => $sub_total, 'products_count' => $products_count, 'meta' => $meta];
+    }// end :: create_order_sold_products
 
     private function update_product_quantity ($target_product, $order_quantity) {
 
@@ -262,9 +280,9 @@ trait MakeOrder {
         return ['total_tax' => $tax_total, 'tax_meta' => $tax_meta];
     }// end :: calculate_all_taxe
 
-    private function calculate_all_fees ($products_count, $sub_total, $targted_fees_ids) {
+    private function calculate_all_fees ($products_count, $sub_total, $targted_fees_ids = null, $targted_fees = null) {
         // get targted fees
-        $targted_fees = Fee::whereIn('id', $targted_fees_ids)->get();
+        $targted_fees = $targted_fees_ids != null ? Fee::whereIn('id', $targted_fees_ids)->get() : $targted_fees;
         $fee_total = 0;
 
         $fee_meta = [];
