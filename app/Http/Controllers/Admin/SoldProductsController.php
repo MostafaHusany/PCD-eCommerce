@@ -19,9 +19,10 @@ class SoldProductsController extends Controller
     use MakeOrder;
 
     public function index (Request $request) {
+        $tmp = OrderProduct::get();
         
         if ($request->ajax()) {
-            $model = OrderProduct::query()->orderBy('id', 'desc');
+            $model = OrderProduct::query()->with('categories')->orderBy('id', 'desc');
             
             if (isset($request->name)) {
                 $model->where(function ($q) use ($request) {
@@ -41,7 +42,12 @@ class SoldProductsController extends Controller
             if (isset($request->sku)) {
                 $model->where('sku', 'like', "%$request->status%");
             }
-
+            // return $model->categories;
+            if (isset($request->category)) {
+                $model->whereHas('categories', function ($q) use ($request) {
+                    $q->where('product_categories.id', $request->category);
+                });
+            }
 
             $datatable_model = Datatables::of($model)
             ->addColumn('name', function ($row_object) {

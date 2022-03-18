@@ -122,8 +122,7 @@
 <script>
 $(function () {
     
-    $('#edit-permissions').select2({width: '100%'});
-    $('#permissions').select2({width: '100%'});
+    
 
     const objects_dynamic_table = new DynamicTable(
         {
@@ -179,34 +178,62 @@ $(function () {
         }
     );
 
-    $('#dataTable').on('click', '.restore-object', function () {
-        $('#loddingSpinner').show(500);
-
-        let target_order_product_id   = $(this).data('object-id');
-        let target_order_product_name = $(this).data('object-name');
+    (function () {
+        $('#permissions').select2({width: '100%'});
+        $('#edit-permissions').select2({width: '100%'});
         
-        let flag = confirm(`Are you sure you want to restor "${target_order_product_name}"`);
+        $('#s-category').select2({
+            allowClear: true,
+            width: '100%',
+            placeholder: 'Select categories',
+            ajax: {
+                url: '{{ url("admin/products-categories-search") }}',
+                dataType: 'json',
+                delay: 150,
+                processResults: function (data) {
+                    return {
+                        results:  $.map(data, function (item) {
+                            return {
+                                text: `${item['ar_title']} || ${item['en_title']}`,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
         
-        if (flag) {
-            axios.post(`{{ url('admin/sold-products') }}/${target_order_product_id}`, {
-                _method  : 'DELETE',
-                '_token' : $('meta[name="csrf-token"]').attr('content'),
-                restore_product : true
-            }).then(res => {
-                
-                $('#loddingSpinner').hide(500);
-                
-                if (res.data.success) {
-                    objects_dynamic_table.table_object.draw();
+        $('#dataTable').on('click', '.restore-object', function () {
+            $('#loddingSpinner').show(500);
 
-                    $('#warningAlert').text('You restored the item successfully').slideDown();
-                    setTimeout(() => {
-                        $('#warningAlert').text('').slideUp();
-                    }, 3000);
-                }// end :: if
-            });
-        }
-    });
+            let target_order_product_id   = $(this).data('object-id');
+            let target_order_product_name = $(this).data('object-name');
+            
+            let flag = confirm(`Are you sure you want to restor "${target_order_product_name}"`);
+            
+            if (flag) {
+                axios.post(`{{ url('admin/sold-products') }}/${target_order_product_id}`, {
+                    _method  : 'DELETE',
+                    '_token' : $('meta[name="csrf-token"]').attr('content'),
+                    restore_product : true
+                }).then(res => {
+                    
+                    $('#loddingSpinner').hide(500);
+                    
+                    if (res.data.success) {
+                        objects_dynamic_table.table_object.draw();
+
+                        $('#warningAlert').text('You restored the item successfully').slideDown();
+                        setTimeout(() => {
+                            $('#warningAlert').text('').slideUp();
+                        }, 3000);
+                    }// end :: if
+                });
+            }
+        });
+
+    })();
 
 });
 </script>
