@@ -129,7 +129,7 @@ $(function () {
     $('#edit-permissions').select2({width: '100%'});
     $('#permissions').select2({width: '100%'});
 
-    const objects_dynamic_table = new DynamicTable(
+    window.objects_dynamic_table = new DynamicTable(
         {
             index_route   : "{{ route('admin.orders.index') }}",
             store_route   : "{{ route('admin.orders.store') }}",

@@ -202,29 +202,22 @@ class OrdersController extends Controller
         $target_order   = Order::find($id);
 
         if ($target_order->status !== -1) {
-            // dd($target_order->products);
-            foreach ($target_order->products()->distinct()->get() as $target_product) {
-                $quantity = $target_order->order_products()->where('status', 1)->where('product_id', $target_product->id)->count();
-                $this->restore_reserved_products($target_product, $quantity);
-            }
+            $this->restore_order_all_products($target_order);
         }
 
         if (isset($request->restore_product)) {
             $this->restore_order_meta($target_order);
             
-            foreach ($target_order->order_products as $target_order_product) {
-                $target_order_product->status = 0;
-                $target_order_product->save();
-            }
-
-            $target_order->status = -1;
+            // update orders' products status
+            $orderproducts = $target_order->order_products()->where('status', '!=', 0)->update(['status' => '0']);
             
+            // update orders' status
+            $target_order->status = -1;
             $target_order->shipping_cost = 0;
             $target_order->sub_total = 0;
             $target_order->taxe      = 0;
             $target_order->fee       = 0;
             $target_order->total     = 0;
-
             $target_order->save();
             
         } else {
@@ -266,22 +259,5 @@ class OrdersController extends Controller
         $target_product->save();
     }
 
-    private function restore_order_meta ($target_order) {
-        /**
-         * Store the restored items in the meta of 
-         * the order, we use this in restoring all the 
-         * order products.
-         * */ 
-        $target_order_meta    = (array) json_decode($target_order->meta);
-        $requested_quantity   = (array) $target_order_meta['products_quantity'];
-        $restored_quantity    = [];
-
-        foreach ($requested_quantity as $product_id => $product_meta) {
-            $product_meta = (array) $product_meta;
-            $restored_quantity[$product_id] = $product_meta['quantity'];
-        }
-
-        $target_order_meta['restored_quantity'] = $restored_quantity;
-        $target_order->meta = json_encode($target_order_meta);
-    }
+    
 }
