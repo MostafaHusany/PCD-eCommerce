@@ -15,5 +15,6 @@ class Address extends Model
         'address',
         'address_details',
         'user_id',
+        'zipcode'
     ];
 }

@@ -10,6 +10,7 @@ use App\Product;
 use App\Invoice;
 use App\Shipping;
 use App\OrderProduct;
+use App\Traits\MakeOrder;
 
 trait MakeOrder {
     /**
@@ -54,7 +55,8 @@ trait MakeOrder {
     public function update_customer_order ($target_order_id,
                                             $customer_id,
                                             Array $shipping_data, // [shipping_id, is_free_shipping, shipping_cost]
-                                            Array $products_data, // [products_id, products_quantity]
+                                            Array $products_data, // [products_id => [1, 2, ...], 
+                                                                  //  products_quantity => [product_id => [quantity => 2, price => 0.0]] ]
                                             Array $fees_ids = []      // list of fees ids
                                         ) 
     {
@@ -289,10 +291,12 @@ trait MakeOrder {
 
     private function calculate_all_fees ($products_count, $sub_total, $targted_fees_ids = null, $targted_fees = null) {
         // get targted fees
-        $targted_fees = $targted_fees_ids != null ? Fee::whereIn('id', $targted_fees_ids)->get() : $targted_fees;
+        $targted_fees = $targted_fees_ids != null ? 
+                            Fee::whereIn('id', $targted_fees_ids)->get() 
+                        : ($targted_fees != null ? $targted_fees : Fee::where('is_active', 1)->get());
+        
         $fee_total = 0;
-
-        $fee_meta = [];
+        $fee_meta  = [];
         foreach ($targted_fees as $fee) {
             $tmp_fee_total = 0;
             if ($fee->cost_type) {

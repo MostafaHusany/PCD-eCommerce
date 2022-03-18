@@ -2,23 +2,30 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Address;
-use App\Fee;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
-use App\Order;
-use App\OrderProduct;
-use App\Payment;
-use App\Product;
-use App\Shipping;
-use App\Taxe;
-use Illuminate\Http\Request;
-use Cart;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+use Cart;
+
+use App\Fee;
+use App\Taxe;
+use App\Order;
+use App\Payment;
+use App\Product;
+use App\Address;
+use App\Shipping;
+use App\OrderProduct;
+
+use App\Traits\MakeOrder;
+
 class CartController extends Controller
 {
+    use MakeOrder;
+
     public function add_to_cart(Request $request)
     {
 
@@ -58,6 +65,7 @@ class CartController extends Controller
         $shippings    = Shipping::where('is_active', '1')->get();
         return view('shop.cart', compact('totalPrice', 'shippings'));
     }
+    
     public function update_quantity($quantity, $row_Id)
     {
         Cart::update($row_Id, $quantity);
@@ -103,62 +111,35 @@ class CartController extends Controller
     public function create_order(OrderRequest $request)
     {
         // please use MakeOrder Trait here 
-        $order = new Order();
+        
+        foreach (Cart::content() as $item) {
+            $products_id[] = $item->id;
+            $products_quantity[$item->id] = ['quantity' => $item->qty, 'price' => product_details($item->id)->price];
+        }
+
+        $order = $this->create_customer_order (auth()->user()->id, 
+            [$request->shipping_id_field, 0, $request->shipping_price_field], 
+            [$products_id, $products_quantity], []
+        );
+
         if ($request->address_id) {
             $order->address_id = $request->address_id;
         } else {
-            $address = new Address();
-            $address->first_name = $request->first_name;
-            $address->last_name = $request->last_name;
-            $address->phone = $request->phone;
-            $address->address = $request->address;
-            $address->city = $request->city;
-            $address->state = $request->state;
-            $address->zipcode = $request->zipcode;
-            $address->address_details = $request->address_details;
-            $address->user_id  = auth()->user()->id;
-            $address->save();
+            $data               = $request->all();
+            $data['user_id']    = auth()->user()->id;
+            $address = Address::create($data);
+            
             $order->address_id = $address->id;
         }
-        $order->status = '0';
-        $order->sub_total = (int)Cart::subtotal();
-        $order->total = $request->total_price;
-        $order->code = 'cs-' . time();
-        $order->customer_id = auth()->user()->id;
-        $order->shipping_cost = $request->shipping_price_field;
-        $order->shipping_id = $request->shipping_id_field;
-        $order->taxe = $request->taxes_sum;
-        $order->fee = $request->fees_sum;
-        $order->is_free_shipping = '0';
-        $order->save();
 
-        foreach (Cart::content() as $item) {
-            for ($i = 0; $i < $item->qty; $i++) {
-                $data[] = [
-                    'order_id'   => $order->id,
-                    'product_id' => $item->id,
-                    'ar_name'    => product_details($item->id)->ar_name,
-                    'en_name'    => product_details($item->id)->en_name,
-                    'sku'        => product_details($item->id)->sku,
-                    'code'       => $order->code,
-                    'price_when_order'  => product_details($item->id)->price,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-            $product = product_details($item->id);
-            $product->quantity = $product->quantity - $item->qty;
-            $product->save();
-        }
-        $products = OrderProduct::insert($data);
-
-        $payment = new Payment();
-        $payment->order_id = $order->id;
-        $payment->total =  $request->total_price;
-        if ($request->hasFile('payment_file')) {
-            $payment->bank_transfer = upload_image($request->file('payment_file'), 'payment_file');
-        }
-        $payment->save();
+        // we will remove the payment and use the MakeOrder trait to create invoices
+        // $payment = new Payment();
+        // $payment->order_id = $order->id;
+        // $payment->total =  $request->total_price;
+        // if ($request->hasFile('payment_file')) {
+        //     $payment->bank_transfer = upload_image($request->file('payment_file'), 'payment_file');
+        // }
+        // $payment->save();
         Cart::destroy();
         return view('shop.thanks');
     }
