@@ -112,16 +112,19 @@ class CartController extends Controller
     {
         // please use MakeOrder Trait here 
         
+        // parse the atributes for create_customer_order method
         foreach (Cart::content() as $item) {
             $products_id[] = $item->id;
             $products_quantity[$item->id] = ['quantity' => $item->qty, 'price' => product_details($item->id)->price];
         }
 
+        // create order data using MakeOrder::create_customer_order
         $order = $this->create_customer_order (auth()->user()->id, 
             [$request->shipping_id_field, 0, $request->shipping_price_field], 
             [$products_id, $products_quantity], []
         );
 
+        // take address ...
         if ($request->address_id) {
             $order->address_id = $request->address_id;
         } else {
