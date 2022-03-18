@@ -11,7 +11,7 @@
         </div>
     </div><!-- /.row -->
 
-    <form action="/" id="objectForm">
+    <div>
         <div class="form-group">
             <table class="table">
                 <tr>
@@ -46,11 +46,26 @@
                     <td><b>Status</b></td>
                     <td id="show-invoice-status"></td>
                 </tr>
+
+                <tr>
+                    <td><b>Transaction Refuse Count</b></td>
+                    <td id="show-payment-refuse-count"></td>
+                </tr>
             </table>
         </div><!-- /.form-group -->
 
+        <hr/>
+
+        <div id="paymentSuccess" style="display: none;" class="alert alert-success">
+            Payment was accepted successfully !
+        </div>
+
+        <div id="paymentRefused" style="display: none;" class="alert alert-danger">
+            Payment was refused
+        </div>
+
         <div id="transaction-image-container" class="img-status form-group">
-            <img id="transaction-image" src="..." class="img-fluid img-thumbnail" alt="...">
+            <img id="transaction-image" src="#" class="img-fluid img-thumbnail" alt="...">
         </div><!-- /.form-group -->
 
         <div id="transaction-image-not-found" class="img-status form-group text-center text-warning my-3">
@@ -63,20 +78,22 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-6 text-left">
-                    <button class="btn btn-success">Accept Payment</button>
+                    <button id="acceptPayment" class="btn btn-success">Accept Payment</button>
                 </div>
                 <div class="col-6 text-right">
-                    <button class="btn btn-danger">Refuse Payment</button>
+                    <button id="refusePayment" class="btn btn-danger">Refuse Payment</button>
                 </div>
             </div>
         </div><!-- /.form-group -->
-    </form>
+    </div>
 </div>
 
 
 
 @push('page_scripts')
 <script>
+    let invoice_id = null;
+    
     $('#dataTable').on('click', '.show-invoice', function () {
         // get order invoice  
         // show invoice data and image for the transaction if exists,
@@ -92,11 +109,12 @@
         axios.get(`{{ url('admin/invoices') }}/${order_id}`, { params : { fast_acc_by_order : true}})
         .then(res => {
             $('#loddingSpinner').hide(500);
-            // console.log(res);
+            
             if (res.data.success) {
                 console.log(res.data.data);
                 let data = res.data.data;
 
+                invoice_id = data.id;
                 $('#show-invoice-code').text(data.order.code);
                 $('#show-invoice-sub-total').text(data.sub_total);
                 $('#show-invoice-shipping').text(data.shipping);
@@ -104,16 +122,64 @@
                 $('#show-invoice-tax').text(data.tax);
                 $('#show-invoice-total').text(data.total);
                 $('#show-invoice-status').text(data.status);
+                $('#show-payment-refuse-count').text(data.payemnt_refuse_count);
 
                 if (data.trasnaction_imge == null) {
                     $('#transaction-image-not-found').slideDown();
                     $('#transaction-image').attr('src', '');
                 }
-            }
-        })
+            }// end :: if
+        });
 
         $('#invoiceObjectsCard').slideDown(500);
         $('#objectsCard').slideUp(500);
+    });
+
+    $('#acceptPayment').click(function (e) {
+        e.preventDefault();
+        $('#loddingSpinner').show(500);
+
+        axios.post(`{{ url('admin/invoices') }}/${invoice_id}`,  {
+            accept_invoice : true,
+            _method : 'PUT',
+            _token  : '{{ csrf_token() }}'
+        }).then(res => {
+            $('#loddingSpinner').hide(500);
+            let data = res.data
+            
+            if (data.success) {
+                $('#show-invoice-status').text(data.data.status);
+                
+                $('#paymentSuccess').slideDown(500);
+                setTimeout(() => {
+                    $('#paymentSuccess').slideUp(500);
+                }, 3000);
+            }
+        });
+    });
+
+    $('#refusePayment').click(function (e) {
+        e.preventDefault();
+
+        $('#loddingSpinner').show(500);
+
+        axios.post(`{{ url('admin/invoices') }}/${invoice_id}`, {
+            _method : 'PUT',
+            _token  : '{{ csrf_token() }}'
+        })
+        .then(res => {
+            $('#loddingSpinner').hide(500);
+            let data = res.data
+            
+            if (data.success) {
+                $('#show-invoice-status').text(data.data.status);
+                
+                $('#paymentRefused').slideDown(500);
+                setTimeout(() => {
+                    $('#paymentRefused').slideUp(500);
+                }, 3000);
+            }
+        });
     });
 </script>
 @endpush

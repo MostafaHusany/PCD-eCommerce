@@ -129,7 +129,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         // 'store'     => 'admin.invoices.store',
         'show'      => 'admin.invoices.show',
         // 'edit'      => 'admin.invoices.edit',
-        // 'update'    => 'admin.invoices.update',
+        'update'    => 'admin.invoices.update',
         // 'destroy'   => 'admin.invoices.destroy'
         ]
     ]);
