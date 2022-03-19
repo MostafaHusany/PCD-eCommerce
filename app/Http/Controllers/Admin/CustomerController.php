@@ -62,6 +62,7 @@ class CustomerController extends Controller
         if (isset($target_customer) && isset($request->fast_acc)) {
             // $target_user->permissions = (array) json_decode($target_user->permissions);
             // $target_customer = $target_user->customer;
+            isset($request->get_orders) && $target_customer->orders;
             return response()->json(['data' => $target_customer, 'success' => isset($target_customer)]);
         }
 

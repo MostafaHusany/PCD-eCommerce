@@ -228,10 +228,10 @@
             })
 
             // show fees table 
-            $('show-fees').remove();
+            $('.show-fees').remove();
             order_meta.fees.forEach(fee_obj => {
                 let fee_info_table_td = `
-                    <tr class="fee-create-form-tr">
+                    <tr class="show-fees fee-create-form-tr">
                         <td>${fee_obj.title}</td>
                         <td>${fee_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
                         <td>${fee_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
