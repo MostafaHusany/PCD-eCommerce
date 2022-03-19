@@ -47,7 +47,7 @@ class Product extends Model
         return $this->hasMany(ProductCustomeField::class, 'product_id');
     }
 
-    public function brands () {
+    public function brand () {
         return $this->belongsTo(Brand::class, 'brand_id');
     }
 }

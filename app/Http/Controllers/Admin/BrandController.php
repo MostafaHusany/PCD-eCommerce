@@ -95,22 +95,6 @@ class BrandController extends Controller
         return response()->json(['data' => null, 'success' > false]);
     }
 
-    public function dataAjax(Request $request)
-    {
-        $data = [];
-
-        if ($request->has('q')) {
-            $search = $request->q;
-            $model = Brand::query()->select("id", "ar_title", "en_title")
-                ->orWhere('ar_title', 'LIKE', "%$search%")
-                ->orWhere('en_title', 'LIKE', "%$search%")
-                ->orWhere('id', $search);
-
-            $data = $model->get();
-        }
-        return response()->json($data);
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -156,4 +140,27 @@ class BrandController extends Controller
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
+
+    /**
+     * Find brands with key-words 
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function dataAjax(Request $request)
+    {
+        $data = [];
+
+        if ($request->has('q')) {
+            $search = $request->q;
+            $model = Brand::query()->select("id", "ar_title", "en_title")
+                ->orWhere('ar_title', 'LIKE', "%$search%")
+                ->orWhere('en_title', 'LIKE', "%$search%")
+                ->orWhere('id', $search);
+
+            $data = $model->get();
+        }
+        return response()->json($data);
+    }
+
 }
