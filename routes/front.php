@@ -8,6 +8,7 @@ Route::group([
     'prefix' => LaravelLocalization::setLocale(),
     'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
 ], function () {
+
     Route::get('/', 'HomeController@index')->name('index');
     Route::get('/products', 'ShopController@products')->name('products');
     Route::group(['prefix' => 'shop'], function () {

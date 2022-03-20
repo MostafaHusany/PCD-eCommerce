@@ -103,5 +103,8 @@ return [
     'Category'               => 'Category',
     'ReletedProducts'        => 'Releted Products',
     'orderRecived'           => 'your order recived successfully and you can upload your bank transfer now',
+    'Brands'                 => 'Brands',
+    'filter'                 => 'Filter',
+    'Options'                => 'Options',
 ];
 

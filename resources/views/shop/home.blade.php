@@ -1,7 +1,7 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Home Page
+@lang('frontend.Home')
 @endsection
 
 
@@ -9,13 +9,8 @@ Home Page
 
 @include('shop.incs.header')
 
-
-
-
 <!-- END MAIN CONTENT -->
 <div class="main_content">
-
-
 
     @include('shop.incs.ExclusiveProducts')
 
@@ -29,4 +24,4 @@ Home Page
 
     @include('shop.incs.FeaturedProducts')
 
-@endsection
+    @endsection

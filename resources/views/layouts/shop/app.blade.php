@@ -139,6 +139,7 @@
                                     <a class="nav-link" href="{{route('products')}}">@lang('frontend.AllProducts') </a>
                                 </li>
 
+
                                 <li class="dropdown">
                                     <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">@lang('frontend.categories') </a>
                                     <div class="dropdown-menu">
@@ -149,12 +150,14 @@
                                                     {{$category->ar_title}}
                                                     @elseif(get_lang() == 'en')
                                                     {{$category->en_title}}
-                                                    @endif</a></li>
+                                                    @endif
+                                                </a></li>
                                             @endforeach
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="dropdown ">
+
+                                <li class="dropdown">
                                     <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                                         <span class="mr-1">
                                             <span class="user-name text-bold-700"> {{App::getLocale()}}</span>
@@ -170,7 +173,6 @@
 
                                     </div>
                                 </li>
-
                             </ul>
                         </div>
                         <ul class="navbar-nav attr-nav align-items-center">

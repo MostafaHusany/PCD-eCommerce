@@ -1,7 +1,7 @@
 @extends('layouts.shop.app')
 
 @section('title')
-{{ $product->ar_name }}
+{{name($product->id)}}
 @endsection
 
 
@@ -15,14 +15,14 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="page-title">
-                    <h1>{{ $product->ar_name }}</h1>
+                    <h1>{{name($product->id)}}</h1>
                 </div>
             </div>
             <div class="col-md-6">
                 <ol class="breadcrumb justify-content-md-end">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item active">{{ $product->ar_name }}</li>
+                    <li class="breadcrumb-item active">{{name($product->id)}}</li>
                 </ol>
             </div>
         </div>
@@ -74,7 +74,7 @@
                                 <span class="rating_num">(21)</span>
                             </div>
                             <div class="pr_desc">
-                                <p>{{$product->ar_description}}</p>
+                                <p>{{small_description($product->id)}}</p>
                             </div>
                         </div>
                         <hr />
@@ -140,8 +140,7 @@
                         </ul>
                         <div class="tab-content shop_info_tab">
                             <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="Description-tab">
-                                <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Vivamus bibendum magna Lorem ipsum dolor sit amet, consectetur adipiscing elit.Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
-                                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+                                <p>{{description($product->id)}}</p>
                             </div>
                             <div class="tab-pane fade" id="Additional-info" role="tabpanel" aria-labelledby="Additional-info-tab">
                                 <table class="table table-bordered">

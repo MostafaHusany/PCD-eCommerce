@@ -1,14 +1,14 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Home Page
+{{trans('frontend.AllProducts')}}
 @endsection
 
 
 @section('content')
 @if($title == 'all_products')
 @include('shop.incs.breadcramp', [
-'name' => 'All Products',
+'name' => trans('frontend.AllProducts'),
 ])
 @else
 @include('shop.incs.product-breadcramp', [
@@ -65,7 +65,7 @@ Home Page
                         <div class="widget">
                             @csrf
                             @if(count($categoryProducts)>0)
-                            <h5 class="widget_title">Categories</h5>
+                            <h5 class="widget_title">{{trans('frontend.categories')}}</h5>
                             <ul class="widget_categories">
                                 @foreach($categoryProducts as $category)
                                 <li class="dropdown cssState">
@@ -85,7 +85,7 @@ Home Page
                                 @endforeach
                             </ul>
                             @else
-                            <h5 class="widget_title">options</h5>
+                            <h5 class="widget_title">{{trans('frontend.Options')}}</h5>
                             <form action="{{route('option_filter')}}" method="post">
                                 @csrf
                                 <ul>
@@ -123,13 +123,13 @@ Home Page
                                     </ul>
                                     @endforeach
                                 </ul>
-                                <button class="btn btn-danger" type="submit">filter</button>
+                                <button class="btn btn-danger" type="submit">{{trans('frontend.filter')}}</button>
                             </form>
                             @endif
                             <br>
                             <form action="{{route('brand_filter')}}" method="post">
                                 @csrf
-                                <h5 class="widget_title">Brands</h5>
+                                <h5 class="widget_title">{{trans('frontend.Brands')}}</h5>
                                 @foreach(brands() as $brand)
                                 <div class="custome-checkbox">
                                     <input class="form-check-input" type="checkbox" name="brands[]" id="{{ $brand->id}}" value="{{$brand->id}}">
@@ -137,7 +137,7 @@ Home Page
                                 </div>
                                 @endforeach
                                 <br>
-                                <button class="btn btn-danger" type="submit">filter</button>
+                                <button class="btn btn-danger" type="submit">{{trans('frontend.filter')}}</button>
                             </form>
 
                         </div>

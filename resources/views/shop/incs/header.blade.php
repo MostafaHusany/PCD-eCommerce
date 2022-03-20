@@ -1,11 +1,10 @@
-
 <div class="bottom_header dark_skin main_menu_uppercase border-top border-bottom">
     <div class="custom-container">
         <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-6 col-3">
                 <div class="categories_wrap">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#navCatContent" aria-expanded="false" class="categories_btn">
-                        <i class="linearicons-menu"></i><span>All Categories </span>
+                        <i class="linearicons-menu"></i><span>{{trans('frontend.categories')}} </span>
                     </button>
                     <div id="navCatContent" class="nav_cat navbar collapse">
                         <ul>
@@ -18,10 +17,11 @@
                                         {{substr($category->en_title, 0, 20)}}
                                         @endif
                                     </span> <span class="categories_num"> ({{count($category->products)}})</span></a>
-                                     
-                            @if(count($category->products) > 0 || count($category->children ) >0 )
+
+                                @if(count($category->products) > 0 || count($category->children ) >0 )
                                 <div class="dropdown-menu">
                                     <ul class="mega-menu d-lg-flex">
+                                        @if(count($category->products) > 0 )
                                         <li class="mega-menu-col col-lg-5">
                                             <div class="header-banner2">
                                                 <ul>
@@ -35,6 +35,8 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
+                                        @if( count($category->children ) >0)
                                         <li class="mega-menu-col col-lg-7">
                                             <ul class="d-lg-flex">
                                                 @foreach( $category->children as $child)
@@ -60,14 +62,15 @@
                                                 @endforeach
                                             </ul>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
-                            @endif
+                                @endif
                             </li>
                             @endforeach
 
                         </ul>
-                     </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-6 col-9">
