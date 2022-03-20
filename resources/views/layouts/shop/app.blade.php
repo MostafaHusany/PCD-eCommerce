@@ -102,18 +102,17 @@
                         <div class="col-md-6">
                             <div class="text-center text-md-end">
                                 <ul class="header_list">
-                                    <li><a href="compare.html"><i class="ti-control-shuffle"></i><span>Compare</span></a></li>
                                     @guest
-                                    <li><a href="{{route('Login')}}"><i class="ti-heart"></i><span>Wishlist</span></a></li>
+                                    <li><a href="{{route('Login')}}"><i class="ti-heart"></i><span>@lang('frontend.Wishlist')</span></a></li>
                                     @else
-                                    <li><a href="{{route('wishlist')}}"><i class="ti-heart"></i><span>Wishlist</span></a></li>
+                                    <li><a href="{{route('wishlist')}}"><i class="ti-heart"></i><span>@lang('frontend.Wishlist')</span></a></li>
                                     @endguest
                                     @auth
                                     <li><a href="{{route('profile')}}"><i class="ti-user"></i><span>
-                                                profile</span></a></li>
+                                                @lang('frontend.profile')</span></a></li>
                                     @else
                                     <li><a href="{{route('Login')}}"><i class="ti-user"></i><span>
-                                                Login</span></a></li>
+                                                @lang('frontend.Login')</span></a></li>
                                     @endauth
                                 </ul>
                             </div>
@@ -134,14 +133,14 @@
                         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                             <ul class="navbar-nav">
                                 <li class="dropdown">
-                                    <a class="nav-link" href="{{route('index')}}">Home</a>
+                                    <a class="nav-link" href="{{route('index')}}">@lang('frontend.Home')</a>
                                 </li>
                                 <li class="dropdown">
-                                    <a class="nav-link" href="{{route('products')}}">All products</a>
+                                    <a class="nav-link" href="{{route('products')}}">@lang('frontend.AllProducts') </a>
                                 </li>
 
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">title one</a>
+                                    <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">@lang('frontend.categories') </a>
                                     <div class="dropdown-menu">
                                         <ul>
                                             @foreach(categories() as $category)
@@ -154,14 +153,6 @@
                                             @endforeach
                                         </ul>
                                     </div>
-                                </li>
-
-                                <li class="dropdown">
-                                    <a class="nav-link" href="">Title two</a>
-                                </li>
-
-                                <li class="dropdown">
-                                    <a class="nav-link" href="">Title three</a>
                                 </li>
                                 <li class="dropdown ">
                                     <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
@@ -188,7 +179,7 @@
                                     <span class="close-search"><i class="ion-ios-close-empty"></i></span>
                                     <form action="{{route('Search')}}" method="post">
                                         @csrf
-                                        <input type="text" placeholder="Search" name="search" class="form-control" id="search_input">
+                                        <input type="text" placeholder="@lang('frontend.Search')" name="search" class="form-control" id="search_input">
                                         <button type="submit" class="search_icon"><i class="ion-ios-search-strong"></i></button>
                                     </form>
                                 </div>
@@ -210,9 +201,9 @@
                                     </ul>
 
                                     <div class="cart_footer">
-                                        <p class="cart_total"><strong>Subtotal:</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
-                                        <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">View Cart</a>
-                                            <a href="{{route('checkout')}}" class="btn btn-fill-out rounded-0 checkout">Checkout</a>
+                                        <p class="cart_total"><strong>@lang('frontend.Subtotal'):</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
+                                        <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">@lang('frontend.ViewCart')</a>
+                                            <a href="{{route('checkout')}}" class="btn btn-fill-out rounded-0 checkout">@lang('frontend.Checkout')</a>
                                         </p>
                                     </div>
                                     @endif
@@ -224,20 +215,20 @@
                 </div>
             </div>
             <div class="alert alert-primary d-none" id="item_added" role="alert">
-                Item Added to cart successfully
+                @lang('frontend.itemToCart')
             </div>
             <div class="alert alert-primary d-none" id="favorite_item" role="alert">
-                Item Added to favorite successfully
+                @lang('frontend.itemToFavor')
             </div>
             <div class="alert alert-primary d-none" id="item_removed" role="alert">
-                Item Removed from cart successfully
+                @lang('frontend.itemRemovedCart')
             </div>
 
             <div class="alert alert-danger  d-none" id="item_not_added" role="alert">
-                Required quantity not available now
+                @lang('frontend.NotAvailable')
             </div>
             <div class="alert alert-danger  d-none" id="item_in_favorite" role="alert">
-                Item Added to favorite before
+                @lang('frontend.InFavorite')
             </div>
         </header>
         <!-- END HEADER -->

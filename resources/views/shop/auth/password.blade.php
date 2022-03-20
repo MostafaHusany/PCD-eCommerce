@@ -1,13 +1,13 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Forget password
+@lang('frontend.ForgotPassword')
 @endsection
 
 @section('content')
 
 @include('shop.incs.breadcramp', [
-'name' => 'Forget password',
+'name' => trans('frontend.ForgotPassword'),
 ])
 <!-- START MAIN CONTENT -->
 <div class="main_content">
@@ -20,7 +20,7 @@ Forget password
                     <div class="login_wrap">
                         <div class="padding_eight_all bg-white">
                             <div class="heading_s1">
-                                <h3>Forget password</h3>
+                                <h3>@lang('frontend.ForgotPassword')</h3>
                             </div>
                             @if(\Session::has('message'))
                             <div class="alert alert-success">
@@ -30,7 +30,7 @@ Forget password
                             <form class="user" method="POST" action="{{ route('forget.password.post') }}">
                                 @csrf
                                 <div class="form-group mt-3">
-                                    <input class="form-control form-control-user" id="exampleInputEmail" type="email" name="email" aria-describedby="emailHelp" value="{{ old('email') }}" placeholder="Email address">
+                                    <input class="form-control form-control-user" id="exampleInputEmail" type="text" name="email" aria-describedby="emailHelp" value="{{ old('email') }}" placeholder="@lang('frontend.Email')">
                                     @error('email')
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -40,18 +40,18 @@ Forget password
                                 </div><br>
 
                                 <button type="submit" class="btn btn-danger btn-user btn-block">
-                                    Reseat password
+                                    @lang('frontend.ReseatPassword')
                                 </button>
                             </form>
 
 
                             <div class="different_login">
-                                <span> or</span>
+                                <span>@lang('frontend.or') </span>
                             </div>
 
                             <div class="text-center">
-                                <a class="small" href="{{ route('Login') }}">Login</a><br>
-                                <a class="small" href="{{ route('front.register') }}">register</a>
+                                <a class="small" href="{{ route('Login') }}">@lang('frontend.Login')</a><br>
+                                <a class="small" href="{{ route('front.register') }}">@lang('frontend.register')</a>
                             </div>
                         </div>
                     </div>

@@ -54,8 +54,9 @@ class ShopController extends Controller
     public function show (Request $request, $slug) {
         // dd(\LaravelLocalization::getCurrentLocale());
         $product = Product::where('slug', $slug)->first();
-
-        return view('shop.show', compact('product'));
+        $relatedProducts =  $product->categories[0]->products;
+        $category =  $product->categories[0];
+        return view('shop.show', compact('product','relatedProducts','category'));
     } 
 
     public function products(){

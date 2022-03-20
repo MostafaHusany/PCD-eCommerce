@@ -1,14 +1,38 @@
+<!-- START SECTION SUBSCRIBE NEWSLETTER -->
+<div class="section bg_default small_pt small_pb">
+    <div class="custom-container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="newsletter_text text_white">
+                    <h3>Join Our Newsletter Now</h3>
+                    <p> Register now to get updates on promotions. </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="newsletter_form2 rounded_input">
+                    <form>
+                        <input type="text" required="" class="form-control" placeholder="Enter Email Address">
+                        <button type="submit" class="btn btn-dark btn-radius" name="submit" value="Submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- START SECTION SUBSCRIBE NEWSLETTER -->
 
+</div>
+<!-- END MAIN CONTENT -->
 
 <!-- START FOOTER -->
 <footer class="bg_gray">
-	<div class="footer_top small_pt pb_20">
+    <div class="footer_top small_pt pb_20">
         <div class="custom-container">
             <div class="row">
                 <div class="col-lg-4 col-md-12 col-sm-12">
-                	<div class="widget">
+                    <div class="widget">
                         <div class="footer_logo">
-                            <a href="#"><img src="{{asset('shop')}}/images/logo_dark.png" alt="logo"/></a>
+                            <a href="#"><img src="{{asset('shop')}}/images/logo_dark.png" alt="logo" /></a>
                         </div>
                         <p class="mb-3">If you are going to use of Lorem Ipsum need to be sure there isn't anything hidden of text</p>
                         <ul class="contact_info">
@@ -26,9 +50,9 @@
                             </li>
                         </ul>
                     </div>
-        		</div>
+                </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
-                	<div class="widget">
+                    <div class="widget">
                         <h6 class="widget_title">Useful Links</h6>
                         <ul class="widget_links">
                             <li><a href="#">About Us</a></li>
@@ -40,7 +64,7 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
-                	<div class="widget">
+                    <div class="widget">
                         <h6 class="widget_title">My Account</h6>
                         <ul class="widget_links">
                             <li><a href="#">My Account</a></li>
@@ -52,7 +76,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12">
-                	<div class="widget">
+                    <div class="widget">
                         <h6 class="widget_title">Instagram</h6>
                         <ul class="widget_instafeed instafeed_col4">
                             <li><a href="#"><img src="{{asset('shop')}}/images/insta_img1.jpg" alt="insta_img"><span class="insta_icon"><i class="ti-instagram"></i></span></a></li>
@@ -70,40 +94,40 @@
         </div>
     </div>
     <div class="middle_footer">
-    	<div class="custom-container">
-        	<div class="row">
-            	<div class="col-12">
-                	<div class="shopping_info">
+        <div class="custom-container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="shopping_info">
                         <div class="row justify-content-center">
-                            <div class="col-md-4">	
+                            <div class="col-md-4">
                                 <div class="icon_box icon_box_style2">
                                     <div class="icon">
                                         <i class="flaticon-shipped"></i>
                                     </div>
                                     <div class="icon_box_content">
-                                    	<h5>Free Delivery</h5>
+                                        <h5>Free Delivery</h5>
                                         <p>Phasellus blandit massa enim elit of passage varius nunc.</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">	
+                            <div class="col-md-4">
                                 <div class="icon_box icon_box_style2">
                                     <div class="icon">
                                         <i class="flaticon-money-back"></i>
                                     </div>
                                     <div class="icon_box_content">
-                                    	<h5>30 Day Returns Guarantee</h5>
+                                        <h5>30 Day Returns Guarantee</h5>
                                         <p>Phasellus blandit massa enim elit of passage varius nunc.</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">	
+                            <div class="col-md-4">
                                 <div class="icon_box icon_box_style2">
                                     <div class="icon">
                                         <i class="flaticon-support"></i>
                                     </div>
                                     <div class="icon_box_content">
-                                    	<h5>27/4 Online Support</h5>
+                                        <h5>27/4 Online Support</h5>
                                         <p>Phasellus blandit massa enim elit of passage varius nunc.</p>
                                     </div>
                                 </div>

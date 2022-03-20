@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\OrderRequest;
+use App\Http\Requests\shop\OrderRequest;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -144,17 +144,6 @@ class CartController extends Controller
         // }
         // $payment->save();
         Cart::destroy();
-        return view('shop.thanks');
+        return view('shop.thanks',compact('order'));
     }
 }
-
-
-// {"products_id":["48","67"],
-//     "products_quantity":{"48":{"quantity":1,"price":100},"67":{"quantity":1,"price":100}},
-//     "products_prices":{"48":100,"67":100},
-//     "restored_quantity":{"48":0,"67":0},
-//     "taxes":[{"id":1,"title":"\u0636\u0631\u064a\u0628\u0629 \u062c\u062f\u0639\u0646\u0629 \u0645\u0646\u064a","cost":50,"is_fixed":0,"cost_type":1,"tax_total":100,"is_active":1}
-//     ,{"id":2,"title":"\u0636\u0631\u064a\u0628\u0629 \u0627\u0644\u0642\u064a\u0645\u0629 \u0627\u0644\u0645\u0636\u0627\u0641\u0629","cost":15,"is_fixed":0,"cost_type":1,"tax_total":30,"is_active":1},
-//     {"id":3,"title":"\u0627\u0644\u0636\u0631\u064a\u0628\u0629 \u0627\u0644\u062d\u0644\u0648\u0629 \u0627\u0644\u0634\u0642\u064a\u0629","cost":10,"is_fixed":1,"cost_type":1,"tax_total":20,"is_active":1}]
-//     ,"fees":[{"id":2,"title":"fee 1","cost":15,"is_fixed":1,"cost_type":1,"fee_total":30,"is_active":1},
-//     {"id":3,"title":"fee 2","cost":6.5,"is_fixed":0,"cost_type":0,"fee_total":13,"is_active":1}]}

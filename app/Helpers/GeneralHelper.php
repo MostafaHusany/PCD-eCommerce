@@ -47,6 +47,18 @@ if (!function_exists('product_details')) {
         return Product::findOrFail($id);
     }
 }
+if (!function_exists('name')) {
+    function name($id)
+    {
+       $product = Product::findOrFail($id);
+        if(get_lang() == 'ar'){
+        return    $product->ar_name ;
+        }
+        elseif(get_lang()== 'en'){
+            return   $product->en_name ;
+        }
+    }
+}
 
 if (!function_exists('category_attributes')) {
     function category_attributes()

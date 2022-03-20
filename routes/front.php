@@ -1,5 +1,6 @@
 <?php
 
+use App\Order;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -39,14 +40,15 @@ Route::group([
     Route::post('reset-password', 'UserController@submitResetPasswordForm')->name('reset.password.post');
     Route::get('order-details/{id}', 'UserController@orderDetails')->name('order.details');
 
-
+    Route::post('uploadInvoices', 'PaymentController@uploadInvoices')->name('uploadInvoices');
 
     Route::get('add-to-favorite/{id}','FavoriteController@addToFavorite')->name('add-to-favorite');
     Route::get('remove_favorite/{id}','FavoriteController@remove_favorite')->name('remove_favorite');
     Route::get('wishlist','FavoriteController@wishlist')->name('wishlist');
 
     Route::get('thanks',function(){
-        return view('shop.thanks');
+        $order = Order::orderBy('id','desc')->first();
+        return view('shop.thanks',compact('order'));
     })->name('thanks');
 
 });

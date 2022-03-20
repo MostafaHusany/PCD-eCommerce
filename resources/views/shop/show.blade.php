@@ -1,7 +1,7 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Home Page
+{{ $product->ar_name }}
 @endsection
 
 
@@ -15,14 +15,14 @@ Home Page
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="page-title">
-                    <h1>Product Detail</h1>
+                    <h1>{{ $product->ar_name }}</h1>
                 </div>
             </div>
             <div class="col-md-6">
                 <ol class="breadcrumb justify-content-md-end">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item active">Product Detail</li>
+                    <li class="breadcrumb-item active">{{ $product->ar_name }}</li>
                 </ol>
             </div>
         </div>
@@ -40,45 +40,32 @@ Home Page
                 <div class="col-lg-6 col-md-6 mb-4 mb-md-0">
                     <div class="product-image">
                         <div class="product_img_box">
-                            <img id="product_img" src='{{asset('shop')}}/images/product_img1.jpg' data-zoom-image="{{asset('shop')}}/images/product_zoom_img1.jpg" alt="product_img1" />
+                            <img id="product_img" src='{{asset($product->main_image)}}' data-zoom-image="{{asset($product->main_image)}}" alt="product_img1" />
                             <a href="#" class="product_img_zoom" title="Zoom">
                                 <span class="linearicons-zoom-in"></span>
                             </a>
                         </div>
+                        @if($product->images))
                         <div id="pr_item_gallery" class="product_gallery_item slick_slider" data-slides-to-show="4" data-slides-to-scroll="1" data-infinite="false">
+                            @foreach(json_decode($product->images) as $image)
                             <div class="item">
-                                <a href="#" class="product_gallery_item active" data-image="{{asset('shop')}}/images/product_img1.jpg" data-zoom-image="{{asset('shop')}}/images/product_zoom_img1.jpg">
-                                    <img src="{{asset('shop')}}/images/product_small_img1.jpg" alt="product_small_img1" />
+                                <a href="#" class="product_gallery_item active" data-image="{{asset( $image)}}" data-zoom-image="{{asset('shop')}}/images/product_zoom_img1.jpg">
+                                    <img src={{asset( $image)}} alt="product_small_img1" />
                                 </a>
                             </div>
-                            <div class="item">
-                                <a href="#" class="product_gallery_item" data-image="{{asset('shop')}}/images/product_img1-2.jpg" data-zoom-image="{{asset('shop')}}/images/product_zoom_img2.jpg">
-                                    <img src="{{asset('shop')}}/images/product_small_img2.jpg" alt="product_small_img2" />
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="product_gallery_item" data-image="{{asset('shop')}}/images/product_img1-3.jpg" data-zoom-image="{{asset('shop')}}/images/product_zoom_img3.jpg">
-                                    <img src="{{asset('shop')}}/images/product_small_img3.jpg" alt="product_small_img3" />
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="product_gallery_item" data-image="{{asset('shop')}}/images/product_img1-4.jpg" data-zoom-image="{{asset('shop')}}/images/product_zoom_img4.jpg">
-                                    <img src="{{asset('shop')}}/images/product_small_img4.jpg" alt="product_small_img4" />
-                                </a>
-                            </div>
+                            @endforeach
+
                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <div class="pr_detail">
                         <div class="product_description">
-                            <h4 class="product_title"><a href="#">Blue Dress For Woman</a></h4>
+                            <h4 class="product_title"><a href="{{route('product.detail',$product->slug)}}">{{name($product->id)}}</a></h4>
                             <div class="product_price">
-                                <span class="price">$45.00</span>
-                                <del>$55.25</del>
-                                <div class="on_sale">
-                                    <span>35% Off</span>
-                                </div>
+                                <span class="price">{{ $product->price }}</span>
+
                             </div>
                             <div class="rating_wrap">
                                 <div class="rating">
@@ -87,32 +74,7 @@ Home Page
                                 <span class="rating_num">(21)</span>
                             </div>
                             <div class="pr_desc">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
-                            </div>
-                            <div class="product_sort_info">
-                                <ul>
-                                    <li><i class="linearicons-shield-check"></i> 1 Year AL Jazeera Brand Warranty</li>
-                                    <li><i class="linearicons-sync"></i> 30 Day Return Policy</li>
-                                    <li><i class="linearicons-bag-dollar"></i> Cash on Delivery available</li>
-                                </ul>
-                            </div>
-                            <div class="pr_switch_wrap">
-                                <span class="switch_lable">Color</span>
-                                <div class="product_color_switch">
-                                    <span class="active" data-color="#87554B"></span>
-                                    <span data-color="#333333"></span>
-                                    <span data-color="#DA323F"></span>
-                                </div>
-                            </div>
-                            <div class="pr_switch_wrap">
-                                <span class="switch_lable">Size</span>
-                                <div class="product_size_switch">
-                                    <span>xs</span>
-                                    <span>s</span>
-                                    <span>m</span>
-                                    <span>l</span>
-                                    <span>xl</span>
-                                </div>
+                                <p>{{$product->ar_description}}</p>
                             </div>
                         </div>
                         <hr />
@@ -124,14 +86,14 @@ Home Page
                             </div>
                             <div class="cart_btn">
 
-                                <a class="btn btn-fill-out btn-addtocart item_to_cart" href="" id="mydiv" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" data-price="{{ $product->price }}" aria-label="{{ $product->name }}"><i class="icon-basket-loaded">
-                                    </i>Add To Cart</a>
+                                <a class="btn btn-fill-out btn-addtocart item_to_cart" href="" id="mydiv" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" data-price="{{ $product->price }}" aria-label="{{name($product->id)}}"><i class="icon-basket-loaded">
+                                    </i>{{trans('frontend.add_to_cart')}}</a>
 
                                 <!-- <button class="btn btn-fill-out btn-addtocart" type="button">
                                 <i class="icon-basket-loaded"></i> Add to cart</button> -->
- 
+
                                 @guest
-                               ><a class="add_wishlist" href="{{route('Login')}}"><i class="icon-heart"></i></a>
+                                <a class="add_wishlist" href="{{route('Login')}}"><i class="icon-heart"></i></a>
                                 @else
                                 <a id="favorite" class="add_wishlist" href="javascript:void(0)"><i class="icon-heart add-to-favorite @if(checkFavorite($product->id))favorite @endif" data-product-id="{{ $product->id }}"></i></a>
                                 @endguest
@@ -140,13 +102,12 @@ Home Page
                         </div>
                         <hr />
                         <ul class="product-meta">
-                            <li>SKU: <a href="#">BE45VGRT</a></li>
-                            <li>Category: <a href="#">Clothing</a></li>
-                            <li>Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">printed</a> </li>
+                            <li>SKU: <a href="#">{{$product->sku}}</a></li>
+                            <li>{{trans('frontend.Category')}}: <a href="#">{{$category->ar_title}}</a></li>
                         </ul>
 
                         <div class="product_share">
-                            <span>Share:</span>
+                            <span>{{trans('frontend.Share')}}:</span>
                             <ul class="social_icons">
                                 <li><a href="#"><i class="ion-social-facebook"></i></a></li>
                                 <li><a href="#"><i class="ion-social-twitter"></i></a></li>
@@ -168,7 +129,7 @@ Home Page
                     <div class="tab-style3">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="Description-tab" data-bs-toggle="tab" href="#Description" role="tab" aria-controls="Description" aria-selected="true">Description</a>
+                                <a class="nav-link active" id="Description-tab" data-bs-toggle="tab" href="#Description" role="tab" aria-controls="Description" aria-selected="true">{{trans('frontend.Description')}}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="Additional-info-tab" data-bs-toggle="tab" href="#Additional-info" role="tab" aria-controls="Additional-info" aria-selected="false">Additional info</a>
@@ -288,251 +249,23 @@ Home Page
             <div class="row">
                 <div class="col-12">
                     <div class="heading_s1">
-                        <h3>Releted Products</h3>
+                        <h3>{{trans('frontend.ReletedProducts')}}</h3>
                     </div>
                     <div class="releted_product_slider carousel_slider owl-carousel owl-theme" data-margin="20" data-responsive='{"0":{"items": "1"}, "481":{"items": "2"}, "768":{"items": "3"}, "1199":{"items": "4"}}'>
-                        <div class="item">
-                            <div class="product">
-                                <div class="product_img">
-                                    <a href="shop-product-detail.html">
-                                        <img src="{{asset('shop')}}/images/product_img1.jpg" alt="product_img1">
-                                    </a>
-                                    <div class="product_action_box">
-                                        <ul class="list_none pr_action_btn">
-                                            <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                            <li><a href="shop-compare.html"><i class="icon-shuffle"></i></a></li>
-                                            <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                            <li><a href="#"><i class="icon-heart"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product_info">
-                                    <h6 class="product_title"><a href="shop-product-detail.html">Blue Dress For Woman</a></h6>
-                                    <div class="product_price">
-                                        <span class="price">$45.00</span>
-                                        <del>$55.25</del>
-                                        <div class="on_sale">
-                                            <span>35% Off</span>
-                                        </div>
-                                    </div>
-                                    <div class="rating_wrap">
-                                        <div class="rating">
-                                            <div class="product_rate" style="width:80%"></div>
-                                        </div>
-                                        <span class="rating_num">(21)</span>
-                                    </div>
-                                    <div class="pr_desc">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
-                                    </div>
-                                    <div class="pr_switch_wrap">
-                                        <div class="product_color_switch">
-                                            <span class="active" data-color="#87554B"></span>
-                                            <span data-color="#333333"></span>
-                                            <span data-color="#DA323F"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="product">
-                                <div class="product_img">
-                                    <a href="shop-product-detail.html">
-                                        <img src="{{asset('shop')}}/images/product_img2.jpg" alt="product_img2">
-                                    </a>
-                                    <div class="product_action_box">
-                                        <ul class="list_none pr_action_btn">
-                                            <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                            <li><a href="shop-compare.html"><i class="icon-shuffle"></i></a></li>
-                                            <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                            <li><a href="#"><i class="icon-heart"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product_info">
-                                    <h6 class="product_title"><a href="shop-product-detail.html">Lether Gray Tuxedo</a></h6>
-                                    <div class="product_price">
-                                        <span class="price">$55.00</span>
-                                        <del>$95.00</del>
-                                        <div class="on_sale">
-                                            <span>25% Off</span>
-                                        </div>
-                                    </div>
-                                    <div class="rating_wrap">
-                                        <div class="rating">
-                                            <div class="product_rate" style="width:68%"></div>
-                                        </div>
-                                        <span class="rating_num">(15)</span>
-                                    </div>
-                                    <div class="pr_desc">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
-                                    </div>
-                                    <div class="pr_switch_wrap">
-                                        <div class="product_color_switch">
-                                            <span class="active" data-color="#847764"></span>
-                                            <span data-color="#0393B5"></span>
-                                            <span data-color="#DA323F"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="product">
-                                <span class="pr_flash">New</span>
-                                <div class="product_img">
-                                    <a href="shop-product-detail.html">
-                                        <img src="{{asset('shop')}}/images/product_img3.jpg" alt="product_img3">
-                                    </a>
-                                    <div class="product_action_box">
-                                        <ul class="list_none pr_action_btn">
-                                            <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                            <li><a href="shop-compare.html"><i class="icon-shuffle"></i></a></li>
-                                            <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                            <li><a href="#"><i class="icon-heart"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product_info">
-                                    <h6 class="product_title"><a href="shop-product-detail.html">woman full sliv dress</a></h6>
-                                    <div class="product_price">
-                                        <span class="price">$68.00</span>
-                                        <del>$99.00</del>
-                                    </div>
-                                    <div class="rating_wrap">
-                                        <div class="rating">
-                                            <div class="product_rate" style="width:87%"></div>
-                                        </div>
-                                        <span class="rating_num">(25)</span>
-                                    </div>
-                                    <div class="pr_desc">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
-                                    </div>
-                                    <div class="pr_switch_wrap">
-                                        <div class="product_color_switch">
-                                            <span class="active" data-color="#333333"></span>
-                                            <span data-color="#7C502F"></span>
-                                            <span data-color="#2F366C"></span>
-                                            <span data-color="#874A3D"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="product">
-                                <div class="product_img">
-                                    <a href="shop-product-detail.html">
-                                        <img src="{{asset('shop')}}/images/product_img4.jpg" alt="product_img4">
-                                    </a>
-                                    <div class="product_action_box">
-                                        <ul class="list_none pr_action_btn">
-                                            <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                            <li><a href="shop-compare.html"><i class="icon-shuffle"></i></a></li>
-                                            <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                            <li><a href="#"><i class="icon-heart"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product_info">
-                                    <h6 class="product_title"><a href="shop-product-detail.html">light blue Shirt</a></h6>
-                                    <div class="product_price">
-                                        <span class="price">$69.00</span>
-                                        <del>$89.00</del>
-                                        <div class="on_sale">
-                                            <span>20% Off</span>
-                                        </div>
-                                    </div>
-                                    <div class="rating_wrap">
-                                        <div class="rating">
-                                            <div class="product_rate" style="width:70%"></div>
-                                        </div>
-                                        <span class="rating_num">(22)</span>
-                                    </div>
-                                    <div class="pr_desc">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
-                                    </div>
-                                    <div class="pr_switch_wrap">
-                                        <div class="product_color_switch">
-                                            <span class="active" data-color="#333333"></span>
-                                            <span data-color="#A92534"></span>
-                                            <span data-color="#B9C2DF"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="product">
-                                <div class="product_img">
-                                    <a href="shop-product-detail.html">
-                                        <img src="{{asset('shop')}}/images/product_img5.jpg" alt="product_img5">
-                                    </a>
-                                    <div class="product_action_box">
-                                        <ul class="list_none pr_action_btn">
-                                            <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                            <li><a href="shop-compare.html"><i class="icon-shuffle"></i></a></li>
-                                            <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                            <li><a href="#"><i class="icon-heart"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product_info">
-                                    <h6 class="product_title"><a href="shop-product-detail.html">blue dress for woman</a></h6>
-                                    <div class="product_price">
-                                        <span class="price">$45.00</span>
-                                        <del>$55.25</del>
-                                        <div class="on_sale">
-                                            <span>35% Off</span>
-                                        </div>
-                                    </div>
-                                    <div class="rating_wrap">
-                                        <div class="rating">
-                                            <div class="product_rate" style="width:80%"></div>
-                                        </div>
-                                        <span class="rating_num">(21)</span>
-                                    </div>
-                                    <div class="pr_desc">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
-                                    </div>
-                                    <div class="pr_switch_wrap">
-                                        <div class="product_color_switch">
-                                            <span class="active" data-color="#87554B"></span>
-                                            <span data-color="#333333"></span>
-                                            <span data-color="#5FB7D4"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @if(count($relatedProducts)>0)
+                        @foreach($relatedProducts as $single)
+                        @include('shop.incs.releted-product-card', [
+                        'product' => $single,
+                        ])
+                        @endforeach
+                        @endif
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- END SECTION SHOP -->
-
-    <!-- START SECTION SUBSCRIBE NEWSLETTER -->
-    <div class="section bg_default small_pt small_pb">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="heading_s1 mb-md-0 heading_light">
-                        <h3>Subscribe Our Newsletter</h3>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="newsletter_form">
-                        <form>
-                            <input type="text" required="" class="form-control rounded-0" placeholder="Enter Email Address">
-                            <button type="submit" class="btn btn-dark rounded-0" name="submit" value="Submit">Subscribe</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- START SECTION SUBSCRIBE NEWSLETTER -->
 
 </div>
 <!-- END MAIN CONTENT -->
