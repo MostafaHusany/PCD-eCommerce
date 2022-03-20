@@ -177,11 +177,20 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+
+        <div class="form-group row">
+            <label for="images" class="col-sm-2 col-form-label">Brand</label>
+            <div class="col-sm-10">
+                <select tabindex="15" id="brand_id" name="brand_id" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="brandErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
         
         <div class="form-group row">
             <label for="categories" class="col-sm-2 col-form-label">Category</label>
             <div class="col-sm-10">
-                <select type="text" tabindex="15" name="categories[]" class="form-control"  multiple="multiple" id="categories"></select>
+                <select type="text" tabindex="16" name="categories[]" class="form-control"  multiple="multiple" id="categories"></select>
                 <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -198,7 +207,7 @@
             </div><!-- /.justify-content-center -->
         </div><!-- /.form-group -->
 
-        <button tabindex="15" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button tabindex="17" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
     </form>
 </div>
 

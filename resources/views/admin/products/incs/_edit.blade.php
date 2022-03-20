@@ -178,6 +178,15 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
+            <label for="edit-images" class="col-sm-2 col-form-label">Brand</label>
+            <div class="col-sm-10">
+                <select tabindex="15" id="edit-brand_id" name="edit-brand_id" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-brandErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group row">
             <label for="edit-categories" class="col-sm-2 col-form-label">Category</label>
             <div class="col-sm-10">
                 <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="SKU"></select>

@@ -145,7 +145,7 @@
             _token  : '{{ csrf_token() }}'
         }).then(res => {
             $('#loddingSpinner').hide(500);
-            let data = res.data
+            let data = res.data;
             
             if (data.success) {
                 $('#show-invoice-status').text(data.data.status);
@@ -155,6 +155,9 @@
                     $('#paymentSuccess').slideUp(500);
                 }, 3000);
             }
+
+            // relode table
+            objects_dynamic_table.table_object.draw();
         });
     });
 
@@ -169,15 +172,19 @@
         })
         .then(res => {
             $('#loddingSpinner').hide(500);
-            let data = res.data
+            let data = res.data;
             
             if (data.success) {
                 $('#show-invoice-status').text(data.data.status);
+                $('#show-payment-refuse-count').text(data.data.payemnt_refuse_count);
                 
                 $('#paymentRefused').slideDown(500);
                 setTimeout(() => {
                     $('#paymentRefused').slideUp(500);
                 }, 3000);
+
+                // relode table
+                objects_dynamic_table.table_object.draw();
             }
         });
     });

@@ -119,6 +119,7 @@ class CartController extends Controller
         }
 
         // create order data using MakeOrder::create_customer_order
+        // we need to send the customer id not user id !!
         $order = $this->create_customer_order (auth()->user()->id, 
             [$request->shipping_id_field, 0, $request->shipping_price_field], 
             [$products_id, $products_quantity], []

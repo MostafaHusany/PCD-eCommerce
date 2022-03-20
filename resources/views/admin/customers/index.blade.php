@@ -87,6 +87,8 @@
     @include('admin.customers.incs._create')
 
     @include('admin.customers.incs._edit')
+
+    @include('admin.customers.incs._show')
     
 
 </div>
@@ -177,24 +179,96 @@ $(function () {
         return is_valide;
     };
 
-    $('#dataTable').on('change', '.c-activation-btn', function () {
-        let target_id = $(this).data('user-target');
-        
-        axios.post(`{{url('admin/customers')}}/${target_id}`, {
-            _token : "{{ csrf_token() }}",
-            _method : 'PUT',
-            activate_customer : true
-        }).then(res => {
-            if (!res.data.success) {
-                $(this).prop('checked', !$(this).prop('checked'));
-                $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+    const index_custome_events =  (function () {
+        function start_events () {
+            $('#dataTable').on('change', '.c-activation-btn', function () {
+                let target_id = $(this).data('user-target');
+                
+                axios.post(`{{url('admin/customers')}}/${target_id}`, {
+                    _token : "{{ csrf_token() }}",
+                    _method : 'PUT',
+                    activate_customer : true
+                }).then(res => {
+                    if (!res.data.success) {
+                        $(this).prop('checked', !$(this).prop('checked'));
+                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
 
-                setTimeout(() => {
-                    $('#dangerAlert').text('').slideUp(500);
-                }, 3000);
-            }
-        })// axios
-    })
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                })// axios
+            })// end :: #dataTable
+            
+            // Load taxes ratio
+            /**
+             * When the user press the create btn, send a request to the server
+             * and ask the server for the latest tax ratios
+             * the ratio will be stored in global variable
+             * than every time the user request new product in the order astimate the tax on all
+             * products, and show the tax value for each product, and total
+             * 
+             * get_taxes_ratios is a function that gets taxes data from the server and reset the
+             * taxe_ration global variable
+             */
+            // get_taxes_ratios();
+        }
+
+        function get_taxes_ratios () {
+            /**
+             * Get taxes value from the server, and set a tax global variable.
+             */
+            window.tax_ration = [];
+
+            axios.get("{{ url('admin/taxes') }}/0", { params: { get_all_taxe: true }})
+            .then(res => {
+                if (res.data.success) {
+                    window.tax_ration = res.data.data;
+                    // products_column_header
+                    let products_tax_td = '';
+                    let tax_info_table_td = '';
+                    let edit_tax_info_table_td = '';
+                    tax_ration.forEach(tax_obj => {
+                        /**
+                            # Add tax column to products table
+                        */
+                        products_tax_td += tax_obj.cost_type === 1 ? `
+                            <td>${tax_obj.title}</td>
+                        ` : '';
+
+                        tax_info_table_td += `
+                        <tr>
+                            <td>${tax_obj.title}</td>
+                            <td>${tax_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                            <td>${tax_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                            <td>${tax_obj.cost}</td>
+                            <td id="total-cost-type-${tax_obj.id}">---</td>
+                        </tr>
+                        `;
+
+                        edit_tax_info_table_td += `
+                        <tr>
+                            <td>${tax_obj.title}</td>
+                            <td>${tax_obj.cost_type == 1 ? 'per-item' : 'per-package'}</td>
+                            <td>${tax_obj.is_fixed == 1? 'fixed' : 'percentag'}</td>
+                            <td>${tax_obj.cost}</td>
+                            <td id="edit-total-cost-type-${tax_obj.id}">---</td>
+                        </tr>
+                        `;
+                    });
+                    $('#products_table_header, #edit-products_table_header, #show-products_table_header').after(products_tax_td);
+                    $('#taxes_list_table_container').append(tax_info_table_td);
+                    $('#edit-taxes_list_table_container').append(edit_tax_info_table_td);
+                }
+            });
+        }
+    
+        return {
+            start_events : start_events
+        }
+    })();
+
+    index_custome_events.start_events();
  
 });
 </script>

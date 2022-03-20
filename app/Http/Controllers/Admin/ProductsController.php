@@ -105,6 +105,7 @@ class ProductsController extends Controller
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
             $target_object->categories;
             $target_object->product_custome_fields;
+            $target_object->brand;
             $target_object->children = $target_object->is_composite ? $target_object->children()->distinct()->get() : null;
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
@@ -260,8 +261,14 @@ class ProductsController extends Controller
             }
         }
 
-        $data  = $request->except(['main_image', 'price_after_sale', 'is_active']);
+        $data  = $request->except(['main_image', 'price_after_sale', 'is_active', 'brand_id']);
         
+        if (isset($request->brand_id) && $request->brand_id != 'null') {
+            $data['brand_id'] = $request->brand_id;
+        } else {
+            $data['brand_id'] = null;
+        }
+
         if (isset($request->main_image)) {
             $main_image = $request->file('main_image')[0];
             $main_image->store('/public/products');

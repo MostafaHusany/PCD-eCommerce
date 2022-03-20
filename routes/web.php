@@ -140,4 +140,5 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/products-categories-search', 'ProductCategoriesController@dataAjax');
     Route::get('/fees-search', 'FeesController@dataAjax');
     Route::get('/shipping-search', 'ShippingController@dataAjax');
+    Route::get('/brand-search', 'BrandController@dataAjax');
 });

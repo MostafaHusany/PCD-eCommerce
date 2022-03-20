@@ -152,7 +152,7 @@ $(function () {
                                'en_name', 'en_small_description', 'en_description', 'sku', 'categories',
                                'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
                                 'is_active', 'is_composite', 'child_products', 'child_products_quantity',
-                                'custome_attr_id', 'custome_field_attr'],
+                                'custome_attr_id', 'custome_field_attr', 'brand_id'],
             imgs_fields     : ['main_image', 'images']
         },
         [
@@ -302,6 +302,12 @@ $(function () {
             $(`#${prefix}reserved_quantity`).val(data['quantity']);
         }
         
+        if (data.brand != null) {
+            var brand_option = new Option(`${data.brand['ar_title']} || ${data.brand['en_title']}`, data.brand.id, true, true);
+            $('#edit-brand_id').append(brand_option);
+        }
+        
+
         data.categories.forEach(category => {
             var category_option = new Option(`${category['ar_title']} || ${category['en_title']}`, category.id, true, true);
             $('#edit-categories').append(category_option)
@@ -379,6 +385,28 @@ $(function () {
                 placeholder: 'Select categories',
                 ajax: {
                     url: '{{ url("admin/products-categories-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item['ar_title']} || ${item['en_title']}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('#brand_id, #edit-brand_id, #s-brand_id').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select brand',
+                ajax: {
+                    url: '{{ url("admin/brand-search") }}',
                     dataType: 'json',
                     delay: 150,
                     processResults: function (data) {

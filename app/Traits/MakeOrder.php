@@ -67,21 +67,7 @@ trait MakeOrder {
         $target_order = Order::find($target_order_id);
 
         if ($target_order->status !== -1) {
-            /** 
-             *  # If order is not already restored, restore all order products
-             **/
-            $order_meta         = (array) json_decode($target_order->meta);
-            $order_quantity     = (array) $order_meta['products_quantity'];
-            $order_restored_q   = (array) $order_meta['restored_quantity'];
-            $target_products    = $target_order->products()->distinct()->get();
-
-            // dd($order_quantity, $target_products, $order_restored_q);
-            // restore old qunatity
-            foreach ($target_products as $target_product) {
-                $target_product_quantity = (array) $order_quantity[$target_product->id];
-                // $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
-                $this->restore_reserved_products($target_product, $target_product_quantity['quantity']);
-            }
+            $this->restore_order_all_products($target_order);
         }
 
         /** 
@@ -112,6 +98,24 @@ trait MakeOrder {
     }
 
     // main method used in the public and chain the methods down
+    private function restore_order_all_products ($target_order) {
+        /** 
+         *  # If order is not already restored, restore all order products
+         **/
+        $order_meta         = (array) json_decode($target_order->meta);
+        $order_quantity     = (array) $order_meta['products_quantity'];
+        $order_restored_q   = (array) $order_meta['restored_quantity'];
+        $target_products    = $target_order->products()->distinct()->get();
+
+        // dd($order_quantity, $target_products, $order_restored_q);
+        // restore old qunatity
+        foreach ($target_products as $target_product) {
+            $target_product_quantity = (array) $order_quantity[$target_product->id];
+            // $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
+            $this->restore_reserved_products($target_product, $target_product_quantity['quantity']);
+        }
+    }
+
     private function restore_reserved_products ($target_product, $order_quantity) {
         if ($target_product->is_composite === 1) {
             $target_children = $target_product->children;        
@@ -130,6 +134,26 @@ trait MakeOrder {
         $target_product->quantity += $order_quantity;
         $target_product->save();
     }
+
+    private function restore_order_meta ($target_order) {
+        /**
+         * Store the restored items in the meta of 
+         * the order, we use this in restoring all the 
+         * order products.
+         * */ 
+        $target_order_meta    = (array) json_decode($target_order->meta);
+        $requested_quantity   = (array) $target_order_meta['products_quantity'];
+        $restored_quantity    = [];
+
+        foreach ($requested_quantity as $product_id => $product_meta) {
+            $product_meta = (array) $product_meta;
+            $restored_quantity[$product_id] = $product_meta['quantity'];
+        }
+
+        $target_order_meta['restored_quantity'] = $restored_quantity;
+        $target_order->meta = json_encode($target_order_meta);
+    }
+
 
     // main method used in the public and chain the methods down
     private function update_order_calculation ($target_order, $products_data, Array $fees_ids) {
@@ -329,7 +353,8 @@ trait MakeOrder {
 
         // check if the order has an invoice 
         $order_invoice = $target_order->invoice == null ? new Invoice() : $target_order->invoice;
-        // dd($target_order->tax);
+        
+        $order_invoice->status      = $order_invoice->status != 'paid' || $order_invoice->status != 'check_payment_transaction' ? 'waiting_payment' : $order_invoice->status;
         $order_invoice->order_id    = $target_order->id;
         $order_invoice->sub_total   = $target_order->sub_total;
         $order_invoice->fee         = $target_order->fee;
