@@ -47,6 +47,42 @@ if (!function_exists('product_details')) {
         return Product::findOrFail($id);
     }
 }
+if (!function_exists('name')) {
+    function name($id)
+    {
+       $product = Product::findOrFail($id);
+        if(get_lang() == 'ar'){
+        return    $product->ar_name ;
+        }
+        elseif(get_lang()== 'en'){
+            return   $product->en_name ;
+        }
+    }
+}
+if (!function_exists('description')) {
+    function description($id)
+    {
+       $product = Product::findOrFail($id);
+        if(get_lang() == 'ar'){
+        return    $product->ar_description ;
+        }
+        elseif(get_lang()== 'en'){
+            return   $product->en_description ;
+        }
+    }
+}
+if (!function_exists('small_description')) {
+    function small_description($id)
+    {
+       $product = Product::findOrFail($id);
+        if(get_lang() == 'ar'){
+        return    $product->ar_small_description ;
+        }
+        elseif(get_lang()== 'en'){
+            return   $product->en_small_description ;
+        }
+    }
+}
 
 if (!function_exists('category_attributes')) {
     function category_attributes()

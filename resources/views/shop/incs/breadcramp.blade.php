@@ -9,7 +9,7 @@
             </div>
             <div class="col-md-6">
                 <ol class="breadcrumb justify-content-md-end">
-                    <li class="breadcrumb-item"><a href="{{route('index')}}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('index')}}">@lang('frontend.Home')</a></li>
                     <li class="breadcrumb-item active">{{$name}}</li>
                 </ol>
             </div>

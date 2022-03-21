@@ -1,13 +1,14 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Cart content
+{{trans('frontend.CartContent')}}
+
 @endsection
 
 @section('content')
 
 @include('shop.incs.breadcramp', [
-'name' => 'Cart content',
+'name' => trans('frontend.CartContent'),
 ])
 <!-- START SECTION SHOP -->
 <div class="section">
@@ -18,26 +19,25 @@ Cart content
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="product-thumbnail">&nbsp;</th>
-                                <th class="product-name">Product</th>
-                                <th class="product-price">Price</th>
-                                <th class="product-quantity">Quantity</th>
-                                <th class="product-subtotal">Total</th>
-                                <th class="product-remove">Remove</th>
+                                <th class="product-thumbnail">{{trans('frontend.ProductImage')}}</th>
+                                <th class="product-thumbnail">{{trans('frontend.Product')}}</th>
+                                <th class="product-price">{{trans('frontend.Price')}}</th>
+                                <th class="product-stock-status">{{trans('frontend.Quantity')}}</th>
+                                <th class="product-add-to-cart">{{trans('frontend.Total')}}</th>
+                                <th class="product-remove">{{trans('frontend.Remove')}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count(Cart::content())>0)
                             @foreach(Cart::content() as $item)
                             <tr>
-                                <td class="product-thumbnail"><a href="#"><img src="{{ asset(product_details($item->id)->main_image) }}" alt="product3"></a></td>
-                                <td class="product-name" data-title="Product"><a href="#">{{$item->name}}</a></td>
+                                <td class="product-thumbnail"><a href="{{route('product.detail', product_details($item->id)->slug)}}"><img src="{{ asset(product_details($item->id)->main_image) }}" alt="product3"></a></td>
+                                <td class="product-name" data-title="Product"><a href="{{route('product.detail', product_details($item->id)->slug)}}">{{$item->name}}</a></td>
                                 <td class="product-price" data-title="Price">{{$item->price}}</td>
                                 <td class="product-quantity" data-title="Quantity">
                                     <div class="quantity">
                                         <input type="button" value="-" class="minus">
-                                        <input type="number" name="quantity" data-price="{{ $item->price }}" data-row-id="{{ $item->rowId }}" 
-                                          value="{{$item->qty}}" title="Qty" class="qty update-product-quantity" size="4">
+                                        <input type="number" name="quantity" data-price="{{ $item->price }}" data-row-id="{{ $item->rowId }}" value="{{$item->qty}}" title="Qty" class="qty update-product-quantity" size="4">
                                         <input type="button" value="+" class="plus">
                                     </div>
                                 </td>
@@ -55,7 +55,7 @@ Cart content
                                 <td colspan="6" class="px-0">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-lg-8 col-md-6  text-start  text-md-end">
-                                            <a class="btn btn-line-fill btn-sm update-cart"> Update Cart</a>
+                                            <a class="btn btn-line-fill btn-sm update-cart"> {{trans('frontend.updateContent')}}</a>
                                         </div>
                                     </div>
                                 </td>
@@ -77,13 +77,13 @@ Cart content
             <div class="col-md-12">
                 <div class="border p-3 p-md-4">
                     <div class="heading_s1 mb-3">
-                        <h6>Cart Totals</h6>
+                        <h6>{{trans('frontend.CartTotals')}}</h6>
                     </div>
                     <div class="table-responsive">
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td class="cart_total_label">Cart Subtotal</td>
+                                    <td class="cart_total_label">{{trans('frontend.SubTotal')}}</td>
                                     <td class="cart_total_amount" id="updatePrice">{{$totalPrice}}</td>
                                 </tr>
                                 <!-- <tr>
@@ -97,7 +97,7 @@ Cart content
                             </tbody>
                         </table>
                     </div>
-                    <a href="{{route('checkout')}}" class="btn btn-fill-out">Proceed To CheckOut</a>
+                    <a href="{{route('checkout')}}" class="btn btn-fill-out">{{trans('frontend.Checkout')}} </a>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\shop;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -33,7 +33,6 @@ class OrderRequest extends FormRequest
             'zipcode' => 'required_if:address_id,0',
             'phone' => 'required_if:address_id,0',
             'shipping_id_field' => 'required',
-            'payment_file' => 'required|max:10000'
         ];
     }
 
@@ -47,7 +46,7 @@ class OrderRequest extends FormRequest
             'state.required_if' => trans('frontend.state_required'),
             'zipcode.required_if' => trans('frontend.zipcode_required'),
             'phone.required_if' => trans('frontend.phone_required'),
-            'payment_file.required' => trans('frontend.payment_file_required'),
+            // 'payment_file.required' => trans('frontend.payment_file_required'),
             'shipping_id_field.required' => trans('frontend.shipping_id_field'),
         ];
     }
