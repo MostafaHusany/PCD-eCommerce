@@ -106,5 +106,7 @@ return [
     'Brands'                 => 'Brands',
     'filter'                 => 'Filter',
     'Options'                => 'Options',
+    'language'               => 'Language',
+
 ];
 

@@ -106,4 +106,5 @@ return [
     'Brands'                 => 'الماركات',
     'filter'                 => 'تصفية',
     'Options'                => 'الخيارات',
+    'language'               => 'اللغات',
 ];
