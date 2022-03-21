@@ -136,14 +136,6 @@ class CartController extends Controller
             $order->address_id = $address->id;
         }
 
-        // we will remove the payment and use the MakeOrder trait to create invoices
-        // $payment = new Payment();
-        // $payment->order_id = $order->id;
-        // $payment->total =  $request->total_price;
-        // if ($request->hasFile('payment_file')) {
-        //     $payment->bank_transfer = upload_image($request->file('payment_file'), 'payment_file');
-        // }
-        // $payment->save();
         Cart::destroy();
         return view('shop.thanks',compact('order'));
     }
