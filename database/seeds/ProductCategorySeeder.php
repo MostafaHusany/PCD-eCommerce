@@ -19,10 +19,10 @@ class ProductCategorySeeder extends Seeder
         $no_of_rows = 20;
         for ($i = 0; $i < $no_of_rows; $i++) {
             $category = array(
-                'ar_title' => $fakerEn->unique()->realText(50),
-                'en_title' => $fakerAr->unique()->realText(50),
-                'ar_description' => $fakerEn->realText(500),
-                'en_description' => $fakerAr->realText(500),
+                'ar_title' => $fakerAr->unique()->realText(50),
+                'en_title' => $fakerEn->unique()->realText(50),
+                'ar_description' => $fakerAr->realText(500),
+                'en_description' => $fakerEn->realText(500),
                 'rule' => rand(0, 1),
                 'is_main' => rand(0, 1),
                 'category_id' => ProductCategory::all()->random()->id,
