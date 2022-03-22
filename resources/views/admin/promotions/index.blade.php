@@ -65,6 +65,8 @@
     @include('admin.promotions.incs._create')
 
     @include('admin.promotions.incs._edit')
+
+    @include('admin.promotions.incs._show')
     
 
 </div>

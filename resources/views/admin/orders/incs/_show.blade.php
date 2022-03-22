@@ -294,9 +294,5 @@
 
         }); 
     });
-
-    function calc_taxe (products, tax_obg) {
-
-    }
 </script>
 @endpush
