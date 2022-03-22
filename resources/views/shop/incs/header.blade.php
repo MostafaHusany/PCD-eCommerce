@@ -16,6 +16,41 @@
                                         @elseif(get_lang() == 'en')
                                         {{substr($category->en_title, 0, 20)}}
                                         @endif
+                                    </span></a>
+                                    @if( count($category->children ) >0)
+
+                                <div class="dropdown-menu">
+                                    <ul>
+
+                                        <li class="dropdown-header">Sub categories</li>
+                                        @foreach( $category->children as $child)
+                                        <li><a class="dropdown-item nav-link nav_item" href="{{route('category',$child->id)}}">
+                                                @if(get_lang() == 'ar')
+                                                {{substr($child->ar_title, 0, 20)}}
+                                                @elseif(get_lang() == 'en')
+                                                {{substr($child->en_title, 0, 20)}}
+                                                @endif</a></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                @endif
+
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+
+                    <!-- <div id="navCatContent" class="nav_cat navbar collapse">
+                        <ul>
+                            @foreach(categories() as $category)
+                            <li class="dropdown dropdown-mega-menu">
+                                <a class="dropdown-item nav-link dropdown-toggler" href="#" data-bs-toggle="dropdown"><i class="flaticon-tv"></i> <span>
+                                        @if(get_lang() == 'ar')
+                                        {{substr($category->ar_title, 0, 20)}}
+                                        @elseif(get_lang() == 'en')
+                                        {{substr($category->en_title, 0, 20)}}
+                                        @endif
                                     </span> <span class="categories_num"> ({{count($category->products)}})</span></a>
 
                                 @if(count($category->products) > 0 || count($category->children ) >0 )
@@ -70,7 +105,7 @@
                             @endforeach
 
                         </ul>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-6 col-9">
