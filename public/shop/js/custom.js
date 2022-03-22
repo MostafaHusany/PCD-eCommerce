@@ -168,4 +168,21 @@ $(document).ready(function () {
             },
         });
     });
+
+    $("[name='category']").on("change", function (e) {
+        let edit_id = $(this).val();
+        window.location.href = window.location.origin + "/category/" + edit_id;
+    });
+
+    $("[name='languageSelect']").on("change", function (e) {
+        var lang = $(this).val();
+          if(lang == 'ar'){
+            window.location.href = $(location).attr('href').replace("en", "ar");
+        }
+         if(lang == 'en'){
+              window.location.href = $(location).attr('href').replace("ar", "en");
+        }
+     });
+
+
 });
