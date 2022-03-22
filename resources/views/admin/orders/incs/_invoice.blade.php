@@ -64,7 +64,7 @@
             Payment was refused
         </div>
 
-        <div id="transaction-image-container" class="img-status form-group">
+        <div id="transaction-image-container" class="text-center img-status form-group">
             <img id="transaction-image" src="#" class="img-fluid img-thumbnail" alt="...">
         </div><!-- /.form-group -->
 
@@ -122,11 +122,15 @@
                 $('#show-invoice-tax').text(data.tax);
                 $('#show-invoice-total').text(data.total);
                 $('#show-invoice-status').text(data.status);
-                $('#show-payment-refuse-count').text(data.payemnt_refuse_count);
+                $('#show-payment-refuse-count').text(data.payment_refuse_count);
 
                 if (data.trasnaction_imge == null) {
                     $('#transaction-image-not-found').slideDown();
                     $('#transaction-image').attr('src', '');
+                } else {
+                    $('#transaction-image-container').slideDown();
+                    $('#transaction-image-not-found').slideUp();
+                    $('#transaction-image').attr('src', `{{url('/')}}/${data.trasnaction_imge}`);
                 }
             }// end :: if
         });
@@ -173,10 +177,10 @@
         .then(res => {
             $('#loddingSpinner').hide(500);
             let data = res.data;
-            
+            console.log(res)
             if (data.success) {
                 $('#show-invoice-status').text(data.data.status);
-                $('#show-payment-refuse-count').text(data.data.payemnt_refuse_count);
+                $('#show-payment-refuse-count').text(data.data.payment_refuse_count);
                 
                 $('#paymentRefused').slideDown(500);
                 setTimeout(() => {

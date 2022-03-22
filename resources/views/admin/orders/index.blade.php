@@ -122,7 +122,6 @@
 @endsection
 
 @push('page_scripts')
-
 <script>
 $(function () {
     

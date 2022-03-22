@@ -50,4 +50,8 @@ class Product extends Model
     public function brand () {
         return $this->belongsTo(Brand::class, 'brand_id');
     }
+
+    public function promotions () {
+        $this->belongsToMnay(Promotion::class, 'product_promotions', 'product_id', 'promotion_id')->withPivot(['start_date', 'end_date', 'quantity', 'is_active']);;
+    }
 }
