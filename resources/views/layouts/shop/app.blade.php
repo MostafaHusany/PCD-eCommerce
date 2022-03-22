@@ -51,7 +51,7 @@
     </style>
     @endif
 
-
+    
 </head>
 
 @if(get_lang() == 'ar')
