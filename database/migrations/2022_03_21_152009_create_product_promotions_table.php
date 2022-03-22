@@ -27,6 +27,7 @@ class CreateProductPromotionsTable extends Migration
 
             $table->date('start_date');
             $table->date('end_date');
+            $table->float('price');
             $table->integer('quantity');
             $table->tinyInteger('is_active')->default(0);
 

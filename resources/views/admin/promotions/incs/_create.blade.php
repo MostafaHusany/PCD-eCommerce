@@ -11,7 +11,7 @@
     </div><!-- /.row -->
     <hr/>
 
-    <form action="/" id="objectForm">
+    <div id="objectForm">
         <div class="form-group row">
             <label for="title" class="col-sm-2 col-form-label">Title</label>
             <div class="col-sm-10">
@@ -24,7 +24,7 @@
         <div class="form-group row">
             <label for="start_date" class="col-sm-2 col-form-label">Start Time</label>
             <div class="col-sm-10">
-                <input type="date" id="start_date" class="form-control">
+                <input type="date" tabindex="2" id="start_date" class="form-control">
                 <div style="padding: 5px 7px; display: none" id="start_dateErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -33,7 +33,7 @@
         <div class="form-group row">
             <label for="end_date" class="col-sm-2 col-form-label">End Date</label>
             <div class="col-sm-10">
-                <input type="date" id="end_date" class="form-control">
+                <input type="date" tabindex="3" id="end_date" class="form-control">
                 <div style="padding: 5px 7px; display: none" id="end_dateErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -42,7 +42,7 @@
         <div class="form-group row">
             <label for="find-products" class="col-sm-2 col-form-label">Select Products</label>
             <div class="col-sm-10">
-                <select class="form-control" id="find-products" data-prefix=""></select>
+                <select class="form-control" tabindex="4" id="find-products" data-prefix=""></select>
                 <div style="padding: 5px 7px; display: none" id="productsErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -76,8 +76,8 @@
             </table>
         </div>
 
-        <button tabindex="8" class="create-object btn btn-primary float-right">Create {{ $object_title }}</button>
-    </form>
+        <button tabindex="5" class="create-object btn btn-primary float-right">Create {{ $object_title }}</button>
+    </div>
 </div>
 
 
@@ -340,8 +340,6 @@ $(document).ready(function () {
 
         return {};
     })(StoreObject, ViewObject);
-
-
 });
 </script>
 @endpush

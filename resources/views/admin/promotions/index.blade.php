@@ -25,6 +25,11 @@
                 <h5>{{$object_title}} Adminstration</h5>
             </div>
             <div class="col-6 text-right">
+                <div class="relode-btn btn btn-info btn-sm">
+                    <i class="relode-btn-icon fas fa-redo"></i>
+                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                </div>
+
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -77,9 +82,9 @@ $(function () {
         {
             index_route   : "{{ route('admin.promotions.index') }}",
             store_route   : "{{ route('admin.promotions.store') }}",
-            show_route    : "{{ url('admin/shipping') }}",
-            update_route  : "{{ url('admin/shipping') }}",
-            destroy_route : "{{ url('admin/shipping') }}",
+            show_route    : "{{ url('admin/promotions') }}",
+            update_route  : "{{ url('admin/promotions') }}",
+            destroy_route : "{{ url('admin/promotions') }}",
         },
         '#dataTable',
         {
@@ -156,14 +161,26 @@ $(function () {
         
         return is_valide;
     };
+    
+    objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        $('#edit-id').val(data.id);
+
+        fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
+        fields_id_list.forEach(el_id => {
+            $(`#${prefix + el_id}`).val(data[el_id]).change();
+        });
+
+        const products_meta = (JSON.parse(data.meta))['products_meta'];
+        EditControllerObject.edit_promotions_update(data.products, products_meta);
+    }
 
     $('#dataTable').on('change', '.c-activation-btn', function () {
         let target_id = $(this).data('user-target');
         
-        axios.post(`{{url('admin/shipping')}}/${target_id}`, {
+        axios.post(`{{url('admin/promotions')}}/${target_id}`, {
             _token : "{{ csrf_token() }}",
             _method : 'PUT',
-            activate_product : true
+            activate_promotion : true
         }).then(res => {
             if (!res.data.success) {
                 $(this).prop('checked', !$(this).prop('checked'));

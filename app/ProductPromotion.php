@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductPromotion extends Model
 {
-    protected $fillable = ['product_id', 'promotion_id', 'start_date', 'end_date', 'quantity', 'is_active'];
+    protected $fillable = ['product_id', 'promotion_id', 'start_date', 'end_date', 'price', 'quantity', 'is_active'];
 
     public function product () {
         $this->belongsTo(Product::class, 'product_id');

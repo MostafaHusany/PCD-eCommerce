@@ -9,6 +9,7 @@ use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Validator;
 
 use App\Promotion;
+use App\ProductPromotion;
 
 class PromotionsController extends Controller
 {
@@ -55,11 +56,17 @@ class PromotionsController extends Controller
         if ($request->ajax()) {
             $model = Promotion::query();
             
-            // if (isset($request->title)) {
-            //     $model->where('title', $request->title);
-            // }
+            if (isset($request->title)) {
+                $model->where('title', 'like', "%$request->title%");
+            }
 
-            $datatable_model = Datatables::of($model);
+            $datatable_model = Datatables::of($model)
+            ->addColumn('active', function ($row_object) {
+                return view('admin.promotions.incs._active', compact('row_object'));
+            })
+            ->addColumn('actions', function ($row_object) {
+                return view('admin.promotions.incs._actions', compact('row_object'));
+            });
 
             return $datatable_model->make(true);
         }
@@ -67,29 +74,123 @@ class PromotionsController extends Controller
         return view('admin.promotions.index');
     }// end :: index
 
+    public function show (Request $request, $id) {
+        $target_object = Promotion::find($id);
+
+        if (isset($target_object) && isset($request->fast_acc)) {
+            $target_object->products;
+            return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
+        }
+
+        return response()->json(['product' => null, 'success' > false]);
+    }
 
     public function store (Request $request) {
-        /**
-         * Create Promotion .... 
-         * products_id 
-         * products_meta  
-         */
-
         $validator = Validator::make($request->all(), [
-            'title'         => 'required|unique:shippings,title|max:255',
-            'description'   => 'required|max:500',
-            // 'cost_type'     => 'required',
-            'cost'          => 'required'
+            'title'         => 'required|unique:promotions,title|max:255',
+            'start_date'    => 'required|date|before:end_date',
+            'end_date'      => 'required|date|after:start_date',
+            'products'      => 'required', 
+            'products_meta' => 'required',
         ]);
-
+        
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data       = $request->all();
-        $new_object = Shipping::create($data);
+        $products      = json_decode($request->products);
+        $products_meta = (array) json_decode($request->products_meta);
+
+        $products_relation = [];
+        foreach ($products_meta as $key => $product_meta) {
+            $products_relation[$key] = [
+                'start_date' => $request->start_date,
+                'end_date'   => $request->start_date,
+                'quantity'   => $product_meta->quantity,
+                'price'      => $product_meta->price
+            ];
+        }
+
+        $data = $request->all();
+        $data['meta'] = json_encode([
+            'products' => $products,
+            'products_meta' => $products_meta,
+        ]);
+
+        $new_object = Promotion::create($data);
+        $new_object->products()->sync($products_relation);
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }// end :: store
 
+    public function update (Request $request, $id) {
+        if (isset($request->activate_promotion)) {
+            return $this->updateActivation($id);
+        }
+
+        return $this->updatePromotion($request, $id);
+    }
+
+    protected function updatePromotion (Request $request, $id) {
+        $validator = Validator::make($request->all(), [
+            'title'         => 'required|max:255|unique:promotions,title,'. $id,
+            'start_date'    => 'required|date|before:end_date',
+            'end_date'      => 'required|date|after:start_date',
+            'products'      => 'required', 
+            'products_meta' => 'required',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        }
+
+        $products      = (array) json_decode($request->products);
+        $products_meta = (array) json_decode($request->products_meta);
+
+        $products_relation = [];
+        foreach ($products_meta as $key => $product_meta) {
+            $products_relation[$key] = [
+                'start_date' => $request->start_date,
+                'end_date'   => $request->start_date,
+                'quantity'   => $product_meta->quantity,
+                'price'      => $product_meta->price
+            ];
+        }
+        
+        $target_object = Promotion::find($id);
+        $data = $request->all();
+        $data['meta'] = json_encode([
+            'products' => $products,
+            'products_meta' => $products_meta,
+        ]);
+
+        $target_object->update($data);
+        $target_object->products()->detach($products);;
+        $target_object->products()->sync($products_relation);
+
+        return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
+    }
+
+    protected function updateActivation ($id) {
+        $target_object = Promotion::find($id);
+        
+        if (isset($target_object)) {
+            $target_object->is_active = !$target_object->is_active;
+            $target_object->save();
+            
+            $result = ProductPromotion::where('promotion_id', $target_object->id)->update(['is_active' => $target_object->is_active]);
+        }
+
+        return response()->json(['data' => $target_object, 'success' => isset($target_object)]);        
+    }
+
+    public function destroy ($id) {
+        $target_object = Promotion::find($id);
+
+        if (isset($target_object)) {
+            $target_object->delete();
+        }
+
+        return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
+    }
 }
