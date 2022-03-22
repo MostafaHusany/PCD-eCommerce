@@ -20,9 +20,9 @@ class InvoicesController extends Controller
             $target_invoice->status = 'paid';
         } else {
             $target_invoice->status = 'refused';
-            $target_invoice->payemnt_refuse_count += 1;
-
-            if ($target_invoice->payemnt_refuse_count >= 3) {
+            $target_invoice->payment_refuse_count += 1;
+            
+            if ($target_invoice->payment_refuse_count >= 3) {
                 /**  
                  * Restore order product ...
                  * this the senario where the order is refused and need to restore

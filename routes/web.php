@@ -94,6 +94,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('promotions', 'PromotionsController', ['names' => [
+        'index'     => 'admin.promotions.index',
+        'store'     => 'admin.promotions.store',
+        'show'      => 'admin.promotions.show',
+        'edit'      => 'admin.promotions.edit',
+        'update'    => 'admin.promotions.update',
+        'destroy'   => 'admin.promotions.destroy'
+        ]
+    ]);
+
     Route::resource('shipping', 'ShippingController', ['names' => [
         'index'     => 'admin.shipping.index',
         'store'     => 'admin.shipping.store',
@@ -133,7 +143,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         // 'destroy'   => 'admin.invoices.destroy'
         ]
     ]);
-
+    
     // fast ajax search
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');
