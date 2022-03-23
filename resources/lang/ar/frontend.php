@@ -107,4 +107,12 @@ return [
     'filter'                 => 'تصفية',
     'Options'                => 'الخيارات',
     'language'               => 'اللغات',
+    'collections'            => 'التجميعات الاحترافية',
+    'computer_accessories'   => 'اكسسوارات الكمبيوتر',
+    'screen'                 => 'الشاشات',
+    'maintenance'            => 'مركز الصيانه',
+    'points'                 => 'برنامج النقاط',
+    'offers'                 => 'العروض و التخفيضات',
+    'showShot'               => 'عروض اللقطة',
 ];
+

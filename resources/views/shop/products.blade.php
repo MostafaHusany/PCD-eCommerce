@@ -71,11 +71,7 @@
                                 <li class="dropdown cssState">
                                     <a href="{{route('category',$category->id)}}">
                                         <span class="categories_name">
-                                            @if(get_lang() == 'ar')
-                                            {{substr($category->ar_title, 0, 20)}}
-                                            @elseif(get_lang() == 'en')
-                                            {{substr($category->en_title, 0, 20)}}
-                                            @endif
+                                        {{title($category->id)}}
                                         </span>
                                     </a>
                                     </span><span class="categories_num"> ({{count($category->products)}})</span>

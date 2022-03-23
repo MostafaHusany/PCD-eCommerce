@@ -202,6 +202,6 @@
 <!-- scripts js --> 
 <script src="{{asset('shop')}}/js/scripts.js"></script>
 <script src="{{asset('shop')}}/js/custom.js"></script>
-
+@yield('script')
 </body>
 </html>
