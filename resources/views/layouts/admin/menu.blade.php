@@ -20,7 +20,7 @@
     </a>
 </li>
 
-<li class="nav-item {{ str_contains(Request::path(), 'promotions') || str_contains(Request::path(), '#') || str_contains(Request::path(), '#') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), 'promotions') || str_contains(Request::path(), 'promo-codes') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-percentage"></i>
         <p>
@@ -37,7 +37,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="#" class="nav-link {{ Request::is('#') ? 'active' : ''}}">
+            <a href="{{ route('admin.promo.index') }}" class="nav-link {{ Request::is('admin/promo-codes') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-gift"></i>
                 <p>Promo Codes</p>
             </a>
@@ -47,7 +47,6 @@
 
 <li class="nav-item {{ str_contains(Request::path(), '/products-categories') || str_contains(Request::path(), '/products') || str_contains(Request::path(), '/brands') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
-        <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
         <i class="nav-icon fas fa-box-open"></i>
         <p>
             Products
@@ -64,7 +63,6 @@
 
         <li class="nav-item">
             <a href="{{ route('admin.brands.index') }}" class="nav-link {{ Request::is('admin/brands') ? 'active' : ''}}">
-                <!-- <i class="fas fa-clipboard-list"></i> -->
                 <i class="nav-icon fas fa-copyright"></i>
                 <p>Brands</p>
             </a>

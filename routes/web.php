@@ -106,6 +106,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('promo-codes', 'PromoCodesController', ['names' => [
+        'index'     => 'admin.promo.index',
+        'store'     => 'admin.promo.store',
+        'show'      => 'admin.promo.show',
+        'edit'      => 'admin.promo.edit',
+        'update'    => 'admin.promo.update',
+        'destroy'   => 'admin.promo.destroy'
+        ]
+    ]);
+
     Route::resource('shipping', 'ShippingController', ['names' => [
         'index'     => 'admin.shipping.index',
         'store'     => 'admin.shipping.store',
