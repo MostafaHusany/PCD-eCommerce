@@ -11,13 +11,9 @@
                             @foreach(categories() as $category)
                             <li class="dropdown dropdown-mega-menu">
                                 <a class="dropdown-item nav-link dropdown-toggler" href="#" data-bs-toggle="dropdown"><i class="flaticon-tv"></i> <span>
-                                        @if(get_lang() == 'ar')
-                                        {{substr($category->ar_title, 0, 20)}}
-                                        @elseif(get_lang() == 'en')
-                                        {{substr($category->en_title, 0, 20)}}
-                                        @endif
+                                        {{title($category->id)}}
                                     </span></a>
-                                    @if( count($category->children ) >0)
+                                @if( count($category->children ) >0)
 
                                 <div class="dropdown-menu">
                                     <ul>
@@ -25,11 +21,8 @@
                                         <li class="dropdown-header">Sub categories</li>
                                         @foreach( $category->children as $child)
                                         <li><a class="dropdown-item nav-link nav_item" href="{{route('category',$child->id)}}">
-                                                @if(get_lang() == 'ar')
-                                                {{substr($child->ar_title, 0, 20)}}
-                                                @elseif(get_lang() == 'en')
-                                                {{substr($child->en_title, 0, 20)}}
-                                                @endif</a></li>
+                                                {{title($child->id)}}
+                                            </a></li>
                                         @endforeach
                                     </ul>
                                 </div>
@@ -46,11 +39,7 @@
                             @foreach(categories() as $category)
                             <li class="dropdown dropdown-mega-menu">
                                 <a class="dropdown-item nav-link dropdown-toggler" href="#" data-bs-toggle="dropdown"><i class="flaticon-tv"></i> <span>
-                                        @if(get_lang() == 'ar')
-                                        {{substr($category->ar_title, 0, 20)}}
-                                        @elseif(get_lang() == 'en')
-                                        {{substr($category->en_title, 0, 20)}}
-                                        @endif
+                                        {{title($category->id)}}
                                     </span> <span class="categories_num"> ({{count($category->products)}})</span></a>
 
                                 @if(count($category->products) > 0 || count($category->children ) >0 )
@@ -61,11 +50,13 @@
                                             <div class="header-banner2">
                                                 <ul>
                                                     @foreach($category->products as $product)
-                                                    <li><a class="dropdown-item nav-link nav_item" href="{{route('product.detail',$product->slug)}}">@if(get_lang() == 'ar')
+                                                    <li><a class="dropdown-item nav-link nav_item" href="{{route('product.detail',$product->slug)}}">
+                                                        @if(get_lang() == 'ar')
                                                             {{substr($product->ar_name, 0, 20)}}
                                                             @elseif(get_lang() == 'en')
                                                             {{substr($product->en_name, 0, 20)}}
-                                                            @endif</a></li>
+                                                            @endif
+                                                        </a></li>
                                                     @endforeach
                                                 </ul>
                                             </div>
@@ -78,11 +69,7 @@
                                                 <li class="mega-menu-col col-lg-6">
                                                     <ul>
                                                         <li class="dropdown-header">
-                                                            @if(get_lang() == 'ar')
-                                                            {{substr($child->ar_title, 0, 20)}}
-                                                            @elseif(get_lang() == 'en')
-                                                            {{substr($child->en_title, 0, 20)}}
-                                                            @endif
+                                                            {{title($child->id)}}
                                                         </li>
                                                         @foreach($child->products as $product)
                                                         <li><a class="dropdown-item nav-link nav_item" href="{{route('product.detail',$product->slug)}}">

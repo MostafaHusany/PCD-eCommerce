@@ -28,7 +28,6 @@ class CartController extends Controller
 
     public function add_to_cart(Request $request)
     {
-
         $product_quantity = Product::find($request->id)->quantity;
         if ($product_quantity < $request->quantity) {
             $cartCollection = Cart::content();

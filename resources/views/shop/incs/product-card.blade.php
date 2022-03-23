@@ -7,7 +7,12 @@
             <div class="product_action_box">
 
                 <ul class="list_none pr_action_btn">
-                    <li class="add-to-cart"> <a class="item_to_cart" href="" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" data-price="{{ $product->price }}" aria-label="{{name($product->id)}}"><i class="icon-basket-loaded">
+                    <li class="add-to-cart"> <a class="item_to_cart" href=""
+                     data-ar_name="{{ $product->ar_name }}" 
+                     data-en_name="{{ $product->en_name }}" data-quantity="1" 
+                     data-id="{{ $product->id }}"
+                     @if($product->has_promotion() == '1') data-price="{{$product->get_promotion()->price}}" @else  data-price="{{ $product->price }}" @endif
+                     aria-label="{{name($product->id)}}"><i class="icon-basket-loaded">
                             </i>{{trans('frontend.add_to_cart')}}</a></li>
 
                     <li><a href="shop-compare.html" class="popup-ajax"><i class="icon-shuffle"></i></a></li>
@@ -24,11 +29,17 @@
         <div class="product_info">
             <h6 class="product_title"><a href="{{route('product.detail',$product->slug)}}">{{name($product->id)}}</a></h6>
             <div class="product_price">
-                <span class="price">{{$product->price}}</span>
-                <del>$55.25</del>
+                @if($product->has_promotion() == '1')
+                <span class="price">{{$product->get_promotion()->price}}</span>
+                <del>{{$product->price}}</del>
                 <div class="on_sale">
-                    <span>35% Off</span>
+                    <span>{{$product->get_promotion()->discount_ratio}}% Off</span>
                 </div>
+                @else
+                <span class="price">{{$product->price}}</span>
+                <del></del>
+                @endif
+  
             </div>
             <div class="rating_wrap">
                 <div class="rating">

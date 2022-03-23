@@ -59,6 +59,18 @@ if (!function_exists('name')) {
         }
     }
 }
+if (!function_exists('title')) {
+    function title($id)
+    {
+       $category = ProductCategory::findOrFail($id);
+        if(get_lang() == 'ar'){
+        return    $category->ar_title ;
+        }
+        elseif(get_lang()== 'en'){
+            return   $category->en_title ;
+        }
+    }
+}
 if (!function_exists('description')) {
     function description($id)
     {

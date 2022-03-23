@@ -51,7 +51,7 @@
     </style>
     @endif
 
-    
+
 </head>
 
 @if(get_lang() == 'ar')
@@ -171,7 +171,6 @@
                                                 @foreach(categories() as $key => $category)
                                                 <option value="{{$category->id }}">
                                                     @if(get_lang() == 'ar')
-
                                                     {{substr($category->ar_title, 0, 20)}}
                                                     @elseif(get_lang() == 'en')
                                                     {{substr($category->en_title, 0, 20)}}
@@ -277,7 +276,7 @@
 
                                         </li>
                                         <li class="dropdown">
-                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Pages</a>
+                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">{{trans('frontend.collections')}}</a>
                                             <div class="dropdown-menu">
                                                 <ul>
                                                     <li><a class="dropdown-item nav-link nav_item" href="about.html">About Us</a></li>
@@ -291,7 +290,7 @@
                                             </div>
                                         </li>
                                         <li class="dropdown dropdown-mega-menu">
-                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Products</a>
+                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">{{trans('frontend.computer_accessories')}}</a>
                                             <div class="dropdown-menu">
                                                 <ul class="mega-menu d-lg-flex">
                                                     <li class="mega-menu-col col-lg-3">
@@ -358,7 +357,7 @@
                                             </div>
                                         </li>
                                         <li class="dropdown">
-                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Blog</a>
+                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">{{trans('frontend.screen')}}</a>
                                             <div class="dropdown-menu dropdown-reverse">
                                                 <ul>
                                                     <li>
@@ -410,7 +409,7 @@
                                             </div>
                                         </li>
                                         <li class="dropdown dropdown-mega-menu">
-                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Shop</a>
+                                            <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">{{trans('frontend.maintenance')}}</a>
                                             <div class="dropdown-menu">
                                                 <ul class="mega-menu d-lg-flex">
                                                     <li class="mega-menu-col col-lg-9">
@@ -467,7 +466,9 @@
                                                 </ul>
                                             </div>
                                         </li>
-                                        <li><a class="nav-link nav_item" href="contact.html">Contact Us</a></li>
+                                        <li><a class="nav-link nav_item" href="contact.html">{{trans('frontend.points')}}</a></li>
+                                        <li><a class="nav-link nav_item" href="contact.html">{{trans('frontend.showShot')}}</a></li>
+                                        <li><a class="nav-link nav_item" href="contact.html">{{trans('frontend.offers')}}</a></li>
                                     </ul>
                                 </div>
                                 <div class="contact_phone contact_support">

@@ -107,6 +107,12 @@ return [
     'filter'                 => 'Filter',
     'Options'                => 'Options',
     'language'               => 'Language',
-
+    'collections'            => 'Professional collections',
+    'computer_accessories'   => 'computer accessories',
+    'screen'                 => 'Screens',
+    'maintenance'            => 'maintenance center',
+    'points'                 => 'point system',
+    'offers'                 => 'offers & Discounts',
+    'showShot'               => 'show Shot',
 ];
 

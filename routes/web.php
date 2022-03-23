@@ -155,7 +155,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/brand-search', 'BrandController@dataAjax');
 
     Route::get('/test', function () {
-        $target = Product::find(65);
+        $target = Product::find(48);
         dd($target->has_promotion(), $target->get_promotion());
     });
 });
