@@ -25,6 +25,11 @@
                 <h5>{{$object_title}}ies Adminstration</h5>
             </div>
             <div class="col-6 text-right">
+                <div class="relode-btn btn btn-info btn-sm">
+                    <i class="relode-btn-icon fas fa-redo"></i>
+                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                </div>
+
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
