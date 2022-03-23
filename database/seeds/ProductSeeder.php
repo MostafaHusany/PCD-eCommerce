@@ -19,14 +19,14 @@ class ProductSeeder extends Seeder
         $no_of_rows = 20;
         for ($i = 0; $i < $no_of_rows; $i++) {
             $category = array(
-                'ar_name' => $fakerAr->unique()->realText(50),
-                'en_name' => $fakerEn->unique()->realText(50),
+                'ar_name' => $fakerAr->unique()->realText(10),
+                'en_name' => $fakerEn->unique()->realText(10),
                 'ar_small_description' => $fakerAr->realText(200),
                 'en_small_description' => $fakerEn->realText(200),
                 'ar_description' => $fakerAr->realText(500),
                 'en_description' => $fakerEn->realText(500),
-                'sku' => $fakerEn->unique()->realText(20),
-                'slug' => $fakerEn->unique()->realText(20),
+                'sku' => $fakerEn->unique()->realText(30),
+                'slug' => $fakerEn->unique()->realText(30),
                 'main_image' => 'https://image.shutterstock.com/image-photo/electronic-circuit-board-close-up-260nw-1568488030.jpg',
                 'quantity' => rand(0, 100),
                 'price' => rand(100, 500),
@@ -34,7 +34,7 @@ class ProductSeeder extends Seeder
                 'is_active' =>rand(0, 1),
                 'is_composite' =>rand(0, 1),
                 'reserved_quantity' =>rand(0, 1),
-                'brand_id' => Brand::all()->random()->id,
+                // 'brand_id' => Brand::all()->random()->id,
             );
             Product::insert($category);
             $category = null;

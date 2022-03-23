@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
+// use ProductCategorySeeder;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -11,6 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
+        $this->call([
+            // ProductCategorySeeder::class, 
+            ProductSeeder::class,
+            ProductRelationCategorySeeder::class,
+        ]);
     }
 }

@@ -27,8 +27,10 @@ class CreateProductPromotionsTable extends Migration
 
             $table->date('start_date');
             $table->date('end_date');
+            $table->float('old_price');
             $table->float('price');
             $table->integer('quantity');
+            $table->string('discount_ratio');
             $table->tinyInteger('is_active')->default(0);
 
         });

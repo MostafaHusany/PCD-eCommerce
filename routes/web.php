@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Product;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -143,7 +145,7 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         // 'destroy'   => 'admin.invoices.destroy'
         ]
     ]);
-    
+
     // fast ajax search
     Route::get('/customers-search', 'CustomerController@dataAjax');
     Route::get('/products-search', 'ProductsController@dataAjax');
@@ -151,4 +153,9 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/fees-search', 'FeesController@dataAjax');
     Route::get('/shipping-search', 'ShippingController@dataAjax');
     Route::get('/brand-search', 'BrandController@dataAjax');
+
+    Route::get('/test', function () {
+        $target = Product::find(65);
+        dd($target->has_promotion(), $target->get_promotion());
+    });
 });

@@ -90,6 +90,7 @@ $(document).ready(function () {
             products_meta : {
                 // product_id : {
                 //     quantity,
+                //     old_price,
                 //     price,
                 // }
             }
@@ -106,8 +107,9 @@ $(document).ready(function () {
             // update order products list and meta
             data.products_list.push(new_product);
             data.products_meta[new_product.id] = {
-                quantity : new_product.quantity,
-                price    : new_product.price
+                quantity  : new_product.quantity,
+                old_price : new_product.price,
+                price     : new_product.price
             };
             
             return {products_list : data.products_list, products_meta : data.products_meta};

@@ -107,7 +107,9 @@ class PromotionsController extends Controller
                 'start_date' => $request->start_date,
                 'end_date'   => $request->start_date,
                 'quantity'   => $product_meta->quantity,
-                'price'      => $product_meta->price
+                'price'      => $product_meta->price,
+                'old_price'  => $product_meta->old_price,
+                'discount_ratio'  => round(100 - ($product_meta->price / $product_meta->old_price * 100))
             ];
         }
 
@@ -153,10 +155,12 @@ class PromotionsController extends Controller
                 'start_date' => $request->start_date,
                 'end_date'   => $request->start_date,
                 'quantity'   => $product_meta->quantity,
-                'price'      => $product_meta->price
+                'price'      => $product_meta->price,
+                'old_price'  => $product_meta->old_price,
+                'discount_ratio'  => round(100 - ($product_meta->price / $product_meta->old_price * 100))
             ];
         }
-        
+
         $target_object = Promotion::find($id);
         $data = $request->all();
         $data['meta'] = json_encode([

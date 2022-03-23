@@ -24,8 +24,9 @@ class ProductCategorySeeder extends Seeder
                 'ar_description' => $fakerAr->realText(500),
                 'en_description' => $fakerEn->realText(500),
                 'rule' => rand(0, 1),
-                'is_main' => rand(0, 1),
-                'category_id' => ProductCategory::all()->random()->id,
+                // 'is_main' => rand(0, 1),
+                'is_main' => 0,
+                // 'category_id' => ProductCategory::all()->random()->id,
             );
             ProductCategory::insert($category);
             $category = null;
