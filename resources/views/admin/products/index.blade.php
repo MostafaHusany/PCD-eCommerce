@@ -111,6 +111,7 @@
     
     @include('admin.products.incs._create')
     @include('admin.products.incs._edit')
+    @include('admin.products.incs._show')
 
     {{--
     @include('admin.products.incs._composite_product_upgrade_option')
