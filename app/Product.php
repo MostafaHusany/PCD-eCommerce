@@ -68,7 +68,7 @@ class Product extends Model
         // get lates promotion of the product
         return $this->product_promotion_r()
          ->where('product_promotions.start_date', '<=', Date('Y-m-d'))
-        //  ->where('product_promotions.end_date', '>=', Date('Y-m-d'))
+         ->where('product_promotions.end_date', '>=', Date('Y-m-d'))
          ->where('product_promotions.is_active', 1)
         ->where('product_promotions.quantity', '>', 0)
         ->orderBy('product_promotions.id', 'desc')

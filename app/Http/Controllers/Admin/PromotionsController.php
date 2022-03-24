@@ -105,7 +105,7 @@ class PromotionsController extends Controller
         foreach ($products_meta as $key => $product_meta) {
             $products_relation[$key] = [
                 'start_date' => $request->start_date,
-                'end_date'   => $request->start_date,
+                'end_date'   => $request->end_date,
                 'quantity'   => $product_meta->quantity,
                 'price'      => $product_meta->price,
                 'old_price'  => $product_meta->old_price,
@@ -146,6 +146,8 @@ class PromotionsController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
+        
+        $target_object = Promotion::find($id);
         $products      = (array) json_decode($request->products);
         $products_meta = (array) json_decode($request->products_meta);
 
@@ -153,15 +155,15 @@ class PromotionsController extends Controller
         foreach ($products_meta as $key => $product_meta) {
             $products_relation[$key] = [
                 'start_date' => $request->start_date,
-                'end_date'   => $request->start_date,
+                'end_date'   => $request->end_date,
                 'quantity'   => $product_meta->quantity,
                 'price'      => $product_meta->price,
                 'old_price'  => $product_meta->old_price,
+                'is_active'  => $target_object->is_active,
                 'discount_ratio'  => round(100 - ($product_meta->price / $product_meta->old_price * 100))
             ];
         }
 
-        $target_object = Promotion::find($id);
         $data = $request->all();
         $data['meta'] = json_encode([
             'products' => $products,
