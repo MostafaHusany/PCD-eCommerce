@@ -12,91 +12,58 @@
     </div><!-- /.row -->
     <hr/>
 
-    <form action="/" id="objectForm">
+    <form action="/" id="objectForm">        
         <div class="form-group row">
-            <label for="title" class="col-sm-2 col-form-label">Title</label>
-            <div class="col-sm-10">
-                <input type="text" tabindex="1"  class="form-control" id="title" placeholder="Title">
-                <div style="padding: 5px 7px; display: none" id="titleErr" class="err-msg mt-2 alert alert-danger">
+            <label for="code" class="col-sm-2 col-form-label">Code</label>
+
+            <div class="col-sm-5">
+                <input disabled="disabled" tabindex="2" id="code" class="form-control">
+                <div style="padding: 5px 7px; display: none" id="codeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
-        </div><!-- /.form-group -->
-        
-        <div class="form-group row">
-            <label for="description" class="col-sm-2 col-form-label">Description</label>
-            <div class="col-sm-10">
-                <textarea tabindex="2" class="form-control" id="description" placeholder="Description"></textarea>
-                <div style="padding: 5px 7px; display: none" id="descriptionErr" class="err-msg mt-2 alert alert-danger">
+
+            <div class="col-sm-5">
+                <select tabindex="2" id="is_random" class="form-control">
+                    <option selected="selected" value="true">create random code</option>
+                    <option value="false">insert code value</option>
+                </select>
+                <div style="padding: 5px 7px; display: none" id="is_randomErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
-        {{--
         <div class="form-group row">
-            <label for="cost_type" class="col-sm-2 col-form-label">Cost Type</label>
+            <label for="type" class="col-sm-2 col-form-label">Type</label>
             <div class="col-sm-10">
-                <select  tabindex="3" class="form-control" id="cost_type">
-                    <option selected="selected" value="0">Per Package</option>
-                    <option value="1">Per item</option>
+                <select  tabindex="3" class="form-control" id="type">
+                    <option selected="selected" value="fixed">Fixed</option>
+                    <option value="percentage">Percentage</option>
                 </select>
-                <div style="padding: 5px 7px; display: none" id="cost_typeErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        --}}
-
-        <div class="form-group row">
-            <label for="is_free_taxes" class="col-sm-2 col-form-label">Is Free Taxes ?</label>
-            <div class="col-sm-10">
-                <select  tabindex="3" class="form-control" id="is_free_taxes">
-                    <option selected="selected" value="1">Free Taxes</option>
-                    <option value="0">Add Taxes</option>
-                </select>
-                <div style="padding: 5px 7px; display: none" id="is_free_taxesErr" class="err-msg mt-2 alert alert-danger">
+                <div style="padding: 5px 7px; display: none" id="typeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="cost" class="col-sm-2 col-form-label">Cost</label>
+            <label for="value" class="col-sm-2 col-form-label">Value</label>
             <div class="col-sm-10">
-                <input tabindex="4" type="number" min="0" value="1" step="0.5" class="form-control" id="cost">
-                <div style="padding: 5px 7px; display: none" id="costErr" class="err-msg mt-2 alert alert-danger">
+                <input type="number" min="0" step="1" tabindex="3" id="value" class="form-control">
+                <div style="padding: 5px 7px; display: none" id="valueErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
-
-            {{--
-            <div class="col-sm-5">
-                <select tabindex="5" class="form-control" id="is_fixed">
-                    <option value="0">Percentage</option>
-                    <option value="1">Fixed</option>
-                </select>
-                <div style="padding: 5px 7px; display: none" id="is_fixedErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            --}}
-        </div><!-- /.form-group -->
+        </div>
 
         <hr />
 
         <div class="alert alert-info">
-            Leave rules fields empty if there is no exception
+            Leave Owner fields empty if the code is general code
         </div>
 
         <div class="form-group row">
-            <label for="categories" class="col-sm-2 col-form-label">Free For Categories</label>
+            <label for="owner" class="col-sm-2 col-form-label">Owner</label>
             <div class="col-sm-10">
-                <select tabindex="6" id="categories" class="form-control" multiple="multiple"></select>
-                <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="free_on_cost_above" class="col-sm-2 col-form-label">Free For Cost Above</label>
-            <div class="col-sm-10">
-                <input tabindex="7" id="free_on_cost_above" class="form-control" type="number" min="0">
-                <div style="padding: 5px 7px; display: none" id="free_on_cost_aboveErr" class="err-msg mt-2 alert alert-danger">
+                <select tabindex="6" id="owner" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="ownerErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div>
@@ -104,3 +71,23 @@
         <button tabindex="8" class="create-object btn btn-primary float-right">Create {{ $object_title }}</button>
     </form>
 </div>
+
+@push('page_scripts')
+<script>
+$(document).ready(function () {
+    $('#is_random').change(function () {
+        console.log('test value :: ', $(this).val());
+        let is_random = $(this).val();
+
+        if (is_random == 'true') {
+            $('#code').val('').attr('disabled', 'disabled');
+        } else {
+            $('#code').removeAttr('disabled');
+        }
+    });
+
+    
+    
+});
+</script>
+@endpush

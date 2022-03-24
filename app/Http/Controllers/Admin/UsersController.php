@@ -116,9 +116,12 @@ class UsersController extends Controller
         if($request->has('q')){
             $search = $request->q;
             $data = User::select("id", "name", "phone", "email")
-            		->where('name','LIKE',"%$search%")
-            		->orWhere('email','LIKE',"%$search%")
-                    ->orWhere('phone','LIKE',"%$search%")
+            		->where('category', '!=', 'user')
+                    ->where(function ($q) use ($search){
+                        $q->orWhere('name','LIKE',"%$search%")
+                        ->orWhere('email','LIKE',"%$search%")
+                        ->orWhere('phone','LIKE',"%$search%");
+                    })
             		->get();
         }
         return response()->json($data);

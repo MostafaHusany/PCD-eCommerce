@@ -63,9 +63,9 @@
         </table>
     </div><!-- /.card --> 
     
-    @include('admin.shipping.incs._create')
+    @include('admin.promos.incs._create')
 
-    @include('admin.shipping.incs._edit')
+    @include('admin.promos.incs._edit')
     
 
 </div>
@@ -81,11 +81,11 @@ $(function () {
 
     const objects_dynamic_table = new DynamicTable(
         {
-            index_route   : "{{ route('admin.shipping.index') }}",
-            store_route   : "{{ route('admin.shipping.store') }}",
-            show_route    : "{{ url('admin/shipping') }}",
-            update_route  : "{{ url('admin/shipping') }}",
-            destroy_route : "{{ url('admin/shipping') }}",
+            index_route   : "{{ route('admin.promo.index') }}",
+            store_route   : "{{ route('admin.promo.store') }}",
+            show_route    : "{{ url('admin/promo-codes') }}",
+            update_route  : "{{ url('admin/promo-codes') }}",
+            destroy_route : "{{ url('admin/promo-codes') }}",
         },
         '#dataTable',
         {
@@ -98,21 +98,15 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'title', 'description', 'cost', 'free_on_cost_above', 'meta', 'is_free_taxes'
-                                    // , 'cost_type', 'is_fixed'
-                                ],
+            fields_list     : ['id', 'code', 'owner', 'type', 'value', 'is_random'],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
-            { data: 'title', name: 'title' },
-            { data: 'cost', name: 'cost' },
-            { data: 'is_free_taxes', name : 'is_free_taxes'},
-            {{--
-            { data: 'cost_type', name: 'cost_type' },
-            { data: 'is_fixed', name: 'is_fixed' },
-            --}}
-            { data: 'orders', name: 'orders' },
+            { data: 'code', name: 'code' },
+            { data: 'type', name: 'type' },
+            { data: 'value', name : 'value'},
+            { data: 'owner', name: 'owner' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],
@@ -129,77 +123,117 @@ $(function () {
         // clear old validation session
         $('.err-msg').slideUp(500);
 
-        if (data.get('title') === '') {
+        if (data.get('is_random') == 'false' && data.get('code') == '') {
             is_valide = false;
-            let err_msg = 'title is required';
-            $(`#${prefix}titleErr`).text(err_msg);
-            $(`#${prefix}titleErr`).slideDown(500);
+            let err_msg = 'code is required';
+            $(`#${prefix}codeErr`).text(err_msg);
+            $(`#${prefix}codeErr`).slideDown(500);
         }
 
-        if (data.get('description') === '') {
+        if (data.get('type') === '') {
             is_valide = false;
-            let err_msg = 'description is required';
-            $(`#${prefix}descriptionErr`).text(err_msg);
-            $(`#${prefix}descriptionErr`).slideDown(500);
+            let err_msg = 'type is required';
+            $(`#${prefix}typeErr`).text(err_msg);
+            $(`#${prefix}typeErr`).slideDown(500);
+        }
+        
+        if (data.get('value') == 0 || data.get('value') === '') {
+            is_valide = false;
+            let err_msg = 'value is required and can\'t be zero';
+            $(`#${prefix}valueErr`).text(err_msg);
+            $(`#${prefix}valueErr`).slideDown(500);
         }
 
-        // if (data.get('cost_type') === '' || data.get('cost_type') === null) {
-        //     is_valide = false;
-        //     let err_msg = 'cost type is required';
-        //     $(`#${prefix}cost_typeErr`).text(err_msg);
-        //     $(`#${prefix}cost_typeErr`).slideDown(500);
-        // }
-        
-        if (data.get('cost') == 0 || data.get('cost') === '') {
-            is_valide = false;
-            let err_msg = 'cost is required and can\'t be zero';
-            $(`#${prefix}costErr`).text(err_msg);
-            $(`#${prefix}costErr`).slideDown(500);
+        if (data.get('owner') == 'null') {
+            data.delete('owner');
         }
-        
+
         return is_valide;
     };
 
-    $('#dataTable').on('change', '.c-activation-btn', function () {
-        let target_id = $(this).data('user-target');
-        
-        axios.post(`{{url('admin/shipping')}}/${target_id}`, {
-            _token : "{{ csrf_token() }}",
-            _method : 'PUT',
-            activate_product : true
-        }).then(res => {
-            if (!res.data.success) {
-                $(this).prop('checked', !$(this).prop('checked'));
-                $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+    objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
+        fields_id_list.forEach(el_id => {
+            $(`#${prefix + el_id}`).val(data[el_id]).change();
+        });
 
-                setTimeout(() => {
-                    $('#dangerAlert').text('').slideUp(500);
-                }, 3000);
-            }
-        })// axios
-    });
- 
-    $('#categories, #edit-categories').select2({
-        allowClear: true,
-        width: '100%',
-        placeholder: 'Select categories',
-        ajax: {
-            url: '{{ url("admin/products-categories-search") }}',
-            dataType: 'json',
-            delay: 150,
-            processResults: function (data) {
-                return {
-                    results:  $.map(data, function (item) {
-                        return {
-                            text: `${item['ar_title']} || ${item['en_title']}`,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
+        // get customer data
+        if (data.user) {
+            var owner_option = new Option(`${data.user['name']} , email : (${data.user.email}) , phone : (${data.user.phone})`, data.user.id, false, true);
+            $('#edit-owner').append(owner_option).trigger('change');
         }
-    });
+    }
+
+    const index_custome_events =  (function () {
+        function start_event () {
+            $('#owner, #edit-owner, #s-owner').select2({
+                // allowClear: true,
+                width: '100%',
+                placeholder: 'Select User',
+                ajax: {
+                    url: '{{ url("admin/users-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item.name} , email : (${item.email}) , phone : (${item.phone})`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('#dataTable').on('change', '.c-activation-btn', function () {
+                let target_id = $(this).data('object-target');
+                
+                axios.post(`{{url('admin/promo-codes')}}/${target_id}`, {
+                    _token : "{{ csrf_token() }}",
+                    _method : 'PUT',
+                    activate_promo : true
+                }).then(res => {
+                    if (!res.data.success) {
+                        $(this).prop('checked', !$(this).prop('checked'));
+                        $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                })// axios
+            });
+        
+            $('#categories, #edit-categories').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select categories',
+                ajax: {
+                    url: '{{ url("admin/products-categories-search") }}',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item['ar_title']} || ${item['en_title']}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+
+        start_event();
+
+        return {};
+    })();
 
 });
 </script>

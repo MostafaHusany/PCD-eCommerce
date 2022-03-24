@@ -34,7 +34,9 @@ class PromoCodesController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
-           
+            ->addColumn('owner', function ($row_object) {
+                return isset($row_object->user) ? $row_object->user->name : '---';
+            })
             ->addColumn('active', function ($row_object) {
                 return view('admin.promos.incs._active', compact('row_object'));
             })
@@ -53,7 +55,7 @@ class PromoCodesController extends Controller
         $target_object = PromoCode::find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
-            $target_object->cost_with_tax = $target_object->get_cost();
+            $target_object->user;
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
@@ -62,16 +64,31 @@ class PromoCodesController extends Controller
 
     public function store (Request $request) {
         $validator = Validator::make($request->all(), [
-            'title'         => 'required|unique:shippings,title|max:255',
-            'description'   => 'required|max:500',
-            'cost'          => 'required'
+            'code'  => 'max:255|unique:promo_codes,code',
+            'owner' => isset($request->owner) ? 'exists:users,id' : '',
+            'value' => 'required|numeric|min:1',
+            'is_random' => 'required'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data       = $request->all();
+        $data = $request->all();
+        $data['user_id'] = $request->owner;
+
+        if (isset($request->is_random) && $request->is_random == 'false') {
+            $data['code'] = $request->code;
+        } else {
+            $seed = str_split('abcdefghijklmnopqrstuvwxyz'
+                 .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                 .'0123456789!@#$%^&*()'); // and any other characters
+            shuffle($seed); // probably optional since array_is randomized; this may be redundant
+            $rand = '';
+            foreach (array_rand($seed, 6) as $k) $rand .= $seed[$k];
+            $data['code'] = $rand;
+        }
+
         $new_object = PromoCode::create($data);
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
@@ -79,7 +96,7 @@ class PromoCodesController extends Controller
 
     public function update (Request $request, $id) {
 
-        if (isset($request->activate_product)) {
+        if (isset($request->activate_promo)) {
             return $this->updateActivation($id);
         }
 

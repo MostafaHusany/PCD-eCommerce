@@ -15,78 +15,47 @@
         <input type="hidden" id="edit-id">
 
         <div class="form-group row">
-            <label for="edit-title" class="col-sm-2 col-form-label">Title</label>
+            <label for="edit-code" class="col-sm-2 col-form-label">Code</label>
+
             <div class="col-sm-10">
-                <input tabindex="1" type="text"  class="form-control" id="edit-title" placeholder="Title">
-                <div style="padding: 5px 7px; display: none" id="edit-titleErr" class="err-msg mt-2 alert alert-danger">
+                <input disabled="disabled" tabindex="2" id="edit-code" class="form-control">
+                <div style="padding: 5px 7px; display: none" id="edit-codeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
-        
-        <div class="form-group row">
-            <label for="edit-description" class="col-sm-2 col-form-label">Description</label>
-            <div class="col-sm-10">
-                <textarea tabindex="2" class="form-control" id="edit-description" placeholder="Description"></textarea>
-                <div style="padding: 5px 7px; display: none" id="edit-descriptionErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        
-        {{--
-        <div class="form-group row">
-            <label for="edit-cost_type" class="col-sm-2 col-form-label">Cost Type</label>
-            <div class="col-sm-10">
-                <select tabindex="3" class="form-control" id="edit-cost_type">
-                    <option selected="selected" value="0">On Package</option>
-                    <option value="1">Per item</option>
-                </select>
-                <div style="padding: 5px 7px; display: none" id="edit-cost_typeErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        --}}
 
         <div class="form-group row">
-            <label for="edit-is_free_taxes" class="col-sm-2 col-form-label">Is Free Taxes ?</label>
+            <label for="edit-type" class="col-sm-2 col-form-label">Type</label>
             <div class="col-sm-10">
-                <select  tabindex="3" class="form-control" id="edit-is_free_taxes">
-                    <option selected="selected" value="0">Free Taxes</option>
-                    <option value="1">Add Taxes</option>
+                <select  tabindex="3" class="form-control" id="edit-type">
+                    <option selected="selected" value="fixed">Fixed</option>
+                    <option value="percentage">Percentage</option>
                 </select>
-                <div style="padding: 5px 7px; display: none" id="edit-is_free_taxesErr" class="err-msg mt-2 alert alert-danger">
+                <div style="padding: 5px 7px; display: none" id="edit-typeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div>
-        
+
         <div class="form-group row">
-            <label for="edit-cost" class="col-sm-2 col-form-label">Cost In SAR</label>
+            <label for="edit-value" class="col-sm-2 col-form-label">Value</label>
             <div class="col-sm-10">
-                <input tabindex="4" type="number" min="0" value="1" step="0.5" class="form-control" id="edit-cost">
-                <div style="padding: 5px 7px; display: none" id="edit-costErr" class="err-msg mt-2 alert alert-danger">
+                <input type="number" min="0" step="1" tabindex="3" id="edit-value" class="form-control">
+                <div style="padding: 5px 7px; display: none" id="edit-valueErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
-        </div><!-- /.form-group -->
+        </div>
 
         <hr />
 
         <div class="alert alert-info">
-            Leave rules fields empty if there is no exception
+            Leave Owner fields empty if the code is general code
         </div>
 
         <div class="form-group row">
-            <label for="edit-categories" class="col-sm-2 col-form-label">Free For Categories</label>
+            <label for="edit-owner" class="col-sm-2 col-form-label">Owner</label>
             <div class="col-sm-10">
-                <select tabindex="5" id="edit-categories" class="form-control" multiple="multiple"></select>
-                <div style="padding: 5px 7px; display: none" id="edit-categoriesErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="edit-free_on_cost_above" class="col-sm-2 col-form-label">Free For Cost Above</label>
-            <div class="col-sm-10">
-                <input tabindex="6" id="free_on_cost_above" class="form-control" type="number" min="0">
-                <div style="padding: 5px 7px; display: none" id="free_on_cost_aboveErr" class="err-msg mt-2 alert alert-danger">
+                <select tabindex="6" id="edit-owner" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-ownerErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div>

@@ -21,6 +21,7 @@ class CreatePromoCodesTable extends Migration
             $table->string('type'); // ratio, fixed
             $table->float('value')->default(0);
             $table->tinyInteger('use_count')->default(0);
+            $table->tinyInteger('is_active')->default(0);
 
             // link to a technical user optional !
             $table->unsignedBigInteger('user_id')->nullable();
