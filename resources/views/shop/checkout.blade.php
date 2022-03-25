@@ -331,24 +331,28 @@
                         <div class="form-group mb-3">
                             <div class="chek-form">
                                 <div class="custome-checkbox">
-                                    <input class="form-check-input" type="checkbox" name="checkbox" id="createaccount">
+                                    <input class="form-check-input" type="checkbox" name="checkbox"
+                                    @if(old('checkbox')) checked @endif id="createaccount">
                                     <label class="form-check-label label_info" for="createaccount"><span>{{trans('frontend.register')}}?</span></label>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group create-account mb-3">
-                            <input type="text" class="form-control" name="email" value="{{old('email')}}" placeholder="{{trans('frontend.Email')}} *">
+                        <div class="form-group create-account mb-3 @error('email') d-block @enderror">
+                            <input type="text" class="form-control " name="email" value="{{old('email')}}" placeholder="{{trans('frontend.Email')}} *">
                             @error('email')
                             <span class="feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
-                        <div class="form-group create-account mb-3">
+                        <div class="form-group create-account mb-3  @error('password') d-block @enderror">
                             <input class="form-control" type="password" placeholder="{{trans('frontend.Password')}}" name="password">
+                            @error('password')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
-
-
                         @endif
 
                         <div class="heading_s1">
@@ -357,7 +361,26 @@
                         <div class="form-group mb-0">
                             <textarea rows="5" class="form-control" placeholder="{{trans('frontend.AdditionalInformation')}}" name="address_details"></textarea>
                         </div>
+                        <br>
 
+                        <div class="form-group mb-3">
+                            <div class="chek-form">
+                                <div class="custome-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="promo"
+                                    @if(old('checkbox')) checked @endif id="promoApply">
+                                    <label class="form-check-label label_info" for="promoApply"><span>{{trans('frontend.promoApply')}}?</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group apply-promo mb-3 @error('promoCode') d-block @else d-none @enderror">
+                            <input type="text" class="form-control " name="promoCode" value="{{old('promoCode')}}"
+                             placeholder="{{trans('frontend.promo')}} *">
+                            @error('promoCode')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
 
                         <br>
                         <button type="submit" class="btn btn-fill-out btn-block">{{trans('frontend.PlaceOrder')}}</button>

@@ -18,7 +18,7 @@ Route::group([
     Route::get('category/{id}', 'CategoryController@category')->name('category');
     Route::post('brand_filter/', 'CategoryController@brand_filter')->name('brand_filter');
     Route::post('option_filter/', 'CategoryController@option_filter')->name('option_filter');
-    Route::post('/Search', 'CategoryController@Search')->name('Search');
+    Route::post('/search', 'CategoryController@Search')->name('search');
 
     Route::get('add_to_cart','CartController@add_to_cart')->name('add_to_cart');
     Route::get('shipping_price','CartController@shipping_price')->name('shipping_price');

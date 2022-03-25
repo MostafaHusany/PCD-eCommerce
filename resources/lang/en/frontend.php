@@ -114,5 +114,17 @@ return [
     'points'                 => 'point system',
     'offers'                 => 'offers & Discounts',
     'showShot'               => 'show Shot',
-];
+    'email_required'         => 'email required',
+    'password_required'      => 'password required',
+    'password_string'        => 'password must be string',
+    'email_unique'           => 'email must be unique',
+    'email_email'            => 'email not valid',
+    'promo'                  => 'Promo Code',
+    'promoApply'             => 'Enter Promo Code',
+    'promo_required_with'    => 'Enter your promo code',
+    'productDetils'          => 'product Details',
+    'productInfo'            => 'product Information',
+    'productPrice'           => 'product Price',
+    'small_description'      => 'product summary',
 
+];

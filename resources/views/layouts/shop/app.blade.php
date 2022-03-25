@@ -166,7 +166,7 @@
                             <img class="logo_dark" src="{{asset('shop')}}/images/logo_dark.png" alt="logo" />
                         </a>
                         <div class="product_search_form rounded_input">
-                            <form>
+                            <form action="{{route('search')}}" method="post">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="custom_select">
@@ -182,11 +182,9 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <form action="{{route('Search')}}" method="post">
-                                        @csrf
-                                        <input class="form-control" placeholder="@lang('frontend.Search')" name="search" required="" type="text">
-                                        <button type="submit" class="search_btn2"><i class="fa fa-search"></i></button>
-                                    </form>
+                                    @csrf
+                                    <input class="form-control" placeholder="@lang('frontend.Search')" name="search" required="" type="text">
+                                    <button type="submit" class="search_btn2"><i class="fa fa-search"></i></button>
                                 </div>
                             </form>
                         </div>

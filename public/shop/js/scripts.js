@@ -793,6 +793,13 @@ PAGE JS
 			$('.create-account').slideUp();
 		}
 	});
+	$('#promoApply:checkbox').on('change', function(){
+		if($(this).is(":checked")) {
+			$('.apply-promo').removeClass('d-none');
+		} else {
+			$('.apply-promo').addClass('d-none');
+		}
+	});
 	$('#differentaddress:checkbox').on('change', function(){
 		if($(this).is(":checked")) {
 			$('.different_address').slideDown();
