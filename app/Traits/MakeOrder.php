@@ -212,6 +212,12 @@ trait MakeOrder {
         /**
          * # Create for each product in the order a sold_product item
          * # Update each product quantity
+         * 
+         * Notice that we need to check if ther is a promotion and get the products 
+         * with the promotion with the new price ... 
+         * also there may be a trick if there is promotion for only first 3 items 
+         * When the user select item with promotion he can only get the item with
+         * the specific quantity of promotion
         */
         foreach ($products as $product) {
             $targted_product_quantity = (array) $products_quantity[$product->id];
@@ -226,7 +232,7 @@ trait MakeOrder {
                     'en_name'    => $product->en_name,
                     'sku'        => $product->sku,
                     'code'       => $target_order->code,
-                    'price_when_order'  => $product->price,
+                    'price_when_order'  => $product->get_price(),
                     'created_at' => $target_order->created_at,
                     'updated_at' => $target_order->updated_at
                 ];
@@ -234,10 +240,15 @@ trait MakeOrder {
 
             $new_order_product = OrderProduct::insert($data);
 
+            // check if the product has a promotion update the promotion data
+            if ($product->has_promotion()) {
+                $product->update_promotion($targted_product_quantity['quantity']);
+            }
+
             // this line need refactore because this calling the database in a loop !!
             $this->update_product_quantity($product, $targted_product_quantity['quantity']);
 
-            $meta['products_prices'][$product->id]      = $product->price;
+            $meta['products_prices'][$product->id]      = $product->get_price();
             $meta['restored_quantity'][$product->id]    = 0;
             $sub_total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
         }

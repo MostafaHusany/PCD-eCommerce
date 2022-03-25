@@ -167,6 +167,18 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
 
     Route::get('/test', function () {
         $target = Product::find(65);
-        dd($target->ar_name, $target->has_promotion(), $target->get_promotion());
+        
+        // $target->has_promotion();
+        // $target->get_promotion(); 
+        // $target->get_price();
+        // $target->update_promotion(1);
+
+        dd(
+            $target->ar_name,
+            // $target->has_promotion(),
+            // $target->get_promotion()
+            // $target->get_price(),
+            $target->update_promotion(1)
+        );
     });
 });

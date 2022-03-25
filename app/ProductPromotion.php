@@ -12,10 +12,10 @@ class ProductPromotion extends Model
     'discount_ratio', 'quantity', 'is_active'];
 
     public function product () {
-        $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function promotion () {
-        $this->belongsTo(Promotion::class, 'promotion_id');
+        return $this->belongsTo(Promotion::class, 'promotion_id');
     }
 }

@@ -103,6 +103,7 @@ class ProductsController extends Controller
 
         if (isset($target_object) && isset($request->fast_acc)) {
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
+            $target_object->price = $target_object->get_price();
             $target_object->categories;
             $target_object->product_custome_fields;
             $target_object->brand;
@@ -111,6 +112,7 @@ class ProductsController extends Controller
         }
 
         if (isset($target_object) && isset($request->get_p)) {
+            $target_object->price = $target_object->get_price();
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 

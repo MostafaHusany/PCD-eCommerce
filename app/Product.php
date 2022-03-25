@@ -12,6 +12,7 @@ class Product extends Model
                             'main_image', 'images', 'meta', 'category_id',
                             'is_active', 'is_composite', 'brand_id'];
 
+    
     public function getFormatedPrice () {
         return $this->price . ' SR';
     }
@@ -73,5 +74,67 @@ class Product extends Model
         ->where('product_promotions.quantity', '>', 0)
         ->orderBy('product_promotions.id', 'desc')
         ->first();
+    }
+
+    public function get_price () {
+        /** 
+         * # Here where we can get the product price
+         * we will check if there is a promotion and get the promotion price
+         * */
+        if ($this->has_promotion()) {
+            $target_promotion = $this->get_promotion();
+            return $target_promotion->price;
+        }
+
+        return $this->price;
+    }
+
+    public function get_quantity () {
+        /** 
+         * # Here where we can get the product quantity
+         * we will check if there is a promotion and get the promotion quantity
+         * */
+        if ($this->has_promotion()) {
+            $target_promotion = $this->get_promotion();
+            return $target_promotion->quantity;
+        }
+
+        return $this->quantity;
+    }
+
+    public function update_promotion ($quantity) {
+        /**  
+         * # Here we will update the promotion value,
+         * if the product have a promotion we need to do some update
+         * decrease the valid quantity for the promotion link an order with a promotion
+         *  
+         * we want to make the operation once and for all
+         * get the targted promotion id, and selected quantity
+         * update the promotion and tell it that we toke this quantity
+         * 
+         * */
+
+        if ($this->has_promotion()) {
+            $product_promotion = $this->get_promotion();
+            $product_promotion->quantity -= $quantity;
+            $product_promotion->save();
+
+            // update promotion meta 
+            $promotion     = $product_promotion->promotion;
+            $meta          = (array) json_decode($promotion->meta);
+            $products_meta = (array) $meta['products_meta'];
+            $products_meta[$product_promotion->product_id]->quantity = $products_meta[$product_promotion->product_id]->quantity - $quantity;
+            // dd($meta, $products_meta);
+
+
+            // save meta of promotion
+            $meta['products_meta'] = $products_meta;
+            $promotion->meta = json_encode($meta);
+            $promotion->save();
+
+            return 1;
+        }
+
+        return 0;
     }
 }
