@@ -114,5 +114,18 @@ return [
     'points'                 => 'برنامج النقاط',
     'offers'                 => 'العروض و التخفيضات',
     'showShot'               => 'عروض اللقطة',
+    'email_required'         => 'البريد الالكتروني مطلوب',
+    'password_required'      => 'رقم المرور مطلوب',
+    'password_string'        => 'يجب ان يكون صحيحا',
+    'email_unique'           => 'البريد الاكتروني مدخل من قبل',
+    'email_email'            => 'صسغة البريد الالكتروني غير صحيحة',
+    'promo'                  => 'كود الخصم',
+    'promoApply'             => 'ادخال كود الخصم',
+    'promo_required_with'    => ' كود الخصم مطلوب',
+    'productDetils'          => 'تفاصيل المنتج',
+    'productInfo'            => 'بيانات المنتج',
+    'productPrice'           => 'سعر المنتج',
+    'small_description'      => 'الوصف المختصر',
+
 ];
 

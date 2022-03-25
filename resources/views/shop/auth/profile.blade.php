@@ -79,8 +79,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if(count($user->orders)>0)
-                                                @foreach($user->orders()->paginate(10) as $order)
+                                                @if(count($user->customer->orders)>0)
+                                                @foreach($user->customer->orders()->paginate(10) as $order)
                                                 <tr>
                                                     <td>{{$order->id}}</td>
                                                     <td>{{ $order->created_at->format('d/m/Y')}}</td>
@@ -117,7 +117,7 @@
                         </div>
 
 
-                        @foreach($user->orders()->paginate(10) as $order)
+                        @foreach($user->customer->orders()->paginate(10) as $order)
                         <div class="modal fade" id="exampleModal{{ $order->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <form action="{{route('uploadInvoices')}}" method="post" enctype="multipart/form-data">
@@ -158,8 +158,8 @@
 
                         <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                             <div class="row">
-                                @if(count($user->addresses)>0)
-                                @foreach($user->addresses as $address)
+                                @if(count($user->customer->addresses)>0)
+                                @foreach($user->customer->addresses as $address)
                                 <div class="col-lg-6">
                                     <div class="card">
                                         <div class="card-header">

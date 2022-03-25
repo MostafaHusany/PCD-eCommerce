@@ -18,6 +18,7 @@ use App\Order;
 use App\Payment;
 use App\Product;
 use App\Address;
+use App\Customer;
 use App\Shipping;
 use App\OrderProduct;
 
@@ -79,11 +80,10 @@ class CartController extends Controller
     {
         $user_id = Auth()->user();
         if ($user_id) {
-            $addresses = Address::where('user_id', Auth()->user()->id)->get();
+            $addresses = Address::where('user_id', Auth()->user()->customer->id)->get();
         } else {
             $addresses = [];
         }
-
         $shippings    = Shipping::where('is_active', '1')->get();
         $taxes = Taxe::where('is_active', '1')->get();
         $fees = Fee::where('is_active', '1')->get();
@@ -123,7 +123,9 @@ class CartController extends Controller
             $user = User::where('phone', $request->phone)->first();
             // search for user by phon if exist return user id
             if ($user) {
-                $user_id = $user->id;
+
+                $user_id = $user->customer->id;
+
             }
             // if not create new user
             else {
@@ -133,10 +135,22 @@ class CartController extends Controller
                     'phone' => $request['phone'],
                     'password' => Hash::make($request['password']),
                 ]);
-                $user_id = $user->id;
+                Auth::loginUsingId($user->id);
+                $customer = new Customer();
+                $customer->first_name =  $request['first_name'];
+                $customer->second_name =  $request['last_name'];
+                $customer->name =  $request['first_name'] . $request['last_name'];
+                $customer->email =  $request['email'];
+                $customer->phone =  $request['phone'];
+                $customer->city =  $request['city'];
+                $customer->plain_password =  $request['password'];
+                $customer->address =  $request['address'];
+                $customer->user_id  =  $user->id;
+                $customer->save();
+                $user_id = $customer->id;
             }
         } else {
-            $user_id = auth()->user()->id;
+            $user_id = auth()->user()->customer->id;
         }
         // please use MakeOrder Trait here 
 
