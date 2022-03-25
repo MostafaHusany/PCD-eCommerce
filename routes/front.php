@@ -26,8 +26,8 @@ Route::group([
     Route::get('cart','CartController@cart')->name('cart');
     Route::get('update_quantity/{quantity}/{row_id}', 'CartController@update_quantity');
     Route::get('/cart_destroy_item/{row_id}', 'CartController@cart_destroy')->name('cart_destroy');
-    Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('auth');
-    Route::post('/create_order', 'CartController@create_order')->name('create_order')->middleware('auth');
+    Route::get('/checkout', 'CartController@checkout')->name('checkout');
+    Route::post('/create_order', 'CartController@create_order')->name('create_order');
 
     Route::get('Login', 'UserController@Login')->name('Login');
     Route::get('register', 'UserController@register')->name('register');

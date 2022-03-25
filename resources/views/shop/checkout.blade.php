@@ -1,7 +1,7 @@
 @extends('layouts.shop.app')
 
 @section('title')
-{{trans('frontend.Checkout')}} 
+{{trans('frontend.Checkout')}}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
     <!-- START SECTION SHOP -->
     <div class="section">
         <div class="container">
-            @guest
+            <!-- @guest
             <div class="row">
                 <div class="col-lg-6">
                     <div class="toggle_info">
@@ -130,7 +130,7 @@
                     <div class="medium_divider"></div>
                 </div>
             </div>
-            @endguest
+            @endguest -->
 
 
 
@@ -177,7 +177,7 @@
                                     @foreach($addresses as $address)
                                     <option value="{{$address->id}}" {{ old('shipping_id_field') == $address->id ? 'selected' : '' }}>{{$address->address}}</option>
                                     @endforeach
-                                    
+
                                 </select>
                                 @error('address_id')
                                 <span class="invalid-feedback" role="alert">
@@ -186,7 +186,7 @@
                                 @enderror
                             </div>
                         </div>
-                        @endif
+
                         <div class="ship_detail">
                             <div class="form-group mb-3">
                                 <div class="chek-form">
@@ -244,7 +244,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input class="form-control" type="text" name="state" placeholder="{{trans('frontend.State')}}y *">
+                                    <input class="form-control" type="text" name="state" placeholder="{{trans('frontend.State')}} *">
                                     @error('state')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -261,6 +261,96 @@
                                 </div>
                             </div>
                         </div>
+                        @else
+
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" name="first_name" value="{{old('first_name')}}" placeholder="{{trans('frontend.FirstName')}} *">
+                            @error('first_name')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <input type="hidden" name="address_id" value="0">
+                        <input type="hidden" name="shipping_price_field" class="shipping_price_field">
+                        <input type="hidden" name="total_price" id="total_price">
+                        <input type="hidden" name="shipping_id_field" id="shipping_id_field">
+                        <input type="hidden" name="taxes_sum" value="{{$taxes_sum}}">
+                        <input type="hidden" name="fees_sum" value="{{$fees_sum}}">
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" value="{{old('last_name')}}" name="last_name" placeholder="{{trans('frontend.LastName')}} *">
+                            @error('last_name')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" name="phone" value="{{old('phone')}}" placeholder="{{trans('frontend.Phone')}} *">
+                            @error('phone')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" value="{{old('address')}}" name="address" placeholder="{{trans('frontend.Address')}} *">
+                            @error('address')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input class="form-control" type="text" name="city" value="{{old('city')}}" placeholder="{{trans('frontend.City')}}*">
+                            @error('city')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" type="text" name="state" value="{{old('state')}}" placeholder="{{trans('frontend.State')}} *">
+                            @error('state')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" type="text" name="zipcode" value="{{old('zipcode')}}" placeholder="{{trans('frontend.zipcode')}} *">
+                            @error('zipcode')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="chek-form">
+                                <div class="custome-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="checkbox" id="createaccount">
+                                    <label class="form-check-label label_info" for="createaccount"><span>{{trans('frontend.register')}}?</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group create-account mb-3">
+                            <input type="text" class="form-control" name="email" value="{{old('email')}}" placeholder="{{trans('frontend.Email')}} *">
+                            @error('email')
+                            <span class="feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="form-group create-account mb-3">
+                            <input class="form-control" type="password" placeholder="{{trans('frontend.Password')}}" name="password">
+                        </div>
+
+
+                        @endif
+
                         <div class="heading_s1">
                             <h4>{{trans('frontend.AdditionalInformation')}}</h4>
                         </div>
@@ -268,7 +358,7 @@
                             <textarea rows="5" class="form-control" placeholder="{{trans('frontend.AdditionalInformation')}}" name="address_details"></textarea>
                         </div>
 
-  
+
                         <br>
                         <button type="submit" class="btn btn-fill-out btn-block">{{trans('frontend.PlaceOrder')}}</button>
 
@@ -281,7 +371,7 @@
                         </div>
                         <div class="table-responsive order_table">
                             <table class="table">
-                            <thead>
+                                <thead>
                                     <tr>
                                         <th>{{trans('frontend.Product')}}</th>
                                         <th>{{trans('frontend.Total')}}</th>
@@ -299,43 +389,43 @@
                                     @endif
                                 </tbody>
                                 <tfoot>
-                                <thead>
-                                    <tr>
-                                        <th>{{trans('frontend.Tax')}}</th>
-                                        <th>{{trans('frontend.Cost')}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(count($taxes)>0)
-                                    @foreach($taxes as $tax)
-                                    <tr>
-                                        <td>{{$tax->title}}<span class="product-qty">
-                                            </span></td>
-                                        <td>{{$tax->cost }}</td>
-                                    </tr>
-                                    @endforeach
-                                    @endif
-                                </tbody>
+                                    <thead>
+                                        <tr>
+                                            <th>{{trans('frontend.Tax')}}</th>
+                                            <th>{{trans('frontend.Cost')}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($taxes)>0)
+                                        @foreach($taxes as $tax)
+                                        <tr>
+                                            <td>{{$tax->title}}<span class="product-qty">
+                                                </span></td>
+                                            <td>{{$tax->cost }}</td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                    </tbody>
 
-                                <thead>
-                                    <tr>
-                                        <th>{{trans('frontend.Fee')}}</th>
-                                        <th>{{trans('frontend.Cost')}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(count($fees)>0)
-                                    @foreach($fees as $fee)
-                                    <tr>
-                                        <td>{{$fee->title}}<span class="product-qty">
-                                            </span></td>
-                                        <td>{{$fee->cost }}</td>
-                                    </tr>
-                                    @endforeach
-                                    @endif
-                                </tbody>
+                                    <thead>
+                                        <tr>
+                                            <th>{{trans('frontend.Fee')}}</th>
+                                            <th>{{trans('frontend.Cost')}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($fees)>0)
+                                        @foreach($fees as $fee)
+                                        <tr>
+                                            <td>{{$fee->title}}<span class="product-qty">
+                                                </span></td>
+                                            <td>{{$fee->cost }}</td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                    </tbody>
 
-                     
+
                                     <tr>
                                         <th>{{trans('frontend.Subtotal')}}</th>
                                         <td class="product-subtotal">{{ Cart::subtotal()}}</td>

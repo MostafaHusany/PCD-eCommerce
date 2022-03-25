@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\shop\OrderRequest;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,7 @@ use App\Shipping;
 use App\OrderProduct;
 
 use App\Traits\MakeOrder;
+use App\User;
 
 class CartController extends Controller
 {
@@ -64,7 +66,7 @@ class CartController extends Controller
         $shippings    = Shipping::where('is_active', '1')->get();
         return view('shop.cart', compact('totalPrice', 'shippings'));
     }
-    
+
     public function update_quantity($quantity, $row_Id)
     {
         Cart::update($row_Id, $quantity);
@@ -75,7 +77,13 @@ class CartController extends Controller
 
     public function checkout()
     {
-        $addresses = Address::where('user_id', Auth()->user()->id)->get();
+        $user_id = Auth()->user();
+        if ($user_id) {
+            $addresses = Address::where('user_id', Auth()->user()->id)->get();
+        } else {
+            $addresses = [];
+        }
+
         $shippings    = Shipping::where('is_active', '1')->get();
         $taxes = Taxe::where('is_active', '1')->get();
         $fees = Fee::where('is_active', '1')->get();
@@ -109,19 +117,41 @@ class CartController extends Controller
 
     public function create_order(OrderRequest $request)
     {
+        $check_auth = Auth()->user();
+        // check if user not login 
+        if (!$check_auth) {
+            $user = User::where('phone', $request->phone)->first();
+            // search for user by phon if exist return user id
+            if ($user) {
+                $user_id = $user->id;
+            }
+            // if not create new user
+            else {
+                $user =  User::create([
+                    'name' => $request['first_name'],
+                    'email' => $request['email'],
+                    'phone' => $request['phone'],
+                    'password' => Hash::make($request['password']),
+                ]);
+                $user_id = $user->id;
+            }
+        } else {
+            $user_id = auth()->user()->id;
+        }
         // please use MakeOrder Trait here 
-        
+
         // parse the atributes for create_customer_order method
         foreach (Cart::content() as $item) {
             $products_id[] = $item->id;
             $products_quantity[$item->id] = ['quantity' => $item->qty, 'price' => product_details($item->id)->price];
         }
-
         // create order data using MakeOrder::create_customer_order
         // we need to send the customer id not user id !!
-        $order = $this->create_customer_order (auth()->user()->id, 
-            [$request->shipping_id_field, 0, $request->shipping_price_field], 
-            [$products_id, $products_quantity], []
+        $order = $this->create_customer_order(
+            $user_id,
+            [$request->shipping_id_field, 0, $request->shipping_price_field],
+            [$products_id, $products_quantity],
+            []
         );
 
         // take address ...
@@ -129,13 +159,13 @@ class CartController extends Controller
             $order->address_id = $request->address_id;
         } else {
             $data               = $request->all();
-            $data['user_id']    = auth()->user()->id;
+            $data['user_id']    = $user_id;
             $address = Address::create($data);
-            
+
             $order->address_id = $address->id;
         }
 
         Cart::destroy();
-        return view('shop.thanks',compact('order'));
+        return view('shop.thanks', compact('order'));
     }
 }

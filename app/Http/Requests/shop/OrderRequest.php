@@ -30,6 +30,7 @@ class OrderRequest extends FormRequest
             'address' => 'required_if:address_id,0',
             'city' => 'required_if:address_id,0',
             'state' => 'required_if:address_id,0',
+            // 'email' => ['required_if:address_id,0', 'string', 'email', 'max:255', 'unique:users'],
             'zipcode' => 'required_if:address_id,0',
             'phone' => 'required_if:address_id,0',
             'shipping_id_field' => 'required',

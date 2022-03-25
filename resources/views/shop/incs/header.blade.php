@@ -10,7 +10,7 @@
                         <ul>
                             @foreach(categories() as $category)
                             <li class="dropdown dropdown-mega-menu">
-                                <a class="dropdown-item nav-link dropdown-toggler" href="#" data-bs-toggle="dropdown"><i class="flaticon-tv"></i> <span>
+                                <a class="dropdown-item nav-link dropdown-toggler" href="{{route('category',$category->id)}}"><i class="flaticon-tv"></i> <span>
                                         {{title($category->id)}}
                                     </span></a>
                                 @if( count($category->children ) >0)
@@ -115,7 +115,7 @@
 <div class="mt-4 staggered-animation-wrap">
     <div class="custom-container">
         <div class="row">
-            <div class="col-lg-7 offset-lg-3">
+            <div class="col-lg-9 offset-lg-3">
                 <div class="banner_section shop_el_slider">
                     <div id="carouselExampleControls" class="carousel slide carousel-fade light_arrow" data-bs-ride="carousel">
                         <div class="carousel-inner">
@@ -164,30 +164,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-2 d-none d-lg-block">
-                <div class="shop_banner2 el_banner1">
-                    <a href="#" class="hover_effect1">
-                        <div class="el_title text_white">
-                            <h6>iphone Collection</h6>
-                            <span>25% off</span>
-                        </div>
-                        <div class="el_img">
-                            <img src="{{asset('shop')}}/images/shop_banner_img6.png" alt="shop_banner_img6">
-                        </div>
-                    </a>
-                </div>
-                <div class="shop_banner2 el_banner2">
-                    <a href="#" class="hover_effect1">
-                        <div class="el_title text_white">
-                            <h6>MAC Computer</h6>
-                            <span><u>Shop Now</u></span>
-                        </div>
-                        <div class="el_img">
-                            <img src="{{asset('shop')}}/images/shop_banner_img7.png" alt="shop_banner_img7">
-                        </div>
-                    </a>
-                </div>
-            </div>
+     
         </div>
     </div>
 </div>
