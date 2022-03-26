@@ -31,7 +31,14 @@ class ProductCategoriesController extends Controller
                 });
             }
 
+            if (isset($request->is_main)) {
+                $model->where('is_main', $request->is_main);
+            }
+
             $datatable_model = Datatables::of($model)
+            ->addColumn('icon', function ($row_object) {
+                return view('admin.categories.incs._icon', compact('row_object'));
+            })
             ->addColumn('parent', function ($row_object) {
                 return $row_object->is_main ? '--' : '';
             })
@@ -51,6 +58,11 @@ class ProductCategoriesController extends Controller
     }
 
     public function show (Request $request, $id) {
+        if (isset($request->get_is_nav)) {
+            $targted_categoreis = $this->target_model->where('is_nav', 1)->get();
+            return response()->json(['data' => $targted_categoreis, 'success' => isset($targted_categoreis)]);
+        }
+
         if (isset($request->group_acc)) {
             $targted_categoreis = $this->target_model->whereIn('id', $request->categoreis_id)->with('attributes')->get();
             return response()->json(['data' => $targted_categoreis, 'success' => isset($targted_categoreis)]);
@@ -92,17 +104,28 @@ class ProductCategoriesController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data       = $request->all();
-        $new_object = ProductCategory::create($data);
+        $data         = $request->all();
+        $data['slug'] = join('-', explode(' ', $request->en_title));
+        $new_object   = ProductCategory::create($data);
 
         $custome_fields = json_decode($request->custome_fields);
         $this->create_category_custome_fields($new_object, $custome_fields);
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
-    }// end :: store
+    }
 
     public function update (Request $request, $id) {
-        // dd($request->all());
+        if ($id == 0) {
+            ProductCategory::query()->update(['is_nav' => 0]);
+            ProductCategory::query()->whereIn('id', $request->categories)->update(['is_nav' => 1]);
+
+            return response()->json(array('data' => null, 'success' => true));
+        }
+        
+        return $this->update_category($request, $id);
+    }
+
+    public function update_category (Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'ar_title'       => 'required|max:255|unique:product_categories,ar_title,' . $id,
             'en_title'       => 'required|max:255|unique:product_categories,en_title,' . $id,

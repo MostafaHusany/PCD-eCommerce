@@ -104,7 +104,6 @@
 
 <li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
-        <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
         <i class="nav-icon fas fa-sliders-h"></i>
         <p>
             Settings
@@ -128,6 +127,30 @@
             <a href="{{ route('admin.taxes.index') }}" class="nav-link {{ Request::is('admin/taxes') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-percentage"></i>
                 <p>Taxes</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item {{ str_contains(Request::path(), '#') || str_contains(Request::path(), '#') || str_contains(Request::path(), '#') ? 'menu-is-opening menu-open' : '' }}">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-object-group"></i>
+        <p>
+            Theme Settings
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" !style="display: block;">
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-home"></i>
+                <p>Home</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-stream"></i>
+                <p>Navbar</p>
             </a>
         </li>
     </ul>

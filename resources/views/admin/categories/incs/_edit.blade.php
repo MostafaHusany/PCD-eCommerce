@@ -79,6 +79,27 @@
             </div>
         </div><!-- /.form-group -->
 
+        <div class="form-group row">
+            <?php
+                $categories_icons = ['flaticon-tv', 'flaticon-responsive', 'flaticon-camera', 'flaticon-plugins',
+                'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer'];
+            ?>
+            <label for="rule" class="col-sm-2 col-form-label">Category Icon</label>
+            <div class="col-5">
+                <select id="edit-icon" class="form-control">
+                    <option value="">-- select icon --</option>
+                    @foreach($categories_icons as $icon)
+                    <option data-icon="glyphicon-glass" value="{{$icon}}">
+                        {{$icon}}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-5">
+                <i style="font-size: 25px;" id="edit-show-icon" class=""></i>
+            </div>
+        </div>
+
         <hr />
 
         <div class="form-group row">
@@ -198,6 +219,11 @@ $(document).ready(function () {
                 custome_fields = custome_fields.filter(field => field.id != target_id);
                 $('#edit-custome_fields').val(JSON.stringify(custome_fields));
                 $(`#edit-custome_row_field-${target_id}`).remove();
+            });
+
+            $('#edit-icon').change(function () {
+                let icon_class = $(this).val();
+                $('#edit-show-icon').toggleClass(icon_class);
             });
 
         }// end :: starter_event
