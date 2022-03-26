@@ -15,6 +15,13 @@ if (!function_exists('categories')) {
     }
 }
 
+if (!function_exists('nav_categories')) {
+    function nav_categories()
+    {
+        return ProductCategory::where('is_nav', 1)->get();
+    }
+}
+
 if (!function_exists('get_lang')) {
     function get_lang()
     {
