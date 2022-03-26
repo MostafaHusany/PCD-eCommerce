@@ -129,4 +129,5 @@ return [
     'promoCodeCheck'         => 'promo Code Check',
     'promo_success'          => 'promo Code added success',
     'promo_not_valid'        => 'promo not valid',
+    'promoValue'             => 'promo code value',
 ];

@@ -78,8 +78,13 @@ class CartController extends Controller
         return response()->json(['items_count' => $items, 'totalPrice' => $totalPrice, "row_Id" => $row_Id]);
     }
 
-    public function checkout()
+    public function checkout(Request $request)
     {
+        if ($request->promoCodeValue) {
+            $promoCode = PromoCode::where('code', $request->promoCodeValue)->first();
+        } else {
+            $promoCode = [];
+        }
         $user_id = Auth()->user();
         if ($user_id) {
             $addresses = Address::where('user_id', Auth()->user()->customer->id)->get();
@@ -100,7 +105,15 @@ class CartController extends Controller
             $all_fees[] = $fee * Cart::count();
         }
         $fees_sum = array_sum($all_fees);
-        return view('shop.checkout', compact('addresses', 'shippings', 'taxes', 'fees', 'taxes_sum', 'fees_sum'));
+        return view('shop.checkout', compact(
+            'addresses',
+            'shippings',
+            'taxes',
+            'fees',
+            'taxes_sum',
+            'fees_sum',
+            'promoCode'
+        ));
     }
 
     public function shipping_price(Request $request)
@@ -119,6 +132,7 @@ class CartController extends Controller
 
     public function create_order(OrderRequest $request)
     {
+        dd( $request->all());
         $check_auth = Auth()->user();
         // check if user not login 
         if (!$check_auth) {
@@ -196,8 +210,8 @@ class CartController extends Controller
         $promo = $request->promoCode;
         $promoCode = PromoCode::where('code', $promo)->where('is_active', '1')->first();
         if ($promoCode) {
-            return response()->json(['data' => null, 'success' => true, 'msg' => $validator->errors()]);
-        }else{
+            return response()->json(['data' =>  $promo, 'success' => true, 'msg' => $validator->errors()]);
+        } else {
             return response()->json(['data' => null, 'success' => false, 'msg' => 'code not vaild']);
         }
     }

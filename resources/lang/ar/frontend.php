@@ -129,6 +129,7 @@ return [
     'promoCodeCheck'         => 'تفعيل كود الخصم',
     'promo_success'          => 'تم اضافة كود الخصم بنجاح',
     'promo_not_valid'        => 'كود الخصك غير فعال',
+    'promoValue'             => 'قيمة قسيمة الخصم',
 
 ];
 

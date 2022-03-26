@@ -331,8 +331,7 @@
                         <div class="form-group mb-3">
                             <div class="chek-form">
                                 <div class="custome-checkbox">
-                                    <input class="form-check-input" type="checkbox" name="checkbox"
-                                    @if(old('checkbox')) checked @endif id="createaccount">
+                                    <input class="form-check-input" type="checkbox" name="checkbox" @if(old('checkbox')) checked @endif id="createaccount">
                                     <label class="form-check-label label_info" for="createaccount"><span>{{trans('frontend.register')}}?</span></label>
                                 </div>
                             </div>
@@ -362,7 +361,11 @@
                             <textarea rows="5" class="form-control" placeholder="{{trans('frontend.AdditionalInformation')}}" name="address_details"></textarea>
                         </div>
                         <br>
-
+                        @if($promoCode)
+                        <input type="hidden" name="promoCode" value="{{$promoCode->code}}">
+                        @else
+                        <input type="hidden" name="promoCode" value="">
+                        @endif
                         <!-- <div class="form-group mb-3">
                             <div class="chek-form">
                                 <div class="custome-checkbox">
@@ -465,6 +468,12 @@
                                         <th>{{trans('frontend.FeesSum')}}</th>
                                         <td class="shipping_price_field" id="shipping_price">{{$fees_sum}}</td>
                                     </tr>
+                                    @if($promoCode)
+                                    <tr>
+                                        <th>{{trans('frontend.promoValue')}}</th>
+                                        <td class="shipping_price_field" id="shipping_price">{{$promoCode->value}}</td>
+                                    </tr>
+                                    @endif
                                     <tr>
                                         <th>{{trans('frontend.Total')}}</th>
                                         <td class="product-subtotal order_price" id="totlal_price"></td>

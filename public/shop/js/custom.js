@@ -219,21 +219,29 @@ $(document).ready(function () {
             contentType: false,
             processData: false,
             success: (response) => {
+                this.reset();
                 if (response.success == true) {
-                    this.reset();
-                    $("#promo_required").removeClass("d-none");
+                    console.log(response.data);
+                    $(".promoCodeValue").val(response.data);
+                    $("#promo_success").removeClass("d-none");
+                    $('#success-popup').modal('show');
                     setTimeout(() => {
-                        $("#promo_required").addClass("d-none");
+                        $('#success-popup').modal('hide');
+                        $("#promo_success").addClass("d-none");
                     }, 3000);
                 } else if (response.success == "validation") {
+                    $('#success-popup').modal('show');
                     $("#promo_required").removeClass("d-none");
                     setTimeout(() => {
                         $("#promo_required").addClass("d-none");
+                        $('#success-popup').modal('hide');
                     }, 3000);
                 } else if (response.success == false) {
+                    $('#success-popup').modal('show');
                     $("#promo_required_not_valid").removeClass("d-none");
                     setTimeout(() => {
                         $("#promo_required_not_valid").addClass("d-none");
+                        $('#success-popup').modal('hide');
                     }, 3000);
                 }
             },

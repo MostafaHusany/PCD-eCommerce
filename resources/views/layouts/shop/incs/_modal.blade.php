@@ -1,4 +1,3 @@
-
 <!-- Home Popup Section -->
 <div class="modal fade subscribe_popup" id="success-popup" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal modal-dialog-centered" role="document">
@@ -10,6 +9,9 @@
                 <div class="row g-0 popup_content">
                     <div class="alert alert-primary d-none" id="item_added" role="alert">
                         @lang('frontend.itemToCart')
+                    </div>
+                    <div class="alert alert-primary d-none" id="promo_success" role="alert">
+                        @lang('frontend.promo_success')
                     </div>
                     <div class="alert alert-primary d-none" id="favorite_item" role="alert">
                         @lang('frontend.itemToFavor')
@@ -24,9 +26,15 @@
                     <div class="alert alert-danger  d-none" id="item_in_favorite" role="alert">
                         @lang('frontend.InFavorite')
                     </div>
+                    <div class="alert alert-danger  d-none" id="promo_required" role="alert">
+                        @lang('frontend.promoApply')
+                    </div>
+                    <div class="alert alert-danger  d-none" id="promo_required_not_valid" role="alert">
+                        @lang('frontend.promo_not_valid')
+                    </div>
                 </div>
             </div>
-    	</div>
+        </div>
     </div>
 </div>
-<!-- End Screen Load Popup Section --> 
+<!-- End Screen Load Popup Section -->
