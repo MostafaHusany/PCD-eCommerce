@@ -11,4 +11,8 @@ class PromoCode extends Model
     public function user () {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function orders () {
+        return hasMany(Order::class, 'promo_code_id');
+    }
 }

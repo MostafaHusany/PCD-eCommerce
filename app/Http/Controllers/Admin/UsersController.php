@@ -75,6 +75,7 @@ class UsersController extends Controller
         }
         
         $new_user = User::create($data);
+        $new_user->customer()->create($data);
 
         return response()->json(['data' => $new_user, 'success' => isset($new_user)]);
     }// end :: store
@@ -97,8 +98,20 @@ class UsersController extends Controller
             $data['password']       = bcrypt($request->password);
         }
       
-        $target_user = User::find($id);
+        $target_user     = User::find($id);
+        $target_customer = $target_user->customer;
+        
         $target_user->update($data);
+        if (isset($target_customer)) {
+            $target_customer->update($data);
+        } else {
+            $data['first_name']  = $target_user->name;
+            $data['second_name'] = 'Demo';
+            $data['city'] = 'Demo';
+            $data['address'] = 'Demo';
+            $data['plain_password'] = '000'; 
+            $target_user->customer()->create($data);
+        }
 
         return response()->json(['data' => $target_user, 'success' => isset($target_user)]);
     }
