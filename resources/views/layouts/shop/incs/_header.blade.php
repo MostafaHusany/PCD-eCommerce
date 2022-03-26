@@ -81,15 +81,16 @@
                         <div class="cart_box dropdown-menu dropdown-menu-right">
                             <ul class="cart_list" id="cart-content">
                                 @if(cartContent())
-                                @foreach(cartContent() as $item)
-                                <div class="single">
-                                    <li>
-                                        <a href="#" class="item_remove"><i class="ion-close delete-cart-item" data-product-id="{{$item->rowId}}"></i></a>
-                                        <a href="#">{{$item->name}}</a>
-                                        <span class="cart_quantity"> {{$item->qty}} x <span class="cart_amount"> <span class="price_symbole">$</span></span>{{$item->price}}</span>
-                                    </li>
-                                </div>
-                                @endforeach
+                                    @foreach(cartContent() as $item)
+                                    <div class="single">
+                                        <li>
+                                            <a href="#" class="item_remove"><i class="ion-close delete-cart-item" data-product-id="{{$item->rowId}}"></i></a>
+                                            <a href="#"><img src="assets/images/cart_thamb2.jpg" alt="cart_thumb2">{{$item->name}}</a>
+                                            <span class="cart_quantity"> {{$item->qty}} x <span class="cart_amount"> <span class="price_symbole">SR</span></span>{{$item->price}}</span>
+                                        </li>
+                                    </div>
+                                    @endforeach
+                                @endif
                             </ul>
 
                             <div class="cart_footer">
@@ -98,7 +99,6 @@
                                     <a href="{{route('checkout')}}" class="btn btn-fill-out rounded-0 checkout">@lang('frontend.Checkout')</a>
                                 </p>
                             </div>
-                            @endif
                         </div>
                     </li>
                 </ul>
@@ -551,7 +551,7 @@
             </div>
         </div>
     </div><!-- /.bottom_header -->
-                                    
+
     <div class="alert alert-primary d-none" id="item_added" role="alert">
         @lang('frontend.itemToCart')
     </div>

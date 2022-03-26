@@ -53,6 +53,8 @@
         
         @include('layouts.shop.incs._loader')
 
+        @include('layouts.shop.incs._modal')
+
         @include('layouts.shop.incs._header')
         
         <!-- END MAIN CONTENT -->
@@ -64,7 +66,7 @@
         <!-- START FOOTER -->
         <footer class="bg_gray">
             <div class="footer_top small_pt pb_20">
-                <div class="custom-container">
+                <div class="container">
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="widget">
@@ -132,7 +134,7 @@
             </div><!-- /.footer_top --> 
 
             <div class="middle_footer">
-                <div class="custom-container">
+                <div class="container">
                     <div class="row">
                         <div class="col-12">
                             <div class="shopping_info">
@@ -178,7 +180,7 @@
             </div><!-- /.middle_footer -->
 
             <div class="bottom_footer border-top-tran">
-                <div class="custom-container">
+                <div class="container">
                     <div class="row">
                         <div class="col-lg-4">
                             <p class="mb-lg-0 text-center">© 2020 All Rights Reserved by Bestwebcreator</p>
