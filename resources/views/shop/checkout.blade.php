@@ -362,9 +362,9 @@
                         </div>
                         <br>
                         @if($promoCode)
-                        <input type="hidden" name="promoCode" value="{{$promoCode->code}}">
+                        <input type="hidden" name="promoCode" id="promoCode" value="{{$promoCode->code}}">
                         @else
-                        <input type="hidden" name="promoCode" value="">
+                        <input type="hidden" name="promoCode"  id="promoCode" value="">
                         @endif
                         <!-- <div class="form-group mb-3">
                             <div class="chek-form">
@@ -472,6 +472,10 @@
                                     <tr>
                                         <th>{{trans('frontend.promoValue')}}</th>
                                         <td class="shipping_price_field" id="shipping_price">{{$promoCode->value}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{trans('frontend.promoType')}}</th>
+                                        <td class="shipping_price_field" id="shipping_price">{{$promoCode->type}}</td>
                                     </tr>
                                     @endif
                                     <tr>
