@@ -1,13 +1,13 @@
 @extends('layouts.shop.app')
 
 @section('title')
-Search result
+{{trans('frontend.Searchresult')}}
 @endsection
 
 
 @section('content')
 @include('shop.incs.breadcramp', [
-'name' => 'Search result',
+'name' => 'trans('frontend.Searchresult')',
 ])
 
 <!-- START MAIN CONTENT -->

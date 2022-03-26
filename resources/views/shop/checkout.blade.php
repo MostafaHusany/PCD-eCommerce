@@ -165,8 +165,7 @@
                     <div class="heading_s1">
                         <h4>{{trans('frontend.BillingDetails')}}</h4>
                     </div>
-                    <form action="{{route('create_order')}}" method="post" enctype="multipart/form-data">
-
+                    <form method="post" action="{{route('store.order')}}" enctype="multipart/form-data">
                         @csrf
                         @if(count($addresses)>0)
                         <div class="form-group mb-3">
@@ -364,7 +363,7 @@
                         @if($promoCode)
                         <input type="hidden" name="promoCode" id="promoCode" value="{{$promoCode->code}}">
                         @else
-                        <input type="hidden" name="promoCode"  id="promoCode" value="">
+                        <input type="hidden" name="promoCode" id="promoCode" value="">
                         @endif
                         <!-- <div class="form-group mb-3">
                             <div class="chek-form">

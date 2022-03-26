@@ -97,11 +97,16 @@
                             </tbody>
                         </table>
                     </div>
-                    <form action="{{route('checkout')}}" method="post">
+                    <!-- <form action="{{route('checkout')}}" method="post">
                         @csrf
                         <input type="hidden" name="promoCodeValue" class="promoCodeValue">
                         <button class="btn btn-fill-out" type="submit">{{trans('frontend.Checkout')}} </button>
-                    </form>
+                    </form> -->
+
+
+                    <a href="{{route('checkout')}}"
+                    class="btn btn-fill-out" >@lang('frontend.Checkout')</a>
+
                 </div>
             </div>
 

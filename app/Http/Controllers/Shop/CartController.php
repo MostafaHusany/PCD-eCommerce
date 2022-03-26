@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
+use Session;
 use Cart;
-
 use App\Fee;
 use App\Taxe;
 use App\Order;
@@ -80,8 +79,9 @@ class CartController extends Controller
 
     public function checkout(Request $request)
     {
-        if ($request->promoCodeValue) {
-            $promoCode = PromoCode::where('code', $request->promoCodeValue)->first();
+       $promoCodeValue = Session::get('promo');
+        if ($promoCodeValue) {
+            $promoCode = PromoCode::where('code', $promoCodeValue)->first();
         } else {
             $promoCode = [];
         }
@@ -127,17 +127,16 @@ class CartController extends Controller
         $taxes_sum = array_sum($new_times);
         $totalPrice = (int) Cart::subtotal();
         $OrderTotalPrice = $data['get_cost'] + $taxes_sum + $totalPrice;
-        $promoCode  = PromoCode::where('code',$request->promoCode)->first();
-        if($promoCode){
-            $data['promoType'] =  $promoCode -> type;
-            $data['promoValue'] =  $promoCode -> value;
-            if($promoCode -> type == 'percentage'){
-                $data['totlal_price'] = $OrderTotalPrice - ($OrderTotalPrice* ($promoCode -> value/100));
-
-            }elseif($promoCode -> type == 'fixed'){
+        $promoCode  = PromoCode::where('code', $request->promoCode)->first();
+        if ($promoCode) {
+            $data['promoType'] =  $promoCode->type;
+            $data['promoValue'] =  $promoCode->value;
+            if ($promoCode->type == 'percentage') {
+                $data['totlal_price'] = $OrderTotalPrice - ($OrderTotalPrice * ($promoCode->value / 100));
+            } elseif ($promoCode->type == 'fixed') {
                 $data['totlal_price'] = $OrderTotalPrice - $promoCode->value;
             }
-        }else{
+        } else {
             $data['totlal_price']  = $OrderTotalPrice;
         }
         return response()->json($data);
@@ -145,7 +144,6 @@ class CartController extends Controller
 
     public function create_order(OrderRequest $request)
     {
-        // dd( $request->all());
         $check_auth = Auth()->user();
         // check if user not login 
         if (!$check_auth) {
@@ -208,6 +206,7 @@ class CartController extends Controller
         }
 
         Cart::destroy();
+        session()->forget('promo');
         return view('shop.thanks', compact('order'));
     }
 
@@ -223,6 +222,7 @@ class CartController extends Controller
         $promo = $request->promoCode;
         $promoCode = PromoCode::where('code', $promo)->where('is_active', '1')->first();
         if ($promoCode) {
+            session()->put('promo', $promo);
             return response()->json(['data' =>  $promoCode, 'success' => true, 'msg' => $validator->errors()]);
         } else {
             return response()->json(['data' => null, 'success' => false, 'msg' => 'code not vaild']);

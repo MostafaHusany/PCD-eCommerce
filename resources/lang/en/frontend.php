@@ -133,4 +133,5 @@ return [
     'Promoinfo'              => 'promo code info',
     'promoType'              => 'promo code Type',
     'PromoValue'             => 'Promo code Value',
+    'Searchresult'           => 'Search result',
 ];

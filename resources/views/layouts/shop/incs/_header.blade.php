@@ -94,25 +94,18 @@
 
                     <div class="cart_footer">
                         <p class="cart_total"><strong>@lang('frontend.Subtotal'):</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">@lang('frontend.ViewCart')</a>
 
-                            </div>
-                            <div class="col-sm-6">
-                                <form action="{{route('checkout')}}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="promoCodeValue" class="promoCodeValue">
-                                    <button class="btn btn-fill-out" type="submit">{{trans('frontend.Checkout')}} </button>
-                                </form>
-                            </div>
-                        </div>
+                        <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">@lang('frontend.ViewCart')</a>
+                            <a href="{{route('checkout')}}" class="btn btn-fill-out">@lang('frontend.Checkout')</a>
 
-                        </p>
+
                     </div>
+
+                    </p>
                 </div>
-            </li>
-        </ul>
+    </div>
+    </li>
+    </ul>
     </div>
     </div>
     </div><!-- /.middle-header -->

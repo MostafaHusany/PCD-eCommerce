@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\shop;
 
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderRequest extends FormRequest
@@ -32,13 +31,7 @@ class OrderRequest extends FormRequest
             $email = ['nullable'];
             $password = ['nullable'];
         }
-
-        $promo = $this->input('promo');
-        if ($promo) {
-            $promoCode = ['required_with:promo,on'];
-        } else {
-            $promoCode = ['nullable'];
-        }
+ 
         return [
             'address_id' => 'nullable',
             'first_name' => 'required_if:address_id,0',
@@ -49,7 +42,6 @@ class OrderRequest extends FormRequest
             'checkbox' => 'sometimes',
             'email' => $email,
             'password' => $password,
-            'promoCode' => $promoCode,
             'zipcode' => 'required_if:address_id,0',
             'phone' => 'required_if:address_id,0',
             'shipping_id_field' => 'required',
