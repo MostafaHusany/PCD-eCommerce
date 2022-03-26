@@ -22,17 +22,17 @@
 
 <li class="nav-item {{ str_contains(Request::path(), 'promotions') || str_contains(Request::path(), 'promo-codes') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
-        <i class="nav-icon fas fa-percentage"></i>
+        <i class="nav-icon fas fa-hand-holding-usd"></i>
         <p>
-            Discounts
+            Promotions
             <i class="right fas fa-angle-left"></i>
         </p>
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
         <li class="nav-item">
             <a href="{{ route('admin.promotions.index') }}" class="nav-link {{ Request::is('admin/promotions') ? 'active' : ''}}">
-                <i class="nav-icon fas fa-hand-holding-usd"></i>
-                <p>Promotions</p>
+                <i class="nav-icon fas fa-percentage"></i>
+                <p>Discounts</p>
             </a>
         </li>
 

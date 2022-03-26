@@ -145,7 +145,7 @@ class CartController extends Controller
 
     public function create_order(OrderRequest $request)
     {
-        dd( $request->all());
+        // dd( $request->all());
         $check_auth = Auth()->user();
         // check if user not login 
         if (!$check_auth) {

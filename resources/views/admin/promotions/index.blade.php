@@ -3,7 +3,7 @@
 
 @section('content')
 @php 
-    $object_title = 'Promotions';
+    $object_title = 'Discounts';
 @endphp
 <div class="container-fluid pt-3">
 
