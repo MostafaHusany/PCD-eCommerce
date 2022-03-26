@@ -7,13 +7,14 @@
                     <h5 class="modal-title" id="exampleModalLabel">{{trans('frontend.productInfo')}}</h5>
                 </div>
                 <div class="modal-body">
-                    @csrf
                     <div class="row">
                         <div class="col-md-12">
-
+                            <h4 class="product_title"><a href="{{route('product.detail',$product->slug)}}">{{name($product->id)}}</a></h4>
+                            <a href="{{route('product.detail',$product->slug)}}">
+                                <img src="{{asset($product->main_image)}}" alt="product_img1">
+                            </a>
                             <div class="pr_detail">
                                 <div class="product_description">
-                                    <h4 class="product_title"><a href="#">{{name($product->id)}}</a></h4>
                                     <div class="product_price">
                                         {{trans('frontend.productPrice')}} :
                                         @if($product->has_promotion() == '1')
@@ -43,9 +44,9 @@
                                             </i>{{trans('frontend.add_to_cart')}}</a>
 
                                         @guest
-                                        <a href="{{route('Login')}}" data-bs-dismiss="modal"><i class="icon-heart"></i></a>
+                                        <a class="btn btn-fill-out btn-addtocart " href="{{route('Login')}}" data-bs-dismiss="modal"><i class="icon-heart"></i></a>
                                         @else
-                                        <a id="favorite" href="javascript:void(0)">
+                                        <a class="btn btn-fill-out btn-addtocart" id="favorite" href="javascript:void(0)">
                                             <i class="icon-heart add-to-favorite @if(checkFavorite($product->id))favorite @endif" data-bs-dismiss="modal" data-product-id="{{ $product->id }}"></i></a>
                                         @endguest
                                     </div>
@@ -78,7 +79,7 @@
                             aria-label="{{name($product->id)}}"><i class="icon-basket-loaded">
                             </i>{{trans('frontend.add_to_cart')}}</a></li>
                     <li>
-                        <button style="border:none" type="button" data-bs-toggle="modal" data-bs-target="{{ '#exampleModal' . $product->id }}">
+                        <button style="border:none;width: 41px;height: 40px;" type="button" data-bs-toggle="modal" data-bs-target="{{ '#exampleModal' . $product->id }}">
                             <i class="icon-magnifier-add"></i>
                         </button>
                     </li>

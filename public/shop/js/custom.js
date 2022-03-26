@@ -176,13 +176,47 @@ $(document).ready(function () {
 
     $("[name='languageSelect']").on("change", function (e) {
         var lang = $(this).val();
-          if(lang == 'ar'){
-            window.location.href = $(location).attr('href').replace("en", "ar");
+        if (lang == "ar") {
+            window.location.href = $(location).attr("href").replace("en", "ar");
         }
-         if(lang == 'en'){
-              window.location.href = $(location).attr('href').replace("ar", "en");
+        if (lang == "en") {
+            window.location.href = $(location).attr("href").replace("ar", "en");
         }
-     });
+    });
 
-
+    $("#promoApply").submit(function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $(".error").text("");
+        $("#message-success").text("");
+        $.ajax({
+            type: "POST",
+            url: "/promoApply",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: (response) => {
+                if (response.success == true) {
+                    this.reset();
+                    $("#promo_required").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#promo_required").addClass("d-none");
+                    }, 3000);
+                } else if (response.success == "validation") {
+                    $("#promo_required").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#promo_required").addClass("d-none");
+                    }, 3000);
+                } else if (response.success == false) {
+                    $("#promo_required_not_valid").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#promo_required_not_valid").addClass("d-none");
+                    }, 3000);
+                }
+            },
+        });
+        setTimeout(() => {
+            $(".show-message").fadeOut("fast");
+        }, 2000);
+    });
 });

@@ -172,7 +172,6 @@
             var self = $(this);
             $('#price_first').val(self.data('min-value'));
             $('#price_second').val(self.data('max-value'));
-
         });
     });
 </script>

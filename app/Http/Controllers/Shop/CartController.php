@@ -19,11 +19,13 @@ use App\Payment;
 use App\Product;
 use App\Address;
 use App\Customer;
+use App\Http\Requests\shop\PromoRequest;
 use App\Shipping;
 use App\OrderProduct;
-
+use App\PromoCode;
 use App\Traits\MakeOrder;
 use App\User;
+use GuzzleHttp\Handler\Proxy;
 
 class CartController extends Controller
 {
@@ -125,7 +127,6 @@ class CartController extends Controller
             if ($user) {
 
                 $user_id = $user->customer->id;
-
             }
             // if not create new user
             else {
@@ -181,5 +182,23 @@ class CartController extends Controller
 
         Cart::destroy();
         return view('shop.thanks', compact('order'));
+    }
+
+    public function promoApply(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'promoCode'          => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => 'validation', 'msg' => $validator->errors()]);
+        }
+        $promo = $request->promoCode;
+        $promoCode = PromoCode::where('code', $promo)->where('is_active', '1')->first();
+        if ($promoCode) {
+            return response()->json(['data' => null, 'success' => true, 'msg' => $validator->errors()]);
+        }else{
+            return response()->json(['data' => null, 'success' => false, 'msg' => 'code not vaild']);
+        }
     }
 }

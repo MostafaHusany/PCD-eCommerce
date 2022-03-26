@@ -28,6 +28,9 @@ Route::group([
     Route::get('/cart_destroy_item/{row_id}', 'CartController@cart_destroy')->name('cart_destroy');
     Route::get('/checkout', 'CartController@checkout')->name('checkout');
     Route::post('/create_order', 'CartController@create_order')->name('create_order');
+    Route::post('/promoApply','CartController@promoApply')->name('promoApply');
+
+
 
     Route::get('Login', 'UserController@Login')->name('Login');
     Route::get('register', 'UserController@register')->name('register');

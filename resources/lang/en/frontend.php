@@ -126,5 +126,7 @@ return [
     'productInfo'            => 'product Information',
     'productPrice'           => 'product Price',
     'small_description'      => 'product summary',
-
+    'promoCodeCheck'         => 'promo Code Check',
+    'promo_success'          => 'promo Code added success',
+    'promo_not_valid'        => 'promo not valid',
 ];

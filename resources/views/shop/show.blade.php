@@ -54,7 +54,6 @@
                                 </a>
                             </div>
                             @endforeach
-
                         </div>
                         @endif
                     </div>

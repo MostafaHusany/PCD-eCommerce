@@ -126,6 +126,9 @@ return [
     'productInfo'            => 'بيانات المنتج',
     'productPrice'           => 'سعر المنتج',
     'small_description'      => 'الوصف المختصر',
+    'promoCodeCheck'         => 'تفعيل كود الخصم',
+    'promo_success'          => 'تم اضافة كود الخصم بنجاح',
+    'promo_not_valid'        => 'كود الخصك غير فعال',
 
 ];
 

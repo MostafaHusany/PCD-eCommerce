@@ -363,7 +363,7 @@
                         </div>
                         <br>
 
-                        <div class="form-group mb-3">
+                        <!-- <div class="form-group mb-3">
                             <div class="chek-form">
                                 <div class="custome-checkbox">
                                     <input class="form-check-input" type="checkbox" name="promo"
@@ -380,7 +380,7 @@
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
-                        </div>
+                        </div> -->
 
                         <br>
                         <button type="submit" class="btn btn-fill-out btn-block">{{trans('frontend.PlaceOrder')}}</button>

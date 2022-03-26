@@ -74,7 +74,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="border p-3 p-md-4">
                     <div class="heading_s1 mb-3">
                         <h6>{{trans('frontend.CartTotals')}}</h6>
@@ -100,6 +100,32 @@
                     <a href="{{route('checkout')}}" class="btn btn-fill-out">{{trans('frontend.Checkout')}} </a>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="border p-3 p-md-4">
+                    <div class="heading_s1 mb-3">
+                        <h6>{{trans('frontend.promoApply')}}</h6>
+                    </div>
+                    <form method="post" class="direct-contact" id="promoApply" >
+                            @csrf
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <div class="form-group mb-3 ">
+                                    <input type="text" class="form-control" name="promoCode" id="promoCode"
+                                     value="{{old('promoCode')}}" placeholder="{{trans('frontend.promo')}} *">
+                                    <span class="error text-danger d-none"></span>
+                                </div> 
+                            </tbody>
+                        </table>
+                    </div>
+                    <span class="text-success" id="message-success"></span>
+
+                    <button type="submit"  class="btn btn-fill-out Enter_promo">{{trans('frontend.promoCodeCheck')}}</button>
+                    </form>
+                </div>
+            </div>
+
         </div>
 
 
