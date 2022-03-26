@@ -37,15 +37,22 @@ $(document).ready(function () {
                         </li>
                         </div>`;
                         $("#cart-content").append(add_product_to_cart);
+                        
+                        $('#success-popup').modal('show');
+                        
                         $("#item_added").removeClass("d-none");
                         setTimeout(() => {
                             $("#item_added").addClass("d-none");
+                            $('#success-popup').modal('hide');
                         }, 3000);
                     });
                 } else if (response.status == "error") {
+                    $('#success-popup').modal('show');
+
                     $("#item_not_added").removeClass("d-none");
                     setTimeout(() => {
                         $("#item_not_added").addClass("d-none");
+                        $('#success-popup').modal('hide');
                     }, 3000);
                 }
             },
@@ -64,8 +71,13 @@ $(document).ready(function () {
                 self.parents(".single").remove();
                 $("#items_count").html(response.items_count);
                 $("#totalPrice").html(response.totalPrice);
+
                 $("#item_removed").removeClass("d-none");
+
+                $('#success-popup').modal('show');
+
                 setTimeout(() => {
+                    $('#success-popup').modal('hide');
                     $("#item_removed").addClass("d-none");
                 }, 3000);
             },
@@ -82,9 +94,13 @@ $(document).ready(function () {
                 $("#items_count").html(response.items_count);
                 $("#updatePrice").html(response.totalPrice);
                 self.parents("tr").remove();
+
                 $("#item_removed").removeClass("d-none");
+                $('#success-popup').modal('show');
+
                 setTimeout(() => {
                     $("#item_removed").addClass("d-none");
+                    $('#success-popup').modal('hide');
                 }, 3000);
             },
         });
@@ -111,14 +127,21 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     $("#favorite i").addClass("favorite");
+
                     $("#favorite_item").removeClass("d-none");
+                    $('#success-popup').modal('show');
+
                     setTimeout(() => {
                         $("#favorite_item").addClass("d-none");
+                        $('#success-popup').modal('hide');
                     }, 3000);
                 } else if (response.error) {
                     $("#item_in_favorite").removeClass("d-none");
+                    $('#success-popup').modal('show');
+                    
                     setTimeout(() => {
                         $("#item_in_favorite").addClass("d-none");
+                        $('#success-popup').modal('hide');
                     }, 3000);
                 }
             },

@@ -25,6 +25,13 @@
                 <h5>{{$object_title}}ies Adminstration</h5>
             </div>
             <div class="col-6 text-right">
+                <div class="!toggle-btn  update-categories-navbar btn btn-warning btn-sm" 
+                    data-current-card="#objectsCard" data-target-card="#selectNavbarCategories"
+                    data-toggle="tooltip" data-placement="top" title="Select Categories For Navbar"
+                >
+                    <i class="fas fa-stream"></i>
+                </div>
+
                 <div class="relode-btn btn btn-info btn-sm">
                     <i class="relode-btn-icon fas fa-redo"></i>
                     <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
@@ -46,14 +53,26 @@
                     <input type="text" class="form-control" id="s-title">
                 </div><!-- /.form-group -->
             </div><!-- /.col-6 -->
+            <div class="col-6">
+                <div class="form-group search-action">
+                    <label for="s-title">Type</label>
+                    <select type="text" class="form-control" id="s-is_main">
+                        <option value="">All</option>
+                        <option value="1">is main</option>
+                        <option value="0">is sub</option>
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-6 -->
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
         <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
             <thead>
                 <th>#</th>
-                <th>ar_title</th>
-                <th>en_title</th>
+                <th>Icon</th>
+                <th>Ar Title</th>
+                <th>En Title</th>
+                <th>Is Main</th>
                 <th>Products</th>
                 <th>Rule</th>
                 <th>Actions</th>
@@ -65,6 +84,8 @@
     @include('admin.categories.incs._create')
 
     @include('admin.categories.incs._edit')
+    
+    @include('admin.categories.incs._settings')
     
 
 </div>
@@ -97,20 +118,26 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'ar_title', 'en_title', 'ar_description', 'en_description', 'is_main', 'category_id', 'rule', 'custome_fields'],
+            fields_list     : ['id', 'ar_title', 'en_title', 'ar_description', 'en_description',
+                            'is_main', 'category_id', 'rule', 'custome_fields', 'icon'],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
+            { data: 'icon', name: 'icon' },
             { data: 'en_title', name: 'en_title' },
             { data: 'ar_title', name: 'ar_title' },
+            { data: 'is_main', name: 'is_main' },
             { data: 'products', name: 'products' },
             { data: 'rule', name: 'rule' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
             if ($('#s-title').length)
-            d.title = $('#s-title').val();              
+            d.title = $('#s-title').val();       
+            
+            if($('#s-is_main').length)
+            d.is_main = $('#s-is_main').val();       
         }
     );
 
@@ -160,10 +187,15 @@ $(function () {
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        
+        $(`#edit-show-icon`).attr('class', '');
+
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
             $(`#${prefix + el_id}`).val(data[el_id]).change();
         });
+
+        $(`#${prefix}-show-icon`).attr('class', '');
 
         custome_fields = [];
         $('.custome_ro_el').remove();
@@ -248,6 +280,31 @@ $(function () {
                     },
                     cache: true
                 }
+            });
+
+            $('.update-categories-navbar').click(function () {
+                $('#loddingSpinner').show(500);
+
+                axios.get("{{ url('admin/products-categories') }}/0", {params : {get_is_nav : true}})
+                .then(res => {
+                    $('#loddingSpinner').hide(500);
+                    
+                    if (res.data.success) {
+                        res.data.data.forEach(category => {
+                            var category_option = new Option(`${category['ar_title']} || ${category['en_title']}`, category.id, true, true);
+                            $('#nav_selected_categories').append(category_option)
+                        });
+                        $('#nav_selected_categories').trigger('change');
+
+                        $('#objectsCard').slideUp(500);    
+                        $('#selectNavbarCategories').slideDown(500);  
+                    } else {
+                        $('#dangerAlert').text('Something went wrong, please contact admin !!').slideDown(500);
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp(500);
+                        }, 3000);
+                    }
+                });
             });
         }
 

@@ -18,7 +18,7 @@
     <!-- <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.5.3/css/bootstrap.min.css" integrity="sha384-JvExCACAZcHNJEc7156QaHXTnQL3hQBixvj5RV5buE7vgnNEzzskDtx9NQ4p6BJe" crossorigin="anonymous"> -->
     <!-- <link href="{{ asset('rtl/css/adminlte.css') }}" rel="stylesheet">
     <link href="{{ asset('rtl/css/custom.css') }}" rel="stylesheet"> -->
-
+    <link rel="stylesheet" href="{{asset('shop/css/flaticon.css')}}">
 
     @yield('third_party_stylesheets')
 
