@@ -18,7 +18,7 @@ return [
     'AllProducts'            => 'All Products',
     'categories'             => 'Categories',
     'Subtotal'               => 'Subtotal',
-    'ViewCart'               => 'ViewCart',
+    'ViewCart'               => 'Cart',
     'Checkout'               => 'Checkout',
     'itemToCart'             => 'Item Added to cart successfully',
     'itemToFavor'            => 'Item Added to favorite successfully',
