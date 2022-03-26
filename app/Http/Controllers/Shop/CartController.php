@@ -125,8 +125,21 @@ class CartController extends Controller
             $new_times[] = $tax * Cart::count();
         }
         $taxes_sum = array_sum($new_times);
-        $totalPrice = (int)Cart::subtotal();
-        $data['totlal_price'] = $data['get_cost'] + $taxes_sum + $totalPrice;
+        $totalPrice = (int) Cart::subtotal();
+        $OrderTotalPrice = $data['get_cost'] + $taxes_sum + $totalPrice;
+        $promoCode  = PromoCode::where('code',$request->promoCode)->first();
+        if($promoCode){
+            $data['promoType'] =  $promoCode -> type;
+            $data['promoValue'] =  $promoCode -> value;
+            if($promoCode -> type == 'percentage'){
+                $data['totlal_price'] = $OrderTotalPrice - ($OrderTotalPrice* ($promoCode -> value/100));
+
+            }elseif($promoCode -> type == 'fixed'){
+                $data['totlal_price'] = $OrderTotalPrice - $promoCode->value;
+            }
+        }else{
+            $data['totlal_price']  = $OrderTotalPrice;
+        }
         return response()->json($data);
     }
 
@@ -210,7 +223,7 @@ class CartController extends Controller
         $promo = $request->promoCode;
         $promoCode = PromoCode::where('code', $promo)->where('is_active', '1')->first();
         if ($promoCode) {
-            return response()->json(['data' =>  $promo, 'success' => true, 'msg' => $validator->errors()]);
+            return response()->json(['data' =>  $promoCode, 'success' => true, 'msg' => $validator->errors()]);
         } else {
             return response()->json(['data' => null, 'success' => false, 'msg' => 'code not vaild']);
         }

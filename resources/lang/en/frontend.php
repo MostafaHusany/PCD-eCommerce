@@ -130,4 +130,7 @@ return [
     'promo_success'          => 'promo Code added success',
     'promo_not_valid'        => 'promo not valid',
     'promoValue'             => 'promo code value',
+    'Promoinfo'              => 'promo code info',
+    'promoType'              => 'promo code Type',
+    'PromoValue'             => 'Promo code Value',
 ];

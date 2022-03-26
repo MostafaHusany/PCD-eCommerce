@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 d-block" id="addpromoCode">
                 <div class="border p-3 p-md-4">
                     <div class="heading_s1 mb-3">
                         <h6>{{trans('frontend.promoApply')}}</h6>
@@ -127,6 +127,30 @@
                     </form>
                 </div>
             </div>
+
+            <div class="col-md-6 d-none" id="promoCodeDetails">
+                <div class="border p-3 p-md-4">
+                    <div class="heading_s1 mb-3">
+                        <h6>{{trans('frontend.Promoinfo')}}</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td class="cart_total_label">{{trans('frontend.promoType')}} : </td>
+                                    <td class="cart_total_amount" id="promoType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="cart_total_label">{{trans('frontend.PromoValue')}} : </td>
+                                    <td class="cart_total_amount" id="PromoValue"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
 
         </div>
 

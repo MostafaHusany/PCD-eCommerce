@@ -37,22 +37,22 @@ $(document).ready(function () {
                         </li>
                         </div>`;
                         $("#cart-content").append(add_product_to_cart);
-                        
-                        $('#success-popup').modal('show');
-                        
+
+                        $("#success-popup").modal("show");
+
                         $("#item_added").removeClass("d-none");
                         setTimeout(() => {
                             $("#item_added").addClass("d-none");
-                            $('#success-popup').modal('hide');
+                            $("#success-popup").modal("hide");
                         }, 3000);
                     });
                 } else if (response.status == "error") {
-                    $('#success-popup').modal('show');
+                    $("#success-popup").modal("show");
 
                     $("#item_not_added").removeClass("d-none");
                     setTimeout(() => {
                         $("#item_not_added").addClass("d-none");
-                        $('#success-popup').modal('hide');
+                        $("#success-popup").modal("hide");
                     }, 3000);
                 }
             },
@@ -74,10 +74,10 @@ $(document).ready(function () {
 
                 $("#item_removed").removeClass("d-none");
 
-                $('#success-popup').modal('show');
+                $("#success-popup").modal("show");
 
                 setTimeout(() => {
-                    $('#success-popup').modal('hide');
+                    $("#success-popup").modal("hide");
                     $("#item_removed").addClass("d-none");
                 }, 3000);
             },
@@ -96,11 +96,11 @@ $(document).ready(function () {
                 self.parents("tr").remove();
 
                 $("#item_removed").removeClass("d-none");
-                $('#success-popup').modal('show');
+                $("#success-popup").modal("show");
 
                 setTimeout(() => {
                     $("#item_removed").addClass("d-none");
-                    $('#success-popup').modal('hide');
+                    $("#success-popup").modal("hide");
                 }, 3000);
             },
         });
@@ -129,19 +129,19 @@ $(document).ready(function () {
                     $("#favorite i").addClass("favorite");
 
                     $("#favorite_item").removeClass("d-none");
-                    $('#success-popup').modal('show');
+                    $("#success-popup").modal("show");
 
                     setTimeout(() => {
                         $("#favorite_item").addClass("d-none");
-                        $('#success-popup').modal('hide');
+                        $("#success-popup").modal("hide");
                     }, 3000);
                 } else if (response.error) {
                     $("#item_in_favorite").removeClass("d-none");
-                    $('#success-popup').modal('show');
-                    
+                    $("#success-popup").modal("show");
+
                     setTimeout(() => {
                         $("#item_in_favorite").addClass("d-none");
-                        $('#success-popup').modal('hide');
+                        $("#success-popup").modal("hide");
                     }, 3000);
                 }
             },
@@ -173,15 +173,15 @@ $(document).ready(function () {
         $("#shipping_price").empty();
         $("#order_price").empty();
         var val = $(this).val();
-
+        var promoCode = $("#promoCode").val();
         $.ajax({
             type: "get", // the method (could be GET btw)
             url: "shipping_price",
             data: {
                 val: val,
+                promoCode: promoCode,
             },
             success: function (response) {
-                console.log(response);
                 $("#shipping_price").html(response.get_cost);
                 $("#totlal_price").html(response.totlal_price);
 
@@ -221,27 +221,30 @@ $(document).ready(function () {
             success: (response) => {
                 this.reset();
                 if (response.success == true) {
-                    console.log(response.data);
-                    $(".promoCodeValue").val(response.data);
+                    $(".promoCodeValue").val(response.data.code);
+                    $("#promoType").html(response.data.type);
+                    $("#PromoValue").html(response.data.value);
                     $("#promo_success").removeClass("d-none");
-                    $('#success-popup').modal('show');
+                    $("#addpromoCode").addClass("d-none");
+                    $("#promoCodeDetails").removeClass("d-none");
+                    $("#success-popup").modal("show");
                     setTimeout(() => {
-                        $('#success-popup').modal('hide');
+                        $("#success-popup").modal("hide");
                         $("#promo_success").addClass("d-none");
                     }, 3000);
                 } else if (response.success == "validation") {
-                    $('#success-popup').modal('show');
+                    $("#success-popup").modal("show");
                     $("#promo_required").removeClass("d-none");
                     setTimeout(() => {
                         $("#promo_required").addClass("d-none");
-                        $('#success-popup').modal('hide');
+                        $("#success-popup").modal("hide");
                     }, 3000);
                 } else if (response.success == false) {
-                    $('#success-popup').modal('show');
+                    $("#success-popup").modal("show");
                     $("#promo_required_not_valid").removeClass("d-none");
                     setTimeout(() => {
                         $("#promo_required_not_valid").addClass("d-none");
-                        $('#success-popup').modal('hide');
+                        $("#success-popup").modal("hide");
                     }, 3000);
                 }
             },
