@@ -104,34 +104,11 @@
                     </form> -->
 
 
-                    <a href="{{route('checkout')}}"
-                    class="btn btn-fill-out" >@lang('frontend.Checkout')</a>
+                    <a href="{{route('checkout')}}" class="btn btn-fill-out">@lang('frontend.Checkout')</a>
 
                 </div>
             </div>
 
-            <div class="col-md-6 d-block" id="addpromoCode">
-                <div class="border p-3 p-md-4">
-                    <div class="heading_s1 mb-3">
-                        <h6>{{trans('frontend.promoApply')}}</h6>
-                    </div>
-                    <form method="post" class="direct-contact" id="promoApply">
-                        @csrf
-                        <div class="table-responsive">
-                            <table class="table">
-                                <tbody>
-                                    <div class="form-group mb-3 ">
-                                        <input type="text" class="form-control" name="promoCode" id="promoCode" value="{{old('promoCode')}}" placeholder="{{trans('frontend.promo')}} *">
-                                        <span class="error text-danger d-none"></span>
-                                    </div>
-                                </tbody>
-                            </table>
-                        </div>
-                        <span class="text-success" id="message-success"></span>
-                        <button type="submit" class="btn btn-fill-out Enter_promo">{{trans('frontend.promoCodeCheck')}}</button>
-                    </form>
-                </div>
-            </div>
 
             <div class="col-md-6 d-none" id="promoCodeDetails">
                 <div class="border p-3 p-md-4">
@@ -155,6 +132,58 @@
 
                 </div>
             </div>
+            @php
+            $check_promo = \Session::get('promo');
+            $sessionPromo = App\PromoCode::where('code',$check_promo)->first();
+            @endphp
+            @if($check_promo != null)
+            <div class="col-md-6" id="promoCodeDetails">
+                <div class="border p-3 p-md-4">
+                    <div class="heading_s1 mb-3">
+                        <h6>{{trans('frontend.Promoinfo')}}</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td class="cart_total_label">{{trans('frontend.promoType')}} : </td>
+                                    <td class="cart_total_amount" id="promoType">{{ $sessionPromo->type }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="cart_total_label">{{trans('frontend.PromoValue')}} : </td>
+                                    <td class="cart_total_amount" id="PromoValue">{{ $sessionPromo->value }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            @else
+            <div class="col-md-6 d-block" id="addpromoCode">
+                <div class="border p-3 p-md-4">
+                    <div class="heading_s1 mb-3">
+                        <h6>{{trans('frontend.promoApply')}}</h6>
+                    </div>
+                    <form method="post" class="direct-contact" id="promoApply">
+                        @csrf
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <div class="form-group mb-3 ">
+                                        <input type="text" class="form-control" name="promoCode" id="promoCode" value="{{old('promoCode')}}" placeholder="{{trans('frontend.promo')}} *">
+                                        <span class="error text-danger d-none"></span>
+                                    </div>
+                                </tbody>
+                            </table>
+                        </div>
+                        <span class="text-success" id="message-success"></span>
+                        <button type="submit" class="btn btn-fill-out Enter_promo">{{trans('frontend.promoCodeCheck')}}</button>
+                    </form>
+                </div>
+            </div>
+
+            @endif
 
 
         </div>

@@ -25,10 +25,10 @@ class OrderRequest extends FormRequest
     {
         $checkbox = $this->input('checkbox');
         if ($checkbox) {
-            $email = ['required_with:checkbox,on', 'string', 'email', 'max:255', 'unique:users'];
+            $email = ['required_if:address_id,0', 'string', 'email', 'max:255', 'unique:users'];
             $password = ['required_with:checkbox,on', 'string', 'min:8'];
         } else {
-            $email = ['nullable'];
+            $email = ['required_if:address_id,0', 'string', 'email', 'max:255', 'unique:users'];
             $password = ['nullable'];
         }
  
