@@ -9,6 +9,7 @@ use App\Order;
 use App\Product;
 use App\Invoice;
 use App\Shipping;
+use App\PromoCode;
 use App\OrderProduct;
 use App\Traits\MakeOrder;
 
@@ -21,17 +22,24 @@ trait MakeOrder {
     public function create_customer_order ($customer_id, 
                                             Array $shipping_data, // [shipping_id, is_free_shipping, shipping_cost]
                                             Array $products_data, // [products_id, products_quantity]
-                                            Array $fees_ids = []      // list of fees ids
+                                            Array $fees_ids = [],      // list of fees ids
+                                            $promo_code = null
                                         ) 
     {
         // dd($customer_id, $shipping_data, $products_data);
         
         /**
+         * 0- check if there promo code
          * 1- create a order
          * 2- create for each product in the order sold_product record
          * 3- remove the left quantityt of the requested sold product
          * 4- calculate the taxes 
          */
+
+        if (isset($promo_code)) {
+            $promo_code = PromoCode::where('code', $promo_code)->first(); 
+        }
+
         $new_order = Order::create([
             'code'          => 'cs-' . time(), 
             'customer_id'   => $customer_id,
@@ -42,6 +50,7 @@ trait MakeOrder {
             
             'sub_total'     => 0,
             'total'         => 0,
+            'promo_code_id' => isset($promo_code) ? $promo_code->id : null
         ]);
 
         $new_order = $this->update_order_calculation($new_order, $products_data, $fees_ids);
@@ -179,10 +188,19 @@ trait MakeOrder {
         $fee_total  = $fee_result['fee_total'];
         $meta['fees'] = $fee_result['fee_meta'];
 
+        // START CALCULATE 
+        // $promo_code_discount = $this->calculate_promocode_discount($target_order);
+        $total = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
+        if (isset($target_order->promo_code)) {
+            $promo_code = $target_order->promo_code;
+            $discount = $target_order->promo_code->type == 'fixed' ? $promo_code->value : $promo_code->value / $total * 100;
+            $total   -= $discount;
+        }
+
         $target_order->sub_total = $sub_total;
         $target_order->taxe      = $tax_total;
         $target_order->fee       = $fee_total;
-        $target_order->total     = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
+        $target_order->total     = $total;
         $target_order->meta      = json_encode($meta);
         $target_order->save();
 
