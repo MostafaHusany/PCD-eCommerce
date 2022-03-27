@@ -32,8 +32,10 @@ class ProductSeeder extends Seeder
                     'quantity' => rand(0, 100),
                     'price' => rand(100, 500),
                     'price_after_sale' => rand(50, 400),
-                    'is_active' => rand(0, 1),
-                    'is_composite' => rand(0, 1),
+                    // 'is_active' => rand(0, 1),
+                    // 'is_composite' => rand(0, 1),
+                    'is_active' => 1,
+                    'is_composite' => 0,
                     'reserved_quantity' => rand(0, 1),
                     'brand_id' => Brand::all()->random()->id,
                 );
