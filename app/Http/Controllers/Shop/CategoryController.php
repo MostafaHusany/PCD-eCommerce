@@ -16,7 +16,7 @@ class CategoryController extends Controller
         $currentCategory = ProductCategory::where('id', $id)->first();
         $title = "category";
         if (isset($currentCategory->products)) {
-            $products = $currentCategory->products;
+            $products = $currentCategory->products()->where('is_active','1')->paginate(PAGINATION_COUNT);
             return view('shop.products', compact('categoryProducts', 'products', 'currentCategory', 'title'));
         }
         return view('shop.products', compact('categoryProducts', 'currentCategory', 'title'));

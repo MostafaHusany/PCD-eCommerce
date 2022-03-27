@@ -8,6 +8,8 @@ use App\ProductCategory;
 use App\ProductCustomeField;
 use Illuminate\Support\Facades\Auth;
 
+define('PAGINATION_COUNT', 12);
+
 if (!function_exists('categories')) {
     function categories()
     {

@@ -10,19 +10,21 @@ use App\ProductCategory;
 
 class ShopController extends Controller
 {
-    public function index () {
+    public function index()
+    {
         // call here to safe time on database ->with('children')
         $main_categories = ProductCategory::where('is_main', 1)->with('children')->get();
 
-        return view ('shop.index', compact('main_categories'));
+        return view('shop.index', compact('main_categories'));
     }
 
-    public function prodects (Request $request) {
+    public function prodects(Request $request)
+    {
         /**
          * Get products we need to get products
          * use pagination in loading products
          * use categories in loding products, or loading all data
-        */
+         */
 
         $model = Product::query();
 
@@ -32,9 +34,12 @@ class ShopController extends Controller
             });
         }
 
-        if (isset($request->orderby_type) && $request->orderby_type === 'menu_order') {}
-        if (isset($request->orderby_type) && $request->orderby_type === 'popularity') {}
-        if (isset($request->orderby_type) && $request->orderby_type === 'rating') {}
+        if (isset($request->orderby_type) && $request->orderby_type === 'menu_order') {
+        }
+        if (isset($request->orderby_type) && $request->orderby_type === 'popularity') {
+        }
+        if (isset($request->orderby_type) && $request->orderby_type === 'rating') {
+        }
         if (isset($request->orderby_type) && $request->orderby_type === 'date') {
             $model->orderBy('id', 'desc');
         }
@@ -51,18 +56,39 @@ class ShopController extends Controller
         return response()->json(['products' => $all_products, 'success' => isset($all_products)]);
     }
 
-    public function show (Request $request, $slug) {
+    public function show(Request $request, $slug)
+    {
         // dd(\LaravelLocalization::getCurrentLocale());
         $product = Product::where('slug', $slug)->first();
         $relatedProducts =  $product->categories[0]->products;
         $category =  $product->categories[0];
-        return view('shop.show', compact('product','relatedProducts','category'));
-    } 
+        return view('shop.show', compact('product', 'relatedProducts', 'category'));
+    }
 
-    public function products(){
-        $categoryProducts = ProductCategory::where('is_main','1')->get();
-        $products = Product::all();
-        $title="all_products";
-        return view('shop.products',compact('products','categoryProducts','title'));
+    public function products()
+    {
+        $categoryProducts = ProductCategory::where('is_main', '1')->get();
+        $products = Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
+        $title = "all_products";
+        return view('shop.products', compact('products', 'categoryProducts', 'title'));
+    }
+
+    function fetch_data(Request $request)
+    {
+        if ($request->ajax()) {
+            $products = Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
+            return view('shop.incs.product-card', compact('products'))->render();
+        }
+    }
+    function category(Request $request)
+    {
+        if ($request->ajax()) {
+            $params = explode("/",$request->page);
+            $page = $params [0];
+            $category = $params [1];
+            $category = ProductCategory::find($category);
+            $products = $category->products()->where('is_active','1')->paginate(PAGINATION_COUNT);
+            return view('shop.incs.product-card', compact('products'))->render();
+        }
     }
 }

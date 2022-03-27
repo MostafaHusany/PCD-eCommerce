@@ -46,18 +46,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row shop_container">
-                        @if(isset($products ))
-                        @foreach($products as $product)
-
-                        @include('shop.incs.product-card', [
-                        'product' => $product,
-                        ])
-                      
-                        @endforeach
-                        @else
-                        <p>There is no products</p>
-                        @endif
+                    <div id="table_data">
+                        @include('shop.incs.product-card')
                     </div>
                 </div>
                 <div class="col-lg-3 order-lg-first mt-4 pt-2 mt-lg-0 pt-lg-0">
@@ -71,7 +61,7 @@
                                 <li class="dropdown cssState">
                                     <a href="{{route('category',$category->id)}}">
                                         <span class="categories_name">
-                                        {{title($category->id)}}
+                                            {{title($category->id)}}
                                         </span>
                                     </a>
                                     </span><span class="categories_num"> ({{count($category->products)}})</span>
@@ -176,5 +166,38 @@
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+
+        $(document).on('click', '.pagination a', function(event) {
+            event.preventDefault();
+            var page = $(this).attr('href').split('page=')[1];
+            fetch_data(page);
+        });
+
+        function fetch_data(page) {
+            var url = window.location.href;
+            console.log(window.location.href);
+            // if (url.search('products') == '-1') {
+            //     let last_part = url.substr(url.lastIndexOf('/') + 1)
+            //     $.ajax({
+            //         url: "/pagination/category?page=" + page + "/"+ last_part,
+
+            //         success: function(data) {
+            //             $('#table_data').html(data);
+            //         }
+            //     });
+            // } else {
+                $.ajax({
+                    url: "/pagination/fetch_data?page=" + page,
+                    success: function(data) {
+                        $('#table_data').html(data);
+                    }
+                });
+            }
+        // }
+
+    });
+</script>
 @endsection
 @endsection

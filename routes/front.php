@@ -12,6 +12,9 @@ Route::group([
 
     Route::get('/', 'HomeController@index')->name('index');
     Route::get('/products', 'ShopController@products')->name('products');
+    Route::get('pagination/fetch_data', 'ShopController@fetch_data');
+    Route::get('pagination/category', 'ShopController@category');
+
     Route::group(['prefix' => 'shop'], function () {
         Route::get('/', 'ShopController@index');
         Route::get('/{slug}', 'ShopController@show')->name('product.detail');

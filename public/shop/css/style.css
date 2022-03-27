@@ -6131,7 +6131,7 @@ select option {
 	top: 12px;
 }
 .pagination .page-item a {
-	color: #0E93D8;
+	color: #ff324d;
 	height: 40px;
 	width: 40px;
 	text-align: center;
@@ -7248,4 +7248,11 @@ blockquote p:last-child {
 }
 .input-group > .input-group-append > .btn {
 	height: 100%;
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #ff324d;
+    border-color: #ff324d;
 }
