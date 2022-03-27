@@ -73,15 +73,24 @@
                 <img src="{{asset($product->main_image)}}" alt="product_img1">
             </a>
             <div class="product_action_box">
-
                 <ul class="list_none pr_action_btn">
-                    <li class="add-to-cart"> <a class="item_to_cart" href="" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" @if($product->has_promotion() == '1') data-price="{{$product->get_promotion()->price}}" @else data-price="{{ $product->price }}" @endif
-                            aria-label="{{name($product->id)}}"><i class="icon-basket-loaded">
-                            </i>{{trans('frontend.add_to_cart')}}</a></li>
+                    <li class="add-to-cart"> 
+                        <a class="item_to_cart" href="" 
+                            aria-label="{{name($product->id)}}"
+                            data-ar_name="{{ $product->ar_name }}" 
+                            data-en_name="{{ $product->en_name }}" 
+                            data-quantity="1" 
+                            data-id="{{ $product->id }}" 
+                            @if($product->has_promotion() == '1') data-price="{{$product->get_promotion()->price}}" @else data-price="{{ $product->price }}" @endif
+                            >
+                            <i class="icon-basket-loaded"></i>
+                            {{trans('frontend.add_to_cart')}}
+                        </a>
+                    </li>
                     <li>
-                        <button style="border:none;width: 41px;height: 40px;" type="button" data-bs-toggle="modal" data-bs-target="{{ '#exampleModal' . $product->id }}">
+                        <a type="button" data-bs-toggle="modal" data-bs-target="{{ '#exampleModal' . $product->id }}">
                             <i class="icon-magnifier-add"></i>
-                        </button>
+                        </a>
                     </li>
                     @guest
                     <li><a href="{{route('Login')}}"><i class="icon-heart"></i></a></li>
@@ -89,9 +98,9 @@
                     <li id="favorite"><a href="javascript:void(0)"><i class="icon-heart add-to-favorite @if(checkFavorite($product->id))favorite @endif" data-product-id="{{ $product->id }}"></i></a></li>
                     @endguest
                 </ul>
-
             </div>
-        </div>
+        </div><!-- /.product_img -->
+
         <div class="product_info">
             <h6 class="product_title"><a href="{{route('product.detail',$product->slug)}}">{{name($product->id)}}</a></h6>
             <div class="product_price">
@@ -135,6 +144,6 @@
                 </ul>
 
             </div>
-        </div>
-    </div>
+        </div><!-- /.product_info -->
+    </div><!-- /.product -->
 </div>
