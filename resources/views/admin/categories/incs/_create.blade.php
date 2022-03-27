@@ -234,7 +234,8 @@ $(document).ready(function () {
 
             $('#icon').change(function () {
                 let icon_class = $(this).val();
-                $('#show-icon').toggleClass(icon_class);
+                $("#show-icon").removeClass();
+                $('#show-icon').addClass(icon_class);
             });
 
         }// end :: starter_event

@@ -223,6 +223,7 @@ $(document).ready(function () {
 
             $('#edit-icon').change(function () {
                 let icon_class = $(this).val();
+                $("#edit-show-icon").removeClass();
                 $('#edit-show-icon').toggleClass(icon_class);
             });
 
