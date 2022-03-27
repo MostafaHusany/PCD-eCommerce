@@ -13,6 +13,6 @@ class PromoCode extends Model
     }
 
     public function orders () {
-        return hasMany(Order::class, 'promo_code_id');
+        return $this->hasMany(Order::class, 'promo_code_id');
     }
 }

@@ -14,7 +14,7 @@ class AddPromoCodeIdToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->float('promo_code_discount')->nullabe();
+            $table->float('promo_code_discount')->nullable();
 
             $table->unsignedBigInteger('promo_code_id')->nullable();
             $table->foreign('promo_code_id')->references('id')->on('promo_codes')

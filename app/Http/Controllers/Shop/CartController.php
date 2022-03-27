@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Shop;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\shop\OrderRequest;
-use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+
+use App\Http\Requests\shop\OrderRequest;
+use App\Http\Requests\shop\PromoRequest;
+
 use Session;
 use Cart;
+
+use App\User;
 use App\Fee;
 use App\Taxe;
 use App\Order;
@@ -18,12 +23,11 @@ use App\Payment;
 use App\Product;
 use App\Address;
 use App\Customer;
-use App\Http\Requests\shop\PromoRequest;
 use App\Shipping;
 use App\OrderProduct;
 use App\PromoCode;
 use App\Traits\MakeOrder;
-use App\User;
+
 use GuzzleHttp\Handler\Proxy;
 
 class CartController extends Controller
@@ -144,6 +148,7 @@ class CartController extends Controller
 
     public function create_order(OrderRequest $request)
     {
+        // dd($request->all());
         $check_auth = Auth()->user();
         // check if user not login 
         if (!$check_auth) {
@@ -178,7 +183,7 @@ class CartController extends Controller
         } else {
             $user_id = auth()->user()->customer->id;
         }
-        // please use MakeOrder Trait here 
+        
 
         // parse the atributes for create_customer_order method
         foreach (Cart::content() as $item) {
@@ -191,7 +196,8 @@ class CartController extends Controller
             $user_id,
             [$request->shipping_id_field, 0, $request->shipping_price_field],
             [$products_id, $products_quantity],
-            []
+            [],
+            $request->promoCode
         );
 
         // take address ...

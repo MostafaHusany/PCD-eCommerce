@@ -35,7 +35,6 @@ trait MakeOrder {
          * 3- remove the left quantityt of the requested sold product
          * 4- calculate the taxes 
          */
-
         if (isset($promo_code)) {
             $promo_code = PromoCode::where('code', $promo_code)->first(); 
         }
@@ -195,6 +194,7 @@ trait MakeOrder {
             $promo_code = $target_order->promo_code;
             $discount = $target_order->promo_code->type == 'fixed' ? $promo_code->value : $promo_code->value / $total * 100;
             $total   -= $discount;
+            $target_order->promo_code_discount = $promo_code->value;
         }
 
         $target_order->sub_total = $sub_total;

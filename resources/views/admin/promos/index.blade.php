@@ -56,6 +56,7 @@
                 <th>Type</th>
                 <th>Value</th>
                 <th>Owner</th>
+                <th>Nom Orders</th>
                 <th>Active</th>
                 <th>Actions</th>
             </thead>
@@ -107,6 +108,7 @@ $(function () {
             { data: 'type', name: 'type' },
             { data: 'value', name : 'value'},
             { data: 'owner', name: 'owner' },
+            { data: 'orders_count', name: 'orders_count' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],

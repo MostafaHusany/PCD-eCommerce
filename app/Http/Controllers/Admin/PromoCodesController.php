@@ -27,13 +27,17 @@ class PromoCodesController extends Controller
 
     public function index (Request $request) {
         if ($request->ajax()) {
-            $model = PromoCode::query();
+            $model = PromoCode::query();//->with('orders');
             
             if (isset($request->title)) {
                 $model->where('title', $request->title);
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('orders_count', function ($row_object) {
+                return $row_object->orders()->count();
+                // return 0;
+            })
             ->addColumn('owner', function ($row_object) {
                 return isset($row_object->user) ? $row_object->user->name : '---';
             })
