@@ -1,4 +1,5 @@
 <!-- START SECTION BREADCRUMB -->
+<!-- this file used in products.index -->
 <div class="breadcrumb_section bg_gray page-title-mini">
     <div class="container">
         <!-- STRART CONTAINER -->

@@ -1,4 +1,8 @@
 <!-- START SECTION BREADCRUMB -->
+
+<!-- this file used in cart.index , checkout.index , checkout.thanks,
+home.index , orderDetail.index , productDetails.index , products.index 
+, products.search , wishlist.index -->
 <div class="breadcrumb_section bg_gray page-title-mini">
     <div class="container"><!-- STRART CONTAINER -->
         <div class="row align-items-center">
