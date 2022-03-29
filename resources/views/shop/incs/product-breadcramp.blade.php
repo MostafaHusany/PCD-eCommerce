@@ -10,10 +10,16 @@
             </div>
             <div class="col-md-6">
                 <ol class="breadcrumb justify-content-md-end">
-                    <li class="breadcrumb-item"><a href="{{route('index')}}">@lang('frontend.Home')</a></li>
-                    <li class="breadcrumb-item"><a href="{{route('products')}}">@lang('frontend.AllProducts')</a></li>
+                    <li class="breadcrumb-item">
+                        <a href="{{route('index')}}">@lang('frontend.Home')</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{route('products')}}">@lang('frontend.AllProducts')</a>
+                    </li>
                     @if($name->CategoryParent)
-                    <li class="breadcrumb-item"><a href="{{route('category',$name->CategoryParent->id)}}">{{$name->CategoryParent->en_title}}</a></li>
+                    <li class="breadcrumb-item">
+                        <a href="{{route('category',$name->CategoryParent->id)}}">{{$name->CategoryParent->en_title}}</a>
+                    </li>
                     @endif
                     <li class="breadcrumb-item active">{{$name->en_title}}</li>
                 </ol>

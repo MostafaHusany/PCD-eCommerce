@@ -4,17 +4,19 @@
 @lang('frontend.ThanksPage')
 @endsection
 
-@section('content')
-@include('shop.incs.breadcramp', [
-'name' => trans('frontend.ThanksPage'),
-])
-
-
+@push('style')
 <style>
     .feedback {
         color: red;
     }
 </style>
+@endpush
+
+@section('content')
+@include('shop.incs.breadcramp', [
+'name' => trans('frontend.ThanksPage'),
+])
+
 <!-- START MAIN CONTENT -->
 <div class="main_content">
     <!-- START SECTION SHOP -->

@@ -82,7 +82,9 @@
         <div class="form-group row">
             <?php
                 $categories_icons = ['flaticon-tv', 'flaticon-responsive', 'flaticon-camera', 'flaticon-plugins',
-                'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer'];
+                'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer',
+                'flaticon-mouse'  , 'fas fa-microchip', 'fas fa-memory', 'fas fa-gamepad'
+            ];
             ?>
             <label for="rule" class="col-sm-2 col-form-label">Category Icon</label>
             <div class="col-5">

@@ -5,9 +5,10 @@
 @endsection
 
 @section('content')
-@include('shop.incs.breadcramp', [
-'name' => trans('frontend.orderDetails'),
-])
+
+    @include('shop.incs.breadcramp', [
+    'name' => trans('frontend.orderDetails'),
+    ])
 
 
 <!-- START MAIN CONTENT -->
@@ -16,8 +17,6 @@
     @include('shop.incs.orderDetails',[
     'order' => $order,
     ])
-
-
 </div>
 
 @endsection

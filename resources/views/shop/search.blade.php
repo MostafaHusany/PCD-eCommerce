@@ -6,8 +6,9 @@
 
 
 @section('content')
+
 @include('shop.incs.breadcramp', [
-'name' => 'trans('frontend.Searchresult')',
+'name' => trans('frontend.Searchresult'),
 ])
 
 <!-- START MAIN CONTENT -->
@@ -122,12 +123,9 @@
 
 </div>
 <!-- END MAIN CONTENT -->
+@endsection
 
-
-@section('script')
-
-
-
+@push('script')
 <script type="text/javascript">
     $(document).ready(function() {
         $('li.dropdown').click(function() {
@@ -148,6 +146,4 @@
         });
     });
 </script>
-
-@endsection
-@endsection
+@endpush

@@ -6,9 +6,11 @@
             </a>
             <div class="product_action_box">
                 <ul class="list_none pr_action_btn">
-                    <li class="add-to-cart"> <a class="item_to_cart" href="" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" @if($product->has_promotion() == '1') data-price="{{$product->get_promotion()->price}}" @else data-price="{{ $product->price }}" @endif
-                            aria-label="{{name($product->id)}}"><i class="icon-basket-loaded">
-                            </i>{{trans('frontend.add_to_cart')}}</a></li>
+                    <li class="add-to-cart"> 
+                        <a class="item_to_cart" href="" data-ar_name="{{ $product->ar_name }}" data-en_name="{{ $product->en_name }}" data-quantity="1" data-id="{{ $product->id }}" @if($product->has_promotion() == '1') data-price="{{$product->get_promotion()->price}}" @else data-price="{{ $product->price }}" @endif aria-label="{{name($product->id)}}">
+                            <i class="icon-basket-loaded"></i>{{trans('frontend.add_to_cart')}}
+                        </a>
+                    </li>
                     <li><a href="shop-compare.html"><i class="icon-shuffle"></i></a></li>
                     <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
                     @guest

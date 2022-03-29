@@ -7,13 +7,13 @@
 
 @section('content')
 @if($title == 'all_products')
-@include('shop.incs.breadcramp', [
-'name' => trans('frontend.AllProducts'),
-])
+    @include('shop.incs.breadcramp', [
+    'name' => trans('frontend.AllProducts'),
+    ])
 @else
-@include('shop.incs.product-breadcramp', [
-'name' => $currentCategory,
-])
+    @include('shop.incs.product-breadcramp', [
+    'name' => $currentCategory,
+    ])
 @endif
 <!-- START MAIN CONTENT -->
 <div class="main_content">
@@ -136,38 +136,23 @@
     </div>
     <!-- END SECTION SHOP -->
 
-
-
 </div>
 <!-- END MAIN CONTENT -->
+@endsection
 
-
-@section('script')
-
-
-
-<script type="text/javascript">
+@push('script')
+<script>
     $(document).ready(function() {
         $('li.dropdown').click(function() {
             $('li.dropdown').not(this).find('ul').hide();
             $(this).find('ul').toggle();
         });
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
 
         $("#price_filter").each(function() {
             var self = $(this);
             $('#price_first').val(self.data('min-value'));
             $('#price_second').val(self.data('max-value'));
         });
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
 
         $(document).on('click', '.pagination a', function(event) {
             event.preventDefault();
@@ -177,27 +162,17 @@
 
         function fetch_data(page) {
             var url = window.location.href;
-            console.log(window.location.href);
-            // if (url.search('products') == '-1') {
-            //     let last_part = url.substr(url.lastIndexOf('/') + 1)
-            //     $.ajax({
-            //         url: "/pagination/category?page=" + page + "/"+ last_part,
-
-            //         success: function(data) {
-            //             $('#table_data').html(data);
-            //         }
-            //     });
-            // } else {
-                $.ajax({
-                    url: "/pagination/fetch_data?page=" + page,
-                    success: function(data) {
-                        $('#table_data').html(data);
-                    }
-                });
-            }
-        // }
-
+            
+            $("html, body").scrollTop(0);
+            
+            $.ajax({
+                url: "/pagination/fetch_data?page=" + page,
+                success: function(data) {
+                    console.log(data);
+                    $('#table_data').html(data);
+                }
+            });
+        }
     });
 </script>
-@endsection
-@endsection
+@endpush

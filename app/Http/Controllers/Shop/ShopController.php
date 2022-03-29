@@ -67,19 +67,30 @@ class ShopController extends Controller
 
     public function products()
     {
-        $categoryProducts = ProductCategory::where('is_main', '1')->get();
-        $products = Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
-        $title = "all_products";
+        $title            = "all_products";
+        $categoryProducts = cache()->remember('category_products', 60, function () {
+            return ProductCategory::where('is_main', '1')->get();
+        });
+
+        $products = cache()->remember('products', 60, function () {
+            return Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
+        });
+
         return view('shop.products', compact('products', 'categoryProducts', 'title'));
     }
 
     function fetch_data(Request $request)
     {
+        // dd($request->all());
         if ($request->ajax()) {
-            $products = Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
+            $products = cache()->remember("product_$request->page", 60, function () {
+                return Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
+            });
+
             return view('shop.incs.product-card', compact('products'))->render();
         }
     }
+
     function category(Request $request)
     {
         if ($request->ajax()) {

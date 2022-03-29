@@ -48,66 +48,63 @@
                                         <option value="">@lang('frontend.categories')</option>
                                         @foreach(categories() as $key => $category)
                                         <option value="{{$category->id }}">
-                            {{title($category->id)}}
-                            </option>
-                            @endforeach
-                            </select>
+                                        {{title($category->id)}}
+                                        </option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                            </div>
+                            --}}
+                            @csrf
+                            <input class="form-control" placeholder="@lang('frontend.Search')" name="search" required="" type="text">
+                            <button type="submit" class="search_btn2"><i class="fa fa-search"></i></button>
                         </div>
+                    </form>
                 </div>
-                --}}
-                @csrf
-                <input class="form-control" placeholder="@lang('frontend.Search')" name="search" required="" type="text">
-                <button type="submit" class="search_btn2"><i class="fa fa-search"></i></button>
+                <ul class="navbar-nav attr-nav align-items-center">
+
+                    @auth
+                    <li><a href="{{route('profile')}}" class="nav-link"><i class="linearicons-user"></i></a></li>
+                    @else
+                    <li><a href="{{route('Login')}}" class="nav-link"><i class="linearicons-user"></i></a></li>
+                    @endauth
+
+                    @guest
+                    <li><a href="{{route('Login')}}" class="nav-link"><i class="linearicons-heart"></i></a></li>
+                    @else
+                    <li><a href="{{route('wishlist')}}" class="nav-link"><i class="linearicons-heart"></i></a></li>
+                    @endguest
+
+
+                    <li class="dropdown cart_dropdown"><a class="nav-link cart_trigger" href="#" data-bs-toggle="dropdown"><i class="linearicons-cart"></i><span class="cart_count" id='items_count'>{{items_count()}}</span></a>
+                        <div class="cart_box dropdown-menu dropdown-menu-right">
+                            <ul class="cart_list" id="cart-content">
+                                @if(cartContent())
+                                    @foreach(cartContent() as $item)
+                                    <div class="single">
+                                        <li>
+                                            <a href="#" class="item_remove"><i class="ion-close delete-cart-item" data-product-id="{{$item->rowId}}"></i></a>
+                                            <a href="#"><img src="assets/images/cart_thamb2.jpg" alt="cart_thumb2">{{$item->name}}</a>
+                                            <span class="cart_quantity"> {{$item->qty}} x <span class="cart_amount"> <span class="price_symbole">SR</span></span>{{$item->price}}</span>
+                                        </li>
+                                    </div>
+                                    @endforeach
+                                @endif
+                            </ul>
+
+                            <div class="cart_footer">
+                                <p class="cart_total"><strong>@lang('frontend.Subtotal'):</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
+
+                                <p class="cart_buttons">
+                                    <a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">@lang('frontend.ViewCart')</a>
+                                    <a href="{{route('checkout')}}" class="btn btn-fill-out">@lang('frontend.Checkout')</a>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            </form>
         </div>
-        <ul class="navbar-nav attr-nav align-items-center">
-
-            @auth
-            <li><a href="{{route('profile')}}" class="nav-link"><i class="linearicons-user"></i></a></li>
-            @else
-            <li><a href="{{route('Login')}}" class="nav-link"><i class="linearicons-user"></i></a></li>
-            @endauth
-
-            @guest
-            <li><a href="{{route('Login')}}" class="nav-link"><i class="linearicons-heart"></i></a></li>
-            @else
-            <li><a href="{{route('wishlist')}}" class="nav-link"><i class="linearicons-heart"></i></a></li>
-            @endguest
-
-
-            <li class="dropdown cart_dropdown"><a class="nav-link cart_trigger" href="#" data-bs-toggle="dropdown"><i class="linearicons-cart"></i><span class="cart_count" id='items_count'>{{items_count()}}</span></a>
-                <div class="cart_box dropdown-menu dropdown-menu-right">
-                    <ul class="cart_list" id="cart-content">
-                        @if(cartContent())
-                        @foreach(cartContent() as $item)
-                        <div class="single">
-                            <li>
-                                <a href="#" class="item_remove"><i class="ion-close delete-cart-item" data-product-id="{{$item->rowId}}"></i></a>
-                                <a href="#"><img src="assets/images/cart_thamb2.jpg" alt="cart_thumb2">{{$item->name}}</a>
-                                <span class="cart_quantity"> {{$item->qty}} x <span class="cart_amount"> <span class="price_symbole">SR</span></span>{{$item->price}}</span>
-                            </li>
-                        </div>
-                        @endforeach
-                        @endif
-                    </ul>
-
-                    <div class="cart_footer">
-                        <p class="cart_total"><strong>@lang('frontend.Subtotal'):</strong> <span class="cart_price"> <span class="price_symbole" id="totalPrice">{{totalPrice()}}</span></p>
-
-                        <p class="cart_buttons"><a href="{{route('cart')}}" class="btn btn-fill-line rounded-0 view-cart">@lang('frontend.ViewCart')</a>
-                            <a href="{{route('checkout')}}" class="btn btn-fill-out">@lang('frontend.Checkout')</a>
-
-
-                    </div>
-
-                    </p>
-                </div>
-    </div>
-    </li>
-    </ul>
-    </div>
-    </div>
     </div><!-- /.middle-header -->
 
     <div class="bottom_header dark_skin main_menu_uppercase border-top">
@@ -328,8 +325,14 @@
                                     </ul>
                                 </li>
                                 --}}
+                                <!-- <li>
+                                	<ul class="more_slide_open">
+                                    	<li><a class="dropdown-item nav-link nav_item" href="login.html"><i class="flaticon-fax"></i> <span>Fax Machine</span></a></li>
+                                        <li><a class="dropdown-item nav-link nav_item" href="register.html"><i class="flaticon-mouse"></i> <span>Mouse</span></a></li>
+                                    </ul>
+                                </li> -->
                             </ul>
-                            <div class="more_categories">More Categories</div>
+                            <!-- <div class="more_categories">More Categories</div> -->
                         </div>
                     </div>
                 </div>

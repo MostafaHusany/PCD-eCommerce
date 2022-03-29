@@ -2,7 +2,6 @@
 
 @section('title')
 {{trans('frontend.CartContent')}}
-
 @endsection
 
 @section('content')
