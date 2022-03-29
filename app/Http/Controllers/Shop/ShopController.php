@@ -15,7 +15,7 @@ class ShopController extends Controller
         // call here to safe time on database ->with('children')
         $main_categories = ProductCategory::where('is_main', 1)->with('children')->get();
 
-        return view('shop.index', compact('main_categories'));
+        return view('shop.home.index', compact('main_categories'));
     }
 
     public function prodects(Request $request)
@@ -62,7 +62,7 @@ class ShopController extends Controller
         $product = Product::where('slug', $slug)->first();
         $relatedProducts =  $product->categories[0]->products;
         $category =  $product->categories[0];
-        return view('shop.show', compact('product', 'relatedProducts', 'category'));
+        return view('shop.productDetails.index', compact('product', 'relatedProducts', 'category'));
     }
 
     public function products()
@@ -76,7 +76,7 @@ class ShopController extends Controller
             return Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
         });
 
-        return view('shop.products', compact('products', 'categoryProducts', 'title'));
+        return view('shop.products.index', compact('products', 'categoryProducts', 'title'));
     }
 
     function fetch_data(Request $request)
@@ -87,7 +87,7 @@ class ShopController extends Controller
                 return Product::where('is_active', '1')->paginate(PAGINATION_COUNT);
             });
 
-            return view('shop.incs.product-card', compact('products'))->render();
+            return view('shop.products.incs.product-card', compact('products'))->render();
         }
     }
 
@@ -99,7 +99,7 @@ class ShopController extends Controller
             $category = $params [1];
             $category = ProductCategory::find($category);
             $products = $category->products()->where('is_active','1')->paginate(PAGINATION_COUNT);
-            return view('shop.incs.product-card', compact('products'))->render();
+            return view('shop.products.incs.product-card', compact('products'))->render();
         }
     }
 }

@@ -123,6 +123,6 @@ class UserController extends Controller
 
     public function orderDetails($id){
         $order = Order::with('order_products')->find($id);
-        return view('shop.orderDetail',compact('order'));
+        return view('shop.orderDetail.index',compact('order'));
     }
 }

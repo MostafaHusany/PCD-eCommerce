@@ -25,7 +25,7 @@ class FavoriteController extends Controller
 
     public function wishlist(){
         $favorites = Favorite::where('user_id',Auth()->user()->id)->get();
-        return view('shop.wishlist',compact('favorites'));
+        return view('shop.wishlist.index',compact('favorites'));
     }
 
     public function remove_favorite($product_id){

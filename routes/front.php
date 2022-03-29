@@ -16,7 +16,7 @@ Route::group([
     Route::get('pagination/category', 'ShopController@category');
 
     Route::group(['prefix' => 'shop'], function () {
-        Route::get('/', 'ShopController@index');
+        // Route::get('/', 'ShopController@index');
         Route::get('/{slug}', 'ShopController@show')->name('product.detail');
     });
     Route::get('category/{id}', 'CategoryController@category')->name('category');
