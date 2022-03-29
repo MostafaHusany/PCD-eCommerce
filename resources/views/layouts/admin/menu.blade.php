@@ -20,31 +20,6 @@
     </a>
 </li>
 
-<li class="nav-item {{ str_contains(Request::path(), 'promotions') || str_contains(Request::path(), 'promo-codes') ? 'menu-is-opening menu-open' : '' }}">
-    <a href="#" class="nav-link">
-        <i class="nav-icon fas fa-hand-holding-usd"></i>
-        <p>
-            Promotions
-            <i class="right fas fa-angle-left"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview" !style="display: block;">
-        <li class="nav-item">
-            <a href="{{ route('admin.promotions.index') }}" class="nav-link {{ Request::is('admin/promotions') ? 'active' : ''}}">
-                <i class="nav-icon fas fa-percentage"></i>
-                <p>Discounts</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('admin.promo.index') }}" class="nav-link {{ Request::is('admin/promo-codes') ? 'active' : ''}}">
-                <i class="nav-icon fas fa-gift"></i>
-                <p>Promo Codes</p>
-            </a>
-        </li>
-    </ul>
-</li>
-
 <li class="nav-item {{ str_contains(Request::path(), '/products-categories') || str_contains(Request::path(), '/products') || str_contains(Request::path(), '/brands') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-box-open"></i>
@@ -97,6 +72,31 @@
             <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-box-open"></i>
                 <p>Sold Products</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item {{ str_contains(Request::path(), 'promotions') || str_contains(Request::path(), 'promo-codes') ? 'menu-is-opening menu-open' : '' }}">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-hand-holding-usd"></i>
+        <p>
+            Promotions
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" !style="display: block;">
+        <li class="nav-item">
+            <a href="{{ route('admin.promotions.index') }}" class="nav-link {{ Request::is('admin/promotions') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-percentage"></i>
+                <p>Discounts</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('admin.promo.index') }}" class="nav-link {{ Request::is('admin/promo-codes') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-gift"></i>
+                <p>Promo Codes</p>
             </a>
         </li>
     </ul>
