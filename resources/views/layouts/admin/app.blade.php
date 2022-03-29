@@ -19,6 +19,7 @@
     <!-- <link href="{{ asset('rtl/css/adminlte.css') }}" rel="stylesheet">
     <link href="{{ asset('rtl/css/custom.css') }}" rel="stylesheet"> -->
     <link rel="stylesheet" href="{{asset('shop/css/flaticon.css')}}">
+    <link rel="stylesheet" href="{{asset('css/admin-custom.css')}}">
 
     @yield('third_party_stylesheets')
 
