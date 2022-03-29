@@ -24,10 +24,11 @@ class CreateCustomersTable extends Migration
             $table->string('city');
             $table->text('address');
             $table->string('plain_password');
-            $table->unsignedBigInteger('user_id');
             $table->text('meta')->nullable();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')
+            ->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
         });

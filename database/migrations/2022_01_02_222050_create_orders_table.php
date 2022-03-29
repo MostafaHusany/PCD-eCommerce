@@ -24,9 +24,9 @@ class CreateOrdersTable extends Migration
 
             $table->string('code')->unique();// we will use this for filtration ad-time(), cs-time()
             
-            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')
-            ->onUpdate('cascade')->onDelete('cascade');
+            ->onUpdate('cascade')->onDelete('set null');
 
 
             $table->timestamps();

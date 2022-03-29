@@ -16,7 +16,7 @@ class AddAddressIdToOrdersTable extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->unsignedBiginteger('address_id')->nullable();
             $table->foreign('address_id')->references('id')->on('addresses')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

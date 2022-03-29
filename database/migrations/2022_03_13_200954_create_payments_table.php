@@ -15,13 +15,14 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
-            $table->foreign('order_id')->references('id')->on('orders')
-                ->onUpdate('cascade')->onDelete('cascade');
             $table->string('total');
             $table->string('bank_transfer');
             $table->enum('status', ['Pending', 'Accepted', 'Rejected']);
             $table->timestamps();
+            
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders')
+            ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -19,7 +19,7 @@ class AddShippingColumnsToOrdersTable extends Migration
             
             $table->unsignedBiginteger('shipping_id')->nullable();
             $table->foreign('shipping_id')->references('id')->on('shippings')
-            ->onUpdate('cascade')->onDelete('cascade');
+            ->onUpdate('cascade')->onDelete('set null');
 
         });
     }

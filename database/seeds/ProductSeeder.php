@@ -37,7 +37,8 @@ class ProductSeeder extends Seeder
                     'is_active' => 1,
                     'is_composite' => 0,
                     'reserved_quantity' => rand(0, 1),
-                    'brand_id' => Brand::all()->random()->id,
+                    // 'brand_id' => Brand::all()->random()->id,
+                    'brand_id' => null
                 );
                 $product =  Product::create($products);
                 $categoryProducts = array(

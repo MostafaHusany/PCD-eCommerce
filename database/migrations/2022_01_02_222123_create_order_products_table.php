@@ -20,9 +20,9 @@ class CreateOrderProductsTable extends Migration
             $table->foreign('order_id')->references('id')->on('orders')
             ->onUpdate('cascade')->onDelete('cascade');
             
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')
-            ->onUpdate('cascade')->onDelete('cascade');
+            ->onUpdate('cascade')->onDelete('set null');
 
             
             $table->string('code');// we will use this for filtration, uses order value ad-time(), cs-time()

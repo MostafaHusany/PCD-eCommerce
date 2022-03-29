@@ -17,7 +17,7 @@ class AddBrandIdToProductsTable extends Migration
             
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->foreign('brand_id')->on('brands')->references('id')
-            ->onUpdate('cascade')->onDelete('cascade');
+            ->onUpdate('cascade')->onDelete('set null');
 
         });
     }

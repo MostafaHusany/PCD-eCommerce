@@ -16,14 +16,6 @@ class CreateProductPromotionsTable extends Migration
         Schema::create('product_promotions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('products')
-            ->onUpdate('cascade')->onDelete('cascade');
-            
-            $table->unsignedBigInteger('promotion_id');
-            $table->foreign('promotion_id')->references('id')->on('promotions')
-            ->onUpdate('cascade')->onDelete('cascade');
 
             $table->date('start_date');
             $table->date('end_date');
@@ -32,6 +24,14 @@ class CreateProductPromotionsTable extends Migration
             $table->integer('quantity');
             $table->string('discount_ratio');
             $table->tinyInteger('is_active')->default(0);
+            
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products')
+            ->onUpdate('cascade')->onDelete('cascade');
+            
+            $table->unsignedBigInteger('promotion_id');
+            $table->foreign('promotion_id')->references('id')->on('promotions')
+            ->onUpdate('cascade')->onDelete('cascade');
 
         });
     }

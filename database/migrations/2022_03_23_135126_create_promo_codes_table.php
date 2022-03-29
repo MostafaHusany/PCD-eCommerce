@@ -26,7 +26,7 @@ class CreatePromoCodesTable extends Migration
             // link to a technical user optional !
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')
-            ->onUpdate('cascade')->onDelete('cascade');
+            ->onUpdate('cascade')->onDelete('set null');
         });
     }
 
