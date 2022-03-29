@@ -256,7 +256,7 @@
                     <div class="releted_product_slider carousel_slider owl-carousel owl-theme" data-margin="20" data-responsive='{"0":{"items": "1"}, "481":{"items": "2"}, "768":{"items": "3"}, "1199":{"items": "4"}}'>
                         @if(count($relatedProducts)>0)
                         @foreach($relatedProducts as $single)
-                        @include('shop.incs.releted-product-card', [
+                        @include('shop.productDetails.incs.releted-product-card', [
                         'product' => $single,
                         ])
                         @endforeach

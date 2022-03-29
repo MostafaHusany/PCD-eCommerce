@@ -70,7 +70,7 @@ class CartController extends Controller
     {
         $totalPrice = Cart::subtotal();
         $shippings    = Shipping::where('is_active', '1')->get();
-        return view('shop.cart', compact('totalPrice', 'shippings'));
+        return view('shop.cart.index', compact('totalPrice', 'shippings'));
     }
 
     public function update_quantity($quantity, $row_Id)
@@ -109,7 +109,7 @@ class CartController extends Controller
             $all_fees[] = $fee * Cart::count();
         }
         $fees_sum = array_sum($all_fees);
-        return view('shop.checkout', compact(
+        return view('shop.checkout.index', compact(
             'addresses',
             'shippings',
             'taxes',
@@ -213,7 +213,7 @@ class CartController extends Controller
 
         Cart::destroy();
         session()->forget('promo');
-        return view('shop.thanks', compact('order'));
+        return view('shop.checkout.thanks', compact('order'));
     }
 
     public function promoApply(Request $request)

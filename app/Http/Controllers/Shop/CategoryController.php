@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Product;
 use App\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 
 class CategoryController extends Controller
 {
@@ -16,10 +19,10 @@ class CategoryController extends Controller
         $currentCategory = ProductCategory::where('id', $id)->first();
         $title = "category";
         if (isset($currentCategory->products)) {
-            $products = $currentCategory->products()->where('is_active','1')->paginate(PAGINATION_COUNT);
-            return view('shop.products', compact('categoryProducts', 'products', 'currentCategory', 'title'));
+            $products = $currentCategory->products()->where('is_active', '1')->paginate(PAGINATION_COUNT);
+            return view('shop.products.index', compact('categoryProducts', 'products', 'currentCategory', 'title'));
         }
-        return view('shop.products', compact('categoryProducts', 'currentCategory', 'title'));
+        return view('shop.products.index', compact('categoryProducts', 'currentCategory', 'title'));
     }
 
     public function brand_filter(Request $request)
@@ -27,14 +30,12 @@ class CategoryController extends Controller
         $title = "category";
         $brands = $request->brands;
         if ($brands) {
-            $products = Product::whereIn('brand_id', $brands)->get();
+            $products = Product::whereIn('brand_id', $brands)->paginate(PAGINATION_COUNT);
             $categoryProducts = ProductCategory::get();
             $currentCategory = ProductCategory::first();
 
-            return view('shop.products', compact('categoryProducts', 'products', 'currentCategory', 'title'));
-
-            // return view('shop.search', compact( 'products'));
-        }else{
+            return view('shop.products.index', compact('categoryProducts', 'products', 'currentCategory', 'title'));
+        } else {
             return redirect()->back();
         }
     }
@@ -69,14 +70,20 @@ class CategoryController extends Controller
                 $products[] = $cat->products;
             }
             $title = "category";
-            $products = $products[0];
+            $products =  $this->paginate($products[0]);
             $categoryProducts = [];
-            return view('shop.products', compact('categoryProducts', 'products', 'currentCategory', 'title'));
+            return view('shop.products.index', compact('categoryProducts', 'products', 'currentCategory', 'title'));
         } else {
             return redirect()->back();
         }
     }
 
+    public function paginate($items, $perPage = 5, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
     public function Search(Request $request)
     {
         $products = Product::where('ar_name', 'like', '%' . $request->search . '%')
@@ -85,6 +92,6 @@ class CategoryController extends Controller
             ->orWhere('en_name',  'like', '%' . $request->search . '%')
             ->orWhere('en_small_description',  'like', '%' . $request->search . '%')
             ->orWhere('en_description',  'like', '%' . $request->search . '%')->get();
-            return view('shop.search', compact( 'products'));
+        return view('shop.products.search', compact('products'));
     }
 }

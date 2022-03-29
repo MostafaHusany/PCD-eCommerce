@@ -50,7 +50,7 @@
                             <div class="product">
                                 <div class="product_img">
                                     <a href="{{route('product.detail',$product->slug)}}">
-                                        <img src="assets/images/product_img1.jpg" alt="product_img1">
+                                        <img src="{{asset($product->main_image)}}" alt="product_img1">
                                     </a>
                                     <div class="product_action_box">
 

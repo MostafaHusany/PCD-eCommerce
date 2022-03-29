@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div id="table_data">
-                        @include('shop.incs.product-card')
+                        @include('shop.products.incs.product-card')
                     </div>
                 </div>
                 <div class="col-lg-3 order-lg-first mt-4 pt-2 mt-lg-0 pt-lg-0">
