@@ -134,5 +134,6 @@ return [
     'promoType'              => 'نوع قسيمة الخصم',
     'PromoValue'             => 'قيمة قسيمة الخصم',
     'Searchresult'           => 'نتيجة البحث',
+    'RuleNotAvailable'       => 'غير مسموح بالكمية المطلوبة',
 ];
 

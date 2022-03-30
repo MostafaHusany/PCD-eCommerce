@@ -13,10 +13,12 @@ use Illuminate\Support\Collection;
 
 class CategoryController extends Controller
 {
-    public function category($id)
+    public function category($slug)
     {
-        $categoryProducts = ProductCategory::where('category_id', $id)->get();
-        $currentCategory = ProductCategory::where('id', $id)->first();
+        // get current category
+        $currentCategory = ProductCategory::where('slug', $slug)->first();
+        // get category children
+        $categoryProducts = ProductCategory::where('category_id', $currentCategory->id)->get();
         $title = "category";
         if (isset($currentCategory->products)) {
             $products = $currentCategory->products()->where('is_active', '1')->paginate(PAGINATION_COUNT);

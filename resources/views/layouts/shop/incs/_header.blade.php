@@ -119,7 +119,7 @@
                             <ul>
                                 @foreach(categories() as $category)
                                 <li class="dropdown dropdown-mega-menu">
-                                    <a class="dropdown-item nav-link dropdown-toggler" href="{{route('category',$category->id)}}">
+                                    <a class="dropdown-item nav-link dropdown-toggler" href="{{route('category',$category->slug)}}">
                                         <i class="flaticon-tv"></i>
                                         <span>{{title($category->id)}}</span>
                                     </a>

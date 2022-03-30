@@ -37,23 +37,108 @@ class CartController extends Controller
     public function add_to_cart(Request $request)
     {
         $product_quantity = Product::find($request->id)->quantity;
-        if ($product_quantity < $request->quantity) {
-            $cartCollection = Cart::content();
-            $items_count = $cartCollection->count();
-            $totalPrice = Cart::subtotal();
-            return response()->json([
-                'status' => 'error', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
-                'totalPrice' => $totalPrice
-            ]);
-        } else {
-            $cart = Cart::add($request->id, $request->ar_name, $request->quantity, $request->price);
-            $cartCollection = Cart::content();
-            $items_count = $cartCollection->count();
-            $totalPrice = Cart::subtotal();
-            return response()->json([
-                'success' => 'success', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
-                'totalPrice' => $totalPrice
-            ]);
+        // get product categories to check rule for every category
+        $product_cat = Product::find($request->id)->categories;
+        foreach ($product_cat as $cat) {
+            // if product cate don't have rule
+            if ($cat->rule == '0') {
+                if ($product_quantity < $request->quantity) {
+                    $cartCollection = Cart::content();
+                    $items_count = $cartCollection->count();
+                    $totalPrice = Cart::subtotal();
+                    return response()->json([
+                        'status' => 'error', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
+                        'totalPrice' => $totalPrice
+                    ]);
+                } else {
+                    $cart = Cart::add($request->id, $request->ar_name, $request->quantity, $request->price);
+                    $cartCollection = Cart::content();
+                    $items_count = $cartCollection->count();
+                    $totalPrice = Cart::subtotal();
+                    return response()->json([
+                        'success' => 'success', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
+                        'totalPrice' => $totalPrice
+                    ]);
+                }
+                // if product category has rule
+            } else {
+                // if cart has iteams
+                if (count(Cart::content()) > 0) {
+                    // loop in cart items 
+                    foreach (Cart::content() as $item) {
+                        // if iteam in cart
+                        if ((int)$request->id == (int)$item->id) {
+                            // if total required quantity for item plus item in cart quantity greater than rule 
+                            // can't push in cart 
+                            if ((int)$request->quantity + $item->qty > $cat->rule) {
+                                $cartCollection = Cart::content();
+                                $items_count = $cartCollection->count();
+                                $totalPrice = Cart::subtotal();
+                                return response()->json([
+                                    'status' => 'errorRuleQuantity', 'items_count' => $items_count,
+                                    'cartCollection' => $cartCollection,
+                                    'totalPrice' => $totalPrice
+                                ]);
+                                // if total required quantity for item plus item in cart quantity 
+                                // less than rule  push in cart 
+                            } else {
+
+                                $cart = Cart::add($request->id, $request->ar_name, $request->quantity, $request->price);
+                                $cartCollection = Cart::content();
+                                $items_count = $cartCollection->count();
+                                $totalPrice = Cart::subtotal();
+                                return response()->json([
+                                    'success' => 'success', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
+                                    'totalPrice' => $totalPrice
+                                ]);
+                            }
+                        } else {
+
+                            if ((int)$request->quantity > $cat->rule) {
+                                $cartCollection = Cart::content();
+                                $items_count = $cartCollection->count();
+                                $totalPrice = Cart::subtotal();
+                                return response()->json([
+                                    'status' => 'errorRuleQuantity', 'items_count' => $items_count,
+                                    'cartCollection' => $cartCollection,
+                                    'totalPrice' => $totalPrice
+                                ]);
+                            } else {
+                                $cart = Cart::add($request->id, $request->ar_name, $request->quantity, $request->price);
+                                $cartCollection = Cart::content();
+                                $items_count = $cartCollection->count();
+                                $totalPrice = Cart::subtotal();
+                                return response()->json([
+                                    'success' => 'success', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
+                                    'totalPrice' => $totalPrice
+                                ]);
+                            }
+                        }
+                    }
+                }
+                // if cart is empty
+                else {
+                    if ((int)$request->quantity > $cat->rule) {
+                        $cartCollection = Cart::content();
+                        $items_count = $cartCollection->count();
+                        $totalPrice = Cart::subtotal();
+                        return response()->json([
+                            'status' => 'errorRuleQuantity', 'items_count' => $items_count,
+                            'cartCollection' => $cartCollection,
+                            'totalPrice' => $totalPrice
+                        ]);
+                    } else {
+                        $cart = Cart::add($request->id, $request->ar_name, $request->quantity, $request->price);
+                        $cartCollection = Cart::content();
+                        $items_count = $cartCollection->count();
+                        $totalPrice = Cart::subtotal();
+                        return response()->json([
+                            'success' => 'success', 'items_count' => $items_count, 'cartCollection' => $cartCollection,
+                            'totalPrice' => $totalPrice
+                        ]);
+                    }
+                }
+            }
         }
     }
 
@@ -83,7 +168,7 @@ class CartController extends Controller
 
     public function checkout(Request $request)
     {
-       $promoCodeValue = Session::get('promo');
+        $promoCodeValue = Session::get('promo');
         if ($promoCodeValue) {
             $promoCode = PromoCode::where('code', $promoCodeValue)->first();
         } else {
@@ -183,7 +268,7 @@ class CartController extends Controller
         } else {
             $user_id = auth()->user()->customer->id;
         }
-        
+
 
         // parse the atributes for create_customer_order method
         foreach (Cart::content() as $item) {

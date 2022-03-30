@@ -59,7 +59,7 @@
                             <ul class="widget_categories">
                                 @foreach($categoryProducts as $category)
                                 <li class="dropdown cssState">
-                                    <a href="{{route('category',$category->id)}}">
+                                    <a href="{{route('category',$category->slug)}}">
                                         <span class="categories_name">
                                             {{title($category->id)}}
                                         </span>

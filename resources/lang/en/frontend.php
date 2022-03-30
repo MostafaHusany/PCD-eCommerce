@@ -134,4 +134,5 @@ return [
     'promoType'              => 'promo code Type',
     'PromoValue'             => 'Promo code Value',
     'Searchresult'           => 'Search result',
+    'RuleNotAvailable'       => 'Required quantity not available',
 ];

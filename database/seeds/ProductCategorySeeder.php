@@ -165,5 +165,10 @@ class ProductCategorySeeder extends Seeder
         }
         ProductCategory::insert($newData);
 
+        $categories = ProductCategory::get();
+        foreach($categories as $category){
+            $category->slug = Str::random(30);
+            $category->save();
+        }
     }
 }

@@ -54,6 +54,14 @@ $(document).ready(function () {
                         $("#item_not_added").addClass("d-none");
                         $("#success-popup").modal("hide");
                     }, 3000);
+                } else if (response.status == "errorRuleQuantity") {
+                    $("#success-popup").modal("show");
+
+                    $("#item_not_added_rule").removeClass("d-none");
+                    setTimeout(() => {
+                        $("#item_not_added_rule").addClass("d-none");
+                        $("#success-popup").modal("hide");
+                    }, 3000);
                 }
             },
         });
