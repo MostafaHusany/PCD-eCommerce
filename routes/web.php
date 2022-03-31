@@ -158,8 +158,15 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    // dashboard
     Route::group([], function () {
         Route::get('/', 'DashboardController@index');
+    });
+
+    // theme editor
+    
+    Route::get('navbar', 'ThemeController@index');
+    Route::group(['prefix' => 'theme'], function () {
     });
 
     // fast ajax search

@@ -132,7 +132,7 @@
     </ul>
 </li>
 
-<li class="nav-item {{ str_contains(Request::path(), '#') || str_contains(Request::path(), '#') || str_contains(Request::path(), '#') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), '#') || str_contains(Request::path(), '#') || str_contains(Request::path(), 'admin/navbar') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-object-group"></i>
         <p>
@@ -148,7 +148,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ url('admin/navbar') }}" class="nav-link {{ Request::is('admin/navbar') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-stream"></i>
                 <p>Navbar</p>
             </a>

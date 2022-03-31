@@ -10,6 +10,6 @@ class ThemeController extends Controller
     public function index (Request $request) {
         
         
-        return view('admin.shipping.index', compact('all_categories'));
+        return view('admin.themes.navbar.index');
     }
 }

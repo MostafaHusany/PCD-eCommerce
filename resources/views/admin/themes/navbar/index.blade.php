@@ -1,23 +1,83 @@
 @extends('layouts.admin.app')
 
 
+@push('page_css')
+<style>
+.categories_menu {
+    width: 229px;
+}
+
+.categories-list {
+    min-height: 200px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    box-shadow: 0px 5px 10px rgb(0 0 0 / 10%);
+    width: 100%;
+}
+
+.categories-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 5px;
+    font-size: 14px;
+}
+
+.categories-list .show-sub {
+    float: right;
+    margin-top: 5px;
+}
+
+.categories-btn {
+    background-color: #FF324D;
+    border: 1px solid #FF324D;
+    padding: 13px 15px;
+    color: #fff;
+    text-align: left;
+    width: 100%;
+    color: #fff;
+    text-transform: uppercase;
+    ;
+}
+
+.categories-btn span {
+    font-weight: bold;
+}
+
+.categories-btn:hover {
+    color: #fff;
+}
+
+.category-icon {
+    font-size: 1.3rem;
+    margin-right: 0;
+    float: right;
+}
+
+.nav-menu {
+    height: 55px;
+    width: 100%;
+}
+
+</style>
+@endpush
+
 @section('content')
-@php 
-    $object_title = 'Shipping';
+@php
+$object_title = 'Navbar Editor';
 @endphp
 
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
+                <h1 class="m-0">{{$object_title}}</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">
                         <a href="{{ url('admin') }}">Dashboard</a>
                     </li>
-                    
+
                     <li class="breadcrumb-item active">
                         {{$object_title}}s
                     </li>
@@ -27,46 +87,213 @@
     </div><!-- /.container-fluid -->
 </div><!-- /.content-header -->
 
-<div class="container-fluid pt-3">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
-        
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+<div style="!display: none" id="selectNavbarCategories" class="card card-body">
+    <div class="row">
+        <div class="col-6">
+            <h5>Select Navbar Main Categories</h5>
         </div>
+        <div class="col-6 text-right">
+            <div class="toggle-btn btn btn-default btn-sm" data-current-card="#selectNavbarCategories"
+                data-target-card="#objectsCard">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div><!-- /.row -->
+    <hr />
+
+    <div>
+        <div class="form-group row">
+            <label for="nav_selected_categories" class="col-sm-2 col-form-label">Add Categories List</label>
+            <div class="col-sm-10">
+                <select type="text" tabindex="1" class="form-control" id="nav_selected_categories"
+                    multiple="multiple"></select>
+                <div style="padding: 5px 7px; display: none" id="nav_selected_categoriesErr"
+                    class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label for="" class="form-label">Add Navbar Link</label>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <input type="text" placeholder="Add link Text" class="form-control">
+                </div>
+            </div><!-- /.col-4 -->
+            
+            <div class="col-4">
+                <div class="form-group">
+                    <input type="text" placeholder="Add link path" class="form-control">
+                </div>
+            </div><!-- /.col-4 -->
+            
+            <div class="col-2">
+                <button class="btn btn-primary btn-block">
+                    <i class="fas fa-link"></i>
+                </button>
+            </div><!-- /.col-2 -->
+        </div><!-- /.form-group -->
+
+        <div class="form-group">
+            <!-- load the look of the navbar -->
+            <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" class="p-4 look-container">
+                <div class="custome-nav d-flex">
+                    <div class="categories_menu">
+                        <div class="btn categories-btn">
+                            <span>All Categories </span>
+                            <i class="category-icon fas fa-bars"></i>
+                        </div>
+
+                        <div class="categories-list">
+                            <ul>
+
+                            </ul>
+                        </div>
+
+                    </div><!-- /.categories_menu -->
+                    <nav class="nav-menu navbar navbar-expand-lg navbar-light bg-light">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                            <ul class="navbar-nav">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="#">
+                                        Home 
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                </li>
+                                
+                                {{--
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                        role="button" data-toggle="dropdown" aria-expanded="false">
+                                        link 1
+                                        <i class="fas fa-times-circle"></i>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                        role="button" data-toggle="dropdown" aria-expanded="false">
+                                        link 1
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
+                                </li>
+                                --}}
+                            </ul>
+                        </div>
+                    </nav>
+                </div><!-- /.custome-nav -->
+            </div><!-- /.look-container -->
+        </div>
+
+        <button class="update-navbar btn btn-warning float-right">Update Navbar Settings</button>
+        </form>
     </div>
-
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}} Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
-                </div>
-
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
-                </div>
-            </div>
-        </div><!-- /.row -->
-
-        <hr/>
-        
-
-    </div><!-- /.card --> 
-    
-    @include('admin.shipping.incs._create')
-
-    @include('admin.shipping.incs._edit')
-    
-
 </div>
 @endsection
+
+@push('page_scripts')
+<script>
+$(document).ready(function() {
+    $('#nav_selected_categories').select2({
+        allowClear: true,
+        width: '100%',
+        placeholder: 'Select categories',
+        ajax: {
+            url: '{{ url("admin/products-categories-search") }}?is_main=true',
+            dataType: 'json',
+            delay: 150,
+            processResults: function(data) {
+                return {
+                    results: $.map(data, function(item) {
+                        return {
+                            text: `${item['ar_title']} || ${item['en_title']}`,
+                            id: item.id
+                        }
+                    })
+                };
+            },
+            cache: true
+        }
+    }).change(function() {
+        let categoreis_id = $(this).val();
+
+        axios("{{ url('admin/products-categories') }}/0", {
+            params: {
+                group_acc: true,
+                categoreis_id: categoreis_id
+            }
+        }).then(res => {
+            console.log(res);
+            if (res.data.success) {
+                append_category(res.data.data);
+            }
+        })
+    });
+
+    $('.update-navbar').click(function(e) {
+        e.preventDefault();
+
+        $('#loddingSpinner').show();
+
+        axios.post(`{{ url('admin/products-categories') }}/0`, {
+                _token: "{{ csrf_token() }}",
+                _method: "PUT",
+                categories: $('#nav_selected_categories').val()
+            })
+            .then(res => {
+                $('#loddingSpinner').hide();
+
+                if (res.data.success) {
+                    $('#objectsCard').slideDown(500);
+                    $('#selectNavbarCategories').slideUp(500);
+
+                    $('#successAlert').text('Navbar selected categories was updated !!')
+                        .slideDown(500);
+                    setTimeout(() => {
+                        $('#successAlert').text('').slideUp(500);
+                    }, 3000);
+                } else {
+                    $('#dangerAlert').text('Something went wrong, please contact admin !!')
+                        .slideDown(500);
+                    setTimeout(() => {
+                        $('#dangerAlert').text('').slideUp(500);
+                    }, 3000);
+                }
+            });
+    });
+
+    function append_category(categories_list) {
+        $('.categories-el-li').remove();
+
+        let el_list = '';
+        categories_list.forEach(category => {
+            el_list += `
+        <li class="my-2 categories-el-li">
+            <i class="mx-2 fas fa-cog"></i>
+            <span>${category.en_title}</span>
+            <i class="show-sub fas fa-angle-right"></i>
+        </li>`;
+        });
+
+        $('.categories-list ul').append(el_list);
+    }
+
+});
+</script>
+@endpush
