@@ -181,13 +181,13 @@ $(document).ready(function () {
         $("#shipping_price").empty();
         $("#order_price").empty();
         var val = $(this).val();
-        var promoCode = $("#promoCode").val();
+        // var promoCode = $("#promoCode").val();
         $.ajax({
             type: "get", // the method (could be GET btw)
             url: "shipping_price",
             data: {
                 val: val,
-                promoCode: promoCode,
+                // promoCode: promoCode,
             },
             success: function (response) {
                 $("#shipping_price").html(response.get_cost);

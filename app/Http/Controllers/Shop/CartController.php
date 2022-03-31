@@ -184,12 +184,15 @@ class CartController extends Controller
         $taxes = Taxe::where('is_active', '1')->get();
         $fees = Fee::where('is_active', '1')->get();
         $taxes_cost = Taxe::where('is_active', '1')->pluck('cost')->toArray();
+        $new_times = [];
         foreach ($taxes_cost as $tax) {
             $new_times[] = $tax * Cart::count();
         }
         $taxes_sum = array_sum($new_times);
 
         $fees_cost = Fee::where('is_active', '1')->pluck('cost')->toArray();
+        $all_fees = [];
+
         foreach ($fees_cost as $fee) {
             $all_fees[] = $fee * Cart::count();
         }
@@ -209,7 +212,9 @@ class CartController extends Controller
     {
         $data['get_cost'] = Shipping::find($request['val'])->get_cost();
         $data['id'] = Shipping::find($request['val'])->id;
+
         $taxes = Taxe::where('is_active', '1')->pluck('cost')->toArray();
+        $new_times = [];
         foreach ($taxes as $tax) {
             $new_times[] = $tax * Cart::count();
         }

@@ -24,14 +24,15 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         $checkbox = $this->input('checkbox');
+
         if ($checkbox) {
             $email = ['required_if:address_id,0', 'string', 'email', 'max:255', 'unique:users'];
             $password = ['required_with:checkbox,on', 'string', 'min:8'];
         } else {
-            $email = ['required_if:address_id,0', 'string', 'email', 'max:255', 'unique:users'];
+            $email = ['nullable'];
             $password = ['nullable'];
         }
- 
+
         return [
             'address_id' => 'nullable',
             'first_name' => 'required_if:address_id,0',
