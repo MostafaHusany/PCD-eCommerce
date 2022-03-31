@@ -23,7 +23,9 @@ use App\Product;
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', function() {
+    return redirect('admin/');
+})->name('home');
 
 Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::resource('users', 'UsersController', ['names' => [
@@ -155,6 +157,10 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         // 'destroy'   => 'admin.invoices.destroy'
         ]
     ]);
+
+    Route::group([], function () {
+        Route::get('/', 'DashboardController@index');
+    });
 
     // fast ajax search
     Route::get('/users-search', 'UsersController@dataAjax');

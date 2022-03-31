@@ -18,7 +18,6 @@ class ProductCategoriesController extends Controller
     public function __construct () {
         $this->target_model = new ProductCategory;
     }
-    
 
     public function index (Request $request) {
         if ($request->ajax()) {

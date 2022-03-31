@@ -9,6 +9,7 @@ use App\ProductCustomeField;
 use Illuminate\Support\Facades\Auth;
 
 define('PAGINATION_COUNT', 12);
+define('CACHE_TIME', 3600);
 
 if (!function_exists('categories')) {
     function categories()
