@@ -19,7 +19,7 @@ Route::group([
         // Route::get('/', 'ShopController@index');
         Route::get('/{slug}', 'ShopController@show')->name('product.detail');
     });
-    Route::get('category/{id}', 'CategoryController@category')->name('category');
+    Route::get('category/{slug}', 'CategoryController@category')->name('category');
     Route::post('brand_filter/', 'CategoryController@brand_filter')->name('brand_filter');
     Route::post('option_filter/', 'CategoryController@option_filter')->name('option_filter');
     Route::post('/search', 'CategoryController@Search')->name('search');

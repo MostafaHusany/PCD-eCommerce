@@ -23,6 +23,10 @@
                     <div class="alert alert-danger  d-none" id="item_not_added" role="alert">
                         @lang('frontend.NotAvailable')
                     </div>
+
+                    <div class="alert alert-danger  d-none" id="item_not_added_rule" role="alert">
+                        @lang('frontend.RuleNotAvailable')
+                    </div>
                     <div class="alert alert-danger  d-none" id="item_in_favorite" role="alert">
                         @lang('frontend.InFavorite')
                     </div>

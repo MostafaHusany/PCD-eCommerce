@@ -99,7 +99,7 @@
         <script src="{{asset( LaravelLocalization::getCurrentLocale() == 'ar' ? 'shop/rtl_assets' : 'shop/ltr_assets' )}}/js/scripts.js"></script>
         <script src="{{asset('shop')}}/js/custom.js"></script>
         
-        @stack('script')
+        @yield('script')
     
     </body>
 </html>
