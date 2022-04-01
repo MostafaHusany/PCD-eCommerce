@@ -310,6 +310,10 @@ $(function () {
             is_valide = false;
             $(`#${prefix}find_child_productsErr`).text('You need to select child product').slideDown(500);    
         }
+
+        if (data.get('brand_id') == 'null') {
+            data.delete('brand_id');
+        }
        
         return is_valide;
     };
