@@ -300,6 +300,7 @@ class CartController extends Controller
 
             $order->address_id = $address->id;
         }
+        $order->save();
 
         Cart::destroy();
         session()->forget('promo');
