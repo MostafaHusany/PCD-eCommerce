@@ -1,5 +1,8 @@
 @extends('layouts.admin.app')
 
+@push('page_css')
+<link rel="stylesheet" href="{{ asset('plugins/telphone_code/css/intlTelInput.min.css') }}">
+@endpush
 
 @section('content')
 @php 
@@ -122,6 +125,7 @@
 @endsection
 
 @push('page_scripts')
+<script src="{{ asset('plugins/telphone_code/js/intlTelInput-jquery.min.js') }}"></script>
 
 <script>
 $(function () {
@@ -226,7 +230,17 @@ $(function () {
                     }
                 })// axios
             })// end :: #dataTable
-            
+
+            $("#phone").intlTelInput({
+                nationalMode: false,
+                initialCountry: "sa",
+                preferredCountries: ["SA"],
+                onlyCountries: ['SA', 'AE', 'KW', 'JO'],
+                width: '100%'
+            });
+
+            $('.iti.iti--allow-dropdown').css('width', '100%');
+
             // Load taxes ratio
             /**
              * When the user press the create btn, send a request to the server
