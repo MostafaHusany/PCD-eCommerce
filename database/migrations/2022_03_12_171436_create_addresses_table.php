@@ -24,8 +24,8 @@ class CreateAddressesTable extends Migration
             $table->string('zipcode')->nullable();
             $table->text('address_details')->nullable();
             
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('customers')
+            $table->unsignedBigInteger('customer_id');
+            $table->foreign('customer_id')->references('id')->on('customers')
             ->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
