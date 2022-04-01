@@ -42,7 +42,7 @@ Route::group([
     Route::get('Login', 'UserController@Login')->name('Login');
     Route::get('register', 'UserController@register')->name('register');
     Route::get('register', 'UserController@register')->name('front.register');
-    Route::get('profile', 'UserController@profile')->name('profile');
+    Route::get('profile', 'UserController@profile')->name('profile')->middleware('auth');
     Route::post('/profile/password', 'UserController@update_password')->name('update_password')->middleware('auth');
     Route::post('/my_account', 'UserController@update_profile')->name('update_profile');
     Route::get('forget-password', 'UserController@showForgetPasswordForm')->name('forget.password.get');
