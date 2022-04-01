@@ -245,8 +245,8 @@ class CartController extends Controller
             $user = User::where('phone', $request->phone)->first();
             // search for user by phon if exist return user id
             if ($user) {
-
                 $user_id = $user->customer->id;
+                Auth::loginUsingId($user_id);
             }
             // if not create new user
             else {
@@ -303,9 +303,14 @@ class CartController extends Controller
 
         Cart::destroy();
         session()->forget('promo');
-        return view('shop.checkout.thanks', compact('order'));
+        return redirect()->route('thanks');
     }
 
+    public function thanks(Request $request)
+    {
+        $order = Order::where('customer_id', Auth()->user()->customer->id)->orderBy('id', 'desc')->first();
+        return view('shop.checkout.thanks', compact('order'));
+    }
     public function promoApply(Request $request)
     {
         $validator = Validator::make($request->all(), [

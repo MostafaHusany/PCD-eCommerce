@@ -35,6 +35,7 @@ Route::group([
 
 
     Route::post('/promoApply', 'CartController@promoApply')->name('promoApply');
+    Route::get('thanks', 'CartController@thanks')->name('thanks')->middleware('auth');
 
 
 
@@ -56,8 +57,4 @@ Route::group([
     Route::get('remove_favorite/{id}', 'FavoriteController@remove_favorite')->name('remove_favorite');
     Route::get('wishlist', 'FavoriteController@wishlist')->name('wishlist');
 
-    Route::get('thanks', function () {
-        $order = Order::orderBy('id', 'desc')->first();
-        return view('shop.thanks', compact('order'));
-    })->name('thanks');
 });

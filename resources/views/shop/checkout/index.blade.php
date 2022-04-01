@@ -190,14 +190,14 @@
                             <div class="form-group mb-3">
                                 <div class="chek-form">
                                     <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="checkbox" id="differentaddress">
+                                        <input class="form-check-input" type="checkbox" name="check" id="differentaddress">
                                         <label class="form-check-label label_info" for="differentaddress"><span>{{trans('frontend.differentAddress')}}</span></label>
                                     </div>
                                 </div>
                             </div>
                             <div class="different_address">
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" name="first_name" placeholder="{{trans('frontend.FirstName')}} *">
+                                    <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" placeholder="{{trans('frontend.FirstName')}} *">
                                     @error('first_name')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -205,7 +205,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" name="last_name" placeholder="{{trans('frontend.LastName')}} *">
+                                    <input type="text" class="form-control" name="last_name" value="{{ old('last_name') }}"  placeholder="{{trans('frontend.LastName')}} *">
                                     @error('last_name')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -214,7 +214,7 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" name="phone" placeholder="{{trans('frontend.Phone')}} *">
+                                    <input type="text" class="form-control" name="phone" value="{{ old('phone') }}" placeholder="{{trans('frontend.Phone')}} *">
                                     @error('phone')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -222,7 +222,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" name="address" placeholder="{{trans('frontend.Address')}} *">
+                                    <input type="text" class="form-control" name="address" value="{{ old('address') }}" placeholder="{{trans('frontend.Address')}} *">
                                     @error('address')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -235,7 +235,7 @@
                                 <input type="hidden" name="taxes_sum" value="{{$taxes_sum}}">
                                 <input type="hidden" name="fees_sum" value="{{$fees_sum}}">
                                 <div class="form-group mb-3">
-                                    <input class="form-control" type="text" name="city" placeholder="{{trans('frontend.City')}}*">
+                                    <input class="form-control" type="text" name="city" value="{{ old('city') }}"  placeholder="{{trans('frontend.City')}}*">
                                     @error('city')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -243,7 +243,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input class="form-control" type="text" name="state" placeholder="{{trans('frontend.State')}} *">
+                                    <input class="form-control" type="text" name="state" value="{{ old('state') }}"  placeholder="{{trans('frontend.State')}} *">
                                     @error('state')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -251,7 +251,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input class="form-control" type="text" name="zipcode" placeholder="{{trans('frontend.zipcode')}} *">
+                                    <input class="form-control" type="text" name="zipcode" value="{{ old('zipcode') }}"  placeholder="{{trans('frontend.zipcode')}} *">
                                     @error('zipcode')
                                     <span class="feedback" role="alert">
                                         <strong>{{ $message }}</strong>

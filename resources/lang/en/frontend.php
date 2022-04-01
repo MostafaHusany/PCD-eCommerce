@@ -134,5 +134,7 @@ return [
     'promoType'              => 'promo code Type',
     'PromoValue'             => 'Promo code Value',
     'Searchresult'           => 'Search result',
+    'email_formate'          => 'Email formate not valid',
+    'email_unique'           => 'Email must be unique',
     'RuleNotAvailable'       => 'Required quantity not available',
 ];

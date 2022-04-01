@@ -24,13 +24,35 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         $checkbox = $this->input('checkbox');
-
-        if ($checkbox) {
-            $email = ['required_if:address_id,0', 'string', 'email', 'max:255', 'unique:users'];
+        if ($checkbox && auth()->user()) {
+            $email = [
+                'required_if:address_id,0', 'string', 'email', 'max:255',
+                "unique:users,email," . Auth()->user()->id
+            ];
+            $password = ['required_with:checkbox,on', 'string', 'min:8'];
+        } else  if ($checkbox) {
+            $email = [
+                'required_if:address_id,0', 'string', 'email', 'max:255',
+                "unique:users,email"
+            ];
             $password = ['required_with:checkbox,on', 'string', 'min:8'];
         } else {
             $email = ['nullable'];
             $password = ['nullable'];
+        }
+        $check = $this->input('check');
+        if ($check || !auth()->user()) {
+            $phone = [
+                'required_if:address_id,0', 'string', 'max:255',
+                'unique:users,phone'
+            ];
+        } else if (auth()->user()) {
+            $phone = [
+                'required_if:address_id,0', 'max:255',
+                'unique:users,phone,' . Auth()->user()->id
+            ];
+        } else {
+            $phone = ['nullable'];
         }
 
         return [
@@ -44,7 +66,7 @@ class OrderRequest extends FormRequest
             'email'     => $email,
             'password'  => $password,
             'zipcode'   => 'required_if:address_id,0',
-            'phone'     => 'required_if:address_id,0',
+            'phone'     =>  $phone,
             'shipping_id_field' => 'required',
         ];
     }
@@ -64,8 +86,8 @@ class OrderRequest extends FormRequest
             'email.required_with' => trans('frontend.email_required'),
             'password.required_with' => trans('frontend.password_required'),
             'email.string' => trans('frontend.password_string'),
-            'email.unique' => trans('frontend.password_unique'),
-            'email.email' => trans('frontend.password_email'),
+            'email.unique' => trans('frontend.email_unique'),
+            'email.email' => trans('frontend.email_formate'),
             'password.string' => trans('frontend.password_string'),
             'promoCode.required_with' => trans('frontend.promo_required_with'),
         ];
