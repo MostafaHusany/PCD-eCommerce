@@ -140,7 +140,7 @@
 <!-- END MAIN CONTENT -->
 @endsection
 
-@push('script')
+@section('script')
 <script>
     $(document).ready(function() {
         $('li.dropdown').click(function() {
@@ -175,4 +175,4 @@
         }
     });
 </script>
-@endpush
+@endsection
