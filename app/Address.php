@@ -14,7 +14,7 @@ class Address extends Model
         'state',
         'address',
         'address_details',
-        'user_id',
+        'customer_id',
         'zipcode'
     ];
 }

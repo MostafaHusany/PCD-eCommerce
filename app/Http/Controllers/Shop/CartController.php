@@ -176,7 +176,7 @@ class CartController extends Controller
         }
         $user_id = Auth()->user();
         if ($user_id) {
-            $addresses = Address::where('user_id', Auth()->user()->customer->id)->get();
+            $addresses = Address::where('customer_id', Auth()->user()->customer->id)->get();
         } else {
             $addresses = [];
         }
@@ -295,7 +295,7 @@ class CartController extends Controller
             $order->address_id = $request->address_id;
         } else {
             $data               = $request->all();
-            $data['user_id']    = $user_id;
+            $data['customer_id']    = $user_id;
             $address = Address::create($data);
 
             $order->address_id = $address->id;
