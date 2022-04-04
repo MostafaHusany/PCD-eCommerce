@@ -16,7 +16,15 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             
-            $table->smallInteger('status')->default(0);// 0 prepare, 1 on shipping, 2 diliverd, -1 returend
+            /**
+             * status => 
+             * 0 waiting for payment
+             * 1 preparing
+             * 2 shipping
+             * 3 diliverd
+             * -1 restored
+             */
+            $table->smallInteger('status')->default(0);
             $table->text('note')->nullable();
             $table->text('meta')->nullable();
             $table->float('sub_total')->default(0);

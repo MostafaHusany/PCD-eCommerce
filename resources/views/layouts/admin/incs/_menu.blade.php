@@ -102,7 +102,7 @@
     </ul>
 </li>
 
-<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-sliders-h"></i>
         <p>
@@ -127,6 +127,13 @@
             <a href="{{ route('admin.taxes.index') }}" class="nav-link {{ Request::is('admin/taxes') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-percentage"></i>
                 <p>Taxes</p>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{{ route('admin.order_status.index') }}" class="nav-link {{ Request::is('admin/order-status') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-flag"></i>
+                <p>Orders Status</p>
             </a>
         </li>
     </ul>

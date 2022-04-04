@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 
 use App\User;
 use App\Customer;
+use App\OrderStatus;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $data = [
+            'status_code' => 0,
+            'status_name' => 'waiting for payment'
+        ];
+        OrderStatus::create($data);
         
         // create the admin account with its' dummy customer user
         $data = [

@@ -148,6 +148,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         ]
     ]);
 
+    Route::resource('order-status', 'OrderStatusController', ['names' => [
+        'index'     => 'admin.order_status.index',
+        'store'     => 'admin.order_status.store',
+        'show'      => 'admin.order_status.show',
+        'edit'      => 'admin.order_status.edit',
+        'update'    => 'admin.order_status.update',
+        'destroy'   => 'admin.order_status.destroy'
+        ]
+    ]);
+
     Route::resource('invoices', 'invoicesController', ['names' => [
         // 'index'     => 'admin.invoices.index',
         // 'store'     => 'admin.invoices.store',
