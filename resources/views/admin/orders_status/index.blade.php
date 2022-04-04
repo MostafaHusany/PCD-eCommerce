@@ -75,6 +75,7 @@
             <thead>
                 <th>Status Code</th>
                 <th>Status Name</th>
+                <th>Status Color</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
@@ -113,12 +114,13 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'status_code', 'status_name'],
+            fields_list     : ['id', 'status_code', 'status_name', 'color'],
             imgs_fields     : []
         },
         [
             { data: 'status_code', name: 'status_code' },
             { data: 'status_name', name: 'status_name' },
+            { data: 'status_color', name: 'status_color' },
             { data: 'actions', name: 'actions' },
         ],
 

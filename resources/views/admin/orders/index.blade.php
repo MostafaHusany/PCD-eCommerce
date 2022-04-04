@@ -125,9 +125,10 @@
                 <th>Phone</th>
                 <th>Email</th>
                 <th>City</th>
-                <th>Status</th>
                 <th>Total</th>
                 <th>Payment</th>
+                <th>Status</th>
+                <th>Status Action</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
@@ -179,9 +180,10 @@ $(function () {
             { data: 'phone', name: 'phone' },
             { data: 'email', name: 'email' },
             { data: 'city', name: 'city' },
-            { data: 'status', name: 'status' },
             { data: 'total', name: 'total' },
             { data: 'payment_status', name: 'payment_status' },
+            { data: 'status', name: 'status' },
+            { data: 'status_action', name: 'status_action' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
@@ -347,7 +349,6 @@ $(function () {
                     }
                 })// axios
             }).on('click', '.restore-object', function () {
-                console.log('test restore');
                 $('#loddingSpinner').show(500);
 
                 let target_order_id   = $(this).data('object-id');
@@ -375,6 +376,56 @@ $(function () {
                     });
                 }// end :: if
             });
+
+            $('#dataTable').on('click', '.change-order-status-btn', function (e) {
+                e.preventDefault();
+                let order_id    = $(this).data('id');
+                let status_code = $(this).data('status');
+                
+                $('#loddingSpinner').show(500);
+
+                axios.post(`{{ url('admin/orders') }}/${order_id}`, {
+                    _token   : "{{ csrf_token() }}",
+                    _method  : 'PUT',
+                    order_id : order_id,
+                    update_status : status_code,
+                })
+                .then(res => {
+                    $('#loddingSpinner').hide(500);
+                        
+                    if (res.data.success) {
+                        objects_dynamic_table.table_object.draw();
+
+                        $('#warningAlert').text('You updated the order status successfully').slideDown();
+                        setTimeout(() => {
+                            $('#warningAlert').text('').slideUp();
+                        }, 3000);
+                    } else {
+                        $('#dangerAlert').text('Something went wrong ! please refresh the page or contact the admin.').slideDown();
+                        setTimeout(() => {
+                            $('#dangerAlert').text('').slideUp();
+                        }, 5000);
+                    }// end :: if
+                });
+                /** 
+                    axios.post(`{{url('admin/customers')}}/${target_id}`, {
+                        _token : "{{ csrf_token() }}",
+                        _method : 'PUT',
+                        activate_customer : true
+                    }).then(res => {
+                        if (!res.data.success) {
+                            $(this).prop('checked', !$(this).prop('checked'));
+                            $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
+
+                            setTimeout(() => {
+                                $('#dangerAlert').text('').slideUp(500);
+                            }, 3000);
+                        }
+                    })// axios
+                */
+            })
+
+            
 
             // Load taxes ratio
             /**

@@ -41,4 +41,8 @@ class Order extends Model
     public function promo_code () {
         return $this->belongsTo(PromoCode::class, 'promo_code_id');
     }
+
+    public function status () {
+        return $this->belongsTo(OrderStatus::class, 'status', 'status_code');
+    }
 }

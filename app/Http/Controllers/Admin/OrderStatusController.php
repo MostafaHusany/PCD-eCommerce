@@ -28,6 +28,9 @@ class OrderStatusController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('status_color', function ($row_object) {
+                return view('admin.orders_status.incs._status_color', compact('row_object'));
+            })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.orders_status.incs._actions', compact('row_object'));
             });
@@ -62,6 +65,7 @@ class OrderStatusController extends Controller
 
         $data       = $request->all();
         $new_object = $this->target_model->create($data);
+        cache()->forget('order_status');
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }// end :: store
@@ -79,6 +83,7 @@ class OrderStatusController extends Controller
         $data          = $request->all();
         $target_object = $this->target_model->find($id);
         $target_object->update($data);
+        cache()->forget('order_status');
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }

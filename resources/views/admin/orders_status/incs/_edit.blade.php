@@ -31,6 +31,15 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+        
+        <div class="form-group row">
+            <label for="edit-color" class="col-sm-2 col-form-label">Status Color</label>
+            <div class="col-sm-10">
+                <input type="color" tabindex="3"  class="form-control" id="edit-color">
+                <div style="padding: 5px 7px; display: none" id="edit-colorErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
 
         <button tabindex="6" class="update-object btn btn-warning float-right">Update {{ $object_title }}y</button>
     </form>

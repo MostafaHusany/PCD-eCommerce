@@ -4,12 +4,20 @@ use App\Brand;
 use App\CategoryAttribute;
 use App\Favorite;
 use App\Product;
+use App\OrderStatus;
 use App\ProductCategory;
 use App\ProductCustomeField;
 use Illuminate\Support\Facades\Auth;
 
 define('PAGINATION_COUNT', 12);
 define('CACHE_TIME', 3600);
+
+
+if (!function_exists('order_status')) {
+    function order_status() {
+        return OrderStatus::get_status();
+    }
+}
 
 if (!function_exists('categories')) {
     function categories()
@@ -31,6 +39,7 @@ if (!function_exists('get_lang')) {
         return app()->getLocale();
     }
 }
+
 if (!function_exists('items_count')) {
     function items_count()
     {
@@ -38,12 +47,14 @@ if (!function_exists('items_count')) {
         return $cartCollection->count();
     }
 }
+
 if (!function_exists('totalPrice')) {
     function totalPrice()
     {
         return Cart::subtotal();
     }
 }
+
 if (!function_exists('cartContent')) {
     function cartContent()
     {
@@ -57,6 +68,7 @@ if (!function_exists('product_details')) {
         return Product::findOrFail($id);
     }
 }
+
 if (!function_exists('name')) {
     function name($id)
     {
@@ -69,6 +81,7 @@ if (!function_exists('name')) {
         }
     }
 }
+
 if (!function_exists('title')) {
     function title($id)
     {
@@ -81,6 +94,7 @@ if (!function_exists('title')) {
         }
     }
 }
+
 if (!function_exists('description')) {
     function description($id)
     {
@@ -93,6 +107,7 @@ if (!function_exists('description')) {
         }
     }
 }
+
 if (!function_exists('small_description')) {
     function small_description($id)
     {
@@ -112,12 +127,14 @@ if (!function_exists('category_attributes')) {
         return CategoryAttribute::get();
     }
 }
+
 if (!function_exists('product_custome_fields')) {
     function product_custome_fields()
     {
         return ProductCustomeField::get();
     }
 }
+
 if (!function_exists('meta')) {
     function meta($meta)
     {
@@ -125,6 +142,7 @@ if (!function_exists('meta')) {
         ;
     }
 }
+
 if (!function_exists('checkFavorite')) {
     function checkFavorite($product_id)
     {

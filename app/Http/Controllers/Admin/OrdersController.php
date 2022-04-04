@@ -76,6 +76,9 @@ class OrdersController extends Controller
             ->addColumn('payment_status', function ($row_object) {
                 return $row_object->payment_status();
             })
+            ->addColumn('status_action', function ($row_object) {
+                return view('admin.orders.incs._status', compact('row_object'));
+            })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.orders.incs._actions', compact('row_object'));
             });
@@ -132,7 +135,7 @@ class OrdersController extends Controller
     }
 
     public function store (Request $request) {
-        // dd($request->all());
+
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -161,7 +164,14 @@ class OrdersController extends Controller
     }
 
     public function update (Request $request, $id) {
-        
+        if (isset($request->update_status)) {
+            return $this->update_order_status($request, $id);
+        }
+
+        return $this->update_order ($request, $id);
+    }
+
+    public function update_order (Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'customer'      => 'required|exists:customers,id',
             'products.*'    => 'required|exists:products,id',
@@ -189,6 +199,29 @@ class OrdersController extends Controller
             [$products_id, $products_quantity],
             $targted_fees_ids
         );
+
+        return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
+    }
+
+    public function update_order_status (Request $request, $id) {
+        // dd($request->all(), $id);
+        $validator = Validator::make($request->all(), [
+            'order_id'      => 'exists:orders,id',
+            'update_status' => 'exists:order_statuses,status_code'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        }
+        /**
+         * # How to update order status ?
+         * 1- validate that the status code do exists
+         * 2- update order status
+         * */ 
+
+        $target_order = Order::find($id);
+        $target_order->status = $request->update_status;
+        $target_order->save();
 
         return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
     }

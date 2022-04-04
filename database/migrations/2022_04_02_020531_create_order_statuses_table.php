@@ -19,6 +19,7 @@ class CreateOrderStatusesTable extends Migration
 
             $table->tinyInteger('status_code')->unique();
             $table->string('status_name');
+            $table->string('color')->default('#444');
         });
     }
 
