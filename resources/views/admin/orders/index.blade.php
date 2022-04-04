@@ -396,9 +396,9 @@ $(function () {
                     if (res.data.success) {
                         objects_dynamic_table.table_object.draw();
 
-                        $('#warningAlert').text('You updated the order status successfully').slideDown();
+                        $('#successAlert').text('You updated the order status successfully').slideDown();
                         setTimeout(() => {
-                            $('#warningAlert').text('').slideUp();
+                            $('#successAlert').text('').slideUp();
                         }, 3000);
                     } else {
                         $('#dangerAlert').text('Something went wrong ! please refresh the page or contact the admin.').slideDown();
@@ -407,22 +407,6 @@ $(function () {
                         }, 5000);
                     }// end :: if
                 });
-                /** 
-                    axios.post(`{{url('admin/customers')}}/${target_id}`, {
-                        _token : "{{ csrf_token() }}",
-                        _method : 'PUT',
-                        activate_customer : true
-                    }).then(res => {
-                        if (!res.data.success) {
-                            $(this).prop('checked', !$(this).prop('checked'));
-                            $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
-
-                            setTimeout(() => {
-                                $('#dangerAlert').text('').slideUp(500);
-                            }, 3000);
-                        }
-                    })// axios
-                */
             })
 
             

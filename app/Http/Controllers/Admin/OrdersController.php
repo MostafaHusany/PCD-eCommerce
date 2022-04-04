@@ -76,6 +76,9 @@ class OrdersController extends Controller
             ->addColumn('payment_status', function ($row_object) {
                 return $row_object->payment_status();
             })
+            ->addColumn('status', function ($row_object) {
+                return isset($row_object->status_obj) ? $row_object->status_obj->status_name : $row_object->status;
+            })
             ->addColumn('status_action', function ($row_object) {
                 return view('admin.orders.incs._status', compact('row_object'));
             })
@@ -204,7 +207,6 @@ class OrdersController extends Controller
     }
 
     public function update_order_status (Request $request, $id) {
-        // dd($request->all(), $id);
         $validator = Validator::make($request->all(), [
             'order_id'      => 'exists:orders,id',
             'update_status' => 'exists:order_statuses,status_code'
