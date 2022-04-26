@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $data = [
-            'status_code' => 0,
-            'status_name' => 'waiting for payment'
-        ];
-        OrderStatus::create($data);
+        // $data = [
+        //     'status_code' => 0,
+        //     'status_name' => 'waiting for payment'
+        // ];
+        // OrderStatus::create($data);
         
         // create the admin account with its' dummy customer user
         $data = [
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             "password"  => bcrypt('123456'),
         ];
         
-        $new_user = User::create($data);
+        // $new_user = User::create($data);
         
         $data = [
             "first_name" => "Mostafa",
@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
             "plain_password" => '123456',
         ];
 
-        $new_user->customer()->create($data);
+        // $new_user->customer()->create($data);
 
         $this->call([
             ProductCategorySeeder::class, 
