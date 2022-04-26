@@ -114,7 +114,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'status_code', 'status_name_en', 'status_name_ar', 'color'],
+            fields_list     : ['id', 'status_code', 'status_name', 'color'],
             imgs_fields     : []
         },
         [
@@ -137,25 +137,18 @@ $(function () {
         // clear old validation session
         $('.err-msg').slideUp(500);
 
-        if (data.get('status_name_en') === '') {
-            is_valide = false;
-            let err_msg = 'status name is required';
-            $(`#${prefix}status_name_enErr`).text(err_msg);
-            $(`#${prefix}status_name_enErr`).slideDown(500);
-        }
-        
-        if (data.get('status_name_ar') === '') {
-            is_valide = false;
-            let err_msg = 'status arabic name is required';
-            $(`#${prefix}status_name_arErr`).text(err_msg);
-            $(`#${prefix}status_name_arErr`).slideDown(500);
-        }
-
         if (data.get('status_code') === '') {
             is_valide = false;
             let err_msg = 'status code is required';
             $(`#${prefix}status_codeErr`).text(err_msg);
             $(`#${prefix}status_codeErr`).slideDown(500);
+        }
+
+        if (data.get('status_name') === '') {
+            is_valide = false;
+            let err_msg = 'status name is required';
+            $(`#${prefix}status_nameErr`).text(err_msg);
+            $(`#${prefix}status_nameErr`).slideDown(500);
         }
 
         return is_valide;

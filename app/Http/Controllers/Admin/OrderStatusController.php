@@ -28,9 +28,6 @@ class OrderStatusController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
-            ->addColumn('status_name', function ($row_object) {
-                return view('admin.orders_status.incs._name', compact('row_object'));
-            })
             ->addColumn('status_color', function ($row_object) {
                 return view('admin.orders_status.incs._status_color', compact('row_object'));
             })
@@ -59,8 +56,7 @@ class OrderStatusController extends Controller
     public function store (Request $request) {
         $validator = Validator::make($request->all(), [
             'status_code'   => 'required|unique:order_statuses,status_code',
-            'status_name_en'   => 'required',
-            'status_name_ar'   => 'required'
+            'status_name'   => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -77,8 +73,7 @@ class OrderStatusController extends Controller
     public function update (Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'status_code'   => 'required|unique:order_statuses,status_code,' . $id,
-            'status_name_en'   => 'required',
-            'status_name_ar'   => 'required'
+            'status_name'   => 'required'
         ]);
         
         if ($validator->fails()) {
