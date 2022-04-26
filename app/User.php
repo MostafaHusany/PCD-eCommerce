@@ -8,9 +8,13 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Laratrust\Traits\LaratrustUserTrait;
+
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+    use LaratrustUserTrait; // add this trait to your user model
 
     public function getJWTIdentifier()
     {

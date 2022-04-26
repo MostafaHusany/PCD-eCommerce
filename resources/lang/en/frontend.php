@@ -88,7 +88,7 @@ return [
     'SelectShipping'         => 'Select Shipping method',
     'ChooseOption'           => 'Choose Option',
     'BillingDetails'         => 'Billing Details',
-    'SelectShipping'         => 'Select Address',
+    'SelectShipping'         => 'Select Shipping',
     'differentAddress'       => 'Ship to a different address?',
     'LastName'               => 'Last Name',
     'FirstName'              => 'First Name',

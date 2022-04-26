@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\User;
 use App\Product;
 
 
@@ -189,19 +190,21 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
     Route::get('/brand-search', 'BrandController@dataAjax');
 
     Route::get('/test', function () {
-        $target = Product::find(65);
+        $tmp = User::first();
+        dd($tmp->allPermissions());
+        // $target = Product::find(65);
         
         // $target->has_promotion();
         // $target->get_promotion(); 
         // $target->get_price();
         // $target->update_promotion(1);
 
-        dd(
-            $target->ar_name,
-            // $target->has_promotion(),
-            // $target->get_promotion()
-            // $target->get_price(),
-            $target->update_promotion(1)
-        );
+        // dd(
+        //     $target->ar_name,
+        //     // $target->has_promotion(),
+        //     // $target->get_promotion()
+        //     // $target->get_price(),
+        //     $target->update_promotion(1)
+        // );
     });
 });

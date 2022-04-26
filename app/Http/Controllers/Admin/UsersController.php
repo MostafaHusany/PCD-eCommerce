@@ -12,6 +12,10 @@ use App\User;
 
 class UsersController extends Controller
 {
+    /**
+     * # Manage technical users ....
+     * 
+     */
     public function index (Request $request) {
         
         if ($request->ajax()) {
