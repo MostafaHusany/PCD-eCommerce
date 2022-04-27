@@ -79,6 +79,12 @@ class UsersController extends Controller
         }
         
         $new_user = User::create($data);
+        
+        $data['first_name']  = $new_user->name;
+        $data['second_name'] = 'Demo';
+        $data['city'] = 'Demo';
+        $data['address'] = 'Demo';
+        $data['plain_password'] = '000'; 
         $new_user->customer()->create($data);
 
         return response()->json(['data' => $new_user, 'success' => isset($new_user)]);
