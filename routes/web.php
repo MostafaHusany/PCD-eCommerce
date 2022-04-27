@@ -29,6 +29,7 @@ Route::get('/home', function() {
 })->name('home');
 
 Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'admin'], function () {
+    
     Route::resource('users', 'UsersController', ['names' => [
         'index' => 'admin.users.index',
         'store' => 'admin.users.store',
@@ -36,6 +37,16 @@ Route::group(['middleware' => 'auth:web', 'namespace' => 'Admin', 'prefix' => 'a
         'edit' => 'admin.users.edit',
         'update' => 'admin.users.update',
         'destroy' => 'admin.users.destroy'
+        ]
+    ]);
+
+    Route::resource('roles', 'RolesController', ['names' => [
+        'index' => 'admin.roles.index',
+        'store' => 'admin.roles.store',
+        'show' => 'admin.roles.show',
+        'edit' => 'admin.roles.edit',
+        'update' => 'admin.roles.update',
+        'destroy' => 'admin.roles.destroy'
         ]
     ]);
 

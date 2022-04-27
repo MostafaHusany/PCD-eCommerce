@@ -6,11 +6,41 @@
     </a>
 </li>
 
+{{--
 <li class="nav-item">
     <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}">
         <i class="nav-icon fas fa-headset"></i>
         <p>Users</p>
     </a>
+</li>
+--}}
+
+<li class="nav-item {{ str_contains(Request::path(), '/users') || str_contains(Request::path(), '/roles') ? 'menu-is-opening menu-open' : '' }}">
+    <a href="#" class="nav-link">
+        <!-- <i class="nav-icon fas fa-id-card"></i> -->
+        <i class="nav-icon fas fa-headset"></i>
+        <p>
+            Users
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" !style="display: block;">
+        <li class="nav-item">
+            <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : ''}}">
+                <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+                <i class="nav-icon fas fa-headset"></i>
+                <p>Users</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ Request::is('admin/roles') ? 'active' : ''}}">
+                <!-- <i class="nav-icon fas fa-copyright"></i> -->
+                <i class="nav-icon fas fa-id-card"></i>
+                <p>Rolles</p>
+            </a>
+        </li>
+    </ul>
 </li>
 
 <li class="nav-item">
