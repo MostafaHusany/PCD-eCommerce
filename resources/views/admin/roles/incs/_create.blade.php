@@ -32,6 +32,13 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
+            <label for="permissions" class="col-sm-2 col-form-label">Permissions</label>
+            <div class="col-sm-10">
+                <select name="permissions[]" id="permissions" class="form-control" multiple="multiple"></select>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group row">
             <label for="users" class="col-sm-2 col-form-label">Assign Users</label>
             <div class="col-sm-10">
                 <select class="form-control" id="users" data-prefix="" multiple="multiple"></select>

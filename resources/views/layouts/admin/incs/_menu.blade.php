@@ -15,6 +15,7 @@
 </li>
 --}}
 
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['user_show', 'user_add', 'user_edit', 'user_delete']))
 <li class="nav-item {{ str_contains(Request::path(), '/users') || str_contains(Request::path(), '/roles') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <!-- <i class="nav-icon fas fa-id-card"></i> -->
@@ -32,7 +33,7 @@
                 <p>Users</p>
             </a>
         </li>
-
+        
         <li class="nav-item">
             <a href="{{ route('admin.roles.index') }}" class="nav-link {{ Request::is('admin/roles') ? 'active' : ''}}">
                 <!-- <i class="nav-icon fas fa-copyright"></i> -->
@@ -40,16 +41,28 @@
                 <p>Rolles</p>
             </a>
         </li>
+
+        <li class="nav-item">
+            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ Request::is('admin/roles') ? 'active' : ''}}">
+                <!-- <i class="nav-icon fas fa-copyright"></i> -->
+                <i class="nav-icon fas fa-key"></i>
+                <p>Rolles</p>
+            </a>
+        </li>
     </ul>
 </li>
+@endif
 
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item">
     <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}">
         <i class="nav-icon fas fa-users"></i>
         <p>Customers</p>
     </a>
 </li>
+@endif
 
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '/products-categories') || str_contains(Request::path(), '/products') || str_contains(Request::path(), '/brands') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-box-open"></i>
@@ -81,7 +94,9 @@
         </li>
     </ul>
 </li>
+@endif
 
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '/orders') || str_contains(Request::path(), '/sold-products') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
@@ -106,7 +121,9 @@
         </li>
     </ul>
 </li>
+@endif
 
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), 'promotions') || str_contains(Request::path(), 'promo-codes') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-hand-holding-usd"></i>
@@ -131,7 +148,9 @@
         </li>
     </ul>
 </li>
+@endif
 
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-sliders-h"></i>
@@ -168,7 +187,9 @@
         </li>
     </ul>
 </li>
+@endif
 
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '#') || str_contains(Request::path(), '#') || str_contains(Request::path(), 'admin/navbar') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-object-group"></i>
@@ -192,3 +213,4 @@
         </li>
     </ul>
 </li>
+@endif

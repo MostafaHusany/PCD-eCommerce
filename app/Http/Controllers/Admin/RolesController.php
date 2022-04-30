@@ -46,13 +46,19 @@ class RolesController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
         
-        $data = [
+        $new_object = Role::create([
             'name'         => join('_', explode(' ', strtolower($request->name))),
             'display_name' => $request->name,
             'description'  => $request->description
-        ];
+        ]);
 
-        $new_object = Role::create($data);
+        // assign permissions to roles
+        if(isset($request->permissions)) {
+            $permissions = explode(',', $request->permissions);
+            $new_object->attachPermissions($permissions);
+        }
+
+        // assign users to roles
         if(isset($request->users)) {
             $target_users = User::whereIn('id', explode(',', $request->users))->pluck('id')->toArray();
             $new_object->users()->sync($target_users);
@@ -66,6 +72,7 @@ class RolesController extends Controller
 
         if (isset($target_role) && isset($request->fast_acc)) {
             $target_role->users;
+            $target_role->permissions;
             return response()->json(['data' => $target_role, 'success' => isset($target_role)]);
         }
 
@@ -74,38 +81,35 @@ class RolesController extends Controller
 
     public function update (Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'name'  => 'required|max:255',
-            'email' => 'required|max:255|unique:users,email,'.$id,
+            'name'  => "required|max:255|unique:roles,name,$id",
+            'description' => 'required|max:1000'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data = $request->except(['category', 'password']);
-        $data['category'] = in_array($request->category , ['technical', 'admin']) ? $request->category  : 'technical';
+        $target_role = Role::find($id);
         
-        if (isset($request->password)) {
-            $data['plain_password'] = $request->password;
-            $data['password']       = bcrypt($request->password);
-        }
-      
-        $target_user     = User::find($id);
-        $target_customer = $target_user->customer;
-        
-        $target_user->update($data);
-        if (isset($target_customer)) {
-            $target_customer->update($data);
-        } else {
-            $data['first_name']  = $target_user->name;
-            $data['second_name'] = 'Demo';
-            $data['city'] = 'Demo';
-            $data['address'] = 'Demo';
-            $data['plain_password'] = '000'; 
-            $target_user->customer()->create($data);
+        $target_role->update([
+            'name'         => join('_', explode(' ', strtolower($request->name))),
+            'display_name' => $request->name,
+            'description'  => $request->description
+        ]);
+
+        // assign permissions to roles
+        if(isset($request->permissions)) {
+            $permissions = explode(',', $request->permissions);
+            $target_role->syncPermissions($permissions);
         }
 
-        return response()->json(['data' => $target_user, 'success' => isset($target_user)]);
+        // assign users to roles
+        if(isset($request->users)) {
+            $target_users = User::whereIn('id', explode(',', $request->users))->pluck('id')->toArray();
+            $target_role->users()->sync($target_users);
+        }
+
+        return response()->json(['data' => $target_role, 'success' => isset($target_role)]);
     }
 
     public function destroy ($id) {
@@ -121,7 +125,6 @@ class RolesController extends Controller
         if($request->has('q')){
             $search = $request->q;
             $data = Role::select("id", "name", "display_name")
-            		->where('category', '!=', 'user')
                     ->where(function ($q) use ($search){
                         $q->orWhere('name','LIKE',"%$search%")
                         ->orWhere('display_name','LIKE',"%$search%");

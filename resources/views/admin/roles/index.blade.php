@@ -116,7 +116,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'name', 'description', 'users'],
+            fields_list     : ['id', 'name', 'description', 'users', 'permissions'],
             imgs_fields     : []
         },
         [
@@ -169,6 +169,12 @@ $(function () {
             $('#edit-users').append(tmp);
         });
         $('#edit-users').trigger('change');
+
+        data.permissions.forEach(item => {
+            let tmp = new Option(`${item.name}`, item.id, false, true);
+            $('#edit-permissions').append(tmp);
+        });
+        $('#edit-permissions').trigger('change');
     }
 
     (function () {
@@ -194,6 +200,27 @@ $(function () {
             }
         });
 
+        $('#permissions, #edit-permissions').select2({
+            allowClear: true,
+            width: '100%',
+            placeholder: 'Select customers',
+            ajax: {
+                url: '{{ url("admin/permissions-search") }}',
+                dataType: 'json',
+                delay: 150,
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: `${item.display_name}`,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
     })();
  
 });
