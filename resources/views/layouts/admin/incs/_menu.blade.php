@@ -6,16 +6,7 @@
     </a>
 </li>
 
-{{--
-<li class="nav-item">
-    <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-headset"></i>
-        <p>Users</p>
-    </a>
-</li>
---}}
-
-@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['user_show', 'user_add', 'user_edit', 'user_delete']))
+@if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '/users') || str_contains(Request::path(), '/roles') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <!-- <i class="nav-icon fas fa-id-card"></i> -->
@@ -43,9 +34,16 @@
         </li>
     </ul>
 </li>
+@elseif(auth()->user()->isAbleTo('user_*'))
+<li class="nav-item">
+    <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-headset"></i>
+        <p>Users</p>
+    </a>
+</li>
 @endif
 
-@if(auth()->user()->hasRole('admin'))
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customer_*'))
 <li class="nav-item">
     <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}">
         <i class="nav-icon fas fa-users"></i>

@@ -13,30 +13,33 @@ class PermissionsSeeder extends Seeder
      */
     public function run()
     {
-        $permissions = [
-            [
-                'display_name' => 'add user',
-                'name' => 'user_add',
-            ],
-            
-            [
-                'display_name' => 'edit user',
-                'name' => 'user_edit',
-            ],
-            
-            [
-                'display_name' => 'show user',
-                'name' => 'user_show',
-            ],
+        $data = [];
+        $permissions = ['customer'];
+        foreach($permissions as $permission) {
+            $data = array_merge($data, [
+                [
+                    'display_name' => 'add ' . $permission,
+                    'name' => $permission . '_add',
+                ],
+                
+                [
+                    'display_name' => 'edit ' . $permission,
+                    'name' => $permission . '_edit',
+                ],
+                
+                [
+                    'display_name' => 'show ' . $permission,
+                    'name' => $permission . '_show',
+                ],
+    
+                [
+                    'display_name' => 'delete ' . $permission,
+                    'name' => $permission . '_delete',
+                ]
+                
+            ]);
+        }
 
-            [
-                'display_name' => 'delete user',
-                'name' => 'user_delete',
-            ],
-
-            
-        ];
-
-        Permission::insert($permissions);
+        Permission::insert($data);
     }
 }

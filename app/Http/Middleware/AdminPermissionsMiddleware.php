@@ -23,23 +23,26 @@ class AdminPermissionsMiddleware
             return $next($request);
         }
 
-        if ($request->routeIs('admin.users.*')) {
-            if ($request->isMethod('get') && auth()->user()->isAbleTo('user_*')) {
-                return $next($request);
-            }
+        $permissions = ['user', 'customer'];
+        foreach($permissions as $permission) {
+            if ($request->routeIs('admin.' . $permission . '*')) {
+                if ($request->isMethod('get') && auth()->user()->isAbleTo($permission . '_*')) {
+                    return $next($request);
+                }
+                
+                if ($request->isMethod('post') && auth()->user()->isAbleTo($permission . '_add')) {
+                    return $next($request);
+                }
 
-            if ($request->isMethod('post') && auth()->user()->isAbleTo('user_add')) {
-                return $next($request);
-            }
+                if ($request->isMethod('put') && auth()->user()->isAbleTo($permission . '_edit')) {
+                    return $next($request);
+                }
 
-            if ($request->isMethod('put') && auth()->user()->isAbleTo('user_edit')) {
-                return $next($request);
+                if ($request->isMethod('delete') && auth()->user()->isAbleTo($permission . '_delete')) {
+                    return $next($request);
+                }
             }
-
-            if ($request->isMethod('delete') && auth()->user()->isAbleTo('user_delete')) {
-                return $next($request);
-            }
-        }
+        }// end :: foreach 
 
         
         session()->flash('has_no_permission', true);
