@@ -222,6 +222,7 @@ $(function () {
         
         $("#edit_form_flag").val('ready');
         $('#edit-permissions').attr('disabled', 'disabled');
+        $('#edit-is_custome_permissions_flag').prop('checked', false)
     }
 
     (function () {

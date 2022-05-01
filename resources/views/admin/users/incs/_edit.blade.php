@@ -119,7 +119,7 @@ $(document).ready(function () {
     });
 
     $('#edit-is_custome_permissions_flag').change(function () {
-        console.log('test change ...', $(this).prop('checked'));
+        // console.log('test change ...', $(this).prop('checked'));
         if ($(this).prop('checked')) {
             $('#edit-permissions').removeAttr('disabled');
             $('#edit-is_custome_permissions').val('true');
