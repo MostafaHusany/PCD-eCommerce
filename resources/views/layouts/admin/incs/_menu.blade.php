@@ -41,14 +41,6 @@
                 <p>Rolles</p>
             </a>
         </li>
-
-        <li class="nav-item">
-            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ Request::is('admin/roles') ? 'active' : ''}}">
-                <!-- <i class="nav-icon fas fa-copyright"></i> -->
-                <i class="nav-icon fas fa-key"></i>
-                <p>Rolles</p>
-            </a>
-        </li>
     </ul>
 </li>
 @endif

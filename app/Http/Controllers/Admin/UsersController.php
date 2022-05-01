@@ -58,10 +58,11 @@ class UsersController extends Controller
     }
 
     public function store (Request $request) {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name'  => 'required|max:255',
             'email' => 'required|unique:users,email|max:255',
-            'category' => 'required|exists:roles,id'
+            'role'  => !isset($request->is_custome_permissions) && $request->is_custome_permissions == 'true' ? 'required|exists:roles,id' : ''
         ]);
 
         if ($validator->fails()) {
@@ -69,9 +70,8 @@ class UsersController extends Controller
         }
 
         $data = $request->except('category');
-        $data['category']    = Role::find($request->category)->display_name;
-        $data['permissions'] = json_encode($data['permissions']);
-        
+        $data['category']    = in_array($request->category, ['admin', 'technical']) ? $request->category : 'technical';
+
         if (isset($request->password)) {
             $data['password'] = bcrypt($request->password);
             $data['plain_password'] = $request->password;
@@ -83,11 +83,13 @@ class UsersController extends Controller
         $new_user = User::create($data);
         
         // attach role or permissions to user
-        if (!isset($request->is_custome_permissions) || $request->is_custome_permissions === 'false') {
-            $new_user->attachRole($request->category);
-        } else {
+        if($request->category == 'admin') {
+            $new_user->attachRole('admin');
+        } elseif ($request->is_custome_permissions === 'true') {
             $permissions = explode(',', $request->permissions);
             $new_user->syncPermissions($permissions);
+        } else {
+            $new_user->attachRole($request->role);
         }
 
         // create customer account
@@ -100,7 +102,7 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'name'  => 'required|max:255',
             'email' => 'required|max:255|unique:users,email,'.$id,
-            'category' => 'required|exists:roles,id'
+            'role'  => !isset($request->is_custome_permissions) && $request->is_custome_permissions == 'true' ? 'required|exists:roles,id' : ''
         ]);
 
         if ($validator->fails()) {
@@ -108,7 +110,7 @@ class UsersController extends Controller
         }
 
         $data = $request->except(['category', 'password']);
-        $data['category'] = Role::find($request->category)->display_name;
+        $data['category'] = in_array($request->category, ['admin', 'technical']) ? $request->category : 'technical';
 
         if (isset($request->password)) {
             $data['plain_password'] = $request->password;
@@ -119,13 +121,16 @@ class UsersController extends Controller
         $target_user->update($data);
         
         // attach role or permissions to user
-        if (!isset($request->is_custome_permissions) || $request->is_custome_permissions === 'false') {
-            $target_user->syncRoles([$request->category]);
-        } else {
+        if($request->category == 'admin') {
+            $target_user->syncRoles([1]);// admin
+        } elseif ($request->is_custome_permissions === 'true') {
+            $target_user->syncRoles([]);
             $permissions = explode(',', $request->permissions);
             $target_user->syncPermissions($permissions);
+        } else {
+            $target_user->syncRoles([$request->role]);
         }
-
+        
         // create customer account
         isset($target_user->customer) ? $target_user->customer->update($data) : $this->create_customer_acc($target_user, $data);
 

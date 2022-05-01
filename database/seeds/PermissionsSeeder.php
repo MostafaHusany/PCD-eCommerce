@@ -31,8 +31,10 @@ class PermissionsSeeder extends Seeder
 
             [
                 'display_name' => 'delete user',
-                'name' => 'delete_add',
+                'name' => 'user_delete',
             ],
+
+            
         ];
 
         Permission::insert($permissions);

@@ -125,6 +125,7 @@ class RolesController extends Controller
         if($request->has('q')){
             $search = $request->q;
             $data = Role::select("id", "name", "display_name")
+                    ->where('name', '!=', 'admin')
                     ->where(function ($q) use ($search){
                         $q->orWhere('name','LIKE',"%$search%")
                         ->orWhere('display_name','LIKE',"%$search%");

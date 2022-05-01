@@ -44,13 +44,24 @@
             <label for="category" class="col-sm-2 col-form-label">Category</label>
             <div class="col-sm-10">
                 <select class="form-control" id="category">
-                    <!-- <option value="technical">Technical</option>
-                    <option value="admin">Admin</option> -->
+                    <option selected="selected" value="admin">Admin</option>
+                    <option value="technical">Technical</option>
                 </select>
+                <div style="padding: 5px 7px; display: none" id="categoryErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group row technical-options" style="display: none">
+            <label for="role" class="col-sm-2 col-form-label">Role</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="role"></select>
+                <div style="padding: 5px 7px; display: none" id="roleErr" class="err-msg mt-2 alert alert-danger">
+                </div>
             </div>
         </div><!-- /.form-group -->
         
-        <div class="form-group row">
+        <div class="form-group row technical-options" style="display: none">
             <label for="permissions" class="col-sm-2 col-form-label">Permissions</label>
             <div class="col-sm-6">
                 <select name="permissions[]" id="permissions" class="form-control" multiple="multiole" disabled="disabled"></select>
@@ -81,7 +92,20 @@
 <script>
 $(document).ready(function () {
     
+    // clear old session 
+    $('.toggle-btn').click(function () {
+        $('#category').val('admin').trigger('change');
+    });
+
     $('#category').change(function () {
+        if ($(this).val() == 'admin') {
+            $('.technical-options').slideUp(500);
+        } else {
+            $('.technical-options').slideDown(500);
+        }
+    });
+
+    $('#role').change(function () {
         /**
          * get requested category permissions
          */
@@ -112,11 +136,13 @@ $(document).ready(function () {
 
     $('#is_custome_permissions_flag').change(function () {
         if ($(this).prop('checked')) {
+            $('#role').attr('disabled', 'disabled');
             $('#permissions').removeAttr('disabled');
-            $('is_custome_permissions').val('true');
+            $('#is_custome_permissions').val('true');
         } else {
+            $('#role').removeAttr('disabled');
             $('#permissions').attr('disabled', 'disabled');
-            $('is_custome_permissions').val('false');
+            $('#is_custome_permissions').val('false');
         }
     });
 });

@@ -4,3 +4,7 @@
     */
     padding-left: 25px
 }
+
+.overflow-table {
+    overflow-x: scroll;
+}

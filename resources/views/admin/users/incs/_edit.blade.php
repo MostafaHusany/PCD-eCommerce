@@ -46,16 +46,25 @@
         <div class="form-group row">
             <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
             <div class="col-sm-10">
-                <select class="form-control" id="edit-category" placeholder="category">
+                <select class="form-control" id="edit-category">
+                    <option selected="selected" value="admin">Admin</option>
                     <option value="technical">Technical</option>
-                    <option value="admin">Admin</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="edit-categoryErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
+
+        <div class="form-group row edit-technical-options" style="display: none">
+            <label for="edit-role" class="col-sm-2 col-form-label">Role</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="edit-role"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-roleErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
         
-        <div class="form-group row">
+        <div class="form-group row edit-technical-options" style="display: none">
             <label for="edit-permissions" class="col-sm-2 col-form-label">Permissions</label>
             <div class="col-sm-6">
                 <select name="permissions[]" id="edit-permissions" class="form-control" multiple="multiole" disabled="disabled"></select>
@@ -87,45 +96,50 @@
 $(document).ready(function () {
     
     $('#edit-category').change(function () {
+        if ($(this).val() == 'admin') {
+            $('.edit-technical-options').slideUp(500);
+        } else {
+            $('.edit-technical-options').slideDown(500);
+        }
+    });
+
+    $('#edit-role').change(function () {
         /**
-         * get requested category permissions
+         * get requested role permissions
          */
 
         // clear old session
-        let is_form_ready = $('#edit_form_flag').val();
+        $('#edit-spinner-border').show(500);
+        $('#edit-permissions').val('').trigger('change');
+        let category_id = $(this).val();
 
-        if (is_form_ready === 'ready') {
-            $('#edit-spinner-border').show(500);
-            $('#edit-permissions').val('').trigger('change');
-            let category_id = $(this).val();
+        axios.get(`{{ url("admin/roles") }}/${category_id}`, {
+            params : {
+                'fast_acc': true
+            }
+        }).then(res => {
+            if (res.data.success) {
+                res.data.data.permissions.length && res.data.data.permissions.forEach(item => {
+                    let tmp = new Option(`${item.name}`, item.id, false, true);
+                    $('#edit-permissions').append(tmp);
+                });
 
-            axios.get(`{{ url("admin/roles") }}/${category_id}`, {
-                params : {
-                    'fast_acc': true
-                }
-            }).then(res => {
-                if (res.data.success) {
-                    res.data.data.permissions.length && res.data.data.permissions.forEach(item => {
-                        let tmp = new Option(`${item.name}`, item.id, false, true);
-                        $('#edit-permissions').append(tmp);
-                    });
+                $('#edit-permissions').trigger('change');
+            }
 
-                    $('#edit-permissions').trigger('change');
-                }
-
-                $('#edit-spinner-border').hide(500);
-            });
-        }// end :: if
+            $('#edit-spinner-border').hide(500);
+        });
     });
 
     $('#edit-is_custome_permissions_flag').change(function () {
-        // console.log('test change ...', $(this).prop('checked'));
         if ($(this).prop('checked')) {
+            $('#edit-role').attr('disabled', 'disabled');
             $('#edit-permissions').removeAttr('disabled');
             $('#edit-is_custome_permissions').val('true');
         } else {
+            $('#edit-role').removeAttr('disabled');
             $('#edit-permissions').attr('disabled', 'disabled');
-            $('#dit-is_custome_permissions').val('false');
+            $('#edit-is_custome_permissions').val('false');
         }
     });
 });

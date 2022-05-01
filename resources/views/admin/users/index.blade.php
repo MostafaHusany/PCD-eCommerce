@@ -51,9 +51,11 @@
                     <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
                 </div>
 
+                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['user_add']))
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
+                @endif
             </div>
         </div><!-- /.row -->
         <hr/>
@@ -136,7 +138,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'name', 'email', 'phone', 'category', 'category', 'password', 'permissions', 'is_custome_permissions'],
+            fields_list     : ['id', 'name', 'email', 'phone', 'category', 'category', 'password', 'role', 'permissions', 'is_custome_permissions'],
             imgs_fields     : []
         },
         [
@@ -205,53 +207,31 @@ $(function () {
          * sow we will set a flag that stops the change event while
          * we filling the edit form fields in first
          */
-        data.permissions.length && $("#edit_form_flag").val('wait');
-        if (data.role !== null) { 
-            let tmp = new Option(`${data.role.name}`, data.role.id, false, true);
-            $('#edit-category').append(tmp).trigger('change');
-        } else {
-            let tmp = new Option(`${data.category} :: deleted Role !!`, 0, false, true);
-            $('#edit-category').append(tmp).trigger('change');
+        if(data.category != 'admin') {
+            if (data.role !== null) { 
+                $('#edit-is_custome_permissions_flag').prop('checked', false).trigger('change');
+
+                let tmp = new Option(`${data.role.name}`, data.role.id, false, true);
+                $('#edit-role').append(tmp).trigger('change');
+            } else {
+                $('#edit-is_custome_permissions_flag').prop('checked', true).trigger('change');
+
+                data.permissions.forEach(permission => {
+                    let tmp = new Option(`${permission.name}`, permission.id, false, true);
+                    $('#edit-permissions').append(tmp);
+                });
+                $('#edit-permissions').removeAttr('disabled').trigger('change');
+            }
         }
 
-        data.permissions.forEach(permission => {
-            let tmp = new Option(`${permission.name}`, permission.id, false, true);
-            $('#edit-permissions').append(tmp);
-        });
-        $('#edit-permissions').trigger('change');
-        
         $("#edit_form_flag").val('ready');
-        $('#edit-permissions').attr('disabled', 'disabled');
-        $('#edit-is_custome_permissions_flag').prop('checked', false)
     }
 
     (function () {
-        $('#s-category').select2({
-            allowClear: true,
-            width: '100%',
-            placeholder: 'Select customers',
-            ajax: {
-                url: '{{ url("admin/roles-search") }}',
-                dataType: 'json',
-                delay: 150,
-                processResults: function (data) {
-                    return {
-                        results: $.map(data, function (item) {
-                            return {
-                                text: `${item.display_name}`,
-                                id: item.display_name
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-
-        $('#category, #edit-category').select2({
+        $('#role, #edit-role').select2({
             // allowClear: true,
             width: '100%',
-            placeholder: 'Select customers',
+            placeholder: 'Select Rolle',
             ajax: {
                 url: '{{ url("admin/roles-search") }}',
                 dataType: 'json',
