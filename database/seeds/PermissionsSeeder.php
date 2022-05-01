@@ -14,7 +14,13 @@ class PermissionsSeeder extends Seeder
     public function run()
     {
         $data = [];
-        $permissions = ['customer'];
+        $permissions = [
+            'users',
+            'customers',
+            'products-categories',
+            'brands',
+            'products',
+        ];
         foreach($permissions as $permission) {
             $data = array_merge($data, [
                 [

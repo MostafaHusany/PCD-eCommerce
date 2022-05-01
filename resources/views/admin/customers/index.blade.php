@@ -55,7 +55,7 @@
                     <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
                 </div>
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customer_add'))
+                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customers_add'))
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>

@@ -34,7 +34,7 @@
         </li>
     </ul>
 </li>
-@elseif(auth()->user()->isAbleTo('user_*'))
+@elseif(auth()->user()->isAbleTo('users_*'))
 <li class="nav-item">
     <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}">
         <i class="nav-icon fas fa-headset"></i>
@@ -43,7 +43,7 @@
 </li>
 @endif
 
-@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customer_*'))
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customer*'))
 <li class="nav-item">
     <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}">
         <i class="nav-icon fas fa-users"></i>
@@ -52,7 +52,7 @@
 </li>
 @endif
 
-@if(auth()->user()->hasRole('admin'))
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products-categories_*') || auth()->user()->isAbleTo('products_*') || auth()->user()->isAbleTo('brands_*'))
 <li class="nav-item {{ str_contains(Request::path(), '/products-categories') || str_contains(Request::path(), '/products') || str_contains(Request::path(), '/brands') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-box-open"></i>
@@ -62,26 +62,32 @@
         </p>
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products-categories_*'))
         <li class="nav-item">
             <a href="{{ route('admin.products-categories.index') }}" class="nav-link {{ Request::is('admin/products-categories') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-clipboard-list"></i>
                 <p>Categories</p>
             </a>
         </li>
+        @endif
 
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('brands_*'))
         <li class="nav-item">
             <a href="{{ route('admin.brands.index') }}" class="nav-link {{ Request::is('admin/brands') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-copyright"></i>
                 <p>Brands</p>
             </a>
         </li>
+        @endif
 
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_*'))
         <li class="nav-item">
             <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is('admin/products') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-boxes"></i>
                 <p>Products</p>
             </a>
         </li>
+        @endif
     </ul>
 </li>
 @endif
