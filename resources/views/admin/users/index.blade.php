@@ -87,16 +87,18 @@
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Category</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="overflow-table">
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div><!-- /.card --> 
     
     @include('admin.users.incs._create')
@@ -134,7 +136,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'name', 'email', 'phone', 'category', 'category', 'password', 'permissions'],
+            fields_list     : ['id', 'name', 'email', 'phone', 'category', 'category', 'password', 'permissions', 'is_custome_permissions'],
             imgs_fields     : []
         },
         [
@@ -186,6 +188,109 @@ $(function () {
 
         return is_valide;
     };
+
+    objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        $('#edit-id').val(data.id);
+
+        fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
+        fields_id_list.forEach(el_id => {
+            if (el_id !== 'permissions' || el_id !== 'is_custome_permissions') {
+                $(`#${prefix + el_id}`).val(data[el_id]).change();
+            }
+        });
+
+        /**
+         * Notice that we have an event in the edit form, that fires 
+         * in the time when the category field trigger change event
+         * sow we will set a flag that stops the change event while
+         * we filling the edit form fields in first
+         */
+        data.permissions.length && $("#edit_form_flag").val('wait');
+        if (data.role !== null) { 
+            let tmp = new Option(`${data.role.name}`, data.role.id, false, true);
+            $('#edit-category').append(tmp).trigger('change');
+        } else {
+            let tmp = new Option(`${data.category} :: deleted Role !!`, 0, false, true);
+            $('#edit-category').append(tmp).trigger('change');
+        }
+
+        data.permissions.forEach(permission => {
+            let tmp = new Option(`${permission.name}`, permission.id, false, true);
+            $('#edit-permissions').append(tmp);
+        });
+        $('#edit-permissions').trigger('change');
+        
+        $("#edit_form_flag").val('ready');
+        $('#edit-permissions').attr('disabled', 'disabled');
+    }
+
+    (function () {
+        $('#s-category').select2({
+            allowClear: true,
+            width: '100%',
+            placeholder: 'Select customers',
+            ajax: {
+                url: '{{ url("admin/roles-search") }}',
+                dataType: 'json',
+                delay: 150,
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: `${item.display_name}`,
+                                id: item.display_name
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('#category, #edit-category').select2({
+            // allowClear: true,
+            width: '100%',
+            placeholder: 'Select customers',
+            ajax: {
+                url: '{{ url("admin/roles-search") }}',
+                dataType: 'json',
+                delay: 150,
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: `${item.display_name}`,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('#permissions, #edit-permissions').select2({
+            allowClear: true,
+            width: '100%',
+            placeholder: 'Select customers',
+            ajax: {
+                url: '{{ url("admin/permissions-search") }}',
+                dataType: 'json',
+                delay: 150,
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: `${item.display_name}`,
+                                id: item.name
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    })();
  
 });
 </script>

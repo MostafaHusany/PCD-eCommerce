@@ -47,9 +47,10 @@ class DatabaseSeeder extends Seeder
         // $new_user->customer()->create($data);
 
         $this->call([
-            ProductCategorySeeder::class, 
-            ProductSeeder::class,
-            ProductRelationCategorySeeder::class,
+            // ProductCategorySeeder::class, 
+            // ProductSeeder::class,
+            // ProductRelationCategorySeeder::class,
+            PermissionsSeeder::class
         ]);
     }
 }
