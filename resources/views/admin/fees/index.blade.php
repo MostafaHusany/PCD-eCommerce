@@ -52,9 +52,11 @@
                     <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
                 </div>
 
+                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('fees_add'))
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
+                @endif
             </div>
         </div><!-- /.row -->
 

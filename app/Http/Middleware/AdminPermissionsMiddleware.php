@@ -23,7 +23,14 @@ class AdminPermissionsMiddleware
             return $next($request);
         }
 
-        $permissions = ['users', 'customers', 'products-categories', 'brands', 'products'];
+        $permissions = [
+            'users', 'customers', 
+            'products-categories', 'brands', 'products', 
+            'sold_products', 'orders',
+            'promotions', 'promo',
+            'shipping', 'fees', 'taxes', 'order_status',
+        ];
+        // dd($request->routeIs('admin.orders.*'), $request->route()->getName(), $request->method());
         foreach($permissions as $permission) {
             if ($request->routeIs('admin.' . $permission . '.*')) {
                 if ($request->isMethod('get') && auth()->user()->isAbleTo($permission . '_*')) {

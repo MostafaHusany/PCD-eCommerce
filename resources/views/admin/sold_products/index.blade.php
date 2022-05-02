@@ -58,6 +58,7 @@
                 </div>
                 
                 {{--
+                <!-- There is no create for sold products -->
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -131,6 +132,7 @@
     @include('admin.orders.incs._show')
     @include('admin.products.incs._edit')
     {{--
+        <!-- There is no create for sold products -->
         @include('admin.products.incs._create')
     --}}
 

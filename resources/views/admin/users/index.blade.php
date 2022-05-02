@@ -217,7 +217,7 @@ $(function () {
                 $('#edit-is_custome_permissions_flag').prop('checked', true).trigger('change');
 
                 data.permissions.forEach(permission => {
-                    let tmp = new Option(`${permission.name}`, permission.id, false, true);
+                    let tmp = new Option(`${permission.display_name}`, permission.id, true, true);
                     $('#edit-permissions').append(tmp);
                 });
                 $('#edit-permissions').removeAttr('disabled').trigger('change');

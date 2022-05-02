@@ -15,12 +15,13 @@ class PermissionsSeeder extends Seeder
     {
         $data = [];
         $permissions = [
-            'users',
-            'customers',
-            'products-categories',
-            'brands',
-            'products',
+            // 'users', 'customers', 
+            // 'products-categories', 'brands', 'products', 
+            // 'sold_products', 'orders',
+            // 'promotions', 'promo',
+            'shipping', 'fees', 'taxes', 'order_status',
         ];
+
         foreach($permissions as $permission) {
             $data = array_merge($data, [
                 [
