@@ -112,7 +112,8 @@ $(document).ready(function () {
             keys.forEach(key => {
                 data.products_meta[key] = {
                     quantity : parseInt(products_meta[key].quantity),
-                    price    : parseFloat(products_meta[key].price)
+                    price    : parseFloat(products_meta[key].price),
+                    old_price : parseFloat(products_meta[key].old_price),
                 }
             });
         };
