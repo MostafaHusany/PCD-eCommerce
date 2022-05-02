@@ -36,7 +36,8 @@ class AdminPermissionsMiddleware
                 (
                     $request->routeIs('admin.products.show') || 
                     $request->routeIs('admin.customers.show') ||
-                    $request->routeIs('admin.order_status.show')
+                    $request->routeIs('admin.order_status.show') ||
+                    $request->routeIs('admin.invoices.*')
                 ) && auth()->user()->isAbleTo('orders_*') 
             ) {
             return $next($request);

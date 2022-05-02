@@ -56,7 +56,7 @@
             </button>
             @endif 
 
-            @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('orders_show'))
+            @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('orders_edit'))
             <button class="dropdown-item show-invoice text-success" 
                 data-object-id="{{$row_object->id}}"
                 data-current-card="#objectsCard"    
