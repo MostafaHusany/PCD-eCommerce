@@ -30,7 +30,18 @@ class AdminPermissionsMiddleware
             'promotions', 'promo',
             'shipping', 'fees', 'taxes', 'order_status',
         ];
-        // dd($request->routeIs('admin.orders.*'), $request->route()->getName(), $request->method());
+        
+        // if use has access to create order than he should get access to show products
+        if (
+                (
+                    $request->routeIs('admin.products.show') || 
+                    $request->routeIs('admin.customers.show') ||
+                    $request->routeIs('admin.order_status.show')
+                ) && auth()->user()->isAbleTo('orders_*') 
+            ) {
+            return $next($request);
+        }
+
         foreach($permissions as $permission) {
             if ($request->routeIs('admin.' . $permission . '.*')) {
                 if ($request->isMethod('get') && auth()->user()->isAbleTo($permission . '_*')) {
@@ -51,6 +62,10 @@ class AdminPermissionsMiddleware
             }
         }// end :: foreach 
 
+        // search api access allways open for the admin
+        if (str_contains($request->path(), '-search')) {
+            return $next($request);
+        }
         
         session()->flash('has_no_permission', true);
         return redirect()->route('admin.error.no_permission');
