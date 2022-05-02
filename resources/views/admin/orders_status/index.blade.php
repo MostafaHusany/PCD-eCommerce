@@ -52,9 +52,11 @@
                     <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
                 </div>
 
+                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('order_status_add'))
                 <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                     <i class="fas fa-plus"></i>
                 </div>
+                @endif
             </div>
         </div><!-- /.row -->
 
@@ -114,7 +116,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'status_code', 'status_name', 'color'],
+            fields_list     : ['id', 'status_code', 'status_name_en', 'status_name_ar', 'color'],
             imgs_fields     : []
         },
         [
@@ -144,11 +146,18 @@ $(function () {
             $(`#${prefix}status_codeErr`).slideDown(500);
         }
 
-        if (data.get('status_name') === '') {
+        if (data.get('status_name_ar') === '') {
+            is_valide = false;
+            let err_msg = 'status name in arabic is required';
+            $(`#${prefix}status_name_arErr`).text(err_msg);
+            $(`#${prefix}status_name_arErr`).slideDown(500);
+        }
+
+        if (data.get('status_name_en') === '') {
             is_valide = false;
             let err_msg = 'status name is required';
-            $(`#${prefix}status_nameErr`).text(err_msg);
-            $(`#${prefix}status_nameErr`).slideDown(500);
+            $(`#${prefix}status_name_enErr`).text(err_msg);
+            $(`#${prefix}status_name_enErr`).slideDown(500);
         }
 
         return is_valide;

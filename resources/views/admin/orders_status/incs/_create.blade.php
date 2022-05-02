@@ -25,9 +25,14 @@
         
         <div class="form-group row">
             <label for="status_name" class="col-sm-2 col-form-label">Status Name</label>
-            <div class="col-sm-10">
-                <input type="text" tabindex="2"  class="form-control" id="status_name" placeholder="Status Name">
-                <div style="padding: 5px 7px; display: none" id="status_nameErr" class="err-msg mt-2 alert alert-danger">
+            <div class="col-sm-5">
+                <input type="text" tabindex="2"  class="form-control" id="status_name_en" placeholder="Status Name">
+                <div style="padding: 5px 7px; display: none" id="status_name_enErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <input style="direction: rtl" type="text" tabindex="1"  class="form-control" id="status_name_ar" placeholder="مسمي الحالة">
+                <div style="padding: 5px 7px; display: none" id="status_name_arErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->

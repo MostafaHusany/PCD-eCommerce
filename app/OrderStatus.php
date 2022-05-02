@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderStatus extends Model
 {
-    protected $fillable = ['status_code', 'status_name', 'color'];
+    protected $fillable = ['status_code', 'status_name_ar', 'status_name_en', 'color'];
 
     static public function get_status () {
         return cache()->remember('order_status', CACHE_TIME, function () {
