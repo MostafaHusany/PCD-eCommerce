@@ -77,7 +77,7 @@ class OrdersController extends Controller
                 return $row_object->payment_status();
             })
             ->addColumn('status', function ($row_object) {
-                return isset($row_object->status_obj) ? $row_object->status_obj->status_name : $row_object->status;
+                return isset($row_object->status_obj) ? $row_object->status_obj->status_name_en : $row_object->status;
             })
             ->addColumn('status_action', function ($row_object) {
                 return view('admin.orders.incs._status', compact('row_object'));
