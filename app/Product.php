@@ -57,7 +57,16 @@ class Product extends Model
     }
 
     public function product_promotion_r () {
-        return $this->hasMany(ProductPromotion::class, 'product_id');
+        $instance = $this->hasMany(ProductPromotion::class, 'product_id');
+        $instance->getQuery()
+        ->where('product_promotions.start_date', '<=', Date('Y-m-d'))
+        ->where('product_promotions.end_date', '>=', Date('Y-m-d'))
+        ->where('product_promotions.is_active', 1)
+        ->where('product_promotions.quantity', '>', 0)
+        ->orderBy('product_promotions.id', 'desc')
+        ->limit(1);
+
+        return $instance;
     }
 
     public function has_promotion () {
