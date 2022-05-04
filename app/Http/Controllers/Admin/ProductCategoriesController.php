@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Validator;
@@ -115,10 +116,17 @@ class ProductCategoriesController extends Controller
         $custome_fields = json_decode($request->custome_fields);
         $this->create_category_custome_fields($new_object, $custome_fields);
 
+        // clear categories old cach
+        $this->clear_cach();
+
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }
 
     public function update (Request $request, $id) {
+        
+        // clear categories old cach
+        $this->clear_cach();
+
         if ($id == 0) {
             ProductCategory::query()->update(['is_nav' => 0]);
             ProductCategory::query()->whereIn('id', $request->categories)->update(['is_nav' => 1]);
@@ -162,6 +170,9 @@ class ProductCategoriesController extends Controller
         isset($target_object) && $target_object->attributes()->delete();
         isset($target_object) && $target_object->delete();
 
+        // clear categories old cach
+        $this->clear_cach();
+
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
 
@@ -202,4 +213,9 @@ class ProductCategoriesController extends Controller
 
         return CategoryAttribute::insert($custome_fields);
     }
+
+    private function clear_cach () {
+        // clear old cach for categories
+        Cache::forget('categories');
+    } 
 }
