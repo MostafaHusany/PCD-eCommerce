@@ -30,6 +30,21 @@ Route::group([
 });
 
 
-Route::group(['namespace' => 'shop'], function () {
-    Route::get('products', 'ShopController@prodects');
+Route::group(['namespace' => 'shopApi'], function () {
+    /**
+     * # ShopController ... 
+     * Get products, categories and do products filtration
+     * 
+     * # CartController 
+     * Get cart content, add product, remove, edit quantityt and clear.
+     * 
+     * # UserController ... 
+     * get user data, update data, show orders, 
+     */
+    
+    Route::get('products', 'ShopController@search_all_products');
+    Route::get('products/{slug}', 'ShopController@get_products_by_category');
+    Route::get('product/{slug}', 'ShopController@show');
+
+    Route::get('categories', 'ShopController@get_categories');
 });
