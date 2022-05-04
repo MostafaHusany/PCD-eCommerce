@@ -79,6 +79,15 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
+            <label for="brands" class="col-sm-2 col-form-label">Brands</label>
+            <div class="col-sm-10">
+                <select tabindex="5" class="form-control" id="brands" min="0" value="0" multiple="multiple"></select>
+                <div style="padding: 5px 7px; display: none" id="brandsErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group row">
             <?php
                 $categories_icons = ['flaticon-tv', 'flaticon-responsive', 'flaticon-camera', 'flaticon-plugins',
                 'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer'];
@@ -97,7 +106,7 @@
             <div class="col-5">
                 <i style="font-size: 25px;" id="show-icon" class=""></i>
             </div>
-        </div>
+        </div><!-- /.form-group -->
 
         <hr />
 

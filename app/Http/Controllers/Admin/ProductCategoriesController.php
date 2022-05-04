@@ -107,6 +107,11 @@ class ProductCategoriesController extends Controller
         $data['slug'] = join('-', explode(' ', $request->en_title));
         $new_object   = ProductCategory::create($data);
 
+        if (isset($request->brands)) {
+            $brands = explode(',', $request->brands);
+            $new_object->brands()->sync($brands);
+        }
+
         $custome_fields = json_decode($request->custome_fields);
         $this->create_category_custome_fields($new_object, $custome_fields);
 

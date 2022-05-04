@@ -31,4 +31,8 @@ class ProductCategory extends Model
     public function product_custome_fields () {
         return $this->hasMany(ProductCustomeField::class, 'category_id');
     }
+
+    public function brands () {
+        return $this->belongsToMany(Brand::class, 'category_brands', 'category_id', 'brand_id');
+    }
 }

@@ -172,6 +172,16 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
         ]
     ]);
 
+    Route::resource('districts', 'DistrictsController', ['names' => [
+        'index'     => 'admin.districts.index',
+        'store'     => 'admin.districts.store',
+        'show'      => 'admin.districts.show',
+        'edit'      => 'admin.districts.edit',
+        'update'    => 'admin.districts.update',
+        'destroy'   => 'admin.districts.destroy'
+        ]
+    ]);
+
     Route::resource('invoices', 'invoicesController', ['names' => [
         // 'index'     => 'admin.invoices.index',
         // 'store'     => 'admin.invoices.store',

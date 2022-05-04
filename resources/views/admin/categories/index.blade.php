@@ -109,7 +109,9 @@
 
     @include('admin.categories.incs._edit')
     
+    {{--
     @include('admin.categories.incs._settings')
+    --}}
     
 
 </div>
@@ -143,7 +145,7 @@ $(function () {
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
             fields_list     : ['id', 'ar_title', 'en_title', 'ar_description', 'en_description',
-                            'is_main', 'category_id', 'rule', 'custome_fields', 'icon'],
+                            'is_main', 'category_id', 'rule', 'brands', 'custome_fields', 'icon'],
             imgs_fields     : []
         },
         [
@@ -290,6 +292,28 @@ $(function () {
                 placeholder: 'Select categories',
                 ajax: {
                     url: '{{ url("admin/products-categories-search") }}?is_main=true',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: `${item['ar_title']} || ${item['en_title']}`,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('#brands, #edit-brands').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select Brands',
+                ajax: {
+                    url: '{{ url("admin/brand-search") }}',
                     dataType: 'json',
                     delay: 150,
                     processResults: function (data) {

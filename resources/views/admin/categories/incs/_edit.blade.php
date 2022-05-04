@@ -80,6 +80,15 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
+            <label for="edit-brands" class="col-sm-2 col-form-label">Brands</label>
+            <div class="col-sm-10">
+                <select tabindex="5" class="form-control" id="edit-brands" min="0" value="0" multiple="multiple"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-brandsErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group row">
             <?php
                 $categories_icons = ['flaticon-tv', 'flaticon-responsive', 'flaticon-camera', 'flaticon-plugins',
                 'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer',
