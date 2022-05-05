@@ -42,9 +42,18 @@ Route::group(['namespace' => 'shopApi'], function () {
      * get user data, update data, show orders, 
      */
     
+    // ShopController
+    Route::get('categories', 'ShopController@get_categories');
     Route::get('products', 'ShopController@search_all_products');
     Route::get('products/{slug}', 'ShopController@get_products_by_category');
     Route::get('product/{slug}', 'ShopController@show');
 
-    Route::get('categories', 'ShopController@get_categories');
+    // // CartController
+    Route::get('cart', 'CartController@get_cart');
+    Route::post('cart/{id}', 'CartController@add_product');
+    Route::delete('cart', 'CartController@clear_cart');
+    Route::delete('cart/{cart_item_id}', 'CartController@remove_product');
+
+
+
 });
