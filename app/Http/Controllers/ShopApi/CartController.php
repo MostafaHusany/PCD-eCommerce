@@ -39,20 +39,20 @@ class CartController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => 'max_quantity_per_order']);
         }
 
-        $cart = Cart::add($target_product->id, $target_product->en_name, 1, $target_product->get_price())->associate('App\Product');
+        $cart = Cart::instance('products')->add($target_product->id, $target_product->en_name, 1, $target_product->get_price())->associate('App\Product');
         
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
     }
 
     public function remove_product ($id) {
         $row_id = $this->is_cart_has_product($id);
-        isset($row_id) ? Cart::remove($row_id) : null;
+        isset($row_id) ? Cart::instance('products')->remove($row_id) : null;
 
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
     }
 
     public function clear_cart () {
-        Cart::destroy();
+        Cart::instance('products')->destroy();
         
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
     }
@@ -61,9 +61,9 @@ class CartController extends Controller
     private function cart_content () {
         
         $data = [
-            'cart_content' => Cart::content(),
-            'items_count'  => Cart::content()->count(),
-            'total_price'  => Cart::subtotal(),
+            'cart_content' => Cart::instance('products')->content(),
+            'items_count'  => Cart::instance('products')->content()->count(),
+            'total_price'  => Cart::instance('products')->subtotal(),
         ];
 
         return $data;
@@ -79,7 +79,7 @@ class CartController extends Controller
          * else get the products categories that has qty
          * limit rule and apply the rule on the min qty 
          */
-        $is_has_item = Cart::search(function ($cartItem, $rowId) use ($target_product) {
+        $is_has_item = Cart::instance('products')->search(function ($cartItem, $rowId) use ($target_product) {
             return $cartItem->id == $target_product->id;
         })->first();
         
@@ -92,7 +92,7 @@ class CartController extends Controller
     }
 
     private function is_cart_has_product ($id_or_item_id) {
-        $is_has_item = Cart::search(function ($cartItem, $rowId) use ($id_or_item_id) {
+        $is_has_item = Cart::instance('products')->search(function ($cartItem, $rowId) use ($id_or_item_id) {
             return $cartItem->id == $id_or_item_id || $rowId == $id_or_item_id;
         })->first();
 
