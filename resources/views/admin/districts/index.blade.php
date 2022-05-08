@@ -71,6 +71,7 @@
                 <th>#</th>
                 <th>Type</th>
                 <th>Name</th>
+                <th>Code</th>
                 <th>Parent</th>
                 <th>Orders</th>
                 <th>Active</th>
@@ -117,13 +118,14 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'name', 'children_tags'],
+            fields_list     : ['id', 'name', 'children_tags', 'phone_code'],
             imgs_fields     : []
         },
         [
             { data: 'id', name: 'id' },
             { data: 'type', name: 'name' },
             { data: 'name', name: 'name' },
+            { data: 'phone_code', name: 'phone_code' },
             { data: 'parent', name: 'parent' },
             { data: 'orders', name: 'orders' },
             { data: 'activation', name: 'activation' },
@@ -146,12 +148,19 @@ $(function () {
 
         // clear old validation session
         $('.err-msg').slideUp(500);
-
+        
         if (data.get('name') === '') {
             is_valide = false;
             let err_msg = 'name is required';
             $(`#${prefix}nameErr`).text(err_msg);
             $(`#${prefix}nameErr`).slideDown(500);
+        }
+        
+        if ($('#is-main').val() === 'main' && data.get('phone_code') === '') {
+            is_valide = false;
+            let err_msg = 'phone code is required';
+            $(`#${prefix}phone_codeErr`).text(err_msg);
+            $(`#${prefix}phone_codeErr`).slideDown(500);
         }
 
         if ($('#is-main').val() === 'main' && (data.get('children_tags') === '' || data.get('children_tags') === '[]')) {

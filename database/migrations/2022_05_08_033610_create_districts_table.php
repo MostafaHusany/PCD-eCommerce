@@ -19,6 +19,7 @@ class CreateDistrictsTable extends Migration
 
             $table->string('name');
             $table->string('type')->default('gove');// country, & gove only for the start
+            $table->string('phone_code')->nullable();
             $table->string('flag')->nullable();
             $table->tinyInteger('is_active')->default(1);
 

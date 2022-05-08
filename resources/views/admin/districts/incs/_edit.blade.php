@@ -23,6 +23,15 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+
+        <div class="parent-el form-group row">
+            <label for="edit-phone_code" class="col-sm-2 col-form-label">Phone Code</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-phone_code" placeholder="Phone code">
+                <div style="padding: 5px 7px; display: none" id="edit-phone_codeErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
         
         <div class="parent-el form-group row">
             <input type="hidden" id="edit-children_tags">

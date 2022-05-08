@@ -49,6 +49,9 @@ class DistrictsController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('phone_code', function ($row_object) {
+                return isset($row_object->phone_code) ? $row_object->phone_code : '---';
+            })
             ->addColumn('orders', function ($row_object) {
                 return 0;
                 // return $row_object->type == 'contry' ? $row_object->orders_by_country()->count() : $row_object->orders_by_gove()->count();
