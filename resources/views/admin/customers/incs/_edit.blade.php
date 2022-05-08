@@ -15,23 +15,13 @@
         <input type="hidden" id="edit-id">
         
         <div class="form-group row">
-            <label for="edit-first_name" class="col-sm-2 col-form-label">First Name</label>
+            <label for="edit-name" class="col-sm-2 col-form-label">Name</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="edit-first_name" placeholder="First Name">
-                <div style="padding: 5px 7px; display: none" id="edit-first_nameErr" class="err-msg mt-2 alert alert-danger">
+                <input type="text" class="form-control" id="edit-name" placeholder="Name">
+                <div style="padding: 5px 7px; display: none" id="edit-nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
-        
-        <div class="form-group row">
-            <label for="edit-second_name" class="col-sm-2 col-form-label">Second Name</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="edit-second_name" placeholder="Second Name">
-                <div style="padding: 5px 7px; display: none" id="edit-second_nameErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-
         
         <div class="form-group row">
             <label for="edit-email" class="col-sm-2 col-form-label">Email</label>

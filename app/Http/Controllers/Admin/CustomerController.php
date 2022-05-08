@@ -21,10 +21,7 @@ class CustomerController extends Controller
             $model = Customer::query();
             
             if (isset($request->name)) {
-                $model->where(function($query) use ($request){
-                    $query->orWhere('name', 'like', '%' . $request->name . '%');
-                    $query->orWhere('name', 'like', '%' . $request->name . '%');
-                });
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
 
             if (isset($request->email)) {
@@ -40,9 +37,6 @@ class CustomerController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
-            ->addColumn('name', function ($row_object) {
-                return $row_object->fullName();
-            })
             ->addColumn('active', function ($row_object) {
                 return view('admin.customers.incs._active', compact('row_object'));
             })
@@ -70,14 +64,10 @@ class CustomerController extends Controller
     }
 
     public function store (Request $request) {
-        // dd($request->all());
-
         $validator = Validator::make($request->all(), [
             'name'  => 'required|max:255',
             'email' => 'required|unique:users,email|max:255',
             'phone' => 'required|unique:users,phone|max:255',
-            'first_name' => 'required|max:255',
-            'second_name' => 'required|max:255',
             'city' => 'required|unique:users,phone|max:255',
             'address' => 'required|unique:users,phone|max:255'
         ]);
@@ -87,7 +77,6 @@ class CustomerController extends Controller
         }
 
         $data         = $request->all();
-        $data['name'] = 'أ.' . $request->second_name;
 
         if (isset($request->password)) {
             $data['password'] = bcrypt($request->password);
@@ -101,7 +90,7 @@ class CustomerController extends Controller
         $new_user->customer()->create($data);
 
         return response()->json(['data' => $new_user, 'success' => isset($new_user)]);
-    }// end :: store
+    }
 
     public function update (Request $request, $id) {
         
@@ -117,8 +106,6 @@ class CustomerController extends Controller
             'name'  => 'required|max:255',
             'email' => 'required|max:255|unique:customers,email,'.$id,
             'phone' => 'required|max:255|unique:customers,phone,'.$id,
-            'first_name' => 'required|max:255',
-            'second_name' => 'required|max:255',
             'city' => 'required|max:255',
             'address' => 'required|max:255'
         ]);
@@ -127,8 +114,7 @@ class CustomerController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data         = $request->except(['password', 'id', '_token', '_method']);
-        $data['name'] = 'أ.' . $request->second_name;
+        $data = $request->except(['password', 'id', '_token', '_method']);
 
         if (isset($request->password)) {
             $data['plain_password'] = $request->password;

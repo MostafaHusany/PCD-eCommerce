@@ -14,19 +14,10 @@
 
     <form action="/" id="objectForm">
         <div class="form-group row">
-            <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
+            <label for="name" class="col-sm-2 col-form-label">Name</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="first_name" placeholder="First Name">
-                <div style="padding: 5px 7px; display: none" id="first_nameErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-        
-        <div class="form-group row">
-            <label for="second_name" class="col-sm-2 col-form-label">Second Name</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="second_name" placeholder="Second Name">
-                <div style="padding: 5px 7px; display: none" id="second_nameErr" class="err-msg mt-2 alert alert-danger">
+                <input type="text" class="form-control" id="name" placeholder="Name">
+                <div style="padding: 5px 7px; display: none" id="nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
@@ -67,7 +58,6 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
-        
 
         <div class="form-group row">
             <label for="password" class="col-sm-2 col-form-label">Password</label>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $fillable = [
-        'first_name', 'second_name', 'name', 'email',
+        'name', 'email',
         'phone', 'address', 'city', 'plain_password',
         'user_id', 'meta'
     ];
@@ -17,10 +17,10 @@ class Customer extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function scopeFullName()
-    {
-        return $this->first_name . ' ' . $this->second_name;
-    }
+    // public function scopeFullName()
+    // {
+    //     return $this->first_name . ' ' . $this->second_name;
+    // }
 
     public function orders()
     {

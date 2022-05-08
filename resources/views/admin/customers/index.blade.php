@@ -154,7 +154,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'first_name', 'second_name', 'name', 'email', 'phone', 'city', 'address', 'password'],
+            fields_list     : ['id', 'name', 'email', 'phone', 'city', 'address', 'password'],
             imgs_fields     : []
         },
         [

@@ -62,7 +62,7 @@ class OrdersController extends Controller
 
             $datatable_model = Datatables::of($model)
             ->addColumn('customer', function ($row_object) {
-                return $row_object->customer->fullName();
+                return $row_object->customer->name;
             })
             ->addColumn('phone', function ($row_object) {
                 return $row_object->customer->phone;
