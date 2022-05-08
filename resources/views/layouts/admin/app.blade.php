@@ -25,7 +25,11 @@
     @yield('third_party_stylesheets')
 
     @stack('page_css')
-
+    <style>
+        .nav-item {
+            font-size: 14px !important;
+        }
+    </style>
 
     <script src="{{ mix('js/app.js') }}"></script>
     <!-- DATATABLE SCRIPTS -->

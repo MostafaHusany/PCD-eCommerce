@@ -156,7 +156,7 @@
 @endif
 
 @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('shipping_*') || auth()->user()->isAbleTo('fees_*') || auth()->user()->isAbleTo('taxes_*') || auth()->user()->isAbleTo('order_status_*'))
-<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') || str_contains(Request::path(), '/districts') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-sliders-h"></i>
         <p>
@@ -197,6 +197,15 @@
             <a href="{{ route('admin.order_status.index') }}" class="nav-link {{ Request::is('admin/order-status') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-flag"></i>
                 <p>Orders Status</p>
+            </a>
+        </li>
+        @endif
+
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('districts_*'))
+        <li class="nav-item">
+            <a href="{{ route('admin.districts.index') }}" class="nav-link {{ Request::is('admin/districts') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-map-marked-alt"></i>
+                <p>Districts</p>
             </a>
         </li>
         @endif
