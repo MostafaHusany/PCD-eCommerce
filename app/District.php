@@ -8,7 +8,7 @@ class District extends Model
 {
     // Type :: country, & gove only for the start
 
-    protected $fillable = ['flag', 'is_active', 'name', 'type', 'district_id'];
+    protected $fillable = ['flag', 'is_active', 'name', 'type', 'district_id', 'phone_code'];
     
     public function parent_district () {
         return $this->belongsTo(District::class, 'district_id');
