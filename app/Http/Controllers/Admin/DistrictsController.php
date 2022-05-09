@@ -56,8 +56,7 @@ class DistrictsController extends Controller
                 return $row_object->type == 'country' ? $row_object->customers_of_country()->count() : $row_object->customers_of_gover()->count();
             })
             ->addColumn('orders', function ($row_object) {
-                return 0;
-                // return $row_object->type == 'contry' ? $row_object->orders_by_country()->count() : $row_object->orders_by_gove()->count();
+                return $row_object->type == 'country' ? $row_object->orders_by_country()->count() : $row_object->orders_by_gove()->count();
             })
             ->addColumn('parent', function ($row_object) {
                 return isset($row_object->parent_district) ? $row_object->parent_district->name : '---';
