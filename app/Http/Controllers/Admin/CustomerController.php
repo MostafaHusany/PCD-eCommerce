@@ -68,7 +68,7 @@ class CustomerController extends Controller
         if (isset($target_customer) && isset($request->fast_acc)) {
             // $target_user->permissions = (array) json_decode($target_user->permissions);
             // $target_customer = $target_user->customer;
-            $target_customer->government;
+            $target_customer->country; $target_customer->government;
             isset($request->get_orders) && $target_customer->orders;
             return response()->json(['data' => $target_customer, 'success' => isset($target_customer)]);
         }
@@ -165,11 +165,12 @@ class CustomerController extends Controller
 
         if($request->has('q')){
             $search = $request->q;
-            $data = Customer::select("id", "first_name", "second_name", "phone", "email")
-                    ->where(function ($q) use($search) {
-                        $q->orWhere('first_name','LIKE',"%$search%")
-                          ->orWhere('second_name','LIKE',"%$search%");
-                    })
+            $data = Customer::select("id", "name", "phone", "email")
+                    // ->where(function ($q) use($search) {
+                    //     $q->orWhere('first_name','LIKE',"%$search%")
+                    //       ->orWhere('second_name','LIKE',"%$search%");
+                    // })
+            		->where('name','LIKE',"%$search%")
             		->orWhere('email','LIKE',"%$search%")
                     ->orWhere('phone','LIKE',"%$search%")
             		->get();

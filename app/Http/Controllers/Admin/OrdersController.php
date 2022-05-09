@@ -12,7 +12,9 @@ use App\Fee;
 use App\Taxe;
 use App\Order;
 use App\Product;
+use App\Customer;
 use App\Shipping;
+use App\District;
 use App\OrderProduct;
 
 use App\Traits\MakeOrder;
@@ -23,7 +25,7 @@ class OrdersController extends Controller
 
     public function index (Request $request) {
         if ($request->ajax()) {
-            $model = Order::query()->orderBy('id', 'desc');
+            $model = Order::query()->with('customer')->orderBy('id', 'desc');
             
             if (isset($request->code)) {
                 $model->where('code', 'like', "%$request->code%");
@@ -54,11 +56,11 @@ class OrdersController extends Controller
                 });
             }
 
-            if (isset($request->city)) {
-                $model->whereHas('customer', function ($q) use ($request) {
-                    $q->where('customers.city', $request->city);
-                });
-            }
+            // if (isset($request->city)) {
+            //     $model->whereHas('customer', function ($q) use ($request) {
+            //         $q->where('customers.city', $request->city);
+            //     });
+            // }
 
             $datatable_model = Datatables::of($model)
             ->addColumn('customer', function ($row_object) {
@@ -70,8 +72,11 @@ class OrdersController extends Controller
             ->addColumn('email', function ($row_object) {
                 return $row_object->customer->email;
             })
-            ->addColumn('city', function ($row_object) {
-                return $row_object->customer->city;
+            ->addColumn('country', function ($row_object) {
+                return isset($row_object->country) ? $row_object->country->name : '---';
+            })
+            ->addColumn('government', function ($row_object) {
+                return isset($row_object->government) ? $row_object->government->name : '---';
             })
             ->addColumn('payment_status', function ($row_object) {
                 return $row_object->payment_status();
@@ -89,7 +94,8 @@ class OrdersController extends Controller
             return $datatable_model->make(true);
         }
         
-        return view('admin.orders.index');
+        $countries = District::where('type', 'country')->where('is_active', 1)->get();
+        return view('admin.orders.index', compact('countries'));
     }
 
     public function show (Request $request, $id) {

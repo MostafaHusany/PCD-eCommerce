@@ -8,6 +8,7 @@ use App\Taxe;
 use App\Order;
 use App\Product;
 use App\Invoice;
+use App\Customer;
 use App\Shipping;
 use App\PromoCode;
 use App\OrderProduct;
@@ -39,6 +40,8 @@ trait MakeOrder {
             $promo_code = PromoCode::where('code', $promo_code)->first(); 
         }
 
+        $target_customer = Customer::find($customer_id);
+        
         $new_order = Order::create([
             'code'          => 'cs-' . time(), 
             'customer_id'   => $customer_id,
@@ -47,6 +50,10 @@ trait MakeOrder {
             'is_free_shipping'  => $shipping_data[1],
             'shipping_cost'     => $shipping_data[2],
             
+            'country_id' => $target_customer->country_id,
+            'gove_id' => $target_customer->gove_id,
+            'address' => $target_customer->address,
+
             'sub_total'     => 0,
             'total'         => 0,
             'promo_code_id' => isset($promo_code) ? $promo_code->id : null

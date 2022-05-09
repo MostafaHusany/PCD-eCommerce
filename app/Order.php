@@ -12,6 +12,7 @@ class Order extends Model
      */
     protected $fillable = ['status', 'note', 'meta', 'sub_total', 'total', 'customer_id',
     'code', 'shipping_cost', 'is_free_shipping', 'shipping_id', 'taxe', 'fee', 'address_id',
+    'country_id', 'gove_id', 'address',
     'promo_code_id', 'promo_code_discount'];
 
     public function customer () {
@@ -45,4 +46,15 @@ class Order extends Model
     public function status_obj () {
         return $this->belongsTo(OrderStatus::class, 'status', 'status_code');
     }
+
+    public function country ()
+    {
+        return $this->belongsTo(District::class, 'country_id');
+    }
+
+    public function government ()
+    {
+        return $this->belongsTo(District::class, 'gove_id');
+    }
+    
 }

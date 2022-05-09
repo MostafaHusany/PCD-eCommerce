@@ -41,8 +41,13 @@
                     </tr>
                     
                     <tr>
-                        <td>City</td>
-                        <td id="customer_city">---</td>
+                        <td>Country</td>
+                        <td id="customer_country">---</td>
+                    </tr>
+
+                    <tr>
+                        <td>Government</td>
+                        <td id="customer_government">---</td>
                     </tr>
 
                     <tr>

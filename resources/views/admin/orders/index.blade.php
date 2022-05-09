@@ -65,14 +65,35 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-2">
+            <div class="col-3">
                 <div class="form-group search-action">
                     <label for="">Code</label>
                     <input type="text" class="form-control" id="s-code">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="">Name</label>
+                    <input type="text" class="form-control" id="s-name">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
             
-            <div class="col-2">
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="">Email</label>
+                    <input type="text" class="form-control" id="s-email">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="">Phone</label>
+                    <input type="text" class="form-control" id="s-phone">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-4">
                 <div class="form-group search-action">
                     <label for="">Status</label>
                     <select type="text" class="form-control" id="s-status">
@@ -83,58 +104,50 @@
                         <option>تم الاستلام</option>
                     </select>
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
+            </div><!-- /.col-4 -->
             
-            <div class="col-2">
+            <div class="col-4">
                 <div class="form-group search-action">
-                    <label for="">Email</label>
-                    <input type="text" class="form-control" id="s-email">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">Phone</label>
-                    <input type="text" class="form-control" id="s-phone">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">City</label>
-                    <select disabled="disabled" type="text" class="form-control" id="s-city">
+                    <label for="">Country</label>
+                    <select type="text" class="form-control" id="s-country">
                         <option value="">-- select category --</option>
-                        <option>city 1</option>
-                        <option>city 2</option>
+                        @foreach($countries as $country)
+                        <option value="{{$country->id}}">{{$country->name}}</option>
+                        @endforeach
                     </select>
                 </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
+            </div><!-- /.col-4 -->
+
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="">Governorate</label>
+                    <select type="text" class="form-control" id="s-governorate" multiple="multiple">
+                        <option value="">-- select category --</option>
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
-
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Code</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>City</th>
-                <th>Total</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Status Action</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="overflow-table">
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Government</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Status Action</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div><!-- /.card --> 
     
     @include('admin.orders.incs._show')
@@ -181,7 +194,8 @@ $(function () {
             { data: 'customer', name: 'customer' },
             { data: 'phone', name: 'phone' },
             { data: 'email', name: 'email' },
-            { data: 'city', name: 'city' },
+            { data: 'country', name: 'country' },
+            { data: 'government', name: 'government' },
             { data: 'total', name: 'total' },
             { data: 'payment_status', name: 'payment_status' },
             { data: 'status', name: 'status' },
@@ -204,8 +218,11 @@ $(function () {
             if ($('#s-phone').length)
             d.phone = $('#s-phone').val();
             
-            if ($('#s-city').length)
-            d.city = $('#s-city').val();                
+            if ($('#s-country').length)
+            d.country = $('#s-country').val();      
+            
+            if ($('#s-governorate').length)
+            d.governorate = $('#s-governorate').val();     
         },
         {
             delete_msg : 'Are you sure you want to restore this order '
@@ -283,6 +300,39 @@ $(function () {
 
     const index_custome_events =  (function () {
         function start_events () {
+            $('#s-country').change(function () {
+                window.district_id = $(this).val();
+            });
+
+            $('#s-governorate').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select brand',
+                ajax: {
+                    url: `{{ url("admin/districts-search") }}`,
+                    dataType: 'json',
+                    delay: 150,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page_limit: 10,
+                            district_id : window.district_id
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
             $('#customer, #edit-customer').select2({
                 // allowClear: true,
                 width: '100%',
@@ -295,7 +345,7 @@ $(function () {
                         return {
                             results:  $.map(data, function (item) {
                                 return {
-                                    text: `${item.first_name} ${item.second_name} , email : (${item.email}) , phone : (${item.phone})`,
+                                    text: `${item.name}, email : (${item.email}) , phone : (${item.phone})`,
                                     id: item.id
                                 }
                             })
@@ -319,7 +369,8 @@ $(function () {
                             $(`#${prefix}customer_name`).text(res.data.data.first_name + ' ' + res.data.data.second_name);
                             $(`#${prefix}customer_email`).text(res.data.data.email);
                             $(`#${prefix}customer_phone`).text(res.data.data.phone);
-                            $(`#${prefix}customer_city`).text(res.data.data.city);
+                            $(`#${prefix}customer_country`).text(res.data.data.country.name);
+                            $(`#${prefix}customer_government`).text(res.data.data.government.name);
                             $(`#${prefix}customer_address`).text(res.data.data.address);
                         }
                     });
@@ -327,7 +378,8 @@ $(function () {
                     $('#customer_name').text('---');
                     $('#customer_email').text('---');
                     $('#customer_phone').text('---');
-                    $('#customer_city').text('---');
+                    $('#customer_country').text('---');
+                    $('#customer_government').text('---');
                     $('#customer_address').text('---');
                 }
 
