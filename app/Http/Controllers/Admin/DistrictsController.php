@@ -33,7 +33,7 @@ class DistrictsController extends Controller
          */
         if ($request->ajax()) {
             $model = $this->target_model->query()
-            ->with('parent_district')
+            ->with(['parent_district', 'customers_of_gover', 'customers_of_country'])
             ->orderBy('type', 'ASC')
             ->orderBy('id', 'ASC');
             
@@ -51,6 +51,9 @@ class DistrictsController extends Controller
             $datatable_model = Datatables::of($model)
             ->addColumn('phone_code', function ($row_object) {
                 return isset($row_object->phone_code) ? $row_object->phone_code : '---';
+            })
+            ->addColumn('customers', function ($row_object) {
+                return $row_object->type == 'country' ? $row_object->customers_of_country()->count() : $row_object->customers_of_gover()->count();
             })
             ->addColumn('orders', function ($row_object) {
                 return 0;

@@ -73,6 +73,7 @@
                 <th>Name</th>
                 <th>Code</th>
                 <th>Parent</th>
+                <th>Customers</th>
                 <th>Orders</th>
                 <th>Active</th>
                 <th>Actions</th>
@@ -127,6 +128,7 @@ $(function () {
             { data: 'name', name: 'name' },
             { data: 'phone_code', name: 'phone_code' },
             { data: 'parent', name: 'parent' },
+            { data: 'customers', name: 'customers' },
             { data: 'orders', name: 'orders' },
             { data: 'activation', name: 'activation' },
             { data: 'actions', name: 'actions' },

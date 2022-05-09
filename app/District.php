@@ -25,4 +25,12 @@ class District extends Model
     public function orders_by_gove () {
         return $this->hasMany(Order::class, 'gove_id');
     }
+
+    public function customers_of_country () {
+        return $this->hasMany(Customer::class, 'country_id');
+    }
+
+    public function customers_of_gover () {
+        return $this->hasMany(Customer::class, 'gove_id');
+    }
 }
