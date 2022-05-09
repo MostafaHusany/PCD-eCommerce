@@ -67,14 +67,14 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Name</label>
                     <input type="text" class="form-control" id="s-name">
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
             
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Email</label>
                     <input type="text" class="form-control" id="s-email">
@@ -82,23 +82,34 @@
             </div><!-- /.col-3 -->
 
             
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
                     <label for="">Phone</label>
                     <input type="text" class="form-control" id="s-phone">
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
 
-            <div class="col-3">
+            <div class="col-2">
                 <div class="form-group search-action">
-                    <label for="">City</label>
-                    <select type="text" class="form-control" id="s-city">
+                    <label for="">Country</label>
+                    <select type="text" class="form-control" id="s-country">
                         <option value="">-- select category --</option>
-                        <option>city 1</option>
-                        <option>city 2</option>
+                        @foreach($countries as $country)
+                        <option value="{{$country->id}}">{{$country->name}}</option>
+                        @endforeach
                     </select>
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-2 -->
+
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="">Governorate</label>
+                    <select type="text" class="form-control" id="s-governorate" multiple="multiple">
+                        <option value="">-- select category --</option>
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
 
@@ -108,7 +119,8 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>City</th>
+                <th>Country</th>
+                <th>Government</th>
                 <th>Active</th>
                 <th>Actions</th>
             </thead>
@@ -154,7 +166,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'name', 'email', 'phone', 'city', 'address', 'password'],
+            fields_list     : ['id', 'name', 'email', 'phone', 'address', 'password', 'country_id', 'gove_id', 'phone_code'],
             imgs_fields     : []
         },
         [
@@ -162,7 +174,8 @@ $(function () {
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
             { data: 'phone', name: 'phone' },
-            { data: 'city', name: 'city' },
+            { data: 'country', name: 'country' },
+            { data: 'government', name: 'government' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],
@@ -176,8 +189,11 @@ $(function () {
             if ($('#s-phone').length)
             d.phone = $('#s-phone').val();
             
-            if ($('#s-city').length)
-            d.city = $('#s-city').val();                
+            if ($('#s-country').length)
+            d.country = $('#s-country').val();      
+            
+            if ($('#s-governorate').length)
+            d.governorate = $('#s-governorate').val();                
         }
     );
 
@@ -197,20 +213,47 @@ $(function () {
 
         if (data.get('email') === '') {
             is_valide = false;
-            let err_msg = 'email name is required';
+            let err_msg = 'email is required';
             $(`#${prefix}emailErr`).text(err_msg);
             $(`#${prefix}emailErr`).slideDown(500);
         }
 
         if (data.get('phone') === '') {
             is_valide = false;
-            let err_msg = 'phone name is required';
+            let err_msg = 'phone is required';
             $(`#${prefix}phoneErr`).text(err_msg);
             $(`#${prefix}phoneErr`).slideDown(500);
         }
 
+        if (data.get('country_id') === '') {
+            is_valide = false;
+            let err_msg = 'country is required';
+            $(`#${prefix}countryErr`).text(err_msg);
+            $(`#${prefix}countryErr`).slideDown(500);
+        }
+
+        if (data.get('gove_id') === '') {
+            is_valide = false;
+            let err_msg = 'governorate is required';
+            $(`#${prefix}governorateErr`).text(err_msg);
+            $(`#${prefix}governorateErr`).slideDown(500);
+        }
+
         return is_valide;
     };
+
+    objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
+        
+        fields_id_list.forEach(el_id => {
+            $(`#${prefix + el_id}`).val(data[el_id]).change();
+        });
+
+        if (data.government) {
+            let option = `<option selected="selected" class="sub-district" value="${data.government.id}">${data.government.name}</option>`;
+            $(`#edit-gove_id`).append(option);
+        }
+        
+    }
 
     const index_custome_events =  (function () {
         function start_events () {
@@ -233,15 +276,77 @@ $(function () {
                 })// axios
             })// end :: #dataTable
 
-            $("#phone").intlTelInput({
-                nationalMode: false,
-                initialCountry: "sa",
-                preferredCountries: ["SA"],
-                onlyCountries: ['SA', 'AE', 'KW', 'JO'],
-                width: '100%'
+            $('#country_id, #edit-country_id').change(function () {
+                /** 
+                 * Here we will check the 
+                 * 
+                 * */
+                // clear olde session ..
+                $('.sub-district').remove();
+                
+                let prefix      = $(this).data('prefix');
+                let country_id  = $(this).val();
+                let phone_code  = $(this).find(':selected').data('code');
+                $(`#${prefix}phone_code`).val(phone_code);
+
+                if (country_id) {
+                    $('#loddingSpinner').show(500);
+
+                    axios.get("{{url('admin/districts-search')}}", {
+                        params : {
+                            q : '',
+                            district_id : country_id
+                        }
+                    }).then(res => {
+                        if (res.data) {
+                            res.data.forEach(district => {
+                                let option = `<option class="sub-district" value="${district.id}">${district.name}</option>`;
+                                $(`#${prefix}gove_id`).append(option);
+                            });
+                        } else {
+                            $('#dangerAlert').text('Something went wrong! Please refresh the page.').slideDown(500);
+                            setTimeout(() => {
+                                $('#dangerAlert').slideUp(500).text('');
+                            }, 3000);
+                        }
+
+                        $('#loddingSpinner').hide(500);
+                    });
+                }// end :: if
             });
 
-            $('.iti.iti--allow-dropdown').css('width', '100%');
+            $('#s-country').change(function () {
+                window.district_id = $(this).val();
+            });
+
+            $('#s-governorate').select2({
+                allowClear: true,
+                width: '100%',
+                placeholder: 'Select brand',
+                ajax: {
+                    url: `{{ url("admin/districts-search") }}`,
+                    dataType: 'json',
+                    delay: 150,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page_limit: 10,
+                            district_id : window.district_id
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results:  $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
 
             // Load taxes ratio
             /**

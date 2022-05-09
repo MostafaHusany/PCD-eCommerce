@@ -31,26 +31,42 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
-        
+
         <div class="form-group row">
-            <label for="edit-phone" class="col-sm-2 col-form-label">Phone</label>
+            <label for="edit-country_id" class="col-sm-2 col-form-label">Country</label>
             <div class="col-sm-10">
-                <input type="phone" class="form-control" id="edit-phone" placeholder="Phone">
-                <div style="padding: 5px 7px; display: none" id="edit-phoneErr" class="err-msg mt-2 alert alert-danger">
+                <select class="form-control" id="edit-country_id" data-prefix="edit-">
+                    <option value="">-- select country --</option>
+                    @foreach($countries as $country)
+                    <option value="{{$country->id}}" data-code="{{$country->phone_code}}">{{$country->name}}</option>
+                    @endforeach
+                </select>
+                <div style="padding: 5px 7px; display: none" id="edit-country_idErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-city" class="col-sm-2 col-form-label">City</label>
+            <label for="edit-gove_id" class="col-sm-2 col-form-label">Governorate</label>
             <div class="col-sm-10">
-                <select class="form-control" id="edit-city">
-                    <option>city 1</option>
-                    <option>city 2</option>
-                </select>
+                <select class="form-control" id="edit-gove_id"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-gove_idErr" class="err-msg mt-2 alert alert-danger">
+                </div>
             </div>
         </div><!-- /.form-group -->
         
+        <div class="form-group row">
+            <label for="edit-phone" class="col-sm-2 col-form-label">Phone</label>
+            <div class="col-sm-1">
+                <input class="form-control" id="edit-phone_code" value="---" disabled="disabled">
+            </div><!-- /.col-sm-1 -->
+            <div class="col-sm-9">
+                <input type="phone" class="form-control" id="edit-phone" placeholder="Phone">
+                <div style="padding: 5px 7px; display: none" id="edit-phoneErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.col-sm-9 -->
+        </div><!-- /.form-group -->
+
         <div class="form-group row">
             <label for="edit-address" class="col-sm-2 col-form-label">Address</label>
             <div class="col-sm-10">

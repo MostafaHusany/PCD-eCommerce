@@ -213,6 +213,7 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
     Route::get('/fees-search', 'FeesController@dataAjax');
     Route::get('/shipping-search', 'ShippingController@dataAjax');
     Route::get('/brand-search', 'BrandController@dataAjax');
+    Route::get('/districts-search', 'DistrictsController@dataAjax');
 
     Route::get('/test', function () {
         $tmp = User::first();

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\User;
 use App\Customer;
+use App\District;
 
 class CustomerController extends Controller
 {
@@ -32,11 +33,21 @@ class CustomerController extends Controller
                 $model->where('phone', 'like', '%' . $request->phone . '%');
             }
 
-            if (isset($request->city)) {
-                $model->where('city', $request->city);
+            if (isset($request->country)) {
+                $model->where('country_id', $request->country);
+            }
+
+            if (isset($request->governorate)) {
+                $model->whereIn('gove_id', $request->governorate);
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('country', function ($row_object) {
+                return isset($row_object->country) ? $row_object->country->name : '---';
+            })
+            ->addColumn('government', function ($row_object) {
+                return isset($row_object->government) ? $row_object->government->name : '---';
+            })
             ->addColumn('active', function ($row_object) {
                 return view('admin.customers.incs._active', compact('row_object'));
             })
@@ -47,7 +58,8 @@ class CustomerController extends Controller
             return $datatable_model->make(true);
         }
         
-        return view('admin.customers.index');
+        $countries = District::where('type', 'country')->where('is_active', 1)->get();
+        return view('admin.customers.index', compact('countries'));
     }
 
     public function show (Request $request, $id) {
@@ -56,6 +68,7 @@ class CustomerController extends Controller
         if (isset($target_customer) && isset($request->fast_acc)) {
             // $target_user->permissions = (array) json_decode($target_user->permissions);
             // $target_customer = $target_user->customer;
+            $target_customer->government;
             isset($request->get_orders) && $target_customer->orders;
             return response()->json(['data' => $target_customer, 'success' => isset($target_customer)]);
         }
@@ -68,7 +81,7 @@ class CustomerController extends Controller
             'name'  => 'required|max:255',
             'email' => 'required|unique:users,email|max:255',
             'phone' => 'required|unique:users,phone|max:255',
-            'city' => 'required|unique:users,phone|max:255',
+            // 'city' => 'required|unique:users,phone|max:255',
             'address' => 'required|unique:users,phone|max:255'
         ]);
 
@@ -76,7 +89,7 @@ class CustomerController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $data         = $request->all();
+        $data = $request->all();
 
         if (isset($request->password)) {
             $data['password'] = bcrypt($request->password);
@@ -106,7 +119,7 @@ class CustomerController extends Controller
             'name'  => 'required|max:255',
             'email' => 'required|max:255|unique:customers,email,'.$id,
             'phone' => 'required|max:255|unique:customers,phone,'.$id,
-            'city' => 'required|max:255',
+            // 'city' => 'required|max:255',
             'address' => 'required|max:255'
         ]);
 

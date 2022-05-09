@@ -9,7 +9,7 @@ class Customer extends Model
     protected $fillable = [
         'name', 'email',
         'phone', 'address', 'city', 'plain_password',
-        'user_id', 'meta'
+        'user_id', 'meta', 'gove_id', 'country_id', 'phone_code'
     ];
 
     public function user()
@@ -22,11 +22,22 @@ class Customer extends Model
     //     return $this->first_name . ' ' . $this->second_name;
     // }
 
-    public function orders()
+    public function country ()
+    {
+        return $this->belongsTo(District::class, 'country_id');
+    }
+
+    public function government ()
+    {
+        return $this->belongsTo(District::class, 'gove_id');
+    }
+
+    public function orders ()
     {
         return $this->hasMany(Order::class, 'customer_id');
     }
-    public function addresses()
+
+    public function addresses ()
     {
         return $this->hasMany(Address::class ,'customer_id');
     }
