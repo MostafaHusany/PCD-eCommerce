@@ -20,7 +20,8 @@ class OrdersController extends Controller
 
     public function create_order (Request $request) {
         $validator = Validator::make($request->all(), [
-            'shipping_id' => ['required', 'exists:shippings,id']
+            'shipping_id' => ['required', 'exists:shippings,id'],
+            'phone' => ''
         ]);
 
         if ($validator->fails()) {
@@ -34,18 +35,13 @@ class OrdersController extends Controller
         }
 
         /**
-         * # User must be logedin before making order, we can
-         * handle this by making a middleware for this operation
-         * tha makes sure that the user is signed in
-         * 
-         * # Make sure that the products still has valied qty
-         * if not make order fail and show error to the customer 
-         * that the prodcut was sold.
-         * 
-         * # 
-         * 
-         * # 
+         * # If the user is loged in .... 
+         * get logged in user data 
+         * else register the user and get the user
+         * data for creating the order.
          */
+
+        
 
         $products_id = [];
         $products_quantity = [];
