@@ -16,6 +16,7 @@ class AddCountryGoveRelationToCustomersTable extends Migration
         Schema::table('customers', function (Blueprint $table) {
             $table->dropColumn(['city']);
 
+            $table->text('address')->nullable()->change();
             $table->unsignedBigInteger('country_id')->nullable()->after('user_id');
             $table->foreign('country_id')->on('districts')->references('id')
             ->onDelete('set null');
