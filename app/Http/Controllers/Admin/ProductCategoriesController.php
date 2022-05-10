@@ -155,6 +155,11 @@ class ProductCategoriesController extends Controller
         $data = $request->all();
         $target_object = ProductCategory::find($id);
         $target_object->update($data);
+
+        if (isset($request->brands)) {
+            $brands = explode(',', $request->brands);
+            $target_object->brands()->sync($brands);
+        }
         
         $target_object->attributes()->delete();
         $custome_fields = json_decode($request->custome_fields);
