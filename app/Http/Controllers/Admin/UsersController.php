@@ -165,8 +165,8 @@ class UsersController extends Controller
 
         $data['first_name']  = $user->name;
         $data['second_name'] = 'Demo';
-        $data['city'] = 'Demo';
-        $data['address'] = 'Demo';
+        // $data['city'] = 'Demo';
+        // $data['address'] = 'Demo';
         $data['plain_password'] = '000'; 
 
         return $user->customer()->create($data);

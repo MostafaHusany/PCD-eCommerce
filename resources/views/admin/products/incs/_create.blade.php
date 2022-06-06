@@ -239,7 +239,7 @@ $(function () {
                 let target_product_id     = $(this).val();
                 let total_parent_quantity = $('#reserved_quantity').val();
                 
-                if (target_product_id !== '' && target_product_id != null && ! (target_product_id in selected_child_products_quantity)) {
+                if ( Boolean(target_product_id)  && ! (target_product_id in selected_child_products_quantity)) {
                     $('#childrenProductsLoddingSpinner').show(500);
                     // send request to the server and get product data
                     axios.get(`{{ url('admin/products') }}/${target_product_id}?fast_acc=true`)

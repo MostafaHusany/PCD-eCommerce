@@ -39,6 +39,10 @@ class CartController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => 'max_quantity_per_order']);
         }
 
+        if ($this->is_qty_updated($target_product)) {
+            return response()->json(['data' => $this->cart_content(), 'success' => false, 'msg' => 'max_quantity_in_storage']);
+        }
+
         $cart = Cart::instance('products')->add($target_product->id, $target_product->en_name, 1, $target_product->get_price())->associate('App\Product');
         
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
@@ -79,13 +83,44 @@ class CartController extends Controller
          * else get the products categories that has qty
          * limit rule and apply the rule on the min qty 
          */
+
+        
         $is_has_item = Cart::instance('products')->search(function ($cartItem, $rowId) use ($target_product) {
             return $cartItem->id == $target_product->id;
         })->first();
-        
+
         if (isset($is_has_item)) {
             $quantityt_rules = $target_product->categories()->where('rule', '>', 0)->pluck('rule')->toArray();
-            return $is_has_item->qty >= min($quantityt_rules);
+            return sizeof($quantityt_rules) ? $is_has_item->qty >= min($quantityt_rules) : false;
+        }
+
+        return false;
+    }
+
+    private function is_qty_updated (Product $target_product) {
+        $is_has_item = Cart::instance('products')->search(function ($cartItem, $rowId) use ($target_product) {
+            return $cartItem->id == $target_product->id;
+        })->first();
+
+        if (!isset($is_has_item)) {
+            return false;
+        }
+
+        if ($target_product->quantity == 0) {
+            $row_id = $this->is_cart_has_product($target_product->id);
+            Cart::instance('products')->remove($row_id);
+            return true;
+        }
+
+        if ($is_has_item->qty > $target_product->quantity) {
+            $row_id = $this->is_cart_has_product($target_product->id);
+            Cart::instance('products')->remove($row_id);
+            Cart::instance('products')->add($target_product->id, $target_product->en_name, $target_product->quantity, $target_product->get_price())->associate('App\Product');
+            return true;
+        }
+
+        if ($is_has_item->qty == $target_product->quantity ) {
+            return true;
         }
 
         return false;
