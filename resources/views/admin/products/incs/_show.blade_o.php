@@ -51,7 +51,6 @@
                 <select disabled="disabled" tabindex="8" name="show-is_composite" data-first-target=".show-child-products-container" data-second-target="#show-productQuantityContainer" class="form-control" id="show-is_composite">
                     <option value="0">Usual product</option>
                     <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
-                    <option value="2">Upgradable Product (تجميعات)</option>
                 </select>
             </div>
         </div><!-- /.form-group -->
@@ -64,6 +63,15 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+        
+        {{--
+        <div class="show-child-products-container form-group row" style="display: none;">
+            <label for="show-reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
+            <div class="col-sm-10">
+                <input disabled="disabled" tabindex="9"  class="form-control" min="0" id="show-reserved_quantity" value="0">
+            </div>
+        </div><!-- /.form-group -->
+        --}}
 
         <div class="show-child-products-container form-group" style="display: none; height: 250px; overflow-y:scroll">
             <table class="table">
@@ -81,42 +89,6 @@
                 <tbody id="show-selected_child_product_container"></tbody>
             </table>
         </div>
-
-        <div class="show-upgradable-options form-group mb-4" style="display: none; !height: 350px; !overflow-y:scroll">
-            <div class="d-flex justify-content-center mb-3">
-                <div id="show-childrenCategoriesLoddingSpinner" style="display: none" class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-4" style="overflow-y: scroll; height: 450px;">
-                    <ul class="list-group" id="show-upgradableOptionsList">
-                        <li class="list-group-item">
-                            <h5>Expected price : <span id="show-upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-8" style="overflow-y: scroll; min-height: 300px; height: 450px;">
-                    <table class="text-center table !table-responsive">
-                        <thead>
-                            <tr>
-                                <td>#</td>
-                                <td>Name</td>
-                                <td>SKU</td>
-                                <td>Price</td>
-                                <td>Edit Price</td>
-                                <td>Quantity For Each Package</td>
-                                <td>Total Quantity</td>
-                                <td>Is Default</td>
-                            </tr>
-                        </thead>
-                        <tbody id="show-upgradableOptionCategoryProducts"></tbody>
-                    </table>
-                </div>
-                <!-- <div class="col-4"></div> -->
-            </div><!-- /. row -->
-        </div><!-- /.upgradable-options -->
 
         <div class="form-group row">
             <label for="show-sku" class="col-sm-2 col-form-label">SKU</label>
@@ -173,19 +145,13 @@
 
 @push('page_scripts')
 <script>
-           
-    let store = {
-        upgrade_categories: null, 
-        upgrade_products: null,
-        total_parent_quantity : 0,
-    };
-
     $('#dataTable').on('click', '.show-object', function () {
         // send request, to the server get the data about the order
         // we need data about the customer, the products of the order
         // and the total 
 
         $('#loddingSpinner').show();
+        // $('.show-').remove();
 
         let promotion_id = $(this).data('object-id');
         axios.get(`{{ url('admin/products') }}/${promotion_id}?fast_acc=true`)
@@ -204,33 +170,26 @@
             $('#show-en_description').val(data.en_description);
             
             $('#show-is_composite').val(data.is_composite);
-            
-            $('#show-quantity').val(data.quantity);
 
-            if (data.is_composite == 1) {
-                $('.show-upgradable-options').slideUp();
+            if (data.is_composite) {
                 $('.show-child-products-container').slideDown();
+                $('.show-productQuantityContainer').slideUp();
+
+                $('#show-quantity').val(data.quantity);
+                $('#show-reserved_quantity').val(data.reserved_quantity);
 
                 $('.show-selected-product-child').remove();
                 const parent_product_meta = JSON.parse(data.meta);
-                const total_parent_quantity = data.quantity;
                 data.children.forEach(target_product => {
+                    const total_parent_quantity = data.quantity;
                     show_child_product_tr (target_product, total_parent_quantity, parent_product_meta);
                 });
 
-            } else if (data.is_composite == 2) {
-                $('.show-child-products-container').slideUp();
-                $('.show-upgradable-options').slideDown();
-
-                store.upgrade_categories = data.upgrade_categories; 
-                store.upgrade_products   = data.upgrade_products;
-                store.total_parent_quantity = data.quantity;
-
-                showUpgradeOption();
-                $('#show-upgradeExpectedPrice').text(getUpgradableExpectedFeture());
             } else {
                 $('.show-child-products-container').slideUp();
-                $('.show-upgradable-options').slideUp();
+                $('.show-productQuantityContainer').slideDown();
+
+                $('#show-quantity').val(data.quantity);
             }
 
             $('#show-sku').val(data.sku);
@@ -272,6 +231,7 @@
                 $('#show-images').append(main_image);
             });
             
+
             $('#objectsCard').slideUp(500);
             $('#showObjectCard').slideDown(500);
             $('#loddingSpinner').hide(500);
@@ -279,7 +239,7 @@
         }); 
     });
 
-    const show_child_product_tr = function (target_product, total_parent_quantity, parent_meta = null) {
+    show_child_product_tr = function (target_product, total_parent_quantity, parent_meta = null) {
             let target_product_r_quantity = parent_meta !== null ? parent_meta.products_quantity[target_product.id] : 1;
             let total_needed_quantity     = target_product_r_quantity * total_parent_quantity;
             let original_quantity         = parent_meta !== null ? target_product.quantity + total_needed_quantity: target_product.quantity;
@@ -305,86 +265,6 @@
             `;
 
             $('#show-selected_child_product_container').prepend(product_row);
-    };
-
-    const categoryProductLength = (category_id) => {
-        let count = 0;
-
-        store.upgrade_products.forEach(product => {
-            count += product.pivot.category_id == category_id ? 1 : 0;
-        });
-
-        return count;
-    }
-
-    const showUpgradeOption = () => {
-        $('.show-selected-category-child').remove();
-        $('.show-upgrade-category-option').remove();
-
-        store.upgrade_categories.forEach(category => {
-            let tmp_category_el = `
-                <li id="show-upgradeCategory${category.id}" style="cursor: pointer" data-id="${category.id}" class="${0} show-upgrade-category-option list-group-item">
-                    <span>${category.ar_title} / ${category.en_title}</span>
-                    <br/> 
-                    <span class="badge badge-light">Selected Products : ${categoryProductLength(category.id)}</span>
-                </li>
-            `;
-
-            $('#show-upgradableOptionsList').append(tmp_category_el);
-        });
-    }
-
-    const getUpgradableExpectedFeture = () => {
-        let expected_price = 0;
-        store.upgrade_products.forEach(product => {
-            expected_price += product.pivot.is_default ? product.pivot.upgrade_price : 0;
-        });
-
-        return expected_price;
-    }
-
-    $('#show-upgradableOptionsList').on('click', '.show-upgrade-category-option', function() {
-        let category_id = $(this).data('id');
-
-        if (Boolean(category_id)) {
-            $('.show-selected-category-child').remove();
-            $('.show-upgrade-category-option').removeClass('active');
-            $(this).addClass('active');
-
-            let total_parent_quantity = store.total_parent_quantity;
-            store.upgrade_products.forEach(target_product => {
-                if (target_product.pivot.category_id == category_id) {
-                    let product_el = `
-                        <tr class="show-selected-category-child" id="show-selectd_child_product_${target_product.id}"
-                            data-original-quantity="${target_product.quantity}" 
-                        >
-                            <td><img style="heightL 80px" height="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
-                            <td>${target_product.ar_name} / ${target_product.en_name}</td>
-                            <td>${target_product.sku}</td>
-                            <td>${target_product.price}</td>
-                            <td>
-                                ${target_product.upgrade_price}
-                            </td>
-                            <td>
-                                <span>${target_product.pivot.needed_quantity}</span>
-                            </td>
-                            <td>
-                                ${target_product.pivot.needed_quantity * total_parent_quantity}
-                            </td>
-                            <td>
-                                <div class="custom-control custom-switch">
-                                    <input disabled="disabled" type="checkbox" class="custom-control-input" ${target_product.pivot.is_default ? 'checked="true"' : ''} id="customSwitch${target_product.pivot.id}">
-                                    <label class="custom-control-label" for="customSwitch${target_product.id}"></label>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-
-                    $('#show-upgradableOptionCategoryProducts').append(product_el);
-                }
-            });
         }
-    });
-
 </script>
 @endpush

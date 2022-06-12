@@ -59,16 +59,21 @@
         <div class="form-group row">
             <label for="edit-is_composite" class="col-sm-2 col-form-label">Product Type</label>
             <div class="col-sm-10">
-                <select tabindex="8" name="edit-is_composite" data-first-target=".edit-child-products-container" data-second-target="#edit-productQuantityContainer" class="form-control" id="edit-is_composite">
+                <select tabindex="8" name="edit-is_composite" class="form-control" id="edit-is_composite"
+                    data-first-target=".edit-child-products-container" 
+                    data-second-target="#edit-productQuantityContainer" 
+                    data-third-target=".edit-upgradable-options">
+
                     <option value="0">Usual product</option>
                     <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
+                    <option value="2">Upgradable Product (تجميعات)</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="edit-is_compositeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
-
-        <div class="edit-child-products-container form-group row" style="display: none;">
+        
+        <div class="edit-upgradable-options edit-child-products-container form-group row" style="display: none;">
             <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="9"  class="form-control" min="0" id="edit-reserved_quantity" value="0">
@@ -82,6 +87,64 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
+
+        <div class="edit-upgradable-options form-group row mt-4 mb-2 pt-2 pb-2" style="display: none;">
+            <div class="col-sm-2">
+                <label for="">Selected Categories</label>
+            </div>
+            <div class="col-sm-10">
+                <select tabindex="9" !multiple="multiple" id="edit-categories-upgradable" class="form-control"></select>
+                <div style="padding: 5px 7px; display: none" id="edit-categories-upgradableErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.upgradable-options -->
+
+        <div class="edit-upgradable-options form-group mb-4" style="display: none; !height: 350px; !overflow-y:scroll">
+            <input type="hidden" id="edit-upgrade_option_categories">
+            <input type="hidden" id="edit-upgrade_option_products">
+            <input type="hidden" id="edit-upgrade_option_products_ids">
+
+            <div class="d-flex justify-content-center mb-3">
+                <div id="edit-childrenCategoriesLoddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4" style="overflow-y: scroll; height: 450px;">
+                    <ul class="list-group" id="edit-upgradableOptionsList">
+                        <li class="list-group-item">
+                            <h5>Expected price : <span id="edit-upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-8" style="overflow-y: scroll; min-height: 300px; height: 450px;">
+                    <div class="form-group">
+                        <select name="edit-findCategoryProduct" !multiple="multiple" id="edit-findCategoryProduct" class="form-control">
+                            <option value="">-- select product --</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                    <table class="text-center table !table-responsive">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>Name</td>
+                                <td>SKU</td>
+                                <td>Price</td>
+                                <td>Edit Price</td>
+                                <td>Valied Quantity</td>
+                                <td>Quantity For Each Package</td>
+                                <td>Total Quantity</td>
+                                <td>Is Default</td>
+                                <td>Actions</td>
+                            </tr>
+                        </thead>
+                        <tbody id="edit-upgradableOptionCategoryProducts"></tbody>
+                    </table>
+                </div>
+                <!-- <div class="col-4"></div> -->
+            </div><!-- /. row -->
+        </div><!-- /.upgradable-options -->
 
         <div class="edit-child-products-container form-group row mt-2 mb-2 pt-2 pb-2" style="display: none; !border: 1px solid #ddd; !border-radius: 5px">
             <div class="col-sm-2">
@@ -229,7 +292,6 @@ $(function () {
             $('#dataTable').on('click', '.edit-object', function () {
                 let target_card = $(this).data('target-card');
                 if (target_card === '#editObjectsCard') {
-                    console.log('test')
                     edit_selected_child_products          = [];
                     edit_selected_child_products_quantity = {};
                     update_child_products_input_field();
@@ -399,9 +461,519 @@ $(function () {
 
     edit_form_custome_option.starter_event();
 
-    
-    
-    
+    const upgradable_option = (function () {
+
+        const starter_event = () => {
+            $('#edit-findCategoryProduct').select2({width: '100%'});
+
+            // clear old session 
+            $('#dataTable').on('click', '.edit-object', function () {
+                store.clearStore()
+                render.render_products()
+                render.render_categories()
+                render.render_products_options()
+                render.render_expected_price()
+            });
+
+            // add category to categories list
+            $('#edit-categories-upgradable').change(function () {
+                let target_category_id = $(this).val();
+
+                if ( Boolean(target_category_id) ) {
+                    $('#edit-childrenCategoriesLoddingSpinner').show(500);
+                    // send request to the server and get product data
+                    axios.get(`{{ url('admin/products-categories') }}/${target_category_id}`,  {
+                        params : {
+                            my_products : true
+                        }
+                    })
+                    .then(res => {
+                        if (res.data.success) {
+
+                            store.addCategory(res.data.category, res.data.data);
+
+                            render.render_categories();
+                            
+                            $(this).val('').trigger('change');
+                        }// end :: if
+
+                        $('#edit-childrenCategoriesLoddingSpinner').hide(500);
+                    });
+                }// end :: if
+            });
+
+            // select category to show it's products // remove category
+            $('#edit-upgradableOptionsList').on('click', '.list-group-item', function () {
+                const target_id = $(this).data('id');
+
+                if (Boolean(target_id)) {
+                    $('.list-group-item').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    store.selectedCategory(target_id);
+                    
+                    render.render_products_options();
+                    render.render_products();
+                    render.render_expected_price();
+                }
+            }).on('click', '.u-remove-category', function (e) {
+                e.preventDefault();
+                let category_id = $(this).data('id');
+                
+                if (Boolean(category_id)) {
+                    store.removeCategory(category_id);
+                    render.render_categories();
+                    render.render_expected_price();
+                }
+            });
+
+            // select product from category
+            $('#edit-findCategoryProduct').change(function () {
+                const product_id = $(this).val();
+                if (Boolean(product_id)) {
+                    store.selectProduct(product_id);
+                    render.render_products();
+                    $(this).val('').trigger('change');
+                }
+            });
+
+            // manage product qunatity, price, is default and remove product || update price and hidden input
+            $('#edit-upgradableOptionCategoryProducts').on('change', '.custom-control-input', function () {
+                let product_id = $(this).data('id');
+                
+                store.selectDefaultProduct(product_id);
+                render.render_products();
+                render.render_expected_price();
+            }).on('change', '.u-selected-product-quantity', function () {
+                let quantity = $(this).val();
+                let product_id = $(this).data('id');
+
+                store.editProductQuantity(product_id, quantity);
+                render.render_products();
+                render.render_categories();
+                render.render_expected_price();
+                $(`.u-selected-product-quantity[data-id="${product_id}"]`).focus();
+
+            }).on('change', '.u-selected-product-price', function () {
+                let price = $(this).val();
+                let product_id = $(this).data('id');
+
+                store.editProductPrice(product_id, price);
+
+                render.render_products();
+                render.render_categories();
+                render.render_expected_price();
+
+                $(`.u-selected-product-price[data-id="${product_id}"]`).focus();
+            }).on('click', '.u-remove-selected-product', function () {
+                let product_id = $(this).data('id');
+
+                store.removeProduct(product_id);
+                render.render_products();
+                render.render_expected_price();
+            });
+
+            // change total reserved quantity || update price and hidden input
+            $('#edit-reserved_quantity').on('change', function () {
+                store.addReservedQuantity(Number($(this).val()));
+                render.render_products();
+                render.render_expected_price();
+            });
+        }
+
+        const store = (() => {
+            let store = {
+                expected_price    : 0,
+                reserved_quantity : 1,
+                selected_category : null,// the one we clicked on to show it products
+                categories : [],// all selected categories
+                categories_products : {},// each category products
+                selected_categories_products : {}// each category selected product
+            };
+
+            // getters
+            const findCategory = (category_id) => {
+                let target_category = store.categories.find(category => category.id == category_id);
+                return Boolean(target_category) ? target_category : false;
+            }
+
+            const getCategories = () => ({s_category:  store.selected_category, categories : store.categories});
+
+            const getCategoryProducts = () => {
+                return Boolean(store.selected_category) ?
+                store.categories_products[store.selected_category] : [];
+            }
+            
+            const getCategoryProductsLength = (category_id) => {
+                return store.categories_products[category_id].length;
+            }
+
+            const getSelectedCategoryProductsLength = (category_id) => {
+                return store.selected_categories_products[category_id].length;
+            }
+
+            const getSelectedCategoryProducts = () => {
+                return Boolean(store.selected_category) ?
+                    store.selected_categories_products[store.selected_category] : [];
+            }
+
+            const getSelectedCategoriesProducts = () => store.selected_categories_products;
+
+            const getReservedQuantity = () => store.reserved_quantity;
+
+            const getExpectedPrice = () => store.expected_price
+
+            // setters
+            const addReservedQuantity = (quantity) => {
+                store.reserved_quantity = quantity;
+            }
+
+            const addCategory = (new_category_obj, products_list) => {
+                if (!findCategory(new_category_obj.id)) {
+                    store.categories.push(new_category_obj);
+                    store.categories_products[new_category_obj.id] = products_list;
+                    store.selected_categories_products[new_category_obj.id] = [];
+
+                    // parse updates in upgradable inputes fields
+                    parseRequestData();
+                }
+            }
+
+            const removeCategory = (category_id) => {
+                store.categories = store.categories.filter(category => category.id != category_id);
+                delete store.categories_products[category_id];
+                delete store.selected_categories_products[category_id];
+                
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+            }
+
+            const selectedCategory = (category_id) => {
+                store.selected_category = category_id;
+                
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+            }
+
+            // hidden fields
+            const selectProduct = (product_id, meta = null) => {
+                let is_exist = store.selected_categories_products[store.selected_category].find(product => product.id == product_id);
+
+                if (!is_exist) {
+                    const target_product = (store.categories_products[store.selected_category].find(product => product.id == product_id));
+                    target_product.is_default      = meta ? meta.is_default      : false;
+                    target_product.needed_quantity = meta ? meta.needed_quantity : 0;
+                    target_product.upgrade_price   = meta ? meta.upgrade_price   : Number(target_product.price);
+
+                    store.selected_categories_products[store.selected_category].push(target_product);
+                }
+
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+            }
+
+            // update price and hidden fields
+            const removeProduct = (product_id) => {
+                let products_list = getSelectedCategoryProducts();
+                let new_products_list = [];
+                let is_need_new_default = false;
+
+                products_list.forEach((product, index) => {
+                    if (product.id != product_id) {
+                        new_products_list.push(product);
+                    } else if(product.is_default) {
+                        is_need_new_default = true;
+                    }
+                });
+
+                // if (is_need_new_default) new_products_list[0].is_default = true;
+                
+                store.selected_categories_products[store.selected_category] = new_products_list;
+                
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+                calculateExpectedPrice();
+            }
+
+            // update price and hidden fields
+            const selectDefaultProduct = (product_id) => {
+                store.selected_categories_products[store.selected_category].forEach(product => {
+                    product.is_default = product.id == product_id ? !product.is_default : false;
+                });
+                
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+
+                // calculate expected price and update the price field
+                calculateExpectedPrice();
+            }
+
+            // update price and hidden fields
+            const editProductQuantity = (product_id, quantity) => {
+                store.selected_categories_products[store.selected_category].forEach((product, index) => {
+                    if (product.id == product_id) {
+                        product.needed_quantity = quantity;
+                        return;
+                    }
+                });
+
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+                calculateExpectedPrice();
+            }
+
+            // update price and hidden fields
+            const editProductPrice = (product_id, price) => {
+                store.selected_categories_products[store.selected_category].forEach((product, index) => {
+                    if (product.id == product_id) {
+                        product.upgrade_price = price;
+                        return;
+                    }
+                });
+                
+                // parse updates in upgradable inputes fields
+                parseRequestData();
+                calculateExpectedPrice();
+            }
+
+            const clearStore = () => {
+                store = {
+                    expected_price    : 0,
+                    reserved_quantity : 1,
+                    selected_category : null,
+                    categories : [],
+                    categories_products : {},
+                    selected_categories_products : {}
+                };
+
+                parseRequestData();
+            }
+
+            // private methods
+            const calculateExpectedPrice = () => {
+                store.expected_price = 0;
+                store.categories.forEach(category => {
+                    console.log('test calc : ', store.selected_categories_products, category.id, store.selected_categories_products[category.id]);
+                    store.selected_categories_products[category.id].forEach(product => {
+                        store.expected_price += product.is_default 
+                        ? product.needed_quantity * product.upgrade_price : 0;
+                    });
+                });
+            }
+
+            const parseRequestData = () => {
+                let categoreis = store.categories.map(category => category.id);
+                let selectedProdcuts = {};
+                let selectedProdcutsIds = {};
+                categoreis.forEach(category_id => {
+                    
+                    selectedProdcutsIds[category_id] = [];
+
+                    selectedProdcuts[category_id] = {};
+
+                    store.selected_categories_products[category_id].forEach(product => {
+                        selectedProdcutsIds[category_id].push(product.id);
+                        selectedProdcuts[category_id][product.id] = {id: product.id, upgrade_price : product.upgrade_price, needed_quantity : product.needed_quantity, is_default : product.is_default}
+                    });
+                });
+
+                $('#edit-upgrade_option_categories').val(JSON.stringify(categoreis));
+                $('#edit-upgrade_option_products').val(JSON.stringify(selectedProdcuts));
+                $('#edit-upgrade_option_products_ids').val(JSON.stringify(selectedProdcutsIds));
+                console.log(categoreis, selectedProdcuts, selectedProdcutsIds);
+            };
+
+            // special method for rendering the edit form
+            const setStoreEditData = (data) => {
+
+                // data.upgrade_categories;
+                // data.upgrade_products;
+
+                // categories : [],// all selected categories
+                // categories_products : {},// each category products { cat_id : [] , }
+                // selected_categories_products : {}// each category selected product { cat_id : [] , }
+
+                let meta = JSON.parse(data.meta);
+                addReservedQuantity(data.quantity)
+                
+                meta.upgrade_categories.forEach(category_id=> {
+                    $('#edit-childrenCategoriesLoddingSpinner').show(500);
+
+                    axios.get(`{{ url('admin/products-categories') }}/${category_id}`,  {
+                        params : {
+                            my_products : true
+                        }
+                    }).then(res => {
+                        if (res.data.success) {
+                            addCategory(res.data.category, res.data.data);
+                        }// end :: if
+
+                    }).then(res => {
+                        $('#edit-childrenCategoriesLoddingSpinner').hide(500);
+                        store.categories.forEach(category => {
+                            selectedCategory(category.id);
+                            meta.upgrade_products_id[category.id].forEach(product_id => {
+                                selectProduct(product_id, meta.upgrade_products[category.id][product_id]);
+                            });
+                        });// end :: store.categories
+
+                        selectedCategory(null);
+                        calculateExpectedPrice();
+                        render.render_categories();
+                        render.render_expected_price();
+                    });
+                    
+                });
+            }
+
+            return {
+                getCategories,
+                getCategoryProducts,
+                getCategoryProductsLength,
+                getSelectedCategoryProductsLength,
+                getSelectedCategoryProducts,
+                getSelectedCategoriesProducts,
+                getReservedQuantity,
+                editProductPrice,
+                getExpectedPrice,
+
+                addReservedQuantity,
+                addCategory,
+                removeCategory,
+                selectedCategory,
+                selectProduct,
+                removeProduct,
+                selectDefaultProduct,
+                editProductQuantity,
+                parseRequestData,
+                clearStore,
+
+                setStoreEditData
+            }
+        })();
+
+        const render = ((store) => {
+            const render_categories = () => {
+                $('#edit-upgradableOptionsList .u-list-group-item').remove();
+                const {s_category, categories} = store.getCategories();
+                categories.forEach(category => {
+                    let tmp_category_el = `
+                        <li id="upgradeCategory${category.id}" style="cursor: pointer" data-id="${category.id}" class="${s_category == category.id ? 'active' : ''} upgrade-category-option u-list-group-item list-group-item">
+                            <button data-id="${category.id}" class="u-remove-category btn btn-sm btn-danger float-right"><i class="fa fa-trash"></i></button>
+                            <span>${category.ar_title} / ${category.en_title}</span>
+                            <br/> 
+                            <span class="badge badge-light">Valied Products : ${store.getCategoryProductsLength(category.id)}</span>
+                            <span class="badge badge-light">Selected Products : ${store.getSelectedCategoryProductsLength(category.id)}</span>
+                        </li>
+                    `;
+
+                    $('#edit-upgradableOptionsList').append(tmp_category_el);
+                });
+            }
+
+            const render_products_options = () => {
+                // reset old options
+                $('#edit-findCategoryProduct .selected-category-option').remove();
+                
+                // get related products for the category
+                // const category_products = upgradable_option_store.categories_products[target_id];
+                const products = store.getCategoryProducts();
+                if (Boolean(products)) {
+                    products.forEach(product => {
+                        let option_el = `
+                            <option class="selected-category-option" value="${product.id}">
+                                ${product.ar_name} / ${product.en_name}
+                            </option>
+                        `;
+
+                        $('#edit-findCategoryProduct').append(option_el);
+                    });
+                }
+
+                // clear old value 
+                $('#edit-findCategoryProduct').val('').trigger('change');
+            }
+
+            const render_products = () => {
+                $('#edit-upgradableOptionCategoryProducts .selected-category-child').remove();
+                const products = store.getSelectedCategoryProducts();
+
+                if (Boolean(products)) {
+                    let total_parent_quantity = store.getReservedQuantity();
+                    products.forEach(target_product => {
+                        let product_el = `
+                            <tr class="selected-category-child" id="selectd_child_product_${target_product.id}"
+                                data-original-quantity="${target_product.quantity}" 
+                            >
+                                <td><img style="heightL 80px" height="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
+                                <td>${target_product.ar_name} / ${target_product.en_name}</td>
+                                <td>${target_product.sku}</td>
+                                <td>${target_product.price}</td>
+                                <td>
+                                    <input class="u-selected-product-price" 
+                                        data-id="${target_product.id}"
+                                        value="${target_product.upgrade_price}"
+                                        style="width: 100px;" type="number" min="1" step="1""
+                                    />
+                                </td>
+                                <td>
+                                    <span class="${target_product.quantity - target_product.needed_quantity * total_parent_quantity < 0 ? 'text-danger' : 'text-primary'} ">${target_product.quantity - target_product.needed_quantity * total_parent_quantity}</span>
+                                </td>
+                                <td>
+                                    <input class="u-selected-product-quantity" 
+                                        data-id="${target_product.id}"
+                                        value="${target_product.needed_quantity}"
+                                        style="width: 100px;" type="number" min="1" step="1" max="${target_product.quantity}"
+                                    />
+                                </td>
+                                <td>
+                                    ${target_product.needed_quantity * total_parent_quantity}
+                                </td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" ${target_product.is_default ? 'checked="true"' : ''} data-id="${target_product.id}" id="customSwitch${target_product.id}">
+                                        <label class="custom-control-label" for="customSwitch${target_product.id}"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="u-remove-selected-product btn btn-sm btn-danger"
+                                        data-id="${target_product.id}"
+                                    >
+                                        <i class="fas fa-minus-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+
+                        $('#edit-upgradableOptionCategoryProducts').append(product_el);
+                    });
+                }
+            } 
+
+            const render_expected_price = () => {
+                console.log('expected price : ', store.getExpectedPrice());
+                const price = store.getExpectedPrice();
+                $('#edit-price').val(price);
+                $('#edit-upgradeExpectedPrice').text(price);
+            }
+
+            return {
+                render_products,
+                render_categories,
+                render_products_options,
+                render_expected_price
+            };
+            
+        })(store);
+
+        return {
+            starter_event : starter_event,
+            setStoreEditData : store.setStoreEditData
+        };
+    })();
+
+    upgradable_option.starter_event();
+    window.setStoreEditData = upgradable_option.setStoreEditData
 });
 </script>
 @endpush

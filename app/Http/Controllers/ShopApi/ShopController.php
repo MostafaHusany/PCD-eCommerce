@@ -80,18 +80,22 @@ class ShopController extends Controller
         
         // custome attribute filtration
         if (isset($request->custome_fields)) {
-            foreach ($request->custome_fields as $custome_field) {
-                $model->whereHas('product_custome_fields', function ($q) use ($custome_field) {
-                    $q->where('title', $custome_field['title']);
+            $custome_fields = $request->custome_fields;
+            $model->where(function($query) use ($custome_fields) {
+                foreach ($custome_fields as $custome_field) {
+                    $custome_field = gettype($custome_field) == 'string' ? (array) json_decode($custome_field) : $custome_field;
+                    $query->orWhereHas('product_custome_fields', function ($q) use ($custome_field) {
+                        $q->where('title', $custome_field['title']);
 
-                    if ($custome_field['type'] == 'number') {
-                        $dir = $custome_field['dir'] == 'from' ? '>=' : '<=';
-                        $q->where('value', $dir, $custome_field['value']);
-                    } else {
-                        $q->where('value', $custome_field['value']);
-                    }
-                });
-            }// end :: foreach
+                        if ($custome_field['type'] == 'number') {
+                            $dir = $custome_field['dir'] == 'from' ? '>=' : '<=';
+                            $q->where('value', $dir, $custome_field['value']);
+                        } else {
+                            $q->where('value', $custome_field['value']);
+                        }
+                    });
+                }// end :: foreach
+            });
         }// end :: if
         
         $pagination_nom = isset($request->pagination_nom) ? $request->pagination_nom : 15;  

@@ -93,9 +93,10 @@
                 <div class="form-group search-action">
                     <label for="s-title">Type</label>
                     <select class="form-control" id="s-type">
-                        <option value="">-- select product type --</option>
-                        <option value="0">usual</option>
-                        <option value="1">composite</option>
+                        <option value="">All</option>
+                        <option value="0">Usual</option>
+                        <option value="1">Composite</option>
+                        <option value="2">Upgradable</option>
                     </select>
                 </div><!-- /.form-group -->
             </div><!-- /.col-2 -->
@@ -104,7 +105,7 @@
                 <div class="form-group search-action">
                     <label for="s-active">Active</label>
                     <select class="form-control" id="s-active">
-                        <option value="">-- select product type --</option>
+                        <option value="">All</option>
                         <option value="1">Active</option>
                         <option value="0">De-Active</option>
                     </select>
@@ -134,7 +135,9 @@
     
     
     @include('admin.products.incs._create')
+    
     @include('admin.products.incs._edit')
+    
     @include('admin.products.incs._show')
 
     {{--
@@ -177,7 +180,8 @@ $(function () {
                                'en_name', 'en_small_description', 'en_description', 'sku', 'categories',
                                'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
                                 'is_active', 'is_composite', 'child_products', 'child_products_quantity',
-                                'custome_attr_id', 'custome_field_attr', 'brand_id'],
+                                'custome_attr_id', 'custome_field_attr', 'brand_id', 
+                                'upgrade_option_categories', 'upgrade_option_products', 'upgrade_option_products_ids'],
             imgs_fields     : ['main_image', 'images']
         },
         [
@@ -313,6 +317,40 @@ $(function () {
             $(`#${prefix}find_child_productsErr`).text('You need to select child product').slideDown(500);    
         }
 
+        if (data.get('is_composite') === '2') {
+            /**
+             * 'upgrade_option_categories', 'upgrade_option_products'
+             */
+
+            let upgrade_err   = false;
+            let categories    = JSON.parse(data.get('upgrade_option_categories'));
+            let products      = JSON.parse(data.get('upgrade_option_products_ids'));
+            let products_info = JSON.parse(data.get('upgrade_option_products'));
+
+            categories.forEach(category_id => {
+                // products[category_id].forEach(product_id => {
+                //     console.log('test validation : ', products_info[category_id][product_id]);
+                // });
+                if (!products[category_id].length) {
+                    is_valide = false;
+                    upgrade_err = true;
+                    $(`#${prefix}upgradeCategory${category_id}`).css('border-color', 'red');
+                } else {
+                    $(`#${prefix}upgradeCategory${category_id}`).css('border-color', '');
+                }
+            });
+
+            categories.forEach(category_id => {
+
+            })
+
+            upgrade_err ? 
+                $('#categories-upgradableErr')
+                .text('you selected some categories without selecting products !').slideDown(500) :
+                $('#categories-upgradableErr').text('').slideUp(500)
+            ;
+        }
+
         if (data.get('brand_id') == 'null') {
             data.delete('brand_id');
         }
@@ -321,7 +359,7 @@ $(function () {
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-        console.log(data, fields_id_list);
+
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
             $(`#${prefix + el_id}`).val(data[el_id]).change();
@@ -335,16 +373,12 @@ $(function () {
             var brand_option = new Option(`${data.brand['ar_title']} || ${data.brand['en_title']}`, data.brand.id, true, true);
             $('#edit-brand_id').append(brand_option);
         }
-        
 
         data.categories.forEach(category => {
             var category_option = new Option(`${category['ar_title']} || ${category['en_title']}`, category.id, true, true);
             $('#edit-categories').append(category_option)
         });
         $('#edit-categories').trigger('change');
-
-
-        // $('#child_products').val()
 
         $('#demo-3-container .jpreview-image, #demo-4-container .jpreview-image').remove()
         let main_image = `<div class="jpreview-image" style="background-image: url({{url('/')}}/${data.main_image})"></div>`;
@@ -358,7 +392,7 @@ $(function () {
         });
 
         
-        if (data.is_composite) {
+        if (data.is_composite == 1) {
             $('.edit-child-products-container').slideDown(500);
             $('#edit-productQuantityContainer').slideUp(500);
             const parent_product_meta = JSON.parse(data.meta);
@@ -369,7 +403,13 @@ $(function () {
                 const total_parent_quantity = data.quantity;
                 create_child_product_tr (target_product, total_parent_quantity, parent_product_meta);
             });
-        } 
+        } else if (data.is_composite == 2) {
+            /**
+             * We want get upgrade option data than send it to the main
+             * 
+             */
+            setStoreEditData(data);
+        }
 
         // store custome field values in global variable
         // after rendering the custome fields
@@ -408,7 +448,7 @@ $(function () {
                 }
             });
 
-            $('#categories, #edit-categories, #s-category').select2({
+            $('#edit-categories-upgradable, #categories-upgradable, #categories, #edit-categories, #s-category').select2({
                 allowClear: true,
                 width: '100%',
                 placeholder: 'Select categories',
@@ -464,14 +504,20 @@ $(function () {
                 let is_composite  = $(this).val();
                 let first_target  = $(this).data('first-target');
                 let second_target = $(this).data('second-target');
+                let third_target  = $(this).data('third-target');
                 
                 if (is_composite == 1) {
-                    $(first_target).slideDown(500);
                     $(second_target).slideUp(500);
-                } else {
-                    $(second_target).slideDown(500);
+                    $(third_target).slideUp(500);
+                    $(first_target).slideDown(500);
+                } else if (is_composite == 0) {
                     $(first_target).slideUp(500);
-                    // $('#child_products, #edit-child_products').val('').change();
+                    $(third_target).slideUp(500);
+                    $(second_target).slideDown(500);
+                } else if (is_composite == 2) {
+                    $(second_target).slideUp(500);
+                    $(first_target).slideUp(500);
+                    $(third_target).slideDown(500);
                 }
             });
 
@@ -507,24 +553,26 @@ $(function () {
                     Get category custome attributes
                  */
                 let categoreis_id = $(this).val();
-                
                 $('.custome-field-el').remove();
-                $('#customrFieldLoddingSpinner').show();
 
-                // axios.get(`{{ url('admin/products-categories') }}/0`, { params: { categoreis_id: categoreis_id,  group_acc : true }})
-                get_product_categories_with_attr(categoreis_id)
-                .then(res => {
-                    if (res.data.success) {
-                        const categoreis = res.data.data;
+                if (Boolean(categoreis_id) && categoreis_id.length) {
+                    $('#customrFieldLoddingSpinner').show();
+
+                    // axios.get(`{{ url('admin/products-categories') }}/0`, { params: { categoreis_id: categoreis_id,  group_acc : true }})
+                    get_product_categories_with_attr(categoreis_id)
+                    .then(res => {
+                        if (res.data.success) {
+                            const categoreis = res.data.data;
+                            
+                            categoreis.forEach(category => {
+                                render_custome_field_el (category);
+                                get_custome_fields_arr();
+                            });
+                        }
                         
-                        categoreis.forEach(category => {
-                            render_custome_field_el (category);
-                            get_custome_fields_arr();
-                        });
-                    }
-                    
-                    $('#customrFieldLoddingSpinner').hide();
-                });
+                        $('#customrFieldLoddingSpinner').hide();
+                    });
+                }
             });
 
             $('#edit-categories').change(function () {
@@ -535,29 +583,31 @@ $(function () {
                     not just the default fields
                  */
                 let categoreis_id = $(this).val();
-                
                 // remove old custome-field
                 $('.edit-custome-field-el').remove();
-                // so a silly animation effect while waiting for the response
-                $('#edit-customrFieldLoddingSpinner').show();
+                
+                if (Boolean(categoreis_id) && categoreis_id.length) {
+                    // so a silly animation effect while waiting for the response
+                    $('#edit-customrFieldLoddingSpinner').show();
 
-                get_product_categories_with_attr(categoreis_id)
-                .then(res => {
-                    if (res.data.success) {
-                        const categoreis = res.data.data;
+                    get_product_categories_with_attr(categoreis_id)
+                    .then(res => {
+                        if (res.data.success) {
+                            const categoreis = res.data.data;
+                            
+                            categoreis.forEach(category => {
+                                render_custome_field_el (category, 'edit-');
+                                get_custome_fields_arr('edit-');
+                            });
+
+                            custome_field_values.forEach(custome_field_val_obj => {
+                                $(`[data-attr-id="${custome_field_val_obj.category_attribute_id}"]`).val(custome_field_val_obj.value);
+                            });
+                        }
                         
-                        categoreis.forEach(category => {
-                            render_custome_field_el (category, 'edit-');
-                            get_custome_fields_arr('edit-');
-                        });
-
-                        custome_field_values.forEach(custome_field_val_obj => {
-                            $(`[data-attr-id="${custome_field_val_obj.category_attribute_id}"]`).val(custome_field_val_obj.value);
-                        });
-                    }
-                    
-                    $('#edit-customrFieldLoddingSpinner').hide();
-                });
+                        $('#edit-customrFieldLoddingSpinner').hide();
+                    });
+                }
             });
 
             $('#edit-custome-field-container').on('change keyup', '.custome-field', function () {
@@ -571,10 +621,10 @@ $(function () {
 
         async function get_product_categories_with_attr (categoreis_id) {
             const resposne = await axios.get(`{{ url('admin/products-categories') }}/0`, 
-                                { 
-                                    params: { categoreis_id: categoreis_id,  group_acc : true 
-                                }
-                            });
+                { 
+                    params: { categoreis_id: categoreis_id,  group_acc : true 
+                }
+            });
 
             return resposne;
         }

@@ -36,4 +36,10 @@ class ProductCategory extends Model
     public function brands () {
         return $this->belongsToMany(Brand::class, 'category_brands', 'category_id', 'brand_id');
     }
+
+
+    // start upgrade option 
+    /**
+     * Didn't make relation because didn't need it here.
+     */
 }

@@ -152,4 +152,15 @@ class Product extends Model
 
         return 0;
     }
+
+
+    // start upgrade relation
+    public function upgrade_categories () {
+        return $this->belongsToMany(ProductCategory::class, 'r_u_category_products', 'product_id', 'category_id');
+    }
+
+    public function upgrade_products () {
+        return $this->belongsToMany(Product::class, 'r_u_product_categories', 'm_product_id', 'product_id')->withPivot('category_id', 'is_default', 'upgrade_price', 'needed_quantity');
+    }
+
 }

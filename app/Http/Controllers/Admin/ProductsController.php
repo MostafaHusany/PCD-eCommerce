@@ -13,6 +13,10 @@ use App\ProductCategory;
 use App\CategoryAttribute;
 use App\ProductCustomeField;
 
+// for upgrade option
+use App\RUCategoryProduct;
+use App\RUProductCategory;
+
 class ProductsController extends Controller
 {
     /**
@@ -82,7 +86,7 @@ class ProductsController extends Controller
                 return $row_object->is_composite ? '---' : $row_object->reserved_quantity;
             })
             ->addColumn('is_composite', function ($row_object) {
-                return $row_object->is_composite ? 'منتج مركب' : '---';
+                return $row_object->is_composite == 1 ? 'Composite' : ($row_object->is_composite == 2  ? 'Upgradable' : 'Usual');
                 return view('admin.products.incs._composite', compact('row_object'));
             })
             ->addColumn('active', function ($row_object) {
@@ -99,7 +103,7 @@ class ProductsController extends Controller
     }
     
     public function show (Request $request, $id) {
-        $target_object = Product::find($id);
+        $target_object = Product::with(['children', 'upgrade_categories', 'upgrade_products'])->find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
             // $target_object->categories = $target_object->categories()->pluck('product_categories.id')->toArray();
@@ -107,7 +111,8 @@ class ProductsController extends Controller
             $target_object->categories;
             $target_object->product_custome_fields;
             $target_object->brand;
-            $target_object->children = $target_object->is_composite ? $target_object->children()->distinct()->get() : null;
+            // $target_object->children = $target_object->is_composite == 1 ? $target_object->children()->distinct()->get() : null;
+
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
@@ -120,7 +125,6 @@ class ProductsController extends Controller
     }
 
     public function store (Request $request) {
-        // dd($request->all());
         // START VALIDATION
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|unique:products,ar_name|max:255',
@@ -154,8 +158,25 @@ class ProductsController extends Controller
                 return response()->json(['data' => null, 'success' => false, 'msg' => $err_msg]); 
             }
         }
-        // END VALIDATION
 
+        $upgrade_categories  = $request->is_composite == 2 ? (array) json_decode($request->upgrade_option_categories) : [];
+        $upgrade_products_id = $request->is_composite == 2 ? (array) json_decode($request->upgrade_option_products_ids) : [];
+        $upgrade_products    = $request->is_composite == 2 ? (array) json_decode($request->upgrade_option_products) : [];
+        if ($request->is_composite == 2) {
+
+            /**
+             * I want to make sure that products quantity is valied
+             * for making reserved_quantity for composite products
+            */
+
+            $err_msg = $this->validate_upgrade_products_quantity($upgrade_categories, $upgrade_products_id, $upgrade_products, $request->reserved_quantity);
+            
+            if (isset($err_msg)) {
+                return response()->json(['data' => null, 'success' => false, 'msg' => $err_msg]); 
+            }
+        }
+        // END VALIDATION
+        // dd('stop', $upgrade_categories, $upgrade_products_id, $upgrade_products);
         
         $data = $request->except(['main_image', 'price_after_sale', 'is_active', 'reserved_quantity']);
         
@@ -174,10 +195,15 @@ class ProductsController extends Controller
             $data['images'] = json_encode($images);
         }
         
-        $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
+        $data['quantity']         = $request->is_composite ? $request->reserved_quantity : $request->quantity;
         $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
-        $data['meta']             = json_encode([
+        $data['meta']             = $request->is_composite == 2 ? 
+        json_encode([
+            'upgrade_categories'  => $upgrade_categories,
+            'upgrade_products_id' => $upgrade_products_id,
+            'upgrade_products'    => $upgrade_products
+        ]): json_encode([
             'child_products_id' => $child_products,
             'products_quantity' => $child_products_quantity,
         ]);
@@ -196,6 +222,11 @@ class ProductsController extends Controller
             $this->update_reserved_products($new_object);
         }
 
+        if ($request->is_composite == 2) {
+            $new_object->upgrade_categories()->sync($upgrade_categories);
+            $this->create_upgrade_option($new_object, $upgrade_categories, $upgrade_products_id, $upgrade_products);
+        }
+        
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }
 
@@ -425,6 +456,38 @@ class ProductsController extends Controller
         return $msg;
     }
 
+    private function validate_upgrade_products_quantity ($categories, $products, $products_info, $reserved_quantity) {
+        $msg_str = "";
+        $msg     = null;
+
+        foreach ($categories as $category_id) {
+            $selected_products  = Product::whereIn('id', $products[$category_id])->get();
+            // dd($reserved_quantity, $selected_products);
+            // foreach ($products[$category_id] as $category) {
+            //     dd($category_id, $products[$category_id], $products, $category);
+            // }
+            foreach($selected_products as $product) {
+                $tmp = (array) $products_info[$category_id];
+                // dd($tmp[$product->id], $product->id);
+                $requested_quantity = ($tmp[$product->id]->needed_quantity * $reserved_quantity);
+    
+                if ($product->quantity < $requested_quantity) {
+                    $msg_str .= "<li>($product->en_name / $product->ar_name) has only $product->quantity and you requested $requested_quantity</li>";
+                }
+            }
+
+        }
+
+        // dd($msg_str, $categories, $products, $reserved_quantity);
+
+        if (strlen($msg_str)) {
+            $msg_str = "<ul>" . $msg_str . "</ul>";
+            $msg     = ['reserved_quantity' => $msg_str];
+        }
+
+        return $msg;
+    }
+
     private function create_products_custome_fields ($target_object, $custome_attr_id, $custome_field_attr) {
         // delete old custome_field if exists, case update
         $target_object->product_custome_fields()->delete();
@@ -448,6 +511,26 @@ class ProductsController extends Controller
         }
         
         ProductCustomeField::insert($custome_field_vals);
+    }
+
+    private function create_upgrade_option ($target_object, $upgrade_categories, $upgrade_products_id, $upgrade_products) {
+        $data = [];
+        foreach ($upgrade_categories as $category_id) {
+            foreach($upgrade_products[$category_id] as $product_info) {
+                $product_info = (array) $product_info;
+                
+                $data[] = [
+                    'category_id'    => $category_id,
+                    'm_product_id'   => $target_object->id, 
+                    'product_id'     => $product_info['id'], 
+                    'is_default'     => $product_info['is_default'], 
+                    'upgrade_price'  => $product_info['upgrade_price'], 
+                    'needed_quantity' => $product_info['needed_quantity'],
+                ];
+            }
+        }
+
+        RUProductCategory::insert($data);
     }
     // END   HELPER FUNCTIONS 
 
