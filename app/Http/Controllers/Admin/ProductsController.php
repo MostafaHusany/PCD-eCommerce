@@ -220,9 +220,7 @@ class ProductsController extends Controller
         if ($request->is_composite == 1) {
             $new_object->children()->sync($child_products);
             $this->update_reserved_products($new_object);
-        }
-
-        if ($request->is_composite == 2) {
+        } else if ($request->is_composite == 2) {
             $new_object->upgrade_categories()->sync($upgrade_categories);
             $this->create_upgrade_option($new_object, $upgrade_categories, $upgrade_products_id, $upgrade_products);
         }
@@ -239,7 +237,7 @@ class ProductsController extends Controller
     }
 
     protected function updateProduct (Request $request, $id) {
-        // dd($request->all());
+        // START VALIDATION
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|max:255|unique:products,ar_name,'.$id,
             'en_name'        => 'required|max:255|unique:products,en_name,'.$id,
@@ -269,10 +267,59 @@ class ProductsController extends Controller
          * original, if there is a change start act
          * 
          * There is a diference sinario and more secure
-         * restore all reserved quantityt to the products
+         * restore all reserved quantity to the products
          * than start doing validation , 
          * if failed return every thing back
          * if true start do your job 
+         * 
+         * ## NOTICE Need to review code structure and think more about 
+         * how to make it more readable, and faster !
+         * 1- should we make this option in diferent class,
+         * and has it's own form for composite products 
+         * 
+         */
+
+        /**
+         * Edit operation for upgradable products
+         * 
+         * Product is_composite == 2 than product is upgradable.
+         * 
+         * An upgradable product has a relation with selected 
+         * categories that consists of products upgrade option
+         * this relation can be find "RUCategoryProduct" Model.
+         * 
+         * Also upgradable product has a direct relation with
+         * selected products for upgrades "RUProductCategory" Model
+         * 
+         * The product also has some fast access data in the meta
+         * with structure ....
+         * {
+         *   # A direct access to categories ids
+         *  'upgrade_categories'  => list of [category_id, ...],
+         *   # A direct access to the selected products for each categories
+         *  'upgrade_products_id' => a hashed object {category_id : list of [product_id, ...], ...},
+         *   # A direct access to the selected products upgrade information
+         *  'upgrade_products'    => :{category_id:{product_id:{"id":product_id,"upgrade_price":number, "needed_quantity":number, "is_default":boolean}, ...}
+         * }
+         * 
+         * How to update the upgradable products ?
+         * We need update the categories relation in RUCategoryProduct
+         * We need update the products relation in RUProductCategory
+         * We need to update the meta of the product.
+         * 
+         * Some time the user do update to the product for more simle stuff
+         * we can't just let user update every thing for just updating
+         * a title !. I think we need spreate the operation of general updates
+         * and the operation of updating the upgrade
+         * 
+         * 
+         * ## NOTICE Need to review code structure and think more about 
+         * how to make it more readable, and faster !
+         * 1- should we make this option in diferent class,
+         * and has it's own form for composite products.
+         * 2- We need to make category configuration 
+         * like what happend if the default product finshed,
+         * and make the reservation senario.
          * 
          */
 
@@ -282,7 +329,6 @@ class ProductsController extends Controller
 
         $child_products          = $request->is_composite == 1 ? (array) json_decode($request->child_products) : [];
         $child_products_quantity = $request->is_composite == 1 ? (array) json_decode($request->child_products_quantity) : [];
-        // dd($child_products, $child_products_quantity);
         if ($request->is_composite == 1) {
             $this->restore_reserved_products($target_object);
 
@@ -293,6 +339,43 @@ class ProductsController extends Controller
                 return response()->json(['data' => null, 'success' => false, 'msg' => $err_msg]); 
             }
         }
+
+        $upgrade_categories  = $request->is_composite == 2 ? (array) json_decode($request->upgrade_option_categories) : [];
+        $upgrade_products_id = $request->is_composite == 2 ? (array) json_decode($request->upgrade_option_products_ids) : [];
+        $upgrade_products    = $request->is_composite == 2 ? (array) json_decode($request->upgrade_option_products) : [];
+        if ($request->is_composite == 2) {
+            // $meta = (array) json_decode($target_object->meta);
+
+            // dd(
+            //     $upgrade_categories, $meta['upgrade_categories'],
+            //     $upgrade_products_id, $meta['upgrade_products_id'],
+            //     $upgrade_products, $meta['upgrade_products'],
+            // );
+
+            /**
+             * Kind of updates that we need to do ? 
+             * # Direct change on categories ! 
+             * 1- add/remove category with its products
+             * 
+             * # Changes on category products
+             * 1- add/remove product
+             * 2- edit product values price/quantity/is_default
+             * 
+             * # Needed validation 
+             * 1- Make sure that products quantity is valied
+            */
+
+            /**
+             * I want to make sure that products quantity is valied
+             * for making reserved_quantity for composite products
+            */
+            $err_msg = $this->validate_upgrade_products_quantity($upgrade_categories, $upgrade_products_id, $upgrade_products, $request->reserved_quantity);
+            
+            if (isset($err_msg)) {
+                return response()->json(['data' => null, 'success' => false, 'msg' => $err_msg]); 
+            }
+        }
+        // END VALIDATION
 
         $data  = $request->except(['main_image', 'price_after_sale', 'is_active', 'brand_id']);
         
@@ -322,19 +405,27 @@ class ProductsController extends Controller
         $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
         $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
-        $data['meta']             = json_encode([
+        $data['meta']             = $request->is_composite == 2 ? 
+        json_encode([
+            'upgrade_categories'  => $upgrade_categories,
+            'upgrade_products_id' => $upgrade_products_id,
+            'upgrade_products'    => $upgrade_products
+        ]): json_encode([
             'child_products_id' => $child_products,
             'products_quantity' => $child_products_quantity,
         ]);
+        
         $categories               = explode(',', $request->categories);
 
         $target_object->update($data);
         $this->sync_product_categories($categories, $target_object);
     
-
         if ($request->is_composite == 1) {
             $target_object->children()->sync($child_products);
             $this->update_reserved_products($target_object);
+        } else if ($request->is_composite == 2) {
+            $target_object->upgrade_categories()->sync($upgrade_categories);
+            $this->create_upgrade_option($target_object, $upgrade_categories, $upgrade_products_id, $upgrade_products);
         }
         
         // start record custome_fields ... 
@@ -427,11 +518,9 @@ class ProductsController extends Controller
         
         foreach($child_products as $product) {
             $requested_quantity          = $parent_product->quantity * $products_quantity[$product->id];
-
             $product->quantity          += $requested_quantity;
             $product->reserved_quantity -= $requested_quantity;
             $product->save();
-            // dd($product->quantity, $product->reserved_quantity, $requested_quantity, $parent_product->quantity, $products_quantity[$product->id]);
         }
     }
 
@@ -447,38 +536,6 @@ class ProductsController extends Controller
                 $msg_str .= "<li>($product->en_name / $product->ar_name) has only $product->quantity and you requested $requested_quantity</li>";
             }
         }
-
-        if (strlen($msg_str)) {
-            $msg_str = "<ul>" . $msg_str . "</ul>";
-            $msg     = ['reserved_quantity' => $msg_str];
-        }
-
-        return $msg;
-    }
-
-    private function validate_upgrade_products_quantity ($categories, $products, $products_info, $reserved_quantity) {
-        $msg_str = "";
-        $msg     = null;
-
-        foreach ($categories as $category_id) {
-            $selected_products  = Product::whereIn('id', $products[$category_id])->get();
-            // dd($reserved_quantity, $selected_products);
-            // foreach ($products[$category_id] as $category) {
-            //     dd($category_id, $products[$category_id], $products, $category);
-            // }
-            foreach($selected_products as $product) {
-                $tmp = (array) $products_info[$category_id];
-                // dd($tmp[$product->id], $product->id);
-                $requested_quantity = ($tmp[$product->id]->needed_quantity * $reserved_quantity);
-    
-                if ($product->quantity < $requested_quantity) {
-                    $msg_str .= "<li>($product->en_name / $product->ar_name) has only $product->quantity and you requested $requested_quantity</li>";
-                }
-            }
-
-        }
-
-        // dd($msg_str, $categories, $products, $reserved_quantity);
 
         if (strlen($msg_str)) {
             $msg_str = "<ul>" . $msg_str . "</ul>";
@@ -513,7 +570,43 @@ class ProductsController extends Controller
         ProductCustomeField::insert($custome_field_vals);
     }
 
+    // START UPGRADABLE FUNCTIONALITY HELPER METHODS.
+    private function validate_upgrade_products_quantity ($categories, $products, $products_info, $reserved_quantity) {
+        $msg_str = "";
+        $msg     = null;
+
+        foreach ($categories as $category_id) {
+            $selected_products  = Product::whereIn('id', $products[$category_id])->get();
+            // dd($reserved_quantity, $selected_products);
+            // foreach ($products[$category_id] as $category) {
+            //     dd($category_id, $products[$category_id], $products, $category);
+            // }
+            foreach($selected_products as $product) {
+                $tmp = (array) $products_info[$category_id];
+                // dd($tmp[$product->id], $product->id);
+                $requested_quantity = ($tmp[$product->id]->needed_quantity * $reserved_quantity);
+    
+                if ($product->quantity < $requested_quantity) {
+                    $msg_str .= "<li>($product->en_name / $product->ar_name) has only $product->quantity and you requested $requested_quantity</li>";
+                }
+            }
+
+        }
+
+        // dd($msg_str, $categories, $products, $reserved_quantity);
+
+        if (strlen($msg_str)) {
+            $msg_str = "<ul>" . $msg_str . "</ul>";
+            $msg     = ['reserved_quantity' => $msg_str];
+        }
+
+        return $msg;
+    }
+
     private function create_upgrade_option ($target_object, $upgrade_categories, $upgrade_products_id, $upgrade_products) {
+        // clear old session if exists
+        RUProductCategory::where('m_product_id', $target_object->id)->delete();
+
         $data = [];
         foreach ($upgrade_categories as $category_id) {
             foreach($upgrade_products[$category_id] as $product_info) {
@@ -529,7 +622,7 @@ class ProductsController extends Controller
                 ];
             }
         }
-
+        
         RUProductCategory::insert($data);
     }
     // END   HELPER FUNCTIONS 

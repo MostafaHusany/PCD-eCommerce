@@ -796,7 +796,8 @@ $(function () {
                 let meta = JSON.parse(data.meta);
                 addReservedQuantity(data.quantity)
                 
-                meta.upgrade_categories.forEach(category_id=> {
+                let requests_count = 0;
+                meta.upgrade_categories.forEach(category_id => {
                     $('#edit-childrenCategoriesLoddingSpinner').show(500);
 
                     axios.get(`{{ url('admin/products-categories') }}/${category_id}`,  {
@@ -807,9 +808,7 @@ $(function () {
                         if (res.data.success) {
                             addCategory(res.data.category, res.data.data);
                         }// end :: if
-
                     }).then(res => {
-                        $('#edit-childrenCategoriesLoddingSpinner').hide(500);
                         store.categories.forEach(category => {
                             selectedCategory(category.id);
                             meta.upgrade_products_id[category.id].forEach(product_id => {
@@ -821,6 +820,17 @@ $(function () {
                         calculateExpectedPrice();
                         render.render_categories();
                         render.render_expected_price();
+                    }).then(() => {
+                        requests_count++
+                        if (requests_count === meta.upgrade_categories.length) {
+                            $('#edit-childrenCategoriesLoddingSpinner').hide(500);
+                        }
+                    }).catch(err => {
+                        console.log('Enable to finsh requesting upgradable products in 829_edit : ', err);
+                        $('#edit-categories-upgradableErr').text('Enable to bring data successfully !!').slideDown(500);
+                        setTimeout(() => {
+                            $('#edit-categories-upgradableErr').text('').slideUp(500);
+                        }, 5000);
                     });
                     
                 });
