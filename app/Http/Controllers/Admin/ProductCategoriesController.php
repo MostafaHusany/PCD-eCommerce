@@ -40,7 +40,9 @@ class ProductCategoriesController extends Controller
                 return view('admin.categories.incs._icon', compact('row_object'));
             })
             ->addColumn('parent', function ($row_object) {
-                return $row_object->is_main ? '--' : '';
+                return $row_object->is_main ? 
+                '---' :
+                ($row_object->categoryParent ? $row_object->categoryParent->en_title  : '---');
             })
             ->addColumn('products', function ($row_object) {
                 // return 0;
@@ -76,6 +78,12 @@ class ProductCategoriesController extends Controller
         } else if (isset($target_object) && isset($request->my_products)) {
             $category_products = $target_object->products()->where('is_active', 1)->where('quantity', '>', 0)->where('is_composite', 0)->get();
             return response()->json(['data' => $category_products, 'category' => $target_object, 'success' => isset($category_products)]);
+        } if (isset($target_object) && isset($request->get_children)) {
+            $target_object->children;
+            $target_object->categoryParent;
+            $target_object->brands;
+            $target_object->attributes;
+            return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 
         return response()->json(['data' => null, 'success' > false]);

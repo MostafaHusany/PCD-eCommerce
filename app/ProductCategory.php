@@ -13,7 +13,7 @@ class ProductCategory extends Model
         return $this->hasOne(ProductCategory::class, 'category_id');
     }
 
-    public function CategoryParent () {
+    public function categoryParent () {
         return $this->belongsTo(ProductCategory::class, 'category_id');
     }
 

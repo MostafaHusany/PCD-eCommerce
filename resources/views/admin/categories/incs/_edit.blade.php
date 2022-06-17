@@ -45,7 +45,7 @@
         <div class="form-group row">
             <label for="edit-is_main" class="col-sm-2 col-form-label">Is Main</label>
             <div class="col-sm-5">
-                <select class="form-control" id="edit-is_main" data-target="#category_id">
+                <select class="form-control" id="edit-is_main" data-target="#edit-category_id">
                     <option selected="selected" value="1">Is Main</option>
                     <option value="0">Is Sub</option>
                 </select>

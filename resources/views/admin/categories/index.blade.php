@@ -97,6 +97,7 @@
                 <th>Ar Title</th>
                 <th>En Title</th>
                 <th>Is Main</th>
+                <th>Parent</th>
                 <th>Products</th>
                 <th>Rule</th>
                 <th>Actions</th>
@@ -108,6 +109,8 @@
     @include('admin.categories.incs._create')
 
     @include('admin.categories.incs._edit')
+
+    @include('admin.categories.incs._show')
     
     {{--
     @include('admin.categories.incs._settings')
@@ -154,6 +157,7 @@ $(function () {
             { data: 'en_title', name: 'en_title' },
             { data: 'ar_title', name: 'ar_title' },
             { data: 'is_main', name: 'is_main' },
+            { data: 'parent', name: 'parent' },
             { data: 'products', name: 'products' },
             { data: 'rule', name: 'rule' },
             { data: 'actions', name: 'actions' },
@@ -276,7 +280,7 @@ $(function () {
                 })// axios
             })
 
-            $('#is_main').change(function () {
+            $('#is_main, #edit-is_main').change(function () {
                 let target = $(this).data('target');
                 if ($(this).val() === '1') {
                     $(target).attr('disabled', 'disabled');
