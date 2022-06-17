@@ -15,7 +15,7 @@ class CartController extends Controller
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
     }
 
-    public function add_product ($id) {
+    public function add_product (Request $request, $id) {
         /**
          * before adding a product to the cart 
          * we need to make sure that there is a valied quantity for sale 
@@ -43,14 +43,19 @@ class CartController extends Controller
             return response()->json(['data' => $this->cart_content(), 'success' => false, 'msg' => 'max_quantity_in_storage']);
         }
 
-        $cart = Cart::instance('products')->add($target_product->id, $target_product->en_name, 1, $target_product->get_price())->associate('App\Product');
+        $cart = Cart::instance('products')->add($target_product->id, $target_product->en_name, isset($request->qty) ? $request->qty : 1, $target_product->get_price())->associate('App\Product');
         
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
     }
 
-    public function remove_product ($id) {
-        $row_id = $this->is_cart_has_product($id);
-        isset($row_id) ? Cart::instance('products')->remove($row_id) : null;
+    public function remove_product (Request $request, $id) {
+        $is_has_item = $this->is_cart_has_product($id);
+        
+        if (isset($request->qty) && ($is_has_item->qty - $request->qty) > 0 ) {
+            Cart::update($is_has_item->rowId, $is_has_item->qty - $request->qty);
+        } else {
+            Cart::instance('products')->remove($is_has_item->rowId);
+        }
 
         return response()->json(['data' => $this->cart_content(), 'success' => true]);
     }
@@ -131,6 +136,6 @@ class CartController extends Controller
             return $cartItem->id == $id_or_item_id || $rowId == $id_or_item_id;
         })->first();
 
-        return isset($is_has_item) ? $is_has_item->rowId : null;
+        return isset($is_has_item) ? $is_has_item : null;
     }
 }
