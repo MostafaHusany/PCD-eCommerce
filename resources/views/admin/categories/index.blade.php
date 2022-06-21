@@ -47,12 +47,14 @@
                 <h5>{{$object_title}}ies Adminstration</h5>
             </div>
             <div class="col-6 text-right">
+                {{--
                 <div class="!toggle-btn  update-categories-navbar btn btn-warning btn-sm" 
                     data-current-card="#objectsCard" data-target-card="#selectNavbarCategories"
                     data-toggle="tooltip" data-placement="top" title="Select Categories For Navbar"
                 >
                     <i class="fas fa-stream"></i>
                 </div>
+                --}}
 
                 <div class="relode-btn btn btn-info btn-sm">
                     <i class="relode-btn-icon fas fa-redo"></i>
@@ -100,6 +102,7 @@
                 <th>Parent</th>
                 <th>Products</th>
                 <th>Rule</th>
+                <th>Active</th>
                 <th>Actions</th>
             </thead>
             <tbody></tbody>
@@ -162,6 +165,7 @@ $(function () {
             { data: 'parent', name: 'parent' },
             { data: 'products', name: 'products' },
             { data: 'rule', name: 'rule' },
+            { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],
         function (d) {
@@ -232,46 +236,19 @@ $(function () {
         custome_fields = [];
         $('.custome_ro_el').remove();
         $('#edit-custome_fields').val(JSON.stringify([]));
-        
-        data.attributes.forEach(attribute => {
-            index_custome_events.create_custome_field_row_el(attribute, 'edit-');
-            let meta = JSON.parse(attribute.meta);
-            let data = {
-                id : attribute.id,
-                field_title : attribute.title,
-                field_type  : attribute.type,
-            };
-
-            if (data.field_type == 'options') {
-                data['field_options'] = meta.options;
-            } else if (data.field_type == 'number') {
-                data['field_number_from']   = meta.number.field_number_from;
-                data['field_number_to']     = meta.number.field_number_to;
-                data['field_number_metric'] = meta.number.field_number_metric;
-            }
-            
-            custome_fields.push(data);
-            $('#edit-custome_fields').val(JSON.stringify(custome_fields));
-        }); 
     };
 
     const index_custome_events =  (function () {
         function start_events () {
-            // custome attribute for category
-            $('#field_options, #edit-field_options').select2({
-                tags  : true,
-                width : '100%'
-            });
-
             $('#dataTable').on('change', '.c-activation-btn', function () {
                 let target_id = $(this).data('user-target');
                 
-                axios.post(`{{url('admin/customers')}}/${target_id}`, {
+                axios.post(`{{url('admin/products-categories')}}/${target_id}`, {
                     _token : "{{ csrf_token() }}",
                     _method : 'PUT',
-                    activate_customer : true
+                    activate_product : true
                 }).then(res => {
-                    if (!res.data.success) {
+                    if (res.status != 200) {
                         $(this).prop('checked', !$(this).prop('checked'));
                         $('#dangerAlert').text('Something went rong !! Please refresh your page').slideDown(500);
 
@@ -280,7 +257,12 @@ $(function () {
                         }, 3000);
                     }
                 })// axios
-            })
+            });
+
+            $('#field_options, #edit-field_options').select2({
+                tags  : true,
+                width : '100%'
+            });
 
             $('#is_main, #edit-is_main').change(function () {
                 let target = $(this).data('target');
@@ -362,37 +344,8 @@ $(function () {
             });
         }
 
-        function create_custome_field_row_el (data, prefix = '') {
-            
-            let meta = JSON.parse(data.meta);
-            let field_values  = data.type == 'options' ? 
-                            meta.options.join(',') 
-                                : 
-                            'start from : ' + meta.number.field_number_from  + ' <br/> end to : ' + meta.number.field_number_to + ' <br/> metric : ' + meta.number.field_number_metric;
-            
-            let new_field_row = `
-                <tr class="custome_ro_el" id="edit-custome_row_field-${data.id}">
-                    <td>${data.title}</td>
-                    <td>${data.type}</td>
-                    <td>
-                        ${
-                            field_values
-                        }
-                    </td>
-                    <td>
-                        <button data-target="${data.id}" class="remove-tr-el btn btn-sm btn-danger">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-
-            $(`#${prefix}fields_container`).prepend(new_field_row);
-        }
-
         return {
-            start_events : start_events,
-            create_custome_field_row_el : create_custome_field_row_el
+            start_events : start_events
         }
     })();
 

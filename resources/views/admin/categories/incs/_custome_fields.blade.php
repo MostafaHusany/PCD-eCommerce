@@ -90,7 +90,7 @@
             </table>
         </div>
 
-        <button class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button class="custome-field-create btn btn-warning float-right">Update Category Custome Fields</button>
     </div>
 </div>
 
@@ -107,6 +107,12 @@ $(document).ready(function () {
         // getters 
         const getters = {
             getData : () => data,
+            
+            getRequestData : () => ({
+                category_id : data.category.id,
+                attributes : data.attributes,
+                update_category_attr : true
+            }),
 
             isTitleExist : (title) => {
                 /**
@@ -137,9 +143,11 @@ $(document).ready(function () {
                     new_attr.id     = Math.round(Math.random() * 100000)
                     new_attr.status = 2;
                     new_attr.meta   =  new_attr.type == 'options' ? {options : []} : {
-                        field_number_from: 0,
-                        field_number_to: 0,
-                        field_number_metric: ""
+                        number : {    
+                            field_number_from: 0,
+                            field_number_to: 0,
+                            field_number_metric: ""
+                        }
                     };
 
                     data.attributes.push(new_attr);
@@ -149,7 +157,18 @@ $(document).ready(function () {
                 return false;
             },
             removeAttr : (attr_id) => {
-                data.attributes = data.attributes.filter(attr => attr.id != attr_id);
+                // data.attributes = data.attributes.filter(attr => attr.id != attr_id);
+                let new_attributes = [];
+                data.attributes.forEach(attr => {
+                    if (attr.id == attr_id && (attr.status == 1 || attr.status == 0)) {
+                        attr.status = -1;
+                        new_attributes.push(attr);
+                    } else if (attr.id != attr_id) {
+                        new_attributes.push(attr);
+                    } 
+                });
+
+                data.attributes = new_attributes;
             },
             updateAttribute : (attr_id, new_attr_val, key = null) => {
                 data.attributes.forEach(attr => {
@@ -166,8 +185,6 @@ $(document).ready(function () {
                         }
                     }
                 });
-
-                // console.log('updateAttribute : ', data.attributes);
             }
         }
 
@@ -306,7 +323,7 @@ $(document).ready(function () {
                         </tr>
                     `;
 
-                    $('#custome-fields_container').append(attr_el);
+                    attr_el.status != -1 && $('#custome-fields_container').append(attr_el);
                 });
             },
             callSelect2JQ : () => {
@@ -384,6 +401,39 @@ $(document).ready(function () {
                     data = store.setters.addNewAttr(data);
                     view.renderNewAttrRow(data);
                 }
+            });
+
+            // submit the form 
+            $('.custome-field-create').click(function () {
+                /**
+                 * # We will get the data direct from the store,
+                 * so we dont need to get data from the form any more,
+                 * we will do all required validation on this data
+                 * to make sure that all fields are valied.
+                 * 
+                 * Than we will sent the request with data using
+                 * axios.
+                 * 
+                 * # Notice this new senario for handling the data in the
+                 * form we didn't need to get data from any fields directly 
+                 * or from hidden fields.
+                 * 
+                 * # can we make same model in abstract class that can handle any
+                 * form data ?! and can we use redux in this senario ?!
+                 * 
+                 */
+
+                let data = store.getters.getRequestData();
+                
+                $('#loddingSpinner').show(500);
+
+                axios.put(`{{ url('admin/products-categories') }}/${data.category_id}`, data)
+                .then(res => {
+                    $('#loddingSpinner').hide(500);
+                    $('#objectsCard').slideDown(500);
+                    $('#customeObjectCard').slideUp(500);
+                });
+                
             });
         };
 

@@ -48,9 +48,6 @@ class ProductCategoriesController extends Controller
                 // return 0;
                 return $row_object->products()->count();
             })
-            ->addColumn('active', function ($row_object) {
-                return view('admin.categories.incs._active', compact('row_object'));
-            })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.categories.incs._actions', compact('row_object'));
             });
@@ -93,6 +90,7 @@ class ProductCategoriesController extends Controller
     }
 
     public function store (Request $request) {
+        // dd($request->all());
         /**
          * The plan is to create a new custome fields that linked to product_category
          * when we link a product to a category automatically the product is linked 
@@ -123,6 +121,9 @@ class ProductCategoriesController extends Controller
             $new_object->brands()->sync($brands);
         }
 
+        $custome_fields = json_decode($request->custome_fields);
+        $this->create_category_custome_fields($new_object, $custome_fields);
+
         // clear categories old cach
         $this->clear_cach();
 
@@ -130,16 +131,14 @@ class ProductCategoriesController extends Controller
     }
 
     public function update (Request $request, $id) {
+        // clear categories old cach
+        $this->clear_cach();
         
         if ($id == 0) {
             ProductCategory::query()->update(['is_nav' => 0]);
             ProductCategory::query()->whereIn('id', $request->categories)->update(['is_nav' => 1]);
             
             return response()->json(array('data' => null, 'success' => true));
-        }
-
-        if (isset($request->activate_product)) {
-            return $this->update_activation($id);
         }
         
         if (isset($request->update_category_attr)) {
@@ -172,20 +171,13 @@ class ProductCategoriesController extends Controller
             $brands = explode(',', $request->brands);
             $target_object->brands()->sync($brands);
         }
-
-        $this->clear_cach();
+        
+        $target_object->attributes()->delete();
+        $custome_fields = json_decode($request->custome_fields);
+        
+        $this->create_category_custome_fields($target_object, $custome_fields);
         
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
-    }
-
-    protected function update_activation ($id) {
-        $target_object = ProductCategory::find($id);
-        if (isset($target_object)) {
-            $target_object->is_active = !$target_object->is_active;
-            $target_object->save();
-        }
-
-        return response()->json(['data' => $target_object, 'success' => isset($target_object)]);        
     }
 
     public function update_category_custome_field (Request $request, $id) {
@@ -204,6 +196,7 @@ class ProductCategoriesController extends Controller
          */
 
         $data = $request->all();
+        // dd($data);
         $deleted_attr = [];
         $new_attr     = [];
         $update_attr  = [];
@@ -246,8 +239,6 @@ class ProductCategoriesController extends Controller
             $target_object->update($attr);
         }
 
-        $this->clear_cach();
-
         return response()->json(['data' => null, 'success' => true]);    
     }
 
@@ -275,11 +266,40 @@ class ProductCategoriesController extends Controller
 
             $data = isset($request->is_main) ? $model->where('is_main', 1)->get() : $model->get();
         }
-
         return response()->json($data);
     }
 
     // START HELPER FUNCTIONS
+    private function create_category_custome_fields ($target_object, $custome_fields) {
+        $parsed_custome_fields = [];
+
+        foreach ($custome_fields as $field) {
+            $field_arr = (array) $field;
+            $data = [
+                'title'       => $field_arr['field_title'],
+                'type'        => $field_arr['field_type'],
+                'category_id' => $target_object->id,
+                'meta'        => $field_arr['field_type'] == 'options' ? json_encode(['options' => $field_arr['field_options']])
+                                    :
+                                json_encode(['number' => ['field_number_from' => $field_arr['field_number_from'], 
+                                                          'field_number_to'   => $field_arr['field_number_to'],
+                                                          'field_number_metric' => $field_arr['field_number_metric']]])
+            ];
+            
+            $parsed_custome_fields[] = $data;
+        }
+
+        return CategoryAttribute::insert($parsed_custome_fields);
+    }
+
+    private function upddate_category_custome_field ($target_object, $custome_fields) {
+        foreach ($custome_fields as $field) {
+            if ($field->is_updated) {
+                
+            }
+        }
+    }
+
     private function clear_cach () {
         // clear old cach for categories
         Cache::forget('categories');

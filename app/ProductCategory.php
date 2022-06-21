@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductCategory extends Model
 {
     protected $fillable = ['ar_title', 'en_title', 'ar_description', 'en_description',
-     'rule', 'is_main', 'category_id', 'slug', 'icon', 'is_nav'];
+     'rule', 'is_main', 'category_id', 'slug', 'icon', 'is_nav', 'is_active'];
 
     public function parent () {
         return $this->hasOne(ProductCategory::class, 'category_id');

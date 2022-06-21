@@ -12,7 +12,11 @@ class ShopController extends Controller
 {
 
     public function show ($slug) {
-        $target_product = Product::with(['brand', 'categories', 'product_promotion_r', 'brand'])->where('slug', $slug)->first();
+        /**  
+         * # Show product that is_active
+         * 
+        */
+        $target_product = Product::with(['brand', 'categories', 'product_promotion_r', 'brand'])->where('is_active', 1)->where('slug', $slug)->first();
 
         return response()->json(array('data' => $target_product, 'success' => isset($target_product)));
     }
@@ -57,7 +61,7 @@ class ShopController extends Controller
          */
 
         $product_category = ProductCategory::where('slug', $slug)->first();
-        $model            = $product_category->products()->with(['product_custome_fields', 'product_promotion_r', 'brand']);
+        $model            = $product_category->products()->where('is_active', 1)->with(['product_custome_fields', 'product_promotion_r', 'brand']);
 
         // filtration with name, with price  
         if (isset($request->name)) {
@@ -110,7 +114,7 @@ class ShopController extends Controller
 
     public function get_categories (Request $request) {
         $categories = cache()->remember('categories', 3600, function () {
-            return ProductCategory::with(['attributes', 'brands', 'children'])->get();
+            return ProductCategory::with(['attributes', 'brands', 'children'])->where('is_active', 1)->get();
         });
             
         return response()->json(array('data' => $categories, 'success' => isset($categories)));
