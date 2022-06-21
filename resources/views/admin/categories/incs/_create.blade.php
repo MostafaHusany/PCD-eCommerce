@@ -229,6 +229,7 @@ $(document).ready(function () {
                     clear_custome_fields();
 
                     custome_fields.push(data);
+                    console.log(custome_fields);
                     $('#custome_fields').val(JSON.stringify(custome_fields));
                 }
             });

@@ -112,6 +112,8 @@
 
     @include('admin.categories.incs._show')
     
+    @include('admin.categories.incs._custome_fields')
+
     {{--
     @include('admin.categories.incs._settings')
     --}}

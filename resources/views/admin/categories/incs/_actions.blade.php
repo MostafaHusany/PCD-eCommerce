@@ -24,10 +24,10 @@
             @endif
 
             @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products-categories_edit'))
-            <button class="dropdown-item edit-object text-default" 
+            <button class="dropdown-item custome-object text-default" 
                 data-object-id="{{$row_object->id}}"
-                data-current-card="#objectsCard"    
-                data-target-card="#editObjectsCard"    
+                !data-current-card="#objectsCard"    
+                !data-target-card="#customeObjectCard"    
             >
                 <i class="fas fa-sliders-h"></i>
                 attributes

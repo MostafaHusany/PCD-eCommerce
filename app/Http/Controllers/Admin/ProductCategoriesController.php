@@ -173,7 +173,7 @@ class ProductCategoriesController extends Controller
         $custome_fields = json_decode($request->custome_fields);
         
         $this->create_category_custome_fields($target_object, $custome_fields);
-
+        
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
 
@@ -205,10 +205,10 @@ class ProductCategoriesController extends Controller
     }
 
     // START HELPER FUNCTIONS
-    private function create_category_custome_fields ($target_object, $custome_field) {
-        $custome_fields = [];
+    private function create_category_custome_fields ($target_object, $custome_fields) {
+        $parsed_custome_fields = [];
 
-        foreach ($custome_field as $field) {
+        foreach ($custome_fields as $field) {
             $field_arr = (array) $field;
             $data = [
                 'title'       => $field_arr['field_title'],
@@ -221,10 +221,18 @@ class ProductCategoriesController extends Controller
                                                           'field_number_metric' => $field_arr['field_number_metric']]])
             ];
             
-            $custome_fields[] = $data;
+            $parsed_custome_fields[] = $data;
         }
 
-        return CategoryAttribute::insert($custome_fields);
+        return CategoryAttribute::insert($parsed_custome_fields);
+    }
+
+    private function upddate_category_custome_field ($target_object, $custome_fields) {
+        foreach ($custome_fields as $field) {
+            if ($field->is_updated) {
+                
+            }
+        }
     }
 
     private function clear_cach () {
