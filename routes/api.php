@@ -51,10 +51,10 @@ Route::group(['namespace' => 'shopApi'], function () {
     Route::get('product/{slug}', 'ShopController@show');
 
     // CartController
-    Route::get('cart', 'CartController@get_cart');
+    // Route::get('cart', 'CartController@get_cart');
     Route::post('cart/{id}', 'CartController@add_product');
-    Route::delete('cart', 'CartController@clear_cart');
-    Route::delete('cart/{cart_item_id}', 'CartController@remove_product');
+    // Route::delete('cart', 'CartController@clear_cart');
+    // Route::delete('cart/{cart_item_id}', 'CartController@remove_product');
 
     // OrdersController 
     /**
