@@ -61,11 +61,12 @@ class CartController extends Controller
         }
 
         if (!$target_product->quantity || $target_product->quantity < $request->qty) {
-            return response()->json(['data' => $target_product, 'success' => false, 'msg' => 'not_valied_quantity']);
+            return response()->json(['data' => ['product_quantity' => $target_product->quantity], 'success' => false, 'msg' => 'not_valied_quantity']);
         }
 
+        $min_quantity = $this->is_not_valied_qty($target_product, $request->qty);
         if ($this->is_not_valied_qty($target_product, $request->qty)) {
-            return response()->json(['data' => $target_product, 'success' => false, 'msg' => 'max_quantity_per_order']);
+            return response()->json(['data' => ['min_quantity' => $min_quantity], 'success' => false, 'msg' => 'max_quantity_per_order']);
         }
 
         return response()->json(['data' => null, 'success' => true]);
@@ -82,6 +83,6 @@ class CartController extends Controller
          */
 
         $quantityt_rules = $target_product->categories()->where('rule', '>', 0)->pluck('rule')->toArray();
-        return sizeof($quantityt_rules) ? $qty >= min($quantityt_rules) : false;
+        return sizeof($quantityt_rules) && $qty > min($quantityt_rules) ? min($quantityt_rules) : false;
     }
 }
