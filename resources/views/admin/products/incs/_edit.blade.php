@@ -201,7 +201,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-price" class="col-sm-2 col-form-label">Price</label>
+            <label for="edit-price" class="col-sm-2 col-form-label">Price Without Tax</label>
             <div class="col-sm-2">
                 <input type="number" min="0" step="0.5" tabindex="9"  class="form-control" id="edit-price" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-priceErr" class="err-msg mt-2 alert alert-danger">

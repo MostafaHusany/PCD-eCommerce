@@ -203,7 +203,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="price" class="col-sm-2 col-form-label">Price</label>
+            <label for="price" class="col-sm-2 col-form-label">Price Without Tax</label>
             <div class="col-sm-2">
                 <input type="number" min="0" step="0.5" tabindex="11"  class="form-control" id="price" value="0">
                 <div style="padding: 5px 7px; display: none" id="priceErr" class="err-msg mt-2 alert alert-danger">
@@ -890,7 +890,6 @@ $(function () {
             } 
 
             const render_expected_price = () => {
-                console.log('expected price : ', store.getExpectedPrice());
                 const price = store.getExpectedPrice();
                 $('#price').val(price);
                 $('#upgradeExpectedPrice').text(price);

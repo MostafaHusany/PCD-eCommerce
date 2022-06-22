@@ -411,6 +411,10 @@ $(function () {
             setStoreEditData(data);
         }
 
+        setTimeout(() => {
+            $('#edit-price').val(data.price);
+        }, 1000);
+
         // store custome field values in global variable
         // after rendering the custome fields
         // get the data and show it in the fields
