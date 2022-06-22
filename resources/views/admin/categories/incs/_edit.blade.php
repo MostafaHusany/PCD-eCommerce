@@ -66,20 +66,6 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-rule" class="col-sm-2 col-form-label">Rule</label>
-            <div class="col-sm-5">
-                <input tabindex="7" type="number" class="form-control" id="edit-rule" min="0" value="0">
-                <div style="padding: 5px 7px; display: none" id="edit-ruleErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div style="padding: 5px 7px;" class="alert alert-info">
-                    <b>If there is no rule leave the dafault value 0</b>  
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-
-        <div class="form-group row">
             <label for="edit-brands" class="col-sm-2 col-form-label">Brands</label>
             <div class="col-sm-10">
                 <select tabindex="8" class="form-control" id="edit-brands" min="0" value="0" multiple="multiple"></select>
@@ -110,6 +96,25 @@
                 <i style="font-size: 25px;" id="edit-show-icon" class=""></i>
             </div>
         </div>
+
+        <hr/>
+
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <div style="padding: 5px 7px;" class="alert alert-info">
+                    <b>If there is no rule leave the dafault value 0</b>  
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label for="edit-rule" class="col-sm-2 col-form-label">Rule</label>
+            <div class="col-sm-12">
+                <input tabindex="10" type="number" class="form-control" id="edit-rule" min="0" value="0">
+                <div style="padding: 5px 7px; display: none" id="edit-ruleErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
 
         <button tabindex="10" class="update-object btn btn-warning float-right">Update User</button>
     </form>

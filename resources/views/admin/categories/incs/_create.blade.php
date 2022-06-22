@@ -65,20 +65,6 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="rule" class="col-sm-2 col-form-label">Rule</label>
-            <div class="col-sm-5">
-                <input tabindex="7" type="number" class="form-control" id="rule" min="0" value="0">
-                <div style="padding: 5px 7px; display: none" id="ruleErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div style="padding: 5px 7px;" class="alert alert-info">
-                    <b>If there is no rule leave the dafault value 0</b>  
-                </div>
-            </div>
-        </div><!-- /.form-group -->
-
-        <div class="form-group row">
             <label for="brands" class="col-sm-2 col-form-label">Brands</label>
             <div class="col-sm-10">
                 <select tabindex="8" class="form-control" id="brands" min="0" value="0" multiple="multiple"></select>
@@ -105,6 +91,30 @@
             </div>
             <div class="col-5">
                 <i style="font-size: 25px;" id="show-icon" class=""></i>
+            </div>
+        </div><!-- /.form-group -->
+
+        <hr/>
+
+        
+        
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <div style="padding: 5px 7px;" class="alert alert-info">
+                    <b>
+                        Here you can create an order limitation rule, that the customer can't order more than given number of this category.
+                        <br/>If there is no rule leave the dafault value 0
+                    </b>  
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label for="rule" class="col-sm-2 col-form-label">Rule</label>
+            <div class="col-sm-12">
+                <input tabindex="10" type="number" class="form-control" id="rule" min="0" value="0">
+                <div style="padding: 5px 7px; display: none" id="ruleErr" class="err-msg mt-2 alert alert-danger">
+                </div>
             </div>
         </div><!-- /.form-group -->
 
