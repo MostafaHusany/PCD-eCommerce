@@ -66,7 +66,7 @@ Route::group(['namespace' => 'shopApi'], function () {
      * upload order payment
      * OrdersController
      */
-    Route::post('order', 'OrdersController@create_order');
+    Route::post('order', 'OrdersController@create_order')->middleware('auth:api');
     Route::post('promo', 'OrdersController@add_promo');
     Route::delete('promo', 'OrdersController@clear_promo');
 
