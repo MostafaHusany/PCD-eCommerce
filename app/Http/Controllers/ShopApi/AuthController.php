@@ -5,18 +5,95 @@ namespace App\Http\Controllers\shopApi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 use App\User;
 use App\Customer;
 use App\District;
+use App\VCustomerPhone;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'countries']]);
+        $this->middleware('auth:api', ['except' => ['login', 'phoneLogin', 'register', 'countries', 'requestPhoneCode']]);
+    }
+
+    private function verifyPhone ($phone, $code, $has_user = false) {
+        /**
+         * 
+         * # Register cycle with the phone.
+         * 1- user add register data, the user
+         * add his phone in this data.
+         * 
+         * 2- send a request with the user phone.
+         * 
+         * 3- record user phone and genrate randome
+         * code, than send this code in sms.
+         * 
+         * 4- the user add the recived code in 
+         * the register request.
+         * 
+         * 5- the register method confirm the phone
+         * and code before creating the user account.
+         * 
+         * # Signup with user phone.
+         * 1- the user enter his phone, than the systme
+         * check if the phone exists and has user account
+         * 
+         * 2- generate a random code for the phone and send
+         * the code to user phone on sms.
+         * 
+         * 3- the user send a signin request with the phone
+         * and the code, than the system authorise the user.
+         * 
+        */
+        
+        $target_phone = VCustomerPhone::where(function ($q) use ($phone, $code, $has_user) {
+            $q->where('phone', $phone);
+            $q->where('code', $code);
+            $q->whereDate('updated_at', Date('Y-m-d'));
+            !$has_user ?? $q->where('user_id', '!=', null);
+        })->first();
+
+        return isset($target_phone) ? $target_phone : false;
+    }
+
+    public function requestPhoneCode (Request $request) {
+        /**
+         * # Record user phone and generate randome code
+         * than send sms to user phone with the code. 
+         *  
+        */
+
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        }
+
+        $random_code  = 9999;
+        $target_phone = VCustomerPhone::where('phone', $request->phone)->first();
+        
+        if(isset($target_phone)) {
+            $target_phone->code = $random_code;
+            $target_phone->save();
+        } else {
+            VCustomerPhone::create([
+                'phone' => $request->phone,
+                'code' => $random_code
+            ]);
+        }
+
+        /**
+         * # here send sms message with the cerification code ...
+        */
+
+        return response()->json(array('data' => null, 'success' => true));
     }
 
     public function register(Request $request)
@@ -24,24 +101,30 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name'       => 'required|max:300',
             'email'      => 'required|max:300|unique:users,email',
-            'phone'      => 'required|max:300|unique:users,phone',
             'country_id' => 'required|exists:districts,id',
             'gove_id'    => 'required|exists:districts,id',
             'password'   => 'required|max:300',
+            'phone'      => 'required|max:300|unique:users,phone|exists:v_customer_phones,phone',
+            'code'       => ['required', 'max:4']
         ]);
 
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
+
+        $target_verification = $this->verifyPhone($request->phone, $request->code);
+        if (!$target_verification) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => 'phone_validation_code']); 
+        }
         
         $data = $request->all();
         $data['password']       = bcrypt($data['password']);
         $data['plain_password'] = $data['password'];
-
-        // create user & customer records
+        
         $target_user = User::create($data);
         $target_user->customer()->create($data);
-
+        $target_verification->update(['user_id' => $target_user->id]);
+        
         $token = auth('api')->attempt($request->only(['phone', 'password']));
  
         return $this->respondWithToken($token);
@@ -50,8 +133,32 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['phone', 'password']);
+        $target_user = User::where('phone', request('phone'))->first();
         
         if (! $token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->respondWithToken($token);
+    }
+
+    public function phoneLogin (Request $request) {
+        $validator = Validator::make($request->all(), [
+            'phone'      => ['required', 'max:300', 'exists:users,phone', 'exists:v_customer_phones,phone'],
+            'code'       => ['required', 'max:4']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        }
+
+        $target_verification = $this->verifyPhone($request->phone, $request->code, true);
+        if (!$target_verification) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => 'phone_validation_code']); 
+        }
+
+        $target_user = $target_verification->user;
+        if (! $token = auth('api')->login($target_user)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
