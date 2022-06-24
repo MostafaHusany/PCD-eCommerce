@@ -73,6 +73,15 @@
             </div>
         </div><!-- /.form-group -->
 
+        <div class="form-group row">
+            <label for="storage_quantity" class="col-sm-2 col-form-label">Storage Quantity</label>
+            <div class="col-sm-10">
+                <input type="number" tabindex="9"  class="form-control" min="0" id="storage_quantity" value="0">
+                <div style="padding: 5px 7px; display: none" id="storage_quantityErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+
         <div class="upgradable-options child-products-container form-group row" style="display: none;">
             <label for="reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
             <div class="col-sm-10">

@@ -10,7 +10,7 @@ class Product extends Model
                             'en_name', 'en_small_description', 'en_description',
                             'quantity', 'reserved_quantity', 'price_after_sale', 'price', 'sku', 'slug',
                             'main_image', 'images', 'meta', 'category_id',
-                            'is_active', 'is_composite', 'brand_id'];
+                            'is_active', 'is_composite', 'brand_id', 'storage_quantity'];
 
     
     public function getFormatedPrice () {

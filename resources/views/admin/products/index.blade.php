@@ -123,6 +123,7 @@
                 <th>Price</th>
                 <th>Sale Price</th>
                 <th>Categories</th>
+                <th>Storage Quantity</th>
                 <th>Quantity</th>
                 <th>R-Quantity</th>
                 <th>Active</th>
@@ -178,7 +179,7 @@ $(function () {
             update_obj_btn  : '.update-object',
             fields_list     : ['id', 'ar_name', 'ar_small_description', 'ar_description',
                                'en_name', 'en_small_description', 'en_description', 'sku', 'categories',
-                               'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
+                               'storage_quantity', 'quantity', 'main_image', 'images', 'price', 'price_after_sale', 'reserved_quantity',
                                 'is_active', 'is_composite', 'child_products', 'child_products_quantity',
                                 'custome_attr_id', 'custome_field_attr', 'brand_id', 
                                 'upgrade_option_categories', 'upgrade_option_products', 'upgrade_option_products_ids'],
@@ -192,6 +193,7 @@ $(function () {
             { data: 'price',    name: 'price' },
             { data: 'price_after_sale',    name: 'price_after_sale' },
             { data: 'categories', name: 'categories' },
+            { data: 'storage_quantity', name: 'storage_quantity' },
             { data: 'quantity', name: 'quantity' },
             { data: 'reserved_quantity', name: 'reserved_quantity' },
             { data: 'active', name: 'active' },
@@ -272,6 +274,13 @@ $(function () {
             $(`#${prefix}quantityErr`).slideDown(500);
         }
         
+        if (data.get('storage_quantity') < 0) {
+            is_valide = false;
+            let err_msg = 'storage quantity can\'t be negative';
+            $(`#${prefix}storage_quantityErr`).text(err_msg);
+            $(`#${prefix}storage_quantityErr`).slideDown(500);
+        } 
+
         if (data.get('sku') === '') {
             is_valide = false;
             let err_msg = 'sku is required';
@@ -403,12 +412,19 @@ $(function () {
                 const total_parent_quantity = data.quantity;
                 create_child_product_tr (target_product, total_parent_quantity, parent_product_meta);
             });
+            $('#container-reserved_quantity').slideUp(500);
+            $('#edit-reserved_quantity-show').val('');
         } else if (data.is_composite == 2) {
             /**
              * We want get upgrade option data than send it to the main
              * 
              */
             setStoreEditData(data);
+            $('#container-reserved_quantity').slideUp(500);
+            $('#edit-reserved_quantity-show').val('');
+        } else {
+            $('#container-reserved_quantity').slideDown(500);
+            $('#edit-reserved_quantity-show').val(data.reserved_quantity);
         }
 
         setTimeout(() => {
