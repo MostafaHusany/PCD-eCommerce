@@ -56,6 +56,20 @@
             </div>
         </div><!-- /.form-group -->
 
+        <div class="form-group row">
+            <label for="show-storage_quantity" class="col-sm-2 col-form-label">Storage Quantity</label>
+            <div class="col-sm-10">
+                <input disabled="disabled" type="number" tabindex="9"  class="form-control" min="0" id="show-storage_quantity" value="0">
+            </div>
+        </div><!-- /.form-group -->
+
+        <div id="show-container-reserved_quantity" class="form-group row">
+            <label for="show-reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
+            <div class="col-sm-10">
+                <input disabled="disabled" type="number" tabindex="9"  class="form-control" min="0" id="show-reserved_quantity-show" value="0">
+            </div>
+        </div><!-- /.form-group -->
+
         <div id="show-productQuantityContainer" class="form-group row">
             <label for="show-quantity" class="col-sm-2 col-form-label">Quantity</label>
             <div class="col-sm-10">
@@ -218,6 +232,8 @@
                     show_child_product_tr (target_product, total_parent_quantity, parent_product_meta);
                 });
 
+                $('#show-container-reserved_quantity').slideUp(500);
+                $('#show-reserved_quantity-show').val('');
             } else if (data.is_composite == 2) {
                 $('.show-child-products-container').slideUp();
                 $('.show-upgradable-options').slideDown();
@@ -228,9 +244,15 @@
 
                 showUpgradeOption();
                 $('#show-upgradeExpectedPrice').text(getUpgradableExpectedFeture());
+                
+                $('#show-container-reserved_quantity').slideUp(500);
+                $('#show-reserved_quantity-show').val('');
             } else {
                 $('.show-child-products-container').slideUp();
                 $('.show-upgradable-options').slideUp();
+
+                $('#show-container-reserved_quantity').slideDown(500);
+                $('#show-reserved_quantity-show').val(data.reserved_quantity);
             }
 
             $('#show-sku').val(data.sku);
