@@ -199,8 +199,11 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
 
     // theme editor
     
-    Route::get('navbar', 'ThemeController@index');
     Route::group(['prefix' => 'theme'], function () {
+        Route::get('navbar', 'ThemeController@navbar');
+        Route::post('navbar', 'ThemeController@store');
+
+        
     });
 
     // fast ajax search
