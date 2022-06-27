@@ -26,6 +26,7 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::post('phone-login', 'AuthController@phoneLogin');
     Route::post('register', 'AuthController@register');
+    Route::put('update-me', 'AuthController@updateAccount');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::get('me', 'AuthController@me');
@@ -66,6 +67,7 @@ Route::group(['namespace' => 'shopApi'], function () {
      * upload order payment
      * OrdersController
      */
+    Route::get('shippings', 'OrdersController@get_shipping');
     Route::post('order', 'OrdersController@create_order')->middleware('auth:api');
     Route::post('promo', 'OrdersController@add_promo');
     Route::delete('promo', 'OrdersController@clear_promo');

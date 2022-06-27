@@ -69,7 +69,7 @@ class AuthController extends Controller
         */
 
         $validator = Validator::make($request->all(), [
-            'phone' => 'required',
+            'phone' => isset($request->new_acc) ? 'required|unique:v_customer_phones,phone,id' : 'required',
         ]);
 
         if ($validator->fails()) {
@@ -81,6 +81,7 @@ class AuthController extends Controller
         
         if(isset($target_phone)) {
             $target_phone->code = $random_code;
+            $target_phone->updated_at = Date('Y-m-d');
             $target_phone->save();
         } else {
             VCustomerPhone::create([
@@ -100,11 +101,46 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'       => 'required|max:300',
-            'email'      => 'required|max:300|unique:users,email',
-            'country_id' => 'required|exists:districts,id',
-            'gove_id'    => 'required|exists:districts,id',
+            // 'email'      => 'required|max:300|unique:users,email',
+            // 'country_id' => 'required|exists:districts,id',
+            // 'gove_id'    => 'required|exists:districts,id',
             'password'   => 'required|max:300',
             'phone'      => 'required|max:300|unique:users,phone|exists:v_customer_phones,phone',
+            'code'       => ['required', 'max:4']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        }
+        
+        // dd($request->all());
+
+        $target_verification = $this->verifyPhone($request->phone, $request->code);
+        if (!$target_verification) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => 'phone_validation_code']); 
+        }
+        
+        $data = $request->all();
+        $data['password']       = bcrypt($data['password']);
+        $data['plain_password'] = $request->password;
+        
+        $target_user = User::create($data);
+        $target_user->customer()->create($data);
+        $target_verification->update(['user_id' => $target_user->id]);
+        
+        $token = auth('api')->attempt($request->only(['phone', 'password']));
+ 
+        return $this->respondWithToken($token);
+    }
+
+    public function updateAccount (Request $request)
+    {
+        
+        $target_user = auth('api')->user();
+        $validator = Validator::make($request->all(), [
+            'name'       => 'required|max:300',
+            'password'   => 'required|max:300',
+            'phone'      => 'required|max:300|unique:users,phone,'.$target_user->id.'|exists:v_customer_phones,phone',
             'code'       => ['required', 'max:4']
         ]);
 
@@ -118,12 +154,15 @@ class AuthController extends Controller
         }
         
         $data = $request->all();
-        $data['password']       = bcrypt($data['password']);
-        $data['plain_password'] = $data['password'];
+        if (isset($request->password)) {
+            $data['plain_password'] = $request->password;
+            $data['password']       = bcrypt($request->password);
+        }
+
         
-        $target_user = User::create($data);
-        $target_user->customer()->create($data);
-        $target_verification->update(['user_id' => $target_user->id]);
+        // $target_user = auth('api')->user;
+        $target_user->update($data);
+        $target_user->customer->update($data);
         
         $token = auth('api')->attempt($request->only(['phone', 'password']));
  
@@ -167,9 +206,19 @@ class AuthController extends Controller
 
     public function me()
     {
-        $target_customer = auth('api')->user()->customer()->with(['country', 'government'])->first();
+        $target_customer = auth('api')->user()->customer;
         
-        return response()->json(array('data' => $target_customer, 'success' => isset($target_customer)));
+        $customer = [
+            'name'     => $target_customer->name,
+            'email'    => $target_customer->email,
+            'address'  => $target_customer->address,
+            'country'  => $target_customer->country,
+            'gove'     => $target_customer->government,
+            'password' => $target_customer->plain_password,
+            'phone'    => $target_customer->phone,
+        ];
+        
+        return response()->json(array('data' => $customer, 'success' => isset($customer)));
     }
 
     public function logout()
@@ -192,10 +241,23 @@ class AuthController extends Controller
 
     protected function respondWithToken($token)
     {
+        $target_customer = auth('api')->user()->customer;
+
+        $customer = [
+            'name'     => $target_customer->name,
+            'email'    => $target_customer->email,
+            'address'  => $target_customer->address,
+            'country'  => $target_customer->country,
+            'gove'     => $target_customer->government,
+            'password' => $target_customer->plain_password,
+            'phone'    => $target_customer->phone,
+        ];
+
         return response()->json([
+            'customer'     => $customer,
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'token_type'   => 'bearer',
+            'expires_in'   => auth('api')->factory()->getTTL() * 60
         ]);
     }
 }

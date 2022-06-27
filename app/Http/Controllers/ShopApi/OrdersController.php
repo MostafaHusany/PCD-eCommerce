@@ -35,14 +35,23 @@ class OrdersController extends Controller
      * 2- validate the cart data, and the promo-code if exits.
      * 3- if valied create order, else send validation error message
      * 
-     */
+    */
 
+    public function get_shipping () {
+        $all_shippings = Shipping::all();
+        
+        return response()->json(array('data' => $all_shippings, 'success' => isset($all_shippings)));
+    }
 
     public function create_order (Request $request) {
         $validator = Validator::make($request->all(), [
             'shipping_id' => ['required', 'exists:shippings,id'],
             'phone' => '',
-            'cartItems' => ['required']
+            'cartItems' => ['required'],
+            
+            'country_id' => ['required', 'exists:districts,id'],
+            'gove_id'    => ['required', 'exists:districts,id'],
+            'address'    => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -61,15 +70,23 @@ class OrdersController extends Controller
          * else register the user and get the user
          * data for creating the order.
          */
-        $products_id = $validation_result[0];
+        $products_id       = $validation_result[0];
         $products_quantity = $validation_result[1];
 
-        $target_shipping = Shipping::find($request->shipping_id);
-        
+        $target_shipping   = Shipping::find($request->shipping_id);
+
+        // update customer address
+        // store customer address
+        $target_customer = auth('api')->user()->customer;
+        $target_customer->country_id = $request->country_id;
+        $target_customer->gove_id = $request->gove_id;
+        $target_customer->address = $request->address;
+        $target_customer->save();
+
         // create order data using MakeOrder::create_customer_order
         // we need to send the customer id not user id !!
         $order = $this->create_customer_order(
-            auth('api')->user()->id,// customer id
+            auth('api')->user()->customer->id,// customer id
             [$target_shipping->id, $target_shipping->is_free_taxes, $target_shipping->cost],
             [$products_id, $products_quantity],
             [],
