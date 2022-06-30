@@ -198,12 +198,13 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
     });
 
     // theme editor
-    
     Route::group(['prefix' => 'theme'], function () {
         Route::get('navbar', 'ThemeController@navbar');
         Route::post('navbar', 'ThemeController@store');
 
-        
+        Route::get('cover', 'ThemeController@cover');
+        Route::post('cover', 'ThemeController@store');
+
     });
 
     // fast ajax search

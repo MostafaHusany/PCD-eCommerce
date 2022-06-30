@@ -88,6 +88,19 @@ $object_title = 'Navbar Editor';
 </div><!-- /.content-header -->
 
 <div id="selectNavbarCategories" class="card card-body">
+    
+    <div id="successAlert" style="display: none" class="alert alert-success"></div>
+    
+    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        
+    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+
+    <div class="d-flex justify-content-center mb-3">
+        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
     <div>
 
         <div class="clearfix" id="createForm">
@@ -261,7 +274,7 @@ $object_title = 'Navbar Editor';
                             <i class="category-icon fas fa-bars"></i>
                         </div>
 
-                        <div class="categories-list">
+                        <div style="display: none" class="categories-list">
                             <ul>
 
                             </ul>
@@ -384,18 +397,18 @@ $(document).ready(function() {
             _token : "{{ csrf_token() }}",
             target_edit : null,
             links : [
-                {
-                    id : 1,
-                    type : "externalLink",
-                    title : "Link 1",
-                    value : "http://google.com"
-                },
-                {
-                    id : 2,
-                    type : "category",
-                    title : "category 2",
-                    value : ""
-                }
+                // {
+                //     id : 1,
+                //     type : "externalLink",
+                //     title : "Link 1",
+                //     value : "http://google.com"
+                // },
+                // {
+                //     id : 2,
+                //     type : "category",
+                //     title : "category 2",
+                //     value : ""
+                // }
             ]
         };
         
@@ -658,7 +671,10 @@ $(document).ready(function() {
                  * 2- send axios request update navbar settings
                  * 3- show success/err msg
                 */
+
+                $('#loddingSpinner').show(500);
                 let data = store.getters.getData();
+
                 fetch('{{url("admin/theme/navbar")}}', {
                     method: 'POST',
                     headers: {
@@ -669,12 +685,38 @@ $(document).ready(function() {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
+                    if (data.success) {
+                        $('#loddingSpinner').hide(500);
+                        $('#successAlert').text('Navbar was updated successfully').slideDown(500);
+
+                        setTimeout(() => {
+                            $('#successAlert').slideUp(500).text('');
+                        }, 5000);
+                    }
                 })
             });
 
-            let navbar_list = store.getters.getLinks();
-            view.frontSetter.navRender(navbar_list);
+            $(document).ready(function () {
+                $('#loddingSpinner').show(500);
+
+                fetch(`{{ url('admin/theme/navbar') }}?navbra_links=true`)
+                .then(res => res.json())
+                .then(res => {
+                    $('#loddingSpinner').hide(500);
+
+                    if (res.success) {
+                        res.data.forEach(link => {
+                            let link_obj = JSON.parse(link.meta);
+                            store.setters.addLink(link_obj);
+                        });
+
+                        let navbar_list = store.getters.getLinks();
+                        view.frontSetter.navRender(navbar_list);
+                    } else {
+                        $('#dangerAlert').text('Something went rong! Please refresh the page.').slideDown(500);
+                    }
+                });
+            });
         }
 
         return {
