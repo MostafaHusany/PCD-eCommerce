@@ -89,18 +89,6 @@ $object_title = 'Navbar Editor';
 
 <div id="selectNavbarCategories" class="card card-body">
     
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
-        
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
     <div>
 
         <div class="clearfix" id="createForm">
@@ -263,7 +251,18 @@ $object_title = 'Navbar Editor';
 
         <hr />
 
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
+    
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        
         <!-- load the look of the navbar -->
         <div class="form-group">
             <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" class="p-4 look-container">
@@ -414,7 +413,7 @@ $(document).ready(function() {
         
         const setters = {
             addLink : (new_link) => {
-                new_link.id = Math.round(Math.random() * 10000);
+                new_link.id = Boolean(new_link.id) ? new_link.id : Math.round(Math.random() * 10000);
                 data.links.push(new_link);
                 return data.links;
             },
@@ -452,7 +451,10 @@ $(document).ready(function() {
             findLink : (link_id) => {
                 let target_link = data.links.find(link => link.id == link_id);
                 return Boolean(target_link) ? target_link : false;
-            }
+            },
+            getTargetForEdit : () => {
+                return data.target_edit;
+            },
         };
 
         const helpers = {};
@@ -659,9 +661,11 @@ $(document).ready(function() {
                  * 3- re-render th links 
                 */
                 let data = view.frontGetter.getFormData(true);
+
                 if (data) {
                     let navbar_list = store.setters.updateData(data);
                     view.frontSetter.navRender(navbar_list);
+                    view.frontSetter.toggleForm(true);
                 }
             });
 
@@ -707,6 +711,7 @@ $(document).ready(function() {
                     if (res.success) {
                         res.data.forEach(link => {
                             let link_obj = JSON.parse(link.meta);
+                            link_obj.id = link.id;
                             store.setters.addLink(link_obj);
                         });
 

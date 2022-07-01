@@ -23,10 +23,16 @@ class ThemeController extends Controller
         return view('admin.themes.navbar.index', compact('all_categories'));
     }
 
-    public function cover (Request $request) {
+    public function slider (Request $request) {
+        if(isset($request->slidies)) {
+            $slides = ThemeSetting::where('section', 'slider')->get();
+
+            return response()->json(['data' => $slides, 'success' => isset($slides)]);
+        }
+
         $all_categories = ProductCategory::all();
         
-        return view('admin.themes.cover.index', compact('all_categories'));
+        return view('admin.themes.slider.index', compact('all_categories'));
     }
 
     public function store (Request $request) {
@@ -34,10 +40,14 @@ class ThemeController extends Controller
         if (isset($request->navbar)) {
             return $this->storeNavbar($request);
         }
+
+        if (isset($request->slider)) {
+            return $this->storeSlider($request);
+        }
     }
 
-    public function storeNavbar ($request) {
-        // validation
+    private function storeNavbar ($request) {
+        // validation ...
         
         foreach($request->links as $link) {
             $data[] = [
@@ -56,6 +66,83 @@ class ThemeController extends Controller
         return response()->json(['data' => $navbar_data, 'success' => isset($navbar_data)]);
     }
 
+    private function storeSlider ($request) {
+        // validation ...
+
+        /**
+         * 1- store slide image,
+         * 2- parse data 
+         * 3- store new slider, and send response
+         */
+
+         
+        $image = $request->file('image');
+        $image->store('/public/homeSlider');
+
+        $data = [
+            'section' => 'slider',
+            'meta'    => json_encode([
+
+                'order' => $request->order,
+                'image' => 'storage/homeSlider/' . $image->hashName(),
+                'type'  => $request->type, // product, category, external_link
+                'value' => $request->value
+            ]),
+            'category_id' => $request->type == 'category' ? $request->value : null,
+            'product_id'  => $request->type == 'product' ? $request->value : null
+        ];
+
+        $theme_setting = ThemeSetting::create($data);
+
+        return response()->json(['data' => $theme_setting, 'success' => isset($theme_setting)]);
+    }
+
+    public function update (Request $request, $id) {
+        if (isset($request->navbar)) {
+            return $this->updateNavbar($request);
+        }
+
+        if (isset($request->slider)) {
+            return $this->updateSlider($request, $id);
+        }
+    } 
+
+    public function updateNavbar ($request) {
+
+    }
+
+    public function updateSlider ($request, $id) {
+        $target_slide = ThemeSetting::find($id);
+        
+        if (isset($target_slide)) {
+            $image = $request->file('image');
+            $image->store('/public/homeSlider');
+
+            $data = [
+                'section' => 'slider',
+                'meta'    => json_encode([
+                    'order' => $request->order,
+                    'image' => 'storage/homeSlider/' . $image->hashName(),
+                    'type'  => $request->type, // product, category, external_link
+                    'value' => $request->value
+                ]),
+                'category_id' => $request->type == 'category' ? $request->value : null,
+                'product_id'  => $request->type == 'product' ? $request->value : null
+            ];
+
+            $target_slide->update($data);
+        };
+
+        return response()->json(['data' => $target_slide, 'success' => isset($target_slide)]);
+    }
+
+    public function destory ($id) {
+        $target_obj = ThemeSetting::find($id);
+
+        isset($target_obj) ? $target_obj->delete() : null;
+
+        return response()->json(array('data' => $target_obj, 'success' => isset($target_obj))); 
+    }
 
     /**
      * # Theme Table what will store ?! 

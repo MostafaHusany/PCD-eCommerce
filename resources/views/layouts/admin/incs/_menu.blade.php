@@ -224,13 +224,13 @@
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
         <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-home"></i>
-                <p>Home</p>
+            <a href="{{ url('admin/theme/slider') }}" class="nav-link {{ Request::is('admin/theme/slider') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-images"></i>
+                <p>Slider</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ url('admin/navbar') }}" class="nav-link {{ Request::is('admin/theme/navbar') ? 'active' : ''}}">
+            <a href="{{ url('admin/theme/navbar') }}" class="nav-link {{ Request::is('admin/theme/navbar') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-stream"></i>
                 <p>Navbar</p>
             </a>

@@ -201,10 +201,12 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
     Route::group(['prefix' => 'theme'], function () {
         Route::get('navbar', 'ThemeController@navbar');
         Route::post('navbar', 'ThemeController@store');
+        
+        Route::get('slider', 'ThemeController@slider');
+        Route::post('slider', 'ThemeController@store');
 
-        Route::get('cover', 'ThemeController@cover');
-        Route::post('cover', 'ThemeController@store');
-
+        Route::put('/{id}', 'ThemeController@update');
+        Route::delete('/{id}', 'ThemeController@destory');
     });
 
     // fast ajax search
