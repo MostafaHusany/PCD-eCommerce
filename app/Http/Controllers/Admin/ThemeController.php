@@ -10,6 +10,19 @@ use App\ProductCategory;
 
 class ThemeController extends Controller
 {
+    public function customeSection (Request $request) {
+        
+        if(isset($request->cSection)) {
+            $customeSection = ThemeSetting::where('section', 'cSection')->with('products')->get();
+            
+            return response()->json(['data' => $customeSection, 'success' => isset($customeSection)]);
+        }
+        
+        $all_categories = ProductCategory::all();
+        
+        return view('admin.themes.custome_sections.index', compact('all_categories'));
+    }
+
     public function navbar (Request $request) {
         
         if(isset($request->navbra_links)) {
@@ -43,6 +56,10 @@ class ThemeController extends Controller
 
         if (isset($request->slider)) {
             return $this->storeSlider($request);
+        }
+
+        if (isset($request->cSection)) {
+            return $this->storeCSection($request);
         }
     }
 
@@ -97,6 +114,32 @@ class ThemeController extends Controller
         return response()->json(['data' => $theme_setting, 'success' => isset($theme_setting)]);
     }
 
+    private function storeCSection ($request) {
+        // validate ...
+        
+        ThemeSetting::where('section', 'cSection')->delete();
+        foreach($request->sections as $section) {
+            // dd($section);
+            $data = [
+                'section' => 'cSection',
+                'meta'    => json_encode([
+                    'title' => $section['title'],
+                    'order'  => $section['order'],
+                ]),
+            ];
+
+            $products = [];
+            foreach($section['products'] as $product) {
+                $products[] = $product['id'];
+            }
+
+            $theme_section = ThemeSetting::create($data);
+            $theme_section->products()->sync($products);
+        }
+
+        return response()->json(['data' => null, 'success' => true]);
+    }
+
     public function update (Request $request, $id) {
         if (isset($request->navbar)) {
             return $this->updateNavbar($request);
@@ -106,10 +149,6 @@ class ThemeController extends Controller
             return $this->updateSlider($request, $id);
         }
     } 
-
-    public function updateNavbar ($request) {
-
-    }
 
     public function updateSlider ($request, $id) {
         $target_slide = ThemeSetting::find($id);

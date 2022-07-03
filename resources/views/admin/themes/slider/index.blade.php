@@ -344,9 +344,7 @@ $object_title = 'Cover Editor';
                     <!-- START SLIDER LIST -->
                     <div style="width: 99.9%; margin-top: 5px; position: relative;">
                         <div class="image-container">
-                            <div class="image-slide">
-                                <img style="width: 100%; height: 400px" src="{{ asset('images/cover.png') }}">
-                            </div>
+                           
                         </div>
                         
                         <div class="slider-points"
@@ -354,60 +352,8 @@ $object_title = 'Cover Editor';
                                 position: absolute;
                                 bottom: 10px;
                                 left: 25px;">
-                            <span class="image-selector">
-                                <b class="text-info">1</b>
-                                <input name="selected-image" type="radio" style="margin: 0 3px;" checked="checked">
-                            </span>
-                            
-                            <span class="image-selector">
-                                <b class="text-info">2</b>
-                                <input name="selected-image" type="radio" style="margin: 0 3px;">
-                            </span>
-
-                            <span class="image-selector">
-                                <b class="text-info">3</b>
-                                <input name="selected-image" type="radio" style="margin: 0 3px;">
-                            </span>
-
-                            <span class="image-selector">
-                                <b class="text-info">4</b>
-                                <input name="selected-image" type="radio" style="margin: 0 3px;">
-                            </span>
+                          
                         </div>
-
-                        {{--
-                        <div class="button-container"
-                                style="width: 45px;
-                                position: absolute;
-                                bottom: 10px;
-                                right: 25px;">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="btn btn-default btn-sm"
-                                        style="
-                                            border-radius: 50%;
-                                            font-size: 20px;
-                                            padding: 0px 11px 0px 9px;
-                                            margin: 0px -14px;"
-                                    >
-                                        <i class="fas fa-angle-left"></i>
-                                    </div>
-                                </div><!-- /.col-6 -->
-                                <div class="col-6">
-                                    <div class="btn btn-default btn-sm"
-                                        style="
-                                            border-radius: 50%;
-                                            font-size: 20px;
-                                            padding: 0px 9px 0px 10px;
-                                            margin: 0 -5px;
-                                        "
-                                    >
-                                        <i class="fas fa-angle-right"></i>
-                                    </div>
-                                </div><!-- /.col-6 -->
-                            </div><!-- /.row -->
-                        </div><!-- /.button-container --> 
-                        --}}
                     </div><!-- /.image-container -->
                 </div>
             </div><!-- /.look-container -->
@@ -427,20 +373,7 @@ $(document).ready(function() {
             navbar : true,
             _token : "{{ csrf_token() }}",
             target_edit : null,
-            links : [
-                {
-                    id : 1,
-                    type : "link",
-                    title : "category 2",
-                    value : ""
-                },
-                {
-                    id : 2,
-                    type : "link",
-                    title : "category 2",
-                    value : ""
-                }
-            ],
+            links : [],
             slides : [
                 // {
                 //     id : 1,
@@ -467,6 +400,11 @@ $(document).ready(function() {
         };
         
         const setters = {
+            addLink : (new_link) => {
+                new_link.id = Boolean(new_link.id) ? new_link.id : Math.round(Math.random() * 10000);
+                data.links.push(new_link);
+                return data.links;
+            },
             setTargetForEdit : (target_edit) => {
                 data.target_edit = target_edit;
             },
@@ -947,6 +885,25 @@ $(document).ready(function() {
                 .then(res => {
                     let sliderList = store.getters.getSlider();
                     view.frontSetter.slidersRender(sliderList);
+                });
+
+                fetch(`{{ url('admin/theme/navbar') }}?navbra_links=true`)
+                .then(res => res.json())
+                .then(res => {
+                    // $('#loddingSpinner').hide(500);
+
+                    if (res.success) {
+                        res.data.forEach(link => {
+                            let link_obj = JSON.parse(link.meta);
+                            link_obj.id = link.id;
+                            store.setters.addLink(link_obj);
+                        });
+
+                        let navbar_list = store.getters.getLinks();
+                        view.frontSetter.navRender(navbar_list);
+                    } else {
+                        $('#dangerAlert').text('Something went rong! Please refresh the page.').slideDown(500);
+                    }
                 });
             });
         }

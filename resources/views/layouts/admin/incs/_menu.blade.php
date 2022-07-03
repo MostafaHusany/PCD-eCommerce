@@ -216,7 +216,7 @@
 @if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '#') || str_contains(Request::path(), '#') || str_contains(Request::path(), 'admin/theme/') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
-        <i class="nav-icon fas fa-object-group"></i>
+        <i class="nav-icon fas fa-puzzle-piece"></i>
         <p>
             Theme Settings
             <i class="right fas fa-angle-left"></i>
@@ -233,6 +233,12 @@
             <a href="{{ url('admin/theme/navbar') }}" class="nav-link {{ Request::is('admin/theme/navbar') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-stream"></i>
                 <p>Navbar</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('admin/theme/custome-section') }}" class="nav-link {{ Request::is('admin/theme/custome-section') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-object-group"></i>
+                <p>Custome Sections</p>
             </a>
         </li>
     </ul>

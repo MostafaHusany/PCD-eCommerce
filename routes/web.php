@@ -199,12 +199,15 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
 
     // theme editor
     Route::group(['prefix' => 'theme'], function () {
+        Route::get('custome-section', 'ThemeController@customeSection');
+
         Route::get('navbar', 'ThemeController@navbar');
         Route::post('navbar', 'ThemeController@store');
         
         Route::get('slider', 'ThemeController@slider');
         Route::post('slider', 'ThemeController@store');
 
+        Route::post('/', 'ThemeController@store');
         Route::put('/{id}', 'ThemeController@update');
         Route::delete('/{id}', 'ThemeController@destory');
     });

@@ -103,6 +103,14 @@ class ProductsController extends Controller
     }
     
     public function show (Request $request, $id) {
+        
+        if ($id == 0 && isset($request->products_list)) {
+            $products_list = json_decode($request->products_list);
+            $target_products = Product::whereIn('id', $products_list)->get();
+            
+            return response()->json(['products' => $target_products, 'success' => isset($target_products)]);
+        }
+
         $target_object = Product::with(['children', 'upgrade_categories', 'upgrade_products'])->find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
@@ -462,15 +470,15 @@ class ProductsController extends Controller
             $search = $request->q;
             $model = Product::query();
             $model->select("id", "ar_name", "en_name", "quantity")
-                    ->where(function ($model) use ($search) {
-                        $model->orWhere('ar_name','LIKE',"%$search%")
-                        ->orWhere('en_name','LIKE',"%$search%")
-                        ->orWhere('sku','LIKE',"%$search%")
-                        ->orwhere('sku','LIKE',"%$search%")
-                        ->orWhere('id', $search);
-                    })
-            		->where('quantity', '>', 0)
-            		->where('is_active', 1);
+                ->where(function ($model) use ($search) {
+                    $model->orWhere('ar_name','LIKE',"%$search%")
+                    ->orWhere('en_name','LIKE',"%$search%")
+                    ->orWhere('sku','LIKE',"%$search%")
+                    ->orwhere('sku','LIKE',"%$search%")
+                    ->orWhere('id', $search);
+                })
+                ->where('quantity', '>', 0)
+                ->where('is_active', 1);
             		
             !isset($request->all_products) && $model->where('is_composite',  0);
 
