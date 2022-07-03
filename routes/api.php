@@ -72,4 +72,7 @@ Route::group(['namespace' => 'shopApi'], function () {
     Route::post('promo', 'OrdersController@add_promo');
     Route::delete('promo', 'OrdersController@clear_promo');
 
+    // get theme data
+    Route::get('theme', 'ThemesController@getHomeTheme');
+
 });
