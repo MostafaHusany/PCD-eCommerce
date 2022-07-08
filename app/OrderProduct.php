@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderProduct extends Model
 {
-    protected $fillable = ['order_id', 'product_id', 'ar_name', 'en_name', 'sku', 'code', 'price_when_order', 'status'];
+    protected $fillable = ['order_id', 'product_id', 'ar_name', 'en_name', 'sku', 'code', 'price_when_order', 'status', 'is_child', 'parent_product_id'];
 
     protected $with = [];
     
@@ -24,5 +24,13 @@ class OrderProduct extends Model
 
     public function status () {
         return $this->belongsTo(OrderStatus::class, 'status', 'status_code');
+    }
+
+    public function parentProduct () {
+        return $this->belongsTo(OrderProduct::class, 'parent_product_id', 'product_id');
+    }
+    
+    public function childrenProducts () {
+        return $this->hasMany(OrderProduct::class, 'parent_product_id', 'product_id');
     }
 }
