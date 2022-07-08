@@ -244,6 +244,7 @@
             });
             // show order products rows
             data.products.forEach(product => {
+                console.log(product, order_meta);
                 let product_quantity = (order_meta.products_quantity[product.id].quantity - order_meta.restored_quantity[product.id]);
                 let product_cost     = order_meta.products_prices[product.id] * product_quantity;
                 let total_tax        = 0;

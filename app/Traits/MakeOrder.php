@@ -28,6 +28,7 @@ trait MakeOrder {
                                         ) 
     {
         // dd($customer_id, $shipping_data, $products_data);
+        // dd($products_data);
         
         /**
          * 0- check if there promo code
@@ -177,7 +178,7 @@ trait MakeOrder {
                                     products_quantity => [product_id => [quantity => 2, price => 0.0]] ]
         */
         
-        // START CREAE SOLD-PRODUCTS RECORD FOR EACH PRODUCT IN THE ORDER
+        // START CREATE SOLD-PRODUCTS RECORD FOR EACH PRODUCT IN THE ORDER
         $results = $this->create_order_sold_products($target_order, $products_data);
 
         $sub_total          = $results['sub_total'];
@@ -234,6 +235,8 @@ trait MakeOrder {
             'fees'  => []
         ];
 
+        // dd($meta);
+
         /**
          * # Create for each product in the order a sold_product item
          * # Update each product quantity
@@ -243,12 +246,19 @@ trait MakeOrder {
          * also there may be a trick if there is promotion for only first 3 items 
          * When the user select item with promotion he can only get the item with
          * the specific quantity of promotion
+         * 
+         * # We need to check on the product in the list, 
+         * if the product is composite we need to get the 
+         * children products and than start creating sold-
+         * produtcs record and linked to the parent product  
         */
+
+        $data  = [];
+        $data2 = [];
         foreach ($products as $product) {
             $targted_product_quantity = (array) $products_quantity[$product->id];
             $products_count          += (int) $targted_product_quantity['quantity']; 
             
-            $data = [];
             for ($i = 0; $i < $targted_product_quantity['quantity']; $i++) {
                 $data[] = [
                     'order_id'   => $target_order->id,
@@ -261,9 +271,51 @@ trait MakeOrder {
                     'created_at' => $target_order->created_at,
                     'updated_at' => $target_order->updated_at
                 ];
-            }
 
-            $new_order_product = OrderProduct::insert($data);
+                if ($product->is_composite == 1) {
+                    /* 
+                        # If this product is composite product bring his children and start
+                        creating sold product record for each one and link it to main product
+                    */ 
+                    // dd($product->children);
+                    foreach ($product->children as $child) {
+                        // dd($child);
+                        $data2[] = [
+                            'order_id'   => $target_order->id,
+                            'product_id' => $child->id, 
+                            'ar_name'    => $child->ar_name,
+                            'en_name'    => $child->en_name,
+                            'sku'        => $child->sku,
+                            'code'       => $target_order->code,
+                            'price_when_order'  => $child->get_price(),
+                            'created_at' => $target_order->created_at,
+                            'updated_at' => $target_order->updated_at,
+                            'is_child'   => 1,
+                            'parent_product_id' => $product->id
+                        ];
+                    }
+                } elseif ($product->is_composite == 2) {
+                    // $meta = (array) json_decode($product->meta);
+                    $upgrade_options_list = (array) $targted_product_quantity['upgrade_options_list'];
+                    $children = Product::whereIn('id', $upgrade_options_list)->get();
+
+                    foreach ($children as $child) {
+                        $data2[] = [
+                            'order_id'   => $target_order->id,
+                            'product_id' => $child->id, 
+                            'ar_name'    => $child->ar_name,
+                            'en_name'    => $child->en_name,
+                            'sku'        => $child->sku,
+                            'code'       => $target_order->code,
+                            'price_when_order'  => $child->get_price(),
+                            'created_at' => $target_order->created_at,
+                            'updated_at' => $target_order->updated_at,
+                            'is_child'   => 1,
+                            'parent_product_id' => $product->id
+                        ];
+                    }
+                }
+            }
 
             // check if the product has a promotion update the promotion data
             if ($product->has_promotion()) {
@@ -271,13 +323,15 @@ trait MakeOrder {
             }
 
             // this line need refactore because this calling the database in a loop !!
-            $this->update_product_quantity($product, $targted_product_quantity['quantity']);
+            $this->update_product_quantity($product, $targted_product_quantity);
 
             $meta['products_prices'][$product->id]      = $product->get_price();
             $meta['restored_quantity'][$product->id]    = 0;
             $sub_total += $targted_product_quantity['price'] * $targted_product_quantity['quantity'];
         }
 
+        $new_order_product = OrderProduct::insert($data);
+        OrderProduct::insert($data2);
         return ['sub_total' => $sub_total, 'products_count' => $products_count, 'meta' => $meta];
     }// end :: create_order_sold_products
 
@@ -297,13 +351,26 @@ trait MakeOrder {
 
             foreach ($target_children as $child_product) {
                 // get the needed quantity of the child product for the main
-                $requested_quantity = $products_quantity[$child_product->id] * $order_quantity;
+                $requested_quantity = $products_quantity[$child_product->id] * $order_quantity['quantity'];
                 $child_product->reserved_quantity -= $requested_quantity;
+                $child_product->save();
+            }
+        } 
+        elseif ($target_product->is_composite == 2) {
+            $upgrade_options_list = (array) $order_quantity['upgrade_options_list'];
+            $target_children      = Product::whereIn('id', $upgrade_options_list)->get();
+            $parent_product_meta  = (array) json_decode($target_product->meta);
+            $products_quantity    = (array) $parent_product_meta['products_quantity'];
+
+            foreach ($target_children as $child_product) {
+                // get the needed quantity of the child product for the main
+                $requested_quantity = $products_quantity[$child_product->id] * $order_quantity['quantity'];
+                $child_product->quantity -= $requested_quantity;
                 $child_product->save();
             }
         }
         
-        $target_product->quantity -= $order_quantity;
+        $target_product->quantity -= $order_quantity['quantity'];
         $target_product->save();
     }// end :: update_product_quantity
 

@@ -89,6 +89,9 @@ class ProductsController extends Controller
                 return $row_object->is_composite == 1 ? 'Composite' : ($row_object->is_composite == 2  ? 'Upgradable' : 'Usual');
                 return view('admin.products.incs._composite', compact('row_object'));
             })
+            ->addColumn('created_at', function ($row_object) {
+                return date('m-d-Y H:i:s', strtotime($row_object->created_at));
+            })
             ->addColumn('active', function ($row_object) {
                 return view('admin.products.incs._active', compact('row_object'));
             })
@@ -151,8 +154,8 @@ class ProductsController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
 
-        $child_products          = $request->is_composite == 1 ? (array) json_decode($request->child_products) : [];
-        $child_products_quantity = $request->is_composite == 1 ? (array) json_decode($request->child_products_quantity) : [];
+        $child_products          = $request->is_composite != 0 ? (array) json_decode($request->child_products) : [];
+        $child_products_quantity = $request->is_composite != 0 ? (array) json_decode($request->child_products_quantity) : [];
         
         if ($request->is_composite == 1) {
             /**
@@ -210,7 +213,9 @@ class ProductsController extends Controller
         json_encode([
             'upgrade_categories'  => $upgrade_categories,
             'upgrade_products_id' => $upgrade_products_id,
-            'upgrade_products'    => $upgrade_products
+            'upgrade_products'    => $upgrade_products,
+            'child_products_id' => $child_products,
+            'products_quantity' => $child_products_quantity,
         ]): json_encode([
             'child_products_id' => $child_products,
             'products_quantity' => $child_products_quantity,

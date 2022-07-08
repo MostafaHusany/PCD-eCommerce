@@ -23,16 +23,30 @@ class OrdersController extends Controller
 {
     use MakeOrder;
 
+    /**
+     * We want to make orders for the upgradable products !!
+     * in the composite products the sub-products are always known very well
+     * we just get them right away from the relation with child products
+     * 
+     * In another way the upgradable options depend on the selected upgrade
+     * options for the project, there is the default options, and they may be
+     * a desire for creating an upgrade.
+     * 
+     * hot to make an order for upgradable product
+     *   
+    */
     public function index (Request $request) {
         if ($request->ajax()) {
-            $model = Order::query()->with('customer')->orderBy('id', 'desc');
+            $model = Order::query()->with(['customer', 'status_obj'])->orderBy('id', 'desc');
             
             if (isset($request->code)) {
                 $model->where('code', 'like', "%$request->code%");
             }
 
             if (isset($request->status)) {
-                $model->where('code', $request->status);
+                $model->whereHas('status_obj', function ($q) use ($request) {
+                    $q->where('order_statuses.status_code', $request->status);
+                });
             }
 
             if (isset($request->name)) {
@@ -56,6 +70,14 @@ class OrdersController extends Controller
                 });
             }
 
+            if (isset($request->start_date)) {
+                $model->whereDate('created_at', '>=', $request->start_date);
+            }
+
+            if (isset($request->end_date)) {
+                $model->whereDate('created_at', '<=', $request->end_date);
+            }
+
             // if (isset($request->city)) {
             //     $model->whereHas('customer', function ($q) use ($request) {
             //         $q->where('customers.city', $request->city);
@@ -63,6 +85,9 @@ class OrdersController extends Controller
             // }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('code', function ($row_object) {
+                return view('admin.orders.incs._code', compact('row_object'));
+            })
             ->addColumn('customer', function ($row_object) {
                 return $row_object->customer->name;
             })
@@ -86,6 +111,9 @@ class OrdersController extends Controller
             })
             ->addColumn('status_action', function ($row_object) {
                 return view('admin.orders.incs._status', compact('row_object'));
+            })
+            ->addColumn('created_at', function ($row_object) {
+                return view('admin.orders.incs._date', compact('row_object'));
             })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.orders.incs._actions', compact('row_object'));
@@ -125,8 +153,8 @@ class OrdersController extends Controller
                 'id'            => $target_order->id,
                 'customer'      => $target_order->customer,
                 // 'all_products'  => $target_order->products,
-                'products'      => $target_order->products()->distinct()->get(),
-                'order_products'      => $target_order->order_products,
+                'products'      => $target_order->products()->where('is_child', 0)->distinct()->get(),
+                'order_products'      => $target_order->order_products()->where('is_child', 0)->get(),
                 'products_meta' => $target_order->meta,
                 'shipping'      => $target_order->shipping,
                 'shipping_cost' => $target_order->shipping_cost,
@@ -155,6 +183,8 @@ class OrdersController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
+
+        // dd($request->all());
         
         // products_quantity contains the quantity and the prices of eacg product in the order 
         $products_quantity  = (array) json_decode($request->products_quantity);
@@ -283,22 +313,22 @@ class OrdersController extends Controller
     }
 
     // START HELPER FUNCTION
-    public function update_product_quantity ($target_product, $order_quantity) {
-        if ($target_product->is_composite === 1) {
-            $target_children = $target_product->children;
-            $parent_product_meta = (array) json_decode($target_product->meta);
-            $products_quantity   = (array) $parent_product_meta['products_quantity'];
+    // public function update_product_quantity ($target_product, $order_quantity) {
+    //     if ($target_product->is_composite === 1) {
+    //         $target_children = $target_product->children;
+    //         $parent_product_meta = (array) json_decode($target_product->meta);
+    //         $products_quantity   = (array) $parent_product_meta['products_quantity'];
 
-            foreach ($target_children as $child_product) {
-                $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
-                $child_product->reserved_quantity -= $requested_quantity;
-                $child_product->save();
-            }
-        }
+    //         foreach ($target_children as $child_product) {
+    //             $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
+    //             $child_product->reserved_quantity -= $requested_quantity;
+    //             $child_product->save();
+    //         }
+    //     }
 
-        $target_product->quantity -= $order_quantity;
-        $target_product->save();
-    }
+    //     $target_product->quantity -= $order_quantity;
+    //     $target_product->save();
+    // }
 
     
 }

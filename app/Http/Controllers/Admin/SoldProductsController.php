@@ -22,7 +22,7 @@ class SoldProductsController extends Controller
         $tmp = OrderProduct::get();
         
         if ($request->ajax()) {
-            $model = OrderProduct::query()->with('categories')->orderBy('id', 'desc');
+            $model = OrderProduct::query()->with(['categories', 'product'])->orderBy('id', 'desc');
             
             if (isset($request->name)) {
                 $model->where(function ($q) use ($request) {
@@ -42,10 +42,24 @@ class SoldProductsController extends Controller
             if (isset($request->sku)) {
                 $model->where('sku', 'like', "%$request->status%");
             }
-            // return $model->categories;
+            
             if (isset($request->category)) {
                 $model->whereHas('categories', function ($q) use ($request) {
                     $q->where('product_categories.id', $request->category);
+                });
+            }
+
+            if (isset($request->start_date)) {
+                $model->whereDate('created_at', '>=', $request->start_date);
+            }
+
+            if (isset($request->end_date)) {
+                $model->whereDate('created_at', '<=', $request->end_date);
+            }
+
+            if (isset($request->type)) {
+                $model->whereHas('product', function ($q) use ($request) {
+                    $q->where('products.is_composite', $request->type);
                 });
             }
 
@@ -63,8 +77,17 @@ class SoldProductsController extends Controller
                 return $row_object->product->categories()->count() ? 
                     view('admin.sold_products.incs._categories', compact('row_object')) : '---';
             })
+            ->addColumn('parent', function ($row_object) {
+                return $row_object->is_child && isset($row_object->parentProduct) ? $row_object->parentProduct->ar_name : '---';
+            })
             ->addColumn('price', function ($row_object) {
                 return $row_object->price_when_order . ' SR';
+            })
+            ->addColumn('created_at', function ($row_object) {
+                return date('m-d-Y H:i:s', strtotime($row_object->created_at));
+            })
+            ->addColumn('type', function ($row_object) {
+                return $row_object->product->is_composite == 1 ? 'Composite' : ($row_object->product->is_composite == 2  ? 'Upgradable' : 'Usual');
             })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.sold_products.incs._actions', compact('row_object'));

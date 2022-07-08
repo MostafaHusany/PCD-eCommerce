@@ -581,7 +581,9 @@ $(function () {
                 selected_category : null,
                 categories : [],
                 categories_products : {},
-                selected_categories_products : {}
+                selected_categories_products : {},
+                "child_products_id" : [],
+                "products_quantity" : {}
             };
 
             // getters
@@ -634,6 +636,12 @@ $(function () {
 
             const removeCategory = (category_id) => {
                 store.categories = store.categories.filter(category => category.id != category_id);
+                
+                store.selected_categories_products[category_id].forEach(selectedProduct => {
+                    store.child_products_id = store.child_products_id.filter(productId => productId != selectedProduct.id);
+                    delete store.products_quantity[selectedProduct.id]
+                });
+
                 delete store.categories_products[category_id];
                 delete store.selected_categories_products[category_id];
                 
@@ -655,10 +663,13 @@ $(function () {
                 if (!is_exist) {
                     const target_product = (store.categories_products[store.selected_category].find(product => product.id == product_id));
                     target_product.is_default      =  false;
-                    target_product.needed_quantity = 0;
+                    target_product.needed_quantity = 1;
                     target_product.upgrade_price   = Number(target_product.price);
 
                     store.selected_categories_products[store.selected_category].push(target_product);
+                    // added new
+                    store.child_products_id.push(target_product.id);
+                    store.products_quantity[target_product.id] = 1;
                 }
 
                 // parse updates in upgradable inputes fields
@@ -682,7 +693,10 @@ $(function () {
                 // if (is_need_new_default) new_products_list[0].is_default = true;
                 
                 store.selected_categories_products[store.selected_category] = new_products_list;
-                
+                // added new
+                store.child_products_id = store.child_products_id.filter(productId => productId != product_id);
+                delete store.products_quantity[product_id];
+
                 // parse updates in upgradable inputes fields
                 parseRequestData();
                 calculateExpectedPrice();
@@ -706,10 +720,11 @@ $(function () {
                 store.selected_categories_products[store.selected_category].forEach((product, index) => {
                     if (product.id == product_id) {
                         product.needed_quantity = quantity;
+                        store.products_quantity[product_id] = quantity
                         return;
                     }
                 });
-
+                
                 // parse updates in upgradable inputes fields
                 parseRequestData();
                 calculateExpectedPrice();
@@ -736,7 +751,9 @@ $(function () {
                     selected_category : null,
                     categories : [],
                     categories_products : {},
-                    selected_categories_products : {}
+                    selected_categories_products : {},
+                    child_products_id : [],
+                    products_quantity : {}
                 };
 
                 parseRequestData();
@@ -773,7 +790,11 @@ $(function () {
                 $('#upgrade_option_categories').val(JSON.stringify(categoreis));
                 $('#upgrade_option_products').val(JSON.stringify(selectedProdcuts));
                 $('#upgrade_option_products_ids').val(JSON.stringify(selectedProdcutsIds));
-                console.log(categoreis, selectedProdcuts, selectedProdcutsIds);
+                $('#child_products').val(JSON.stringify(store.child_products_id));
+                $('#child_products_quantity').val(JSON.stringify(store.products_quantity));
+                
+                console.log('parseRequestData 1: ', categoreis, selectedProdcuts, selectedProdcutsIds)
+                console.log('parseRequestData 2: ', store.child_products_id, store.products_quantity);
             };
 
             return {

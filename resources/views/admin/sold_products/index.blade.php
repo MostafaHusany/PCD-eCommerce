@@ -70,7 +70,7 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-2">
+            <div class="col-3">
                 <div class="form-group search-action">
                     <label for="s-title">Name</label>
                     <input type="text" class="form-control" id="s-name">
@@ -83,22 +83,8 @@
                     <input type="text" class="form-control" id="s-code">
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">SKU</label>
-                    <input type="text" class="form-control" id="s-sku">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="s-title">Category</label>
-                    <select class="form-control" id="s-category"></select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
 
-            <div class="col-2">
+            <div class="col-3">
                 <div class="form-group search-action">
                     <label for="s-status">Status</label>
                     <select class="form-control" id="s-status">
@@ -107,7 +93,47 @@
                         <option value="0">Restored</option>
                     </select>
                 </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
+            </div><!-- /.col-3 -->
+            
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="s-title">SKU</label>
+                    <input type="text" class="form-control" id="s-sku">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="s-status">Start Date</label>
+                    <input type="date" class="form-control" id="s-start_date">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="s-status">End Date</label>
+                    <input type="date" class="form-control" id="s-end_date">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+            
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="s-title">Type</label>
+                    <select class="form-control" id="s-type">
+                        <option value="">All</option>
+                        <option value="0">Usual</option>
+                        <option value="1">Composite</option>
+                        <option value="2">Upgradable</option>
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
+
+            <div class="col-3">
+                <div class="form-group search-action">
+                    <label for="s-title">Category</label>
+                    <select class="form-control" id="s-category"></select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-3 -->
             
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
@@ -118,10 +144,13 @@
                 <th>Image</th>
                 <th>Order Code</th>
                 <th>Name</th>
+                <th>Type</th>
+                <th>Parent</th>
                 <th>Status</th>
                 <th>Categories</th>
                 <th>SKU</th>
                 <th>Price</th>
+                <th>Date</th>
                 <th>Action</th>
             </thead>
             <tbody></tbody>
@@ -178,10 +207,13 @@ $(function () {
             { data: 'image', name: 'image' },
             { data: 'code', name: 'code' },
             { data: 'name', name: 'name' },
+            { data: 'type', name: 'type' },
+            { data: 'parent', name: 'parent' },
             { data: 'status', name: 'status' },
             { data: 'categories', name: 'categories' },
             { data: 'sku', name: 'sku' },
             { data: 'price', name: 'price' },
+            { data: 'created_at', name: 'created_at' },
             { data: 'actions' , name: 'actions' },
         ],
         function (d) {
@@ -193,6 +225,15 @@ $(function () {
             
             if ($('#s-sku').length)
             d.sku = $('#s-sku').val();  
+            
+            if ($('#s-start_date').length)
+            d.start_date = $('#s-start_date').val();  
+            
+            if ($('#s-end_date').length)
+            d.end_date = $('#s-end_date').val();
+            
+            if ($('#s-type').length)
+            d.type = $('#s-type').val();
             
             if ($('#s-status').length)
             d.status = $('#s-status').val();    

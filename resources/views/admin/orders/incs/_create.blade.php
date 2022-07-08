@@ -521,14 +521,40 @@ $(document).ready(function () {
                             if (target_product != null) {
                                 create_selected_product_row(target_product);
                                 $('#find-products').val('').trigger('change');
-                                
                                 $('#createOrderLoddingSpinner').hide(500);
-                        
+                                
+                                /**
+                                 * Here we check the product type,
+                                 * if the product is upgradable we need
+                                 * to get the default options and also
+                                 * give the options to show upgrade functionality
+                                 * for the product 
+                                 * 
+                                 */
+                                
                                 selected_products[target_product_id] = {
                                     quantity : 1,
                                     price    : target_product.price
                                 } 
 
+                                if (target_product.is_composite == 2) {
+                                    let meta = JSON.parse(target_product.meta);
+                                    let upgrade_options = {};
+                                    let upgrade_options_list = [];
+
+                                    meta.upgrade_categories.forEach(category_id => {
+                                        meta.upgrade_products_id[category_id].forEach(product_id => {
+                                            if (meta.upgrade_products[category_id][product_id].is_default) {
+                                                upgrade_options[category_id] = product_id;
+                                                upgrade_options_list.push(product_id);
+                                            }
+                                        });
+                                    });
+
+                                    selected_products[target_product_id].upgrade_options = upgrade_options;
+                                    selected_products[target_product_id].upgrade_options_list = upgrade_options_list;
+                                }
+                                
                                 update_products_hidden_field();
                             }
                         });

@@ -65,44 +65,31 @@
         
         <!-- START SEARCH BAR -->
         <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group search-action">
                     <label for="">Code</label>
                     <input type="text" class="form-control" id="s-code">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-4 -->
 
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group search-action">
                     <label for="">Name</label>
                     <input type="text" class="form-control" id="s-name">
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
             
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group search-action">
                     <label for="">Email</label>
                     <input type="text" class="form-control" id="s-email">
                 </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="">Phone</label>
-                    <input type="text" class="form-control" id="s-phone">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+            </div><!-- /.col-4 -->
 
             <div class="col-4">
                 <div class="form-group search-action">
-                    <label for="">Status</label>
-                    <select type="text" class="form-control" id="s-status">
-                        <option value="">-- select category --</option>
-                        <option>مرتجع</option>
-                        <option>قيد التجهيز</option>
-                        <option>مرحلة الشحن</option>
-                        <option>تم الاستلام</option>
-                    </select>
+                    <label for="">Phone</label>
+                    <input type="text" class="form-control" id="s-phone">
                 </div><!-- /.form-group -->
             </div><!-- /.col-4 -->
             
@@ -127,19 +114,46 @@
                 </div><!-- /.form-group -->
             </div><!-- /.col-4 -->
 
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="s-status">Start Date</label>
+                    <input type="date" class="form-control" id="s-start_date">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="s-status">End Date</label>
+                    <input type="date" class="form-control" id="s-end_date">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+            
+            <div class="col-4">
+                <div class="form-group search-action">
+                    <label for="">Status</label>
+                    <select type="text" class="form-control" id="s-status">
+                        <option value="">-- all --</option>
+                        @foreach(order_status() as $order_status)
+                        <option value="{{$order_status->status_code}}">{{$order_status->status_name_en}}</option>
+                        @endforeach
+                    </select>
+                </div><!-- /.form-group -->
+            </div><!-- /.col-4 -->
+
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
         <div class="overflow-table">
             <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
                 <thead>
                     <th>#</th>
-                    <th>Code</th>
+                    <th styel="width: 160px !important">Code</th>
                     <th>Customer</th>
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Country</th>
                     <th>Government</th>
                     <th>Total</th>
+                    <th styel="width: 160px !important">Date</th>
                     <th>Payment</th>
                     <th>Status</th>
                     <th>Status Action</th>
@@ -197,6 +211,7 @@ $(function () {
             { data: 'country', name: 'country' },
             { data: 'government', name: 'government' },
             { data: 'total', name: 'total' },
+            { data: 'created_at', name: 'created_at' },
             { data: 'payment_status', name: 'payment_status' },
             { data: 'status', name: 'status' },
             { data: 'status_action', name: 'status_action' },
@@ -218,6 +233,12 @@ $(function () {
             if ($('#s-phone').length)
             d.phone = $('#s-phone').val();
             
+            if ($('#s-start_date').length)
+            d.start_date = $('#s-start_date').val();  
+            
+            if ($('#s-end_date').length)
+            d.end_date = $('#s-end_date').val();
+
             if ($('#s-country').length)
             d.country = $('#s-country').val();      
             
@@ -366,7 +387,9 @@ $(function () {
                     .then(res => {
                         console.log('test :: #customer, #edit-customer ', res.data.data, res.data.data.email, res.data.data.phone, res.data.data.city, res.data.data.address);
                         if (res.data.success) {
-                            $(`#${prefix}customer_name`).text(res.data.data.first_name + ' ' + res.data.data.second_name);
+                            console.log(res.data);
+                            // $(`#${prefix}customer_name`).text(res.data.data.first_name + ' ' + res.data.data.second_name);
+                            $(`#${prefix}customer_name`).text(res.data.data.name);
                             $(`#${prefix}customer_email`).text(res.data.data.email);
                             $(`#${prefix}customer_phone`).text(res.data.data.phone);
                             $(`#${prefix}customer_country`).text(res.data.data.country.name);
