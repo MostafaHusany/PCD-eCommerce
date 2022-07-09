@@ -121,14 +121,17 @@ trait MakeOrder {
         $order_meta         = (array) json_decode($target_order->meta);
         $order_quantity     = (array) $order_meta['products_quantity'];
         $order_restored_q   = (array) $order_meta['restored_quantity'];
-        $target_products    = $target_order->products()->distinct()->get();
+        $target_products    = $target_order->products()->where('is_child', '0')->distinct()->get();
 
         // dd($order_quantity, $target_products, $order_restored_q);
         // restore old qunatity
         foreach ($target_products as $target_product) {
+            // dd(sizeof($target_products));
+            // dd($order_quantity, $target_product->id, $order_restored_q, (array) $order_quantity[$target_product->id]);
+            
             $target_product_quantity = (array) $order_quantity[$target_product->id];
             // $this->restore_reserved_products($target_product, $target_product_quantity['quantity'] - $order_restored_q[$target_product->id]);
-            $this->restore_reserved_products($target_product, $target_product_quantity['quantity']);
+            $this->restore_reserved_products($target_product, $target_product_quantity);
         }
     }
 
@@ -140,14 +143,27 @@ trait MakeOrder {
     
 
             foreach ($target_children as $child_product) {
-                $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
+                $requested_quantity = $products_quantity[$child_product->id] * $order_quantity['quantity'];
 
                 $child_product->reserved_quantity += $requested_quantity;
                 $child_product->save();
             }
         }
+        elseif ($target_product->is_composite == 2) {
+            $upgrade_options_list = (array) $order_quantity['upgrade_options_list'];
+            $target_children      = Product::whereIn('id', $upgrade_options_list)->get();
+            $parent_product_meta  = (array) json_decode($target_product->meta);
+            $products_quantity    = (array) $parent_product_meta['products_quantity'];
 
-        $target_product->quantity += $order_quantity;
+            foreach ($target_children as $child_product) {
+                // get the needed quantity of the child product for the main
+                $requested_quantity = $products_quantity[$child_product->id] * $order_quantity['quantity'];
+                $child_product->quantity += $requested_quantity;
+                $child_product->save();
+            }
+        }
+
+        $target_product->quantity += $order_quantity['quantity'];
         $target_product->save();
     }
 
@@ -296,6 +312,7 @@ trait MakeOrder {
                     }
                 } elseif ($product->is_composite == 2) {
                     // $meta = (array) json_decode($product->meta);
+                    // dd($targted_product_quantity);
                     $upgrade_options_list = (array) $targted_product_quantity['upgrade_options_list'];
                     $children = Product::whereIn('id', $upgrade_options_list)->get();
 

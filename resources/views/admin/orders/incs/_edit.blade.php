@@ -263,7 +263,10 @@ $(document).ready(function () {
             /**
                 product_id : {
                     quantity : 1,
-                    price    : product.price
+                    price    : product.price,
+                    upgrade_options,
+                    upgrade_options_list
+
                 }
             */
         };
@@ -322,6 +325,26 @@ $(document).ready(function () {
                     quantity : parseInt(products_meta[key].quantity),
                     price    : parseFloat(products_meta[key].price)
                 }
+
+                let target_product = products_list.find(product => product.id == key);
+                
+                if (target_product.is_composite == 2) {
+                    let meta = JSON.parse(target_product.meta);
+                    let upgrade_options = {};
+                    let upgrade_options_list = [];
+
+                    meta.upgrade_categories.forEach(category_id => {
+                        meta.upgrade_products_id[category_id].forEach(product_id => {
+                            if (meta.upgrade_products[category_id][product_id].is_default) {
+                                upgrade_options[category_id] = product_id;
+                                upgrade_options_list.push(product_id);
+                            }
+                        });
+                    });
+
+                    products_meta[key].upgrade_options = upgrade_options;
+                    products_meta[key].upgrade_options_list = upgrade_options_list;
+                }
             });
             
             // re-calculate sub-total
@@ -336,6 +359,24 @@ $(document).ready(function () {
                 quantity : 1,
                 price    : new_product.price
             };
+            
+            if (new_product.is_composite == 2) {
+                let meta = JSON.parse(new_product.meta);
+                let upgrade_options = {};
+                let upgrade_options_list = [];
+
+                meta.upgrade_categories.forEach(category_id => {
+                    meta.upgrade_products_id[category_id].forEach(product_id => {
+                        if (meta.upgrade_products[category_id][product_id].is_default) {
+                            upgrade_options[category_id] = product_id;
+                            upgrade_options_list.push(product_id);
+                        }
+                    });
+                });
+
+                products_meta[new_product.id].upgrade_options = upgrade_options;
+                products_meta[new_product.id].upgrade_options_list = upgrade_options_list;
+            }
 
             // re-calculate sub-total
             _calculate_order_sub_total();

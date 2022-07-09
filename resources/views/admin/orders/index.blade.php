@@ -293,12 +293,13 @@ $(function () {
         $('#edit-id').val(data.id);
         
         // get customer data
-        var customer_option = new Option(`${data.customer['first_name']} ${data.customer['second_name']}`, data.customer.id, false, true);
+        var customer_option = new Option(`${data.customer['name']}`, data.customer.id, false, true);
         $('#edit-customer').append(customer_option).trigger('change');
         
         // get products meta
         const order_meta = JSON.parse(data.products_meta);
         const products_quantity = (JSON.parse(data.products_meta))['products_quantity'];
+        console.log('edit test : ', data, data.products, products_quantity);
         EditControllerObject.edit_products_update(data.products, products_quantity);
         
         // get fees data
@@ -434,6 +435,7 @@ $(function () {
                 let flag = confirm(`Are you sure you want to restor "${target_order_code}"`);
                 
                 if (flag) {
+                    /*
                     axios.post(`{{ url('admin/orders') }}/${target_order_id}`, {
                         _method  : 'DELETE',
                         '_token' : $('meta[name="csrf-token"]').attr('content'),
@@ -451,6 +453,34 @@ $(function () {
                             }, 3000);
                         }// end :: if
                     });
+                    */
+
+                    fetch(`{{ url('admin/orders') }}/${target_order_id}`, {
+                        method : 'POST',
+                        headers : {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            _method  : 'DELETE',
+                            '_token' : $('meta[name="csrf-token"]').attr('content'),
+                            restore_product : true
+                        })
+                    })
+                    .then(res => res.json()) 
+                    .then(res => {
+                        // console.log('res.data', res.data);
+                        $('#loddingSpinner').hide(500);
+                        
+                        if (res.success) {
+                            objects_dynamic_table.table_object.draw();
+
+                            $('#warningAlert').text('You restored the order successfully').slideDown();
+                            setTimeout(() => {
+                                $('#warningAlert').text('').slideUp();
+                            }, 3000);
+                        }// end :: if
+                    });
+
                 }// end :: if
             });
 

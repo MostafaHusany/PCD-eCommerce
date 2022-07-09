@@ -136,7 +136,7 @@ class OrdersController extends Controller
                 'id'            => $target_order->id,
                 'customer'      => $target_order->customer,
                 // 'all_products'  => $target_order->products,
-                'products'      => $target_order->products()->distinct()->get(),
+                'products'      => $target_order->products()->where('is_child', 0)->distinct()->get(),
                 // 'products'      => $target_order->products,
                 'products_meta' => $target_order->meta,
                 'shipping'      => $target_order->shipping,
@@ -265,18 +265,23 @@ class OrdersController extends Controller
     }
 
     public function destroy (Request $request, $id) {
+        // dd();
         /**
          * Delete an order meeans we need to delete all the order products
          * restore the quantity to the products in the storage
          */
          
-        $target_order   = Order::find($id);
+        // dd($request->all());
 
+        $target_order = Order::find($id);
+        
         if ($target_order->status !== -1) {
             $this->restore_order_all_products($target_order);
         }
-
+        
         if (isset($request->restore_product)) {
+            // dd($request->all());
+
             $this->restore_order_meta($target_order);
             
             // update orders' products status

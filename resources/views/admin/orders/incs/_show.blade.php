@@ -30,9 +30,24 @@
                         <td id="show-customer_phone">---</td>
                     </tr>
                     
-                    <tr>
+                    <!-- <tr>
                         <td>City</td>
                         <td id="show-customer_city">---</td>
+                    </tr>
+
+                    <tr>
+                        <td>Address</td>
+                        <td id="show-customer_address">---</td>
+                    </tr> -->
+                    
+                    <tr>
+                        <td>Country</td>
+                        <td id="show-customer_country">---</td>
+                    </tr>
+
+                    <tr>
+                        <td>Government</td>
+                        <td id="show-customer_government">---</td>
                     </tr>
 
                     <tr>
@@ -199,10 +214,15 @@
             console.log(data, 'show order meta :: ', order_meta);
             
             // get customer data
-            $('#show-customer_name').text(`${data.customer.first_name} ${data.customer.second_name}`);
+            $('#show-customer_name').text(`${data.customer.name}`);
             $('#show-customer_email').text(data.customer.email);
             $('#show-customer_phone').text(data.customer.phone);
             $('#show-customer_city').text(data.customer.city);
+            $('#show-customer_address').text(data.customer.address);
+
+            
+            $('#show-customer_country').text(data.customer.country);
+            $('#show-customer_government').text(data.customer.government);
             $('#show-customer_address').text(data.customer.address);
 
             // show shipping data
