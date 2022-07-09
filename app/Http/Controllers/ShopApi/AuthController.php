@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'phoneLogin', 'register', 'countries', 'requestPhoneCode']]);
     }
-
+    
     private function verifyPhone ($phone, $code, $has_user = false) {
         /**
          * 
@@ -123,6 +123,7 @@ class AuthController extends Controller
         $data = $request->all();
         $data['password']       = bcrypt($data['password']);
         $data['plain_password'] = $request->password;
+        $data['email_verified_at'] = Date('Y-m-d');
         
         $target_user = User::create($data);
         $target_user->customer()->create($data);
@@ -259,5 +260,9 @@ class AuthController extends Controller
             'token_type'   => 'bearer',
             'expires_in'   => auth('api')->factory()->getTTL() * 60
         ]);
+    }
+
+    public function getOrders () {
+        return response()->json(array('data' => auth()->user()->orders, 'success' => true));
     }
 }

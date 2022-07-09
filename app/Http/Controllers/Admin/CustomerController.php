@@ -42,6 +42,9 @@ class CustomerController extends Controller
             }
 
             $datatable_model = Datatables::of($model)
+            ->addColumn('email', function ($row_object) {
+                return isset($row_object->email) ? $row_object->email : '---';
+            })
             ->addColumn('country', function ($row_object) {
                 return isset($row_object->country) ? $row_object->country->name : '---';
             })
@@ -49,7 +52,7 @@ class CustomerController extends Controller
                 return isset($row_object->government) ? $row_object->government->name : '---';
             })
             ->addColumn('active', function ($row_object) {
-                return view('admin.customers.incs._active', compact('row_object'));
+                return isset($row_object->user) ? view('admin.customers.incs._active', compact('row_object')) : null;
             })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.customers.incs._actions', compact('row_object'));
@@ -154,10 +157,11 @@ class CustomerController extends Controller
     }
 
     public function destroy ($id) {
-        $target_user = User::find($id);
-        isset($target_user) && $target_user->delete();
+        $target_customer = Customer::find($id);
+        isset($target_customer->user) && $target_customer->user->delete();
+        isset($target_customer) && $target_customer->delete();
 
-        return response()->json(['data' => $target_user, 'success' => isset($target_user)]);
+        return response()->json(['data' => $target_customer, 'success' => isset($target_customer)]);
     }
 
     public function dataAjax(Request $request) {

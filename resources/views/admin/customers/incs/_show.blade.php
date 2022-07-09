@@ -30,8 +30,8 @@
                 <td id="show-country"></td>
             </tr>
             <tr>
-                <td>City</td>
-                <td id="show-city"></td>
+                <td>Government</td>
+                <td id="show-government"></td>
             </tr>
             <tr>
                 <td>Address</td>
@@ -213,11 +213,13 @@
     }
 
     function show_customer_info (customer_info) {
-        $('#show-full-name').text(customer_info.first_name + ' ' + customer_info.second_name);
-        $('#show-email').text(customer_info.email);
+        console.log('216 customer_info : ', customer_info);
+        $('#show-full-name').text(customer_info.name);
+        $('#show-email').text(Boolean(customer_info.email) ? customer_info.email : '---');
         $('#show-phone').text(customer_info.phone);
-        $('#show-city').text(customer_info.city);
-        $('#show-address').text(customer_info.address);
+        $('#show-country').text(Boolean(customer_info.country) ? customer_info.country.name : '---');
+        $('#show-government').text(Boolean(customer_info.government) ? customer_info.government.name : '---');
+        $('#show-address').text(Boolean(customer_info.address) ? customer_info.address : '---');
     }
 
     function show_customer_orders (orders) {
