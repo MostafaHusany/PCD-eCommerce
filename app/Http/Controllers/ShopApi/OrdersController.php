@@ -162,22 +162,50 @@ class OrdersController extends Controller
         $products_quantity = [];
         
         foreach ($cartItems as $item) {
+            /***
+             *  [
+                    2022 => [
+                        "quantity" => 1,
+                        "upgrade_options" => {"4":151,"8":385},
+                        "upgrade_options_list" => [151,385]
+                    ]
+                ]
+             */
             $products_id[] = $item['id'];
-            $products_quantity[$item['id']] = ['quantity' => $item['quantity']];
+            $products_quantity[$item['id']] = [
+                'quantity'             => $item['quantity'],
+                'upgrade_options'      => isset($item['upgrade_options']) ? $item['upgrade_options'] : null,
+                'upgrade_options_list' => isset($item['upgrade_options_list']) ? $item['upgrade_options_list'] : null,
+            ];   
         }
         
+        // dd($products_quantity);
         // if length is zero this mean there is no products 
-        if (!sizeof($products_id)) {
-            return array('data' => null, 'success' => false, 'msg' => 'no_products_on_cart');
-        }
+        // if (!sizeof($products_id)) {
+        //     return array('data' => null, 'success' => false, 'msg' => 'no_products_on_cart');
+        // }
         
         // get the products that has no valied quantity in the storage
         $requested_products = Product::whereIn('id', $products_id)->get();
         
         // valiedate that the product has quantity
         $is_not_valied     = false;
-        $validation_result = ['not_valied' => [], 'finshed_from_storage' => [], 'not_valied_quantity'];
+        $validation_result = ['not_valied' => [], 'finshed_from_storage' => [], 'not_valied_quantity' => [], 'not_valied_upgrade_quantity' => []];
         foreach ($requested_products as $product) {
+            
+
+            if ($product->is_composite == 2) {
+                $upgradeProducts = Product::whereIn('id', $products_quantity[$product->id]['upgrade_options_list'])
+                    ->where('quantity', '=', 0)
+                    ->where('is_active', 0)
+                    ->count();
+
+                if ($upgradeProducts) {
+                    $is_not_valied = true;
+                    $validation_result['not_valied_upgrade_quantity'][$product->id] = $upgradeProducts;   
+                }
+            }
+
             // product is not valied
             if ($product->is_active == 0) {
                 $is_not_valied = true;
