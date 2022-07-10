@@ -56,8 +56,11 @@ class OrdersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['data' => null, 'success' => false, 'msg' => 'not_valied_shipping']);
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
+        // if ($validator->fails()) {
+        //     return response()->json(['data' => null, 'success' => false, 'msg' => 'not_valied_shipping']);
+        // }
 
         // validate the products in the cart  
         [$is_not_valied, $validation_result] = $this->is_valied_product($request->cartItems);
@@ -104,13 +107,19 @@ class OrdersController extends Controller
     }
 
     public function uploadInvoive (Request $request) {
-        $invoice = Invoice::where('order_id', $request->order_id)->first();
+        $validator = Validator::make($request->all(), [
+            'order_id'     => ['required', 'exists:orders,id'],
+            'payment_file' => ['required', 'image', 'max:10240'],
+        ]);
 
-        if (isset($invoice) && $request->hasFile('payment_file')) {
-            $invoice->status           = 'check_payment_transaction';
-            $invoice->trasnaction_imge = upload_image($request->file('payment_file'), 'payment_file');
-            $invoice->save();
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
+
+        $invoice = Invoice::where('order_id', $request->order_id)->first();
+        $invoice->status           = 'check_payment_transaction';
+        $invoice->trasnaction_imge = upload_image($request->file('payment_file'), 'payment_file');
+        $invoice->save();
 
         return response()->json(array('data' => $invoice, 'success' => isset($invoice)));
     }
