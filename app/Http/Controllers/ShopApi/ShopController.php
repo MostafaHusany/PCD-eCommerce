@@ -16,7 +16,7 @@ class ShopController extends Controller
          * # Show product that is_active
          * 
         */
-        $target_product = Product::with(['brand', 'categories', 'product_promotion_r', 'brand'])->where('is_active', 1)->where('slug', $slug)->first();
+        $target_product = Product::with(['brand', 'categories', 'product_promotion_r', 'brand', 'upgrade_products'])->where('is_active', 1)->where('slug', $slug)->first();
 
         return response()->json(array('data' => $target_product, 'success' => isset($target_product)));
     }
@@ -61,7 +61,7 @@ class ShopController extends Controller
          */
 
         $product_category = ProductCategory::where('slug', $slug)->first();
-        $model            = $product_category->products()->where('is_active', 1)->with(['product_custome_fields', 'product_promotion_r', 'brand']);
+        $model            = $product_category->products()->where('is_active', 1)->with(['product_custome_fields', 'product_promotion_r', 'brand', 'upgrade_products']);
 
         // filtration with name, with price  
         if (isset($request->name)) {
@@ -106,7 +106,7 @@ class ShopController extends Controller
         $order_type     = isset($request->order_type) ? $request->order_type : 'price';
         $order_dir      = isset($request->order_dir) ? $request->order_dir : 'desc';
         
-        $products  = $model->orderBy($order_type, $order_dir)->paginate($pagination_nom);
+        $products  = $model->orderBy($order_type, $order_dir)->orderBy('id', 'desc')->paginate($pagination_nom);
         // $products       = $model->count();
 
         return response()->json(array('data' => $products, 'success' => isset($products)));
