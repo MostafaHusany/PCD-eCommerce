@@ -11,6 +11,7 @@ use App\Traits\MakeOrder;
 
 use Cart;
 use App\Product;
+use App\Invoice;
 use App\Shipping;
 use App\PromoCode;
 
@@ -100,6 +101,18 @@ class OrdersController extends Controller
         }
 
         return response()->json(array('data' => $order, 'success' => isset($order)));
+    }
+
+    public function uploadInvoive (Request $request) {
+        $invoice = Invoice::where('order_id', $request->order_id)->first();
+
+        if (isset($invoice) && $request->hasFile('payment_file')) {
+            $invoice->status           = 'check_payment_transaction';
+            $invoice->trasnaction_imge = upload_image($request->file('payment_file'), 'payment_file');
+            $invoice->save();
+        }
+
+        return response()->json(array('data' => $invoice, 'success' => isset($invoice)));
     }
 
     public function add_promo (Request $request) {

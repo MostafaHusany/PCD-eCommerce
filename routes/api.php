@@ -32,8 +32,8 @@ Route::group([
     Route::get('me', 'AuthController@me');
     Route::get('countries', 'AuthController@countries');
     Route::get('phone-code', 'AuthController@requestPhoneCode');
+    Route::get('my-orders', 'AuthController@getOrders');
 });
-
 
 Route::group(['namespace' => 'shopApi'], function () {
     /**
@@ -70,9 +70,9 @@ Route::group(['namespace' => 'shopApi'], function () {
     Route::get('shippings', 'OrdersController@get_shipping');
     Route::post('order', 'OrdersController@create_order')->middleware('auth:api');
     Route::post('promo', 'OrdersController@add_promo');
+    Route::post('payment-invoice', 'OrdersController@uploadInvoive');
     Route::delete('promo', 'OrdersController@clear_promo');
 
     // get theme data
     Route::get('theme', 'ThemesController@getHomeTheme');
-
 });

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 use App\User;
+use App\Order;
 use App\Customer;
 use App\District;
 use App\VCustomerPhone;
@@ -262,7 +263,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getOrders () {
-        return response()->json(array('data' => auth()->user()->orders, 'success' => true));
+    public function getOrders (Request $request) {
+
+        $customerOrders = Order::query()->with('products');
+        $data = $customerOrders->where('customer_id', auth()->user()->customer->id)->paginate(15);
+
+        return response()->json(array('data' => $data, 'success' => true));
     }
 }
