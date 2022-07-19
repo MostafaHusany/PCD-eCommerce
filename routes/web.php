@@ -182,7 +182,7 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
         ]
     ]);
 
-    Route::resource('invoices', 'invoicesController', ['names' => [
+    Route::resource('invoices', 'InvoicesController', ['names' => [
         // 'index'     => 'admin.invoices.index',
         // 'store'     => 'admin.invoices.store',
         'show'      => 'admin.invoices.show',
