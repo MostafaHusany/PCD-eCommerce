@@ -35,7 +35,7 @@ Route::group([
     Route::get('my-orders', 'AuthController@getOrders');
 });
 
-Route::group(['namespace' => 'shopApi'], function () {
+Route::group(['namespace' => 'ShopApi'], function () {
     /**
      * # ShopController ... 
      * Get products, categories and do products filtration
