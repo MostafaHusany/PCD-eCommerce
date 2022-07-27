@@ -11,9 +11,9 @@ class ThemesController extends Controller
 {
     public function getHomeTheme () {
         // need caching
-        $slides = ThemeSetting::where('section', 'slider')->get();
-        $navbraLinks = ThemeSetting::where('section', 'navbar')->get();
-        $customeSection = ThemeSetting::where('section', 'cSection')->with('products')->get();
+        $slides = ThemeSetting::where('section', 'slider')->with(['category'])->get();
+        $navbraLinks = ThemeSetting::where('section', 'navbar')->with(['category'])->get();
+        $customeSection = ThemeSetting::where('section', 'cSection')->with(['products'])->get();
 
         $data = [
             'slides' => $slides,
