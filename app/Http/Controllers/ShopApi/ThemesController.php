@@ -23,4 +23,15 @@ class ThemesController extends Controller
 
         return response()->json(array('data' => $data, 'success' => isset($data)));
     }
+
+    public function getNavbarLinks () {
+        // need caching
+        $navbraLinks = ThemeSetting::where('section', 'navbar')->with(['category'])->get();
+
+        $data = [
+            'navbraLinks' => $navbraLinks,
+        ];
+
+        return response()->json(array('data' => $data, 'success' => isset($data)));
+    }
 }
