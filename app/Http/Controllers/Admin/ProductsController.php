@@ -140,8 +140,8 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|unique:products,ar_name|max:255',
             'en_name'        => 'required|unique:products,en_name|max:255',
-            'ar_description' => 'required|max:2000',
-            'en_description' => 'required|max:2000',
+            'ar_description' => 'required|max:999999',
+            'en_description' => 'required|max:999999',
             'ar_small_description' => 'required|max:1000',
             'en_small_description' => 'required|max:1000',
             'sku'           => 'required|unique:products,sku|max:255',
@@ -254,8 +254,8 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'ar_name'        => 'required|max:255|unique:products,ar_name,'.$id,
             'en_name'        => 'required|max:255|unique:products,en_name,'.$id,
-            'ar_description' => 'required|max:2000',
-            'en_description' => 'required|max:2000',
+            'ar_description' => 'required|max:999999',
+            'en_description' => 'required|max:999999',
             'ar_small_description' => 'required|max:1000',
             'en_small_description' => 'required|max:1000',
             'sku'           => 'required|max:255|unique:products,sku,'.$id,
