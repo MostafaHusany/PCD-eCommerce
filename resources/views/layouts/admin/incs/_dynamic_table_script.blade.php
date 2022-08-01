@@ -306,7 +306,12 @@ class DynamicTable {
     // clear form fields values
     clearForm = (fields_id_list) => {
         fields_id_list.forEach(el_id => {
-            $(`#${el_id}`).val('').change();
+            if ($(`#${el_id}`).attr('type') == 'number') {
+                let min = $(`#${el_id}`).attr('min');
+                $(`#${el_id}`).val(Boolean(min) ? min : '0').change();
+            } else {
+                $(`#${el_id}`).val('').change();
+            }
         });
     }
 

@@ -44,7 +44,29 @@
 
         <div class="form-group row">
             <label for="edit-en_description" class="col-sm-2 col-form-label">Description</label>
-            <div class="col-sm-5">
+            <div class="col-sm-10">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="edit-nav-en_description-tab" data-toggle="tab" data-target="#edit-nav-en_description" type="button" role="tab" aria-controls="nav-en_description" aria-selected="true">EN</button>
+                        <button class="nav-link" id="edit-nav-ar_description-tab" data-toggle="tab" data-target="#edit-nav-ar_description" type="button" role="tab" aria-controls="nav-ar_description" aria-selected="false">AR</button>
+                    </div>
+                </nav>
+                <div class="tab-content mb-2" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="edit-nav-en_description" role="tabpanel" aria-labelledby="edit-nav-en_description-tab">
+                        <textarea id="edit-en_description" type="text" tabindex="3"  class="form-control" placeholder="Product Description"></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="edit-nav-ar_description" role="tabpanel" aria-labelledby="edit-nav-ar_description-tab">
+                        <textarea id="edit-ar_description" type="text"  tabindex="6" class="form-control text-right" dir="rtl" placeholder="وصف المنتج"></textarea>
+                    </div>
+                </div>
+                
+                <div style="padding: 5px 7px; display: none" id="edit-ar_descriptionErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+
+                <div style="padding: 5px 7px; display: none" id="edit-en_descriptionErr" class="err-msg mt-2 alert alert-danger">
+                </div>
+            </div><!-- /.col-sm-10 -->
+            <!-- <div class="col-sm-5">
                 <textarea id="edit-en_description" type="text" tabindex="3"  class="form-control" placeholder="Product Description"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-en_descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
@@ -53,7 +75,7 @@
                 <textarea id="edit-ar_description" type="text"  tabindex="6" class="form-control text-right" dir="rtl" placeholder="وصف المنتج"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-ar_descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
-            </div>
+            </div> -->
         </div><!-- /.form-group -->
         
         <div class="form-group row">

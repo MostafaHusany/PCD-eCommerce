@@ -3,6 +3,14 @@
 
 @push('page_css')
 <link rel="stylesheet" type="text/css" href="{{ asset('plugins/input_img_privew/jpreview.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
+
+<style>
+    #nav-ar_description .note-editable,
+    #edit-nav-ar_description .note-editable {
+        text-align: right !important;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -151,12 +159,59 @@
 @push('page_scripts')
 
 <script src="{{ asset('plugins/input_img_privew/jpreview.js') }}"></script>
+<script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
 
 <script>
 $(function () {
     
     $('#edit-permissions').select2({width: '100%'});
     $('#permissions').select2({width: '100%'});
+
+    $('#en_description').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ]
+    })
+
+    $('#ar_description').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ],
+        'justifyRight': true
+    });
+
+    $('#edit-en_description').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ]
+    })
+
+    $('#edit-ar_description').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ],
+        'justifyRight': true
+    });
 
     const objects_dynamic_table = new DynamicTable(
         {
@@ -244,6 +299,9 @@ $(function () {
             let err_msg = 'arabic description is required';
             $(`#${prefix}ar_descriptionErr`).text(err_msg);
             $(`#${prefix}ar_descriptionErr`).slideDown(500);
+            $(`#nav-ar_description-tab`).css('border', '1px solid red')
+        } else {
+            $(`#nav-ar_description-tab`).css('border', '')
         }
 
         if (data.get('en_name') === '') {
@@ -265,6 +323,9 @@ $(function () {
             let err_msg = 'english description is required';
             $(`#${prefix}en_descriptionErr`).text(err_msg);
             $(`#${prefix}en_descriptionErr`).slideDown(500);
+            $(`#nav-en_description-tab`).css('border', '1px solid red')
+        } else {
+            $(`#nav-en_description-tab`).css('border', '')
         }
 
         if (data.get('is_composite') !== '1' && (data.get('quantity') === '' || data.get('quantity') < 0)) {
@@ -369,9 +430,19 @@ $(function () {
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
 
+        function insertAtCaret (key, value) {
+            let newRange = $(`#edit-${key}`).summernote("getLastRange").deleteContents();
+            // Insert the desired text inside the formatted tag of the first part of the highlighted text. That way the formatting applies to the inserted text
+            $(`#edit-${key}`).summernote('code', value);
+        }
+
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
-            $(`#${prefix + el_id}`).val(data[el_id]).change();
+            if (['en_description', 'ar_description'].includes(el_id)) {
+                insertAtCaret(el_id, data[el_id])
+            } else {
+                $(`#${prefix + el_id}`).val(data[el_id]).change();
+            }
         });
 
         if (data.is_composite) {
@@ -561,6 +632,11 @@ $(function () {
                     },
                     cache: true
                 }
+            });
+
+            $('.create-object').click(function () {
+                $(`#ar_description`).summernote('code', '');
+                $(`#en_description`).summernote('code', '');
             });
 
             // start custome field events 
