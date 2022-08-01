@@ -183,9 +183,13 @@ class DistrictsController extends Controller
             $model->select("id", "name")
             	->where('name','LIKE',"%$search%");
                 
-            $data = isset($request->district_id) ? 
-            $model->where('district_id', $request->district_id)->get():
-            $model->where('type', "country")->get();
+            $data = isset($request->district_id) && $request->district_id == 0 ?
+                $model->where('type', "gove")->get() : 
+                (
+                    isset($request->district_id) ? 
+                    $model->where('district_id', $request->district_id)->get():
+                    $model->where('type', "country")->get()
+                );
         }
 
         return response()->json($data);
