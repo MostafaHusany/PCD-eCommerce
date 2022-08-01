@@ -61,7 +61,7 @@ class ShopController extends Controller
          */
 
         $product_category = ProductCategory::where('slug', $slug)->first();
-        $model            = $product_category->products()->where('is_active', 1)->with(['product_custome_fields', 'product_promotion_r', 'brand', 'upgrade_products']);
+        $model            = $product_category->products()->where('is_active', 1)->with(['product_custome_fields', 'product_promotion_r', 'brand', 'children', 'upgrade_products']);
 
         // filtration with name, with price  
         if (isset($request->name)) {
