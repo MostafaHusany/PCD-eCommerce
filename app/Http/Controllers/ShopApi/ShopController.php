@@ -16,7 +16,7 @@ class ShopController extends Controller
          * # Show product that is_active
          * 
         */
-        $target_product = Product::with(['brand', 'categories', 'product_promotion_r', 'brand', 'upgrade_products'])->where('is_active', 1)->where('slug', $slug)->first();
+        $target_product = Product::with(['brand', 'categories', 'product_promotion_r', 'brand', 'children', 'upgrade_products'])->where('is_active', 1)->where('slug', $slug)->first();
 
         return response()->json(array('data' => $target_product, 'success' => isset($target_product)));
     }
