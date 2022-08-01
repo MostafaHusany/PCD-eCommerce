@@ -3,7 +3,8 @@
 
 @push('page_css')
 <link rel="stylesheet" type="text/css" href="{{ asset('plugins/input_img_privew/jpreview.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/sceditor/minified/themes/default.min.css') }}" />
+
 
 <style>
     #nav-ar_description .note-editable,
@@ -159,59 +160,17 @@
 @push('page_scripts')
 
 <script src="{{ asset('plugins/input_img_privew/jpreview.js') }}"></script>
-<script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
+
+<!-- Include the editors JS -->
+<script src="{{ asset('plugins/sceditor/minified/sceditor.min.js') }}"></script>
+
+<!-- Include the BBCode or XHTML formats -->
+<script src="{{ asset('plugins/sceditor/minified/formats/bbcode.js') }}"></script>
+<script src="{{ asset('plugins/sceditor/minified/formats/xhtml.js') }}"></script>
 
 <script>
 $(function () {
     
-    $('#edit-permissions').select2({width: '100%'});
-    $('#permissions').select2({width: '100%'});
-
-    $('#en_description').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
-        ]
-    })
-
-    $('#ar_description').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
-        ],
-        'justifyRight': true
-    });
-
-    $('#edit-en_description').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
-        ]
-    })
-
-    $('#edit-ar_description').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
-        ],
-        'justifyRight': true
-    });
 
     const objects_dynamic_table = new DynamicTable(
         {
@@ -431,9 +390,9 @@ $(function () {
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
 
         function insertAtCaret (key, value) {
-            let newRange = $(`#edit-${key}`).summernote("getLastRange").deleteContents();
-            // Insert the desired text inside the formatted tag of the first part of the highlighted text. That way the formatting applies to the inserted text
-            $(`#edit-${key}`).summernote('code', value);
+
+            let description = document.getElementById(`edit-${key}`)
+            sceditor.instance(description).val(value);
         }
 
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
@@ -509,7 +468,72 @@ $(function () {
     }
 
     const index_custome_events =  (function () {
+
+        function callPlugins () {
+            $('#edit-permissions').select2({width: '100%'});
+            $('#permissions').select2({width: '100%'});
+
+            {
+                var en_description = document.getElementById('en_description')
+                sceditor.create(en_description, {
+                    plugins: 'undo',
+                    format: 'xhtml',
+                    emoticonsEnabled : false,
+                    toolbar: 'bold,italic,underline|horizontalrule,bulletlist,orderedlist|source|left,center,right,justify|ltr,rtl|font,size,color',
+                    style: '{{ asset("plugins/sceditor/minified/themes/content/default.min.css") }}',
+                });
+
+                sceditor.instance(en_description).keyDown(function () {
+                    $(en_description).val(sceditor.instance(en_description).val())
+                })
+
+                var ar_description = document.getElementById('ar_description')
+                sceditor.create(ar_description, {
+                    plugins: 'undo',
+                    format: 'xhtml',
+                    emoticonsEnabled : false,
+                    toolbar: 'bold,italic,underline|horizontalrule,bulletlist,orderedlist|source|left,center,right,justify|ltr,rtl|font,size,color',
+                    style: '{{ asset("plugins/sceditor/minified/themes/content/default.min.css") }}',
+                });
+
+                sceditor.instance(ar_description).keyDown(function () {
+                    $(ar_description).val(sceditor.instance(ar_description).val())
+                })
+
+
+
+                var edit_en_description = document.getElementById('edit-en_description')
+                sceditor.create(edit_en_description, {
+                    plugins: 'undo',
+                    format: 'xhtml',
+                    emoticonsEnabled : false,
+                    toolbar: 'bold,italic,underline|horizontalrule,bulletlist,orderedlist|source|left,center,right,justify|ltr,rtl|font,size,color',
+                    style: '{{ asset("plugins/sceditor/minified/themes/content/default.min.css") }}',
+                });
+
+                sceditor.instance(edit_en_description).keyDown(function () {
+                    $(edit_en_description).val(sceditor.instance(edit_en_description).val())
+                })
+
+                var edit_ar_description = document.getElementById('edit-ar_description')
+                let inst = sceditor.create(edit_ar_description, {
+                    plugins: 'undo',
+                    format: 'xhtml',
+                    emoticonsEnabled : false,
+                    toolbar: 'bold,italic,underline|horizontalrule,bulletlist,orderedlist|source|left,center,right,justify|ltr,rtl|font,size,color',
+                    style: '{{ asset("plugins/sceditor/minified/themes/content/default.min.css") }}',
+                });
+
+                sceditor.instance(edit_ar_description).keyDown(function () {
+                    $(edit_ar_description).val(sceditor.instance(edit_ar_description).val())
+                })
+            }
+        }
+
         function start_events () {
+            // start plugins 
+            callPlugins();
+
             $('#dataTable').on('change', '.c-activation-btn', function () {
                 let target_id = $(this).data('user-target');
                 
@@ -634,9 +658,17 @@ $(function () {
                 }
             });
 
-            $('.create-object').click(function () {
-                $(`#ar_description`).summernote('code', '');
-                $(`#en_description`).summernote('code', '');
+            $('#objectsCard').on('click', '.toggle-btn', function () {
+                let target_card = $(this).data('target-card');
+                
+                if (target_card == "#createObjectCard") {
+                    // clear the text area
+                    let en_description = document.getElementById('en_description')
+                    let ar_description = document.getElementById('ar_description')
+
+                    sceditor.instance(en_description).val('');
+                    sceditor.instance(ar_description).val('');
+                }
             });
 
             // start custome field events 
