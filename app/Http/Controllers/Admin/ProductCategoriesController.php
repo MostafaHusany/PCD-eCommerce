@@ -73,7 +73,7 @@ class ProductCategoriesController extends Controller
             return response()->json(['data' => $targted_categoreis, 'success' => isset($targted_categoreis)]);
         }
 
-        $target_object = ProductCategory::find($id);
+        $target_object = ProductCategory::with(['children', 'categoryParent', 'brands', 'attributes'])->find($id);
 
         if (isset($target_object) && isset($request->fast_acc)) {
             $target_object->attributes;
@@ -82,10 +82,10 @@ class ProductCategoriesController extends Controller
             $category_products = $target_object->products()->where('is_active', 1)->where('quantity', '>', 0)->where('is_composite', 0)->get();
             return response()->json(['data' => $category_products, 'category' => $target_object, 'success' => isset($category_products)]);
         } if (isset($target_object) && isset($request->get_children)) {
-            $target_object->children;
-            $target_object->categoryParent;
-            $target_object->brands;
-            $target_object->attributes;
+            // $target_object->children;
+            // $target_object->categoryParent;
+            // $target_object->brands;
+            // $target_object->attributes;
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }
 

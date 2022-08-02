@@ -225,13 +225,22 @@ $(function () {
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
         
         $(`#edit-show-icon`).attr('class', '');
-
+        console.log('fields_id_list', data['brands']);
         fields_id_list = fields_id_list.filter(el_id => !imgs_fields.includes(el_id) );
         fields_id_list.forEach(el_id => {
             $(`#${prefix + el_id}`).val(data[el_id]).change();
         });
 
         $(`#${prefix}-show-icon`).attr('class', '');
+
+        
+        // get brand
+        $('#edit-brands').val('').trigger('change')
+        data['brands'].forEach(brand => {
+            var brand_option = new Option(`${brand.en_title}`, brand.id, false, true);
+            $('#edit-brands').append(brand_option);
+        })
+        $('#edit-brands').trigger('change');
 
         custome_fields = [];
         $('.custome_ro_el').remove();
