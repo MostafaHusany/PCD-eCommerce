@@ -76,24 +76,23 @@
 
         <div class="form-group row">
             <?php
-                $categories_icons = ['flaticon-tv', 'flaticon-responsive', 'flaticon-camera', 'flaticon-plugins',
-                'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer',
-                'flaticon-mouse'  , 'fas fa-microchip', 'fas fa-memory', 'fas fa-gamepad'
-            ];
+                $categories_icons = ['ac-1.webp' => 'air cooling', 'ca-1.webp' => 'case', 'cpu.webp' => 'CPU', 'fa-1.webp' => 'fans',
+                'gc.webp' => 'graphic cards', 'hdd.webp' => 'hard disck', 'ssdm2.webp' => 'solid state', 'mb.webp' => 'mother board', 'ps-1.webp' => 'power supply',
+                'ram.webp' => 'ram', 'wc-1.webp' => 'water cooling', 'wf-1.webp' => 'wifi adapter'];
             ?>
             <label for="rule" class="col-sm-2 col-form-label">Category Icon</label>
             <div class="col-5">
                 <select tabindex="9" id="edit-icon" class="form-control">
                     <option value="">-- select icon --</option>
-                    @foreach($categories_icons as $icon)
-                    <option data-icon="glyphicon-glass" value="{{$icon}}">
+                    @foreach($categories_icons as $key => $icon)
+                    <option data-icon="glyphicon-glass" value="{{$key}}">
                         {{$icon}}
                     </option>
                     @endforeach
                 </select>
             </div>
-            <div class="col-5">
-                <i style="font-size: 25px;" id="edit-show-icon" class=""></i>
+            <div class="col-5 text-center" id="edit-show-icon">
+
             </div>
         </div>
 
@@ -126,9 +125,17 @@ $(document).ready(function () {
     const create_form_custome_option = (function () {
         function starter_event () {
             $('#edit-icon').change(function () {
-                let icon_class = $(this).val();
-                $("#edit-show-icon").removeClass();
-                $('#edit-show-icon').toggleClass(icon_class);
+                let icon_name = $(this).val();
+                if (Boolean(icon_name)) {
+                    let icon = `
+                        <div style="background-color: #ddd; border-radius: 20px; display: inline-block">
+                            <img width="80px" src="{{ asset('images/Icons/') }}/${ icon_name }" >
+                        </div>
+                    `
+                    $("#edit-show-icon").html(icon)
+                } else {
+                    $("#edit-show-icon").html('')
+                }
             });
 
         }// end :: starter_event

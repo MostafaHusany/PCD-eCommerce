@@ -75,22 +75,23 @@
 
         <div class="form-group row">
             <?php
-                $categories_icons = ['flaticon-tv', 'flaticon-responsive', 'flaticon-camera', 'flaticon-plugins',
-                'flaticon-headphones', 'flaticon-console', 'flaticon-watch', 'flaticon-music-system', 'flaticon-monitor', 'flaticon-printer'];
+                $categories_icons = ['ac-1.webp' => 'air cooling', 'ca-1.webp' => 'case', 'cpu.webp' => 'CPU', 'fa-1.webp' => 'fans',
+                'gc.webp' => 'graphic cards', 'hdd.webp' => 'hard disck', 'ssdm2.webp' => 'solid state', 'mb.webp' => 'mother board', 'ps-1.webp' => 'power supply',
+                'ram.webp' => 'ram', 'wc-1.webp' => 'water cooling', 'wf-1.webp' => 'wifi adapter'];
             ?>
             <label for="rule" class="col-sm-2 col-form-label">Category Icon</label>
             <div class="col-5">
                 <select tabindex="9" id="icon" class="form-control">
                     <option value="">-- select icon --</option>
-                    @foreach($categories_icons as $icon)
-                    <option data-icon="glyphicon-glass" value="{{$icon}}">
+                    @foreach($categories_icons as $key => $icon)
+                    <option data-icon="glyphicon-glass" value="{{$key}}">
                         {{$icon}}
                     </option>
                     @endforeach
                 </select>
             </div>
-            <div class="col-5">
-                <i style="font-size: 25px;" id="show-icon" class=""></i>
+            <div class="col-5 text-center" id="show-icon">
+                
             </div>
         </div><!-- /.form-group -->
 
@@ -133,9 +134,17 @@ $(document).ready(function () {
             });
 
             $('#icon').change(function () {
-                let icon_class = $(this).val();
-                $("#show-icon").removeClass();
-                $('#show-icon').addClass(icon_class);
+                let icon_name = $(this).val();
+                if (Boolean(icon_name)) {
+                    let icon = `
+                        <div style="background-color: #ddd; border-radius: 20px; display: inline-block">
+                            <img width="80px" src="{{ asset('images/Icons/') }}/${ icon_name }" >
+                        </div>
+                    `
+                    $("#show-icon").html(icon)
+                } else {
+                    $("#show-icon").html('')
+                }
             });
 
         }// end :: starter_event
