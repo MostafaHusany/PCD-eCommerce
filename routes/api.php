@@ -21,7 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth',
-    'namespace' => 'shopApi'
+    'namespace' => 'ShopApi'
 ], function ($router) {
     Route::post('login', 'AuthController@login');
     Route::post('phone-login', 'AuthController@phoneLogin');
@@ -33,6 +33,7 @@ Route::group([
     Route::get('countries', 'AuthController@countries');
     Route::get('phone-code', 'AuthController@requestPhoneCode');
     Route::get('my-orders', 'AuthController@getOrders');
+    Route::get('my-orders/{id}', 'AuthController@showOrder');
 });
 
 Route::group(['namespace' => 'ShopApi'], function () {

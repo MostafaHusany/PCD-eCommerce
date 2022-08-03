@@ -263,10 +263,19 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getOrders (Request $request) {
+    public function getOrders () {
 
         $customerOrders = Order::query()->with(['products', 'invoice', 'status_obj']);
         $data = $customerOrders->has('invoice')->where('customer_id', auth()->user()->customer->id)->orderBy('orders.id', 'desc')->paginate(15);
+
+        return response()->json(array('data' => $data, 'success' => true));
+    }
+
+    public function showOrder ($id) {
+
+        $customerOrders = Order::query()->with(['products', 'invoice', 'status_obj']);
+        $data = $customerOrders->has('invoice')->where('customer_id', auth()->user()->customer->id)
+                ->where('orders.id', $id)->orderBy('orders.id', 'desc')->first();
 
         return response()->json(array('data' => $data, 'success' => true));
     }
