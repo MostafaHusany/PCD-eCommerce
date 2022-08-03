@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="{{asset('shop/css/flaticon.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin-custom.css')}}">
 
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/logo.webp')}}">
+
     @yield('third_party_stylesheets')
 
     @stack('page_css')
