@@ -399,6 +399,7 @@ $(function () {
         fields_id_list.forEach(el_id => {
             if (['en_description', 'ar_description'].includes(el_id)) {
                 insertAtCaret(el_id, data[el_id])
+                $(`#${prefix + el_id}`).val(data[el_id])
             } else {
                 $(`#${prefix + el_id}`).val(data[el_id]).change();
             }
