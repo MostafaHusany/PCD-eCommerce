@@ -263,7 +263,7 @@ class ProductsController extends Controller
             // 'main_image'    => 'required',
             'categories'    => 'required'
         ]);
-
+        // dd($request->all());
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
@@ -390,7 +390,7 @@ class ProductsController extends Controller
         }
         // END VALIDATION
 
-        $data  = $request->except(['main_image', 'price_after_sale', 'is_active', 'brand_id']);
+        $data  = $request->except(['main_image', 'images', 'price_after_sale', 'is_active', 'brand_id']);
         
         if (isset($request->brand_id) && $request->brand_id != 'null') {
             $data['brand_id'] = $request->brand_id;
