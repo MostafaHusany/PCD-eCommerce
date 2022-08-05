@@ -424,7 +424,7 @@ $(document).ready(function() {
                             sectionProducts += `<div class="row"> ${ helpers.createProductEl(product) }`;
                         } else if (count == 3) {
                             sectionProducts += `${ helpers.createProductEl(product) }</div>`;
-                            count = 0;
+                            count = -1;
                         } else {
                             sectionProducts += `${ helpers.createProductEl(product) }`;
                         }
