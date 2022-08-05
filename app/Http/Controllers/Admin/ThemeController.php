@@ -155,20 +155,26 @@ class ThemeController extends Controller
         $target_slide = ThemeSetting::find($id);
         
         if (isset($target_slide)) {
+
             $image = $request->file('image');
-            $image->store('/public/homeSlider');
+            if (isset($image)) {
+                $image->store('/public/homeSlider');
+            }
 
             $data = [
                 'section' => 'slider',
-                'meta'    => json_encode([
-                    'order' => $request->order,
-                    'image' => 'storage/homeSlider/' . $image->hashName(),
-                    'type'  => $request->type, // product, category, external_link
-                    'value' => $request->value
-                ]),
                 'category_id' => $request->type == 'category' ? $request->value : null,
-                'product_id'  => $request->type == 'product' ? $request->value : null
+                'product_id'  => $request->type == 'product' ? $request->value : null,
+                'external_link'  => $request->type == 'externalLink' ? $request->value : null
             ];
+
+            $prev_slide_meta = (array) json_decode($target_slide->meta);
+            $data['meta'] = json_encode([
+                'order' => $request->order,
+                'image' => isset($image) ? 'storage/homeSlider/' . $image->hashName() : $prev_slide_meta['image'],
+                'type'  => $request->type, // product, category, external_link
+                'value' => $request->value
+            ]);
 
             $target_slide->update($data);
         };

@@ -526,14 +526,14 @@ $(document).ready(function() {
                     data.append('slider', "true");
 
                     // clear fields 
-                    sliderImage.value = '';
-                    if (isClickable) {
-                        let linkType = $('#linkType').val();
-                        $(`#${is_edit ? 'edit-' : '' }sliderOrder`).val(1);
-                        $(`#${is_edit ? 'edit-' : '' }linkType`).val('').trigger('change');
-                        $(`#${is_edit ? 'edit-' : '' }${linkType}`).val('').trigger('change');
-                        $(`#${is_edit ? 'edit-' : '' }isClickable`).prop('checked', false).trigger('change');
-                    }
+                    // sliderImage.value = '';
+                    // if (isClickable) {
+                    //     let linkType = $('#linkType').val();
+                    //     $(`#${is_edit ? 'edit-' : '' }sliderOrder`).val(1);
+                    //     $(`#${is_edit ? 'edit-' : '' }linkType`).val('').trigger('change');
+                    //     $(`#${is_edit ? 'edit-' : '' }${linkType}`).val('').trigger('change');
+                    //     $(`#${is_edit ? 'edit-' : '' }isClickable`).prop('checked', false).trigger('change');
+                    // }
                 }
 
                 return isValied ? data : isValied;
@@ -658,6 +658,9 @@ $(document).ready(function() {
                     $('#edit-externalLink').val(data.value).trigger('change');
                 }
             },
+            clearForm (is_edit = false) {
+                
+            }
         };
 
         const helpers = {};
