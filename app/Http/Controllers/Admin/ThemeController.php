@@ -95,7 +95,7 @@ class ThemeController extends Controller
          
         $image = $request->file('image');
         $image->store('/public/homeSlider');
-
+        
         $data = [
             'section' => 'slider',
             'meta'    => json_encode([
@@ -105,8 +105,9 @@ class ThemeController extends Controller
                 'type'  => $request->type, // product, category, external_link
                 'value' => $request->value
             ]),
-            'category_id' => $request->type == 'category' ? $request->value : null,
-            'product_id'  => $request->type == 'product' ? $request->value : null
+            'category_id'    => $request->type == 'category' ? $request->value : null,
+            'product_id'     => $request->type == 'product' ? $request->value : null,
+            'external_link'  => $request->type == 'externalLink' ? $request->value : null
         ];
 
         $theme_setting = ThemeSetting::create($data);

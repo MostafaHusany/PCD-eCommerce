@@ -857,10 +857,7 @@ $(document).ready(function() {
                                 $('#warningAlert').slideUp(500).text('You updated slide Successfully');
                             }, 5000);
                         }    
-                    });
-
-
-                    
+                    });       
                 }
             });
 
