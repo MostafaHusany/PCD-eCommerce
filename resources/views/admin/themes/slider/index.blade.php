@@ -659,7 +659,11 @@ $(document).ready(function() {
                 }
             },
             clearForm (is_edit = false) {
-                
+                let linkType = $(`#${is_edit ? 'edit-' : '' }linkType`).val();
+                $(`#${is_edit ? 'edit-' : '' }sliderOrder`).val(1);
+                $(`#${is_edit ? 'edit-' : '' }linkType`).val('').trigger('change');
+                $(`#${is_edit ? 'edit-' : '' }${linkType}`).val('').trigger('change');
+                $(`#${is_edit ? 'edit-' : '' }isClickable`).prop('checked', false).trigger('change');
             }
         };
 
@@ -760,6 +764,7 @@ $(document).ready(function() {
                         let sliderList = store.setters.addSlide(dataP);
                         view.frontSetter.setMaxOrder(sliderList.length);
                         view.frontSetter.slidersRender(sliderList);
+                        view.frontSetter.clearForm()
                     });
                 }
             });
