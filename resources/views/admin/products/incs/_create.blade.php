@@ -555,6 +555,7 @@ $(function () {
             // manage product qunatity, price, is default and remove product || update price and hidden input
             $('#upgradableOptionCategoryProducts').on('change', '.custom-control-input', function () {
                 let product_id = $(this).data('id');
+                console.log('selected default product : ', product_id);
                 
                 store.selectDefaultProduct(product_id);
                 render.render_products();
@@ -729,6 +730,7 @@ $(function () {
             const selectDefaultProduct = (product_id) => {
                 store.selected_categories_products[store.selected_category].forEach(product => {
                     product.is_default = product.id == product_id ? !product.is_default : false;
+                    console.log(product.id, product_id, product.id == product_id, product.is_default)
                 });
                 
                 // parse updates in upgradable inputes fields
