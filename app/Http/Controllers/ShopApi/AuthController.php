@@ -70,7 +70,7 @@ class AuthController extends Controller
         */
 
         $validator = Validator::make($request->all(), [
-            'phone' => isset($request->new_acc) ? 'required|unique:v_customer_phones,phone,id' : 'required',
+            'phone' => isset($request->new_acc) ? 'required|unique:users,phone' : 'required',
         ]);
 
         if ($validator->fails()) {
