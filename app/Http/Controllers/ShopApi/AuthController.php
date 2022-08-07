@@ -118,7 +118,7 @@ class AuthController extends Controller
 
         $target_verification = $this->verifyPhone($request->phone, $request->code);
         if (!$target_verification) {
-            return response()->json(['data' => null, 'success' => false, 'msg' => 'phone_validation_code']); 
+            return response()->json(['data' => null, 'success' => false, 'msg' => ['code' => ['validation.phone_validation_code']] ]); 
         }
         
         $data = $request->all();
@@ -177,7 +177,7 @@ class AuthController extends Controller
         $target_user = User::where('phone', request('phone'))->first();
         
         if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['data' => null, 'success' => false, 'msg' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
@@ -200,7 +200,7 @@ class AuthController extends Controller
 
         $target_user = $target_verification->user;
         if (! $token = auth('api')->login($target_user)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['data' => null, 'success' => false, 'msg' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
