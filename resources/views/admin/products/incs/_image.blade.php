@@ -1,1 +1,1 @@
-<image src="{{ asset($row_object->main_image) }}" class="img-thumbnail" />
+<image width="200px" src="{{ asset($row_object->main_image) }}" class="img-thumbnail" />
