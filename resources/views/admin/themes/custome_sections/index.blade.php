@@ -489,7 +489,7 @@ $(document).ready(function() {
 
         const helpers = {
             createProductEl : (product) => {
-                let productPrice = product.price > product.price_after_sale ? 
+                let productPrice = Boolean(product.price_after_sale) && product.price > product.price_after_sale ? 
                 `
                 <div class="row">
                     <div class="col-6">
