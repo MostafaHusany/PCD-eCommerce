@@ -70,7 +70,7 @@ class AuthController extends Controller
         */
 
         $validator = Validator::make($request->all(), [
-            'phone' => isset($request->new_acc) ? 'required|unique:users,phone' : 'required',
+            'phone' => isset($request->new_acc) ? 'required|unique:users,phone' : 'required|exists:users,phone',
         ]);
 
         if ($validator->fails()) {
@@ -174,7 +174,7 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['phone', 'password']);
-        $target_user = User::where('phone', request('phone'))->first();
+        // $target_user = User::where('phone', request('phone'))->first();
         
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['data' => null, 'success' => false, 'msg' => 'Unauthorized'], 401);
