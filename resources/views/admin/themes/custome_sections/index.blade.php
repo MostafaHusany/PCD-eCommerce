@@ -557,7 +557,7 @@ $(document).ready(function() {
                 width: '100%',
                 placeholder: 'Select products, by name, id, or sku',
                 ajax: {
-                    url: '{{ url("admin/products-search") }}',
+                    url: '{{ url("admin/products-search") }}?all_products=true',
                     dataType: 'json',
                     delay: 150,
                     processResults: function (data) {
