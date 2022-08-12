@@ -57,6 +57,7 @@ Route::group(['namespace' => 'ShopApi'], function () {
     // CartController
     // Route::get('cart', 'CartController@get_cart');
     Route::post('cart/{id}', 'CartController@add_product');
+    Route::get('taxes', 'CartController@get_tax_and_fees');
     // Route::delete('cart', 'CartController@clear_cart');
     // Route::delete('cart/{cart_item_id}', 'CartController@remove_product');
 

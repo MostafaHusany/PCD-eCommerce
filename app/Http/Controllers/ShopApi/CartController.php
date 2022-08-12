@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\ShopApi;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 use Cart;
+use App\Fee;
+use App\Taxe;
 use App\Product;
+use App\Shipping;
 
 class CartController extends Controller
 {
@@ -85,4 +89,12 @@ class CartController extends Controller
         $quantityt_rules = $target_product->categories()->where('rule', '>', 0)->pluck('rule')->toArray();
         return sizeof($quantityt_rules) && $qty > min($quantityt_rules) ? min($quantityt_rules) : false;
     }
+
+    function get_tax_and_fees () {
+        $fees  = DB::table('fees')->where('is_active', 1)->get();
+        $taxes = DB::table('taxes')->where('is_active', 1)->get();
+
+        return response()->json(['data' => ['fees' => $fees, 'taxes' => $taxes], 'success' => true]);
+    }
+
 }
