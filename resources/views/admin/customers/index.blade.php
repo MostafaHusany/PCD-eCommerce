@@ -212,10 +212,11 @@ $(function () {
         }
 
         if (data.get('email') === '') {
-            is_valide = false;
-            let err_msg = 'email is required';
-            $(`#${prefix}emailErr`).text(err_msg);
-            $(`#${prefix}emailErr`).slideDown(500);
+            // is_valide = false;
+            // let err_msg = 'email is required';
+            // $(`#${prefix}emailErr`).text(err_msg);
+            // $(`#${prefix}emailErr`).slideDown(500);
+            data.delete('email')
         }
 
         if (data.get('phone') === '') {
@@ -228,15 +229,15 @@ $(function () {
         if (data.get('country_id') === '') {
             is_valide = false;
             let err_msg = 'country is required';
-            $(`#${prefix}countryErr`).text(err_msg);
-            $(`#${prefix}countryErr`).slideDown(500);
+            $(`#${prefix}country_idErr`).text(err_msg);
+            $(`#${prefix}country_idErr`).slideDown(500);
         }
 
         if (data.get('gove_id') === '') {
             is_valide = false;
             let err_msg = 'governorate is required';
-            $(`#${prefix}governorateErr`).text(err_msg);
-            $(`#${prefix}governorateErr`).slideDown(500);
+            $(`#${prefix}gove_idErr`).text(err_msg);
+            $(`#${prefix}gove_idErr`).slideDown(500);
         }
 
         return is_valide;

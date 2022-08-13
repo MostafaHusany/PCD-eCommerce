@@ -22,7 +22,7 @@ class CustomerController extends Controller
             $model = Customer::query();
             
             if (isset($request->name)) {
-                $query->where('name', 'like', '%' . $request->name . '%');
+                $model->where('name', 'like', '%' . $request->name . '%');
             }
 
             if (isset($request->email)) {
@@ -82,10 +82,10 @@ class CustomerController extends Controller
     public function store (Request $request) {
         $validator = Validator::make($request->all(), [
             'name'  => 'required|max:255',
-            'email' => 'required|unique:users,email|max:255',
+            'email' => 'unique:users,email|max:255',
             'phone' => 'required|unique:users,phone|max:255',
             // 'city' => 'required|unique:users,phone|max:255',
-            'address' => 'required|unique:users,phone|max:255'
+            'address' => 'max:9999'
         ]);
 
         if ($validator->fails()) {
@@ -120,10 +120,10 @@ class CustomerController extends Controller
     protected function updateCustomer (Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'name'  => 'required|max:255',
-            'email' => 'required|max:255|unique:customers,email,'.$id,
+            'email' => 'max:255|unique:customers,email,'.$id,
             'phone' => 'required|max:255|unique:customers,phone,'.$id,
             // 'city' => 'required|max:255',
-            'address' => 'required|max:255'
+            'address' => 'max:9999'
         ]);
 
         if ($validator->fails()) {
