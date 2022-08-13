@@ -46,17 +46,19 @@
         </div><!-- /.form-group -->
         --}}
 
+        {{--
         <div class="form-group row">
             <label for="edit-is_free_taxes" class="col-sm-2 col-form-label">Is Free Taxes ?</label>
             <div class="col-sm-10">
                 <select  tabindex="3" class="form-control" id="edit-is_free_taxes">
-                    <option selected="selected" value="0">Free Taxes</option>
-                    <option value="1">Add Taxes</option>
+                    <option selected="selected" value="1">Free Taxes</option>
+                    <option value="0">With Taxes</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="edit-is_free_taxesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div>
+        --}}
         
         <div class="form-group row">
             <label for="edit-cost" class="col-sm-2 col-form-label">Cost In SAR</label>
@@ -67,6 +69,7 @@
             </div>
         </div><!-- /.form-group -->
 
+        {{--
         <hr />
 
         <div class="alert alert-info">
@@ -90,6 +93,7 @@
                 </div>
             </div>
         </div>
+        --}}
 
         <button tabindex="7" class="update-object btn btn-warning float-right">Update {{$object_title}}</button>
     </form>

@@ -183,6 +183,8 @@ $(function () {
             $(`#${prefix}costErr`).slideDown(500);
         }
         
+        data.append('is_free_taxes', 0);
+
         return is_valide;
     };
 
