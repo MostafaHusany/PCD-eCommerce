@@ -118,7 +118,12 @@ class OrdersController extends Controller
 
         $invoice = Invoice::where('order_id', $request->order_id)->first();
         $invoice->status           = 'check_payment_transaction';
-        $invoice->trasnaction_imge = upload_image($request->file('payment_file'), 'payment_file');
+        // $invoice->trasnaction_imge = upload_image($request->file('payment_file'), 'payment_file/');
+
+        $main_image = $request->file('payment_file')[0];
+        $main_image->store('/public/payment_files');
+        $invoice->trasnaction_imge = 'storage/payment_files/' . $main_image->hashName(); 
+
         $invoice->save();
 
         return response()->json(array('data' => $invoice, 'success' => isset($invoice)));
