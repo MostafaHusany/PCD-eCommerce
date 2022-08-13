@@ -120,7 +120,7 @@ class OrdersController extends Controller
         $invoice->status           = 'check_payment_transaction';
         // $invoice->trasnaction_imge = upload_image($request->file('payment_file'), 'payment_file/');
 
-        $main_image = $request->file('payment_file')[0];
+        $main_image = $request->file('payment_file');
         $main_image->store('/public/payment_files');
         $invoice->trasnaction_imge = 'storage/payment_files/' . $main_image->hashName(); 
 
