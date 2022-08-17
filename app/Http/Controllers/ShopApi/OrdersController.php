@@ -52,7 +52,12 @@ class OrdersController extends Controller
             
             'country_id' => ['required', 'exists:districts,id'],
             'gove_id'    => ['required', 'exists:districts,id'],
-            'address'    => ['required']
+            'address'    => ['required'],
+            'code'       => ['exists:promo_codes,code',
+                Rule::exists('promo_codes')->where(function ($query) use ($request) {
+                    return $query->where('code', $request->code)->where('is_active', 1);
+                })
+            ]
         ]);
 
         if ($validator->fails()) {
@@ -94,7 +99,7 @@ class OrdersController extends Controller
             [$target_shipping->id, $target_shipping->is_free_taxes, $target_shipping->cost],
             [$products_id, $products_quantity],
             [],
-            isset($products_promocode) ? $products_promocode->name : null
+            isset($request->code) ? $request->code : null
         );
 
         // if every thing is fine clear the cart
