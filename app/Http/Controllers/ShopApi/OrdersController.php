@@ -142,18 +142,9 @@ class OrdersController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => 'not_valied_promocode']);
         }
         
-        if (!$this->is_cart_has_promo($request->code)) {
-            // clear old promo so the user can't use more than one promo
-            Cart::instance('promo')->destroy();
+        $target_promo = PromoCode::where('code', $request->code)->where('is_active', 1)->first();
 
-            // get promo record
-            $target_promo = PromoCode::where('code', $request->code)->where('is_active', '1')->first(); 
-            
-            // add the promo record to the cart session
-            Cart::instance('promo')->add($target_promo->id, $target_promo->code, 1, $target_promo->value);//->associate('App\PromoCode');
-        }
-
-        return response()->json(array('data' => Cart::instance('promo')->content(), 'success' => isset($target_promo)));
+        return response()->json(array('data' => $target_promo, 'success' => isset($target_promo)));
     }
 
     // START HELPER METHODS
