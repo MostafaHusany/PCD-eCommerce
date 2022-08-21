@@ -48,7 +48,7 @@ class CartController extends Controller
          * # Notice that we need to make the same validation 
          * in check out stage.
          * 
-         */
+        */
 
         $validator = Validator::make($request->all(), [
             'qty' => ['required', 'integer']
@@ -64,8 +64,24 @@ class CartController extends Controller
             return response()->json(['data' => null, 'success' => false, 'msg' => 'product_not_found']);
         }
 
-        if (!$target_product->quantity || $target_product->quantity < $request->qty) {
-            return response()->json(['data' => ['product_quantity' => $target_product->quantity], 'success' => false, 'msg' => 'not_valied_quantity']);
+        // if (!$target_product->quantity || $target_product->quantity < $request->qty) {
+        //     return response()->json(['data' => ['product_quantity' => $target_product->quantity], 'success' => false, 'msg' => 'not_valied_quantity']);
+        // }
+
+        if ($target_product->is_composite === 1) {
+            // check if composite products is valied
+            $is_not_valied_composite_qty = $this->is_not_valied_composite_qty($target_product, $request->qty);
+            if ($is_not_valied_composite_qty) {
+                return response()->json(['data' => ['is_not_valied_composite_qty' => $is_not_valied_composite_qty], 'success' => false, 'msg' => 'is_not_valied_composite_qty']);
+            }
+        }
+
+        if ($target_product->is_composite === 2) {
+            $is_not_valied_upgradable_qty = $this->is_not_valied_upgradable_qty($target_product, $request);
+            
+            if ($is_not_valied_upgradable_qty) {
+                return response()->json(['data' => ['is_not_valied_upgradable_qty' => $is_not_valied_upgradable_qty], 'success' => false, 'msg' => 'is_not_valied_composite_qty']);
+            }
         }
 
         $min_quantity = $this->is_not_valied_qty($target_product, $request->qty);
@@ -90,11 +106,38 @@ class CartController extends Controller
         return sizeof($quantityt_rules) && $qty > min($quantityt_rules) ? min($quantityt_rules) : false;
     }
 
-    function get_tax_and_fees () {
-        $fees  = DB::table('fees')->where('is_active', 1)->get();
-        $taxes = DB::table('taxes')->where('is_active', 1)->get();
+    private function is_not_valied_composite_qty (Product $target_product, $qty) {
+        /**
+         * # Notice that we don't need this validation method for the composite
+         * products, the composite hase a reserved qty for the composite product
+         * but we do this level for any un-expected senario.
+         * 
+         * # We storing a history for the products components quantity
+         * so we need to get the "products_quantity" value from the meta
+         */
 
-        return response()->json(['data' => ['fees' => $fees, 'taxes' => $taxes], 'success' => true]);
+        $meta                    = (array) json_decode($target_product->meta);
+        $products_quantity       = (array) $meta['products_quantity'];
+        $children_products       = $target_product->children;
+        $not_valied_child_result = [];
+        
+        foreach ($children_products as $child) {
+            if ($child->reserved_quantity < ($qty * $products_quantity[$child->id])) {
+                $not_valied_child_result[] = [$child->reserved_quantity , $qty * $products_quantity[$child->id]];
+            }
+        }
+
+        return sizeof($not_valied_child_result) ? $not_valied_child_result : false;
+    }
+
+    private function is_not_valied_upgradable_qty (Product $target_product, $request) {
+        
+        $not_valied_child_result = Product::whereIn('id', $request->upgrade_options_list)
+                    ->where('quantity', '<', $request->qty)
+                    ->orWhere('is_active', 0)
+                    ->get();
+        
+        return sizeof($not_valied_child_result) ? $not_valied_child_result : false;
     }
 
 }
