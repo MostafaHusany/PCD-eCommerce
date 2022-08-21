@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ShopApi;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Brand;
 use App\Product;
 use App\ProductCategory;
 
@@ -120,4 +121,11 @@ class ShopController extends Controller
         return response()->json(array('data' => $categories, 'success' => isset($categories)));
     }
 
+    public function get_brands () {
+        $brands = cache()->remember('categories', 3600, function () {
+            return Brand::all();
+        });
+            
+        return response()->json(array('data' => $brands, 'success' => isset($categories)));
+    }
 }

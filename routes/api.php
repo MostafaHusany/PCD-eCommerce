@@ -49,6 +49,7 @@ Route::group(['namespace' => 'ShopApi'], function () {
      */
     
     // ShopController
+    Route::get('brands', 'ShopController@get_brands');
     Route::get('categories', 'ShopController@get_categories');
     Route::get('products', 'ShopController@search_all_products');
     Route::get('products/{slug}', 'ShopController@get_products_by_category');
