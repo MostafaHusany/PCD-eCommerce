@@ -53,11 +53,11 @@ class OrdersController extends Controller
             'country_id' => ['required', 'exists:districts,id'],
             'gove_id'    => ['required', 'exists:districts,id'],
             'address'    => ['required'],
-            'code'       => ['exists:promo_codes,code',
+            'code'       => isset($request->code) && strlen($request->code) ? ['exists:promo_codes,code',
                 Rule::exists('promo_codes')->where(function ($query) use ($request) {
                     return $query->where('code', $request->code)->where('is_active', 1);
                 })
-            ]
+            ] : []
         ]);
 
         if ($validator->fails()) {
