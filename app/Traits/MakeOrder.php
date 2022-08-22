@@ -216,7 +216,7 @@ trait MakeOrder {
         $total = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
         if (isset($target_order->promo_code)) {
             $promo_code = $target_order->promo_code;
-            $discount = $target_order->promo_code->type == 'fixed' ? $promo_code->value : $promo_code->value / $total * 100;
+            $discount = $target_order->promo_code->type == 'fixed' ? $promo_code->value : $total * ($promo_code->value / 100);
             $total   -= $discount;
             $target_order->promo_code_discount = $promo_code->value;
         }
