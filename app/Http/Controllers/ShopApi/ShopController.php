@@ -44,6 +44,14 @@ class ShopController extends Controller
             });
         }
 
+        if (isset($request->price_from)) {
+            $model->where('products.price', '>=', $request->price_from);
+        }
+        
+        if (isset($request->price_to)) {
+            $model->where('products.price', '<=', $request->price_to);
+        }
+
         $pagination_nom = isset($request->pagination_nom) ? $request->pagination_nom : 15;  
         $order_type     = isset($request->order_type) ? $request->order_type : 'price';
         $order_dir      = isset($request->order_dir) ? $request->order_dir : 'desc';
