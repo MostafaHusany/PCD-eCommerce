@@ -28,8 +28,8 @@ class CartController extends Controller
      */
 
     public function get_tax_and_fees () {
-        $fees  = DB::table('fees')->where('is_active', 1)->get();
-        $taxes = DB::table('texes')->where('is_active', 1)->get();
+        $fees  = Fee::where('is_active', 1)->get();
+        $taxes = Taxe::where('is_active', 1)->get();
 
         return response()->json(['data' => ['fees' => $fees, 'taxes' => $taxes], 'success' => true]);
     }
