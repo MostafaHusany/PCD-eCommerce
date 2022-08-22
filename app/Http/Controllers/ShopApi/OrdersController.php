@@ -233,7 +233,7 @@ class OrdersController extends Controller
         return [
             $is_not_valied, 
             $is_not_valied ? 
-            array('data' => $validation_result, 'success' => false, 'not_valied_product') 
+            array('data' => $validation_result, 'success' => false, 'msg' => 'not_valied_product') 
                 :
             [$products_id, $products_quantity]
         ];
