@@ -140,9 +140,9 @@ class CartController extends Controller
     private function is_not_valied_upgradable_qty (Product $target_product, $request) {
         
         $not_valied_child_result = Product::whereIn('id', $request->upgrade_options_list)
-                    ->where('quantity', '<', $request->qty)
-                    ->where($q, function () {
-                        $q->orWhere('is_active', 0);
+                    ->where(function ($q) use ($request) {
+                        $q->orWhere('quantity', '<', $request->qty)
+                        ->orWhere('is_active', 0);
                     })->get();
         
         return sizeof($not_valied_child_result) ? $not_valied_child_result : false;
