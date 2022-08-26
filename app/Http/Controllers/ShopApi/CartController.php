@@ -141,8 +141,9 @@ class CartController extends Controller
         
         $not_valied_child_result = Product::whereIn('id', $request->upgrade_options_list)
                     ->where('quantity', '<', $request->qty)
-                    ->orWhere('is_active', 0)
-                    ->get();
+                    ->where($q, function () {
+                        $q->orWhere('is_active', 0);
+                    })->get();
         
         return sizeof($not_valied_child_result) ? $not_valied_child_result : false;
     }
