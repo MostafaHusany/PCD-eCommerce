@@ -23,6 +23,7 @@ class ShopController extends Controller
     }
 
     public function search_all_products (Request $request) {
+        return 0;
         $model = Product::query()->with(['brand', 'categories', 'product_promotion_r', 'brand']);
 
         if (isset($request->name)) {
@@ -58,7 +59,7 @@ class ShopController extends Controller
         
         $products  = $model->orderBy($order_type, $order_dir)->paginate($pagination_nom);
 
-        return response()->json(array('data' => $products, 'success' => isset($products)));
+        return response()->json(array('data' => $products, 'success' => isset($products)), 200);
     }
 
     public function get_products_by_category (Request $request, $slug) {
@@ -130,7 +131,7 @@ class ShopController extends Controller
     }
 
     public function get_brands () {
-        $brands = cache()->remember('categories', 3600, function () {
+        $brands = cache()->remember('brands', 3600, function () {
             return Brand::all();
         });
             
