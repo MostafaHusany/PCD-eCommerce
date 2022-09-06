@@ -73,6 +73,7 @@ class BrandController extends Controller
 
 
         $new_object = Brand::create($data);
+        Cache::forget('brands');
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }
@@ -123,7 +124,10 @@ class BrandController extends Controller
         }else{
             $data['image'] = $target_object->image;
         }
+
         $target_object->update($data);
+        Cache::forget('brands');
+
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
 
