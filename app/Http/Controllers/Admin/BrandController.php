@@ -141,6 +141,7 @@ class BrandController extends Controller
     {
         $target_object = Brand::find($id);
         isset($target_object) && $target_object->delete();
+        Cache::forget('brands');
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
