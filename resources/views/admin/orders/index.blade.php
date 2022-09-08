@@ -74,7 +74,7 @@
 
             <div class="col-4">
                 <div class="form-group search-action">
-                    <label for="">Name</label>
+                    <label for="">Customer</label>
                     <input type="text" class="form-control" id="s-name">
                 </div><!-- /.form-group -->
             </div><!-- /.col-3 -->
@@ -142,6 +142,7 @@
 
         </div><!-- /.row --> 
         <!-- END   SEARCH BAR -->
+
         <div class="overflow-table">
             <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
                 <thead>

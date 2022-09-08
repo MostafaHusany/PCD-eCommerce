@@ -52,8 +52,7 @@ class OrdersController extends Controller
             if (isset($request->name)) {
                 $model->whereHas('customer', function ($q) use ($request) {
                     $q->where(function ($query) use ($request) {
-                        $query->orWhere('first_name', 'like', "%$request->name%");
-                        $query->orWhere('second_name', 'like', "%$request->name%");
+                        $query->orWhere('name', 'like', "%$request->name%");
                     });
                 });
             }
@@ -78,6 +77,20 @@ class OrdersController extends Controller
                 $model->whereDate('created_at', '<=', $request->end_date);
             }
 
+            if (isset($request->country)) {
+                $model->whereHas('country', function ($q) use ($request) {
+                    $q->where('districts.id', $request->country)
+                    ->where('districts.type', 'country');
+                });
+            }
+
+            if (isset($request->governorate)) {
+                $model->whereHas('government', function ($q) use ($request) {
+                    $q->whereIn('districts.id', $request->governorate)
+                    ->where('districts.type', 'gove');
+                });
+            }
+
             // if (isset($request->city)) {
             //     $model->whereHas('customer', function ($q) use ($request) {
             //         $q->where('customers.city', $request->city);
@@ -95,7 +108,7 @@ class OrdersController extends Controller
                 return $row_object->customer->phone;
             })
             ->addColumn('email', function ($row_object) {
-                return $row_object->customer->email;
+                return isset($row_object->customer) && isset($row_object->customer->email) ? $row_object->customer->email : '---';
             })
             ->addColumn('country', function ($row_object) {
                 return isset($row_object->country) ? $row_object->country->name : '---';
@@ -107,10 +120,10 @@ class OrdersController extends Controller
                 return $row_object->payment_status();
             })
             ->addColumn('status', function ($row_object) {
-                return isset($row_object->status_obj) ? $row_object->status_obj->status_name_en : $row_object->status;
+                return view('admin.orders.incs._status', compact('row_object'));
             })
             ->addColumn('status_action', function ($row_object) {
-                return view('admin.orders.incs._status', compact('row_object'));
+                return view('admin.orders.incs._status_action', compact('row_object'));
             })
             ->addColumn('created_at', function ($row_object) {
                 return view('admin.orders.incs._date', compact('row_object'));
