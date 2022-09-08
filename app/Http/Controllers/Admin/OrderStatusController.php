@@ -24,7 +24,8 @@ class OrderStatusController extends Controller
             
             if (isset($request->status)) {
                 $model->where('status_code', 'like', "%$request->status%")
-                ->orWhere('status_name', 'like', "%$request->status%");
+                ->orWhere('status_name_ar', 'like', "%$request->status%")
+                ->orWhere('status_name_en', 'like', "%$request->status%");
             }
 
             $datatable_model = Datatables::of($model)
