@@ -17,7 +17,7 @@ class ShippingController extends Controller
             $model = Shipping::query();
             
             if (isset($request->title)) {
-                $model->where('title', $request->title);
+                $model->where('title', 'like', '%'.$request->title.'%');
             }
 
             $datatable_model = Datatables::of($model)
