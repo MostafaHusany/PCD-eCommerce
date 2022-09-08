@@ -7,7 +7,7 @@
 
 @section('content')
 @php 
-    $object_title = 'Product';
+    $object_title = 'Sold Product';
 @endphp
 
 <div class="content-header">

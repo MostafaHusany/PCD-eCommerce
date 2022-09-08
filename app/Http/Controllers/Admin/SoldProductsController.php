@@ -40,7 +40,7 @@ class SoldProductsController extends Controller
             }
 
             if (isset($request->sku)) {
-                $model->where('sku', 'like', "%$request->status%");
+                $model->where('sku', 'like', "%$request->sku%");
             }
             
             if (isset($request->category)) {
