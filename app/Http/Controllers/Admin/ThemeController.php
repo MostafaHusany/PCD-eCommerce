@@ -85,8 +85,8 @@ class ThemeController extends Controller
             $data[] = [
                 'section' => 'navbar',
                 'meta'    => json_encode([
-                    'title_ar' => $link['title_ar'],
-                    'title_en' => $link['title_en'],
+                    'ar_title' => $link['ar_title'],
+                    'en_title' => $link['en_title'],
                     'type'  => $link['type'],
                     'value' => $link['value'],
                 ]),
@@ -140,7 +140,8 @@ class ThemeController extends Controller
             $data = [
                 'section' => 'cSection',
                 'meta'    => json_encode([
-                    'title' => $section['title'],
+                    'ar_title' => $section['ar_title'],
+                    'en_title' => $section['en_title'],
                     'order'  => $section['order'],
                 ]),
             ];

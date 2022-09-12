@@ -558,11 +558,11 @@ $(document).ready(function() {
                 ],
                 'keys' : {
                     'category' : 'value', 
-                    'categoryTitleAr' : 'title_ar', 
-                    'categoryTitleEn' : 'title_en', 
+                    'categoryTitleAr' : 'ar_title', 
+                    'categoryTitleEn' : 'en_title', 
                     'externalUrl' : 'value', 
-                    'externalUrlTitleAr' : 'title_ar', 
-                    'externalUrlTitleEn' : 'title_en', 
+                    'externalUrlTitleAr' : 'ar_title', 
+                    'externalUrlTitleEn' : 'en_title', 
                 }
             }
         };
@@ -607,12 +607,12 @@ $(document).ready(function() {
 
                 if (data.type == 'category') {
                     $('#edit-category').val(data.value).trigger('change');
-                    $('#edit-categoryTitleAr').val(data.title_ar);
-                    $('#edit-categoryTitleEn').val(data.title_en);
+                    $('#edit-categoryTitleAr').val(data.ar_title);
+                    $('#edit-categoryTitleEn').val(data.en_title);
                 } else {
                     $('#edit-externalUrl').val(data.value);
-                    $('#edit-externalUrlTitleAr').val(data.title_ar);
-                    $('#edit-externalUrlTitleEn').val(data.title_en);
+                    $('#edit-externalUrlTitleAr').val(data.ar_title);
+                    $('#edit-externalUrlTitleEn').val(data.en_title);
                 }
             },
             toggleForm : (is_edit = false) => {
@@ -636,12 +636,12 @@ $(document).ready(function() {
                     let nav_link_li = `
                         <li class="nav-link-item nav-item active">
                             <span class="nav-link" href="#">
-                                ${nav_link.title_ar}
+                                ${nav_link.en_title}
                                 <span data-id="${nav_link.id}" class="edit-link badge rounded-pill bg-warning text-dark" style="cursor: pointer;padding: 5px;margin: 0 2px;">
                                     <i class="fas fa-pen"></i>
                                 </span>
 
-                                <span data-id="${nav_link.id}" data-title-en="${nav_link.title_en}" data-title-ar="${nav_link.title_ar}" class="delete-link badge rounded-pill bg-danger" style="cursor: pointer;padding:5px 7px 4px 6px">
+                                <span data-id="${nav_link.id}" data-title-en="${nav_link.en_title}" data-title-ar="${nav_link.ar_title}" class="delete-link badge rounded-pill bg-danger" style="cursor: pointer;padding:5px 7px 4px 6px">
                                     <i class="fas fa-times"></i>
                                 </span>
                             </span>

@@ -106,21 +106,31 @@ $object_title = 'Cover Editor';
             
             <div class="form-group row">
                 <label for="products" class="col-sm-2 col-form-label">Section Title</label>
-                <div class="col-sm-4">
-                    <input type="text" name="title" id="title" class="form-control">
-                    <div style="padding: 5px 7px; display: none" id="titleErr"
+                <div class="col-sm-5">
+                    <input type="text" name="en_title" id="en_title" class="form-control" placeholder="section title">
+                    <div style="padding: 5px 7px; display: none" id="titleEnErr"
                         class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div><!-- /.col-sm-5 -->
 
-                <label for="products" class="col-sm-1 col-form-label">Order</label>
                 <div class="col-sm-5">
+                    <input type="text" name="ar_title" id="ar_title" class="form-control" style="text-align: right" placeholder="عنوان القسم">
+                    <div style="padding: 5px 7px; display: none" id="titleArErr"
+                        class="err-msg mt-2 alert alert-danger">
+                    </div>
+                </div><!-- /.col-sm-5 -->
+            </div><!-- /.form-group -->
+
+            <div class="form-group row">
+                <label for="products" class="col-sm-2 col-form-label">Order</label>
+                <div class="col-sm-10">
                     <input type="number" min="0" value="0" name="order" id="order" class="form-control">
                     <div style="padding: 5px 7px; display: none" id="orderErr"
                         class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div><!-- /.col-sm-5 -->
             </div><!-- /.form-group -->
+
 
             {{--
             <div class="form-group row">
@@ -170,16 +180,25 @@ $object_title = 'Cover Editor';
             <hr />
             
             <div class="form-group row">
-                <label for="edit-title" class="col-sm-2 col-form-label">Section Title</label>
-                <div class="col-sm-4">
-                    <input type="text" name="edit-title" id="edit-title" class="form-control">
-                    <div style="padding: 5px 7px; display: none" id="edit-titleErr"
+                <label for="edit-en_title" class="col-sm-2 col-form-label">Section Title</label>
+                <div class="col-sm-5">
+                    <input type="text" name="edit-en_title" id="edit-en_title" class="form-control">
+                    <div style="padding: 5px 7px; display: none" id="edit-en_titleErr"
                         class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div><!-- /.col-sm-5 -->
 
-                <label for="edit-products" class="col-sm-1 col-form-label">Order</label>
                 <div class="col-sm-5">
+                    <input type="text" name="edit-ar_title" style="text-align: right;" id="edit-ar_title" class="form-control">
+                    <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr"
+                        class="err-msg mt-2 alert alert-danger">
+                    </div>
+                </div><!-- /.col-sm-5 -->
+            </div><!-- /.form-group -->
+
+            <div class="form-group row">
+                <label for="edit-order" class="col-sm-2 col-form-label">Order</label>
+                <div class="col-sm-10">
                     <input type="number" min="0" value="0" name="edit-order" id="edit-order" class="form-control">
                     <div style="padding: 5px 7px; display: none" id="edit-orderErr"
                         class="err-msg mt-2 alert alert-danger">
@@ -361,8 +380,8 @@ $(document).ready(function() {
 
     const View = (() => {
         const fields = {
-            inputFields : ['title', 'order', 'products'],
-            formMode : 'create',
+            inputFields : ['ar_title', 'en_title', 'order', 'products'],
+            formMode    : 'create',
             linksContainer : $('#linksContainer'),
         };
         
@@ -401,7 +420,7 @@ $(document).ready(function() {
         };
 
         const frontSetter = {
-            renderSections : (sections) => {
+            renderSections  : (sections) => {
                 /**
                  * 1- clear old sections
                  * 2- create sections elements as string
@@ -439,7 +458,7 @@ $(document).ready(function() {
                     sectionsEl += `
                     <div id="sectionContainer${section.id}" class="section-container p-2 mb-5">
                         <h3 class="row">
-                            <div class="col-6">${section.title}</div>
+                            <div class="col-6">${section.en_title}/${section.ar_title}</div>
                             <div class="col-6 text-right">
                                 <button data-id="${section.id}" class="btn-edit btn btn-warning btn-sm">
                                     <i class="fas fa-edit"></i>
@@ -458,19 +477,19 @@ $(document).ready(function() {
 
                 $(fields.linksContainer).append(sectionsEl);
             }, 
-            updateOrder : (order, isEdit = false) => {
+            updateOrder     : (order, isEdit = false) => {
                 $(`#${isEdit ? 'edit-' : ''}order`).val(0);
                 $(`#${isEdit ? 'edit-' : ''}order`).attr('min', 0);
                 $(`#${isEdit ? 'edit-' : ''}order`).attr('max', Number(order));
             },
-            toggleEditForm : (targetSection = null) => {
+            toggleEditForm  : (targetSection = null) => {
                 /**
                  * # If targetSection if null this means
                  * we eant to clode the edit mode;
                  * 
                  * # Else we will get the section data
                  * and put it in the edit form and show edit form.
-                 */
+                */
                 if (Boolean(targetSection)) {
                     // show edit form
                     $('#createForm').slideUp(500);
@@ -530,7 +549,8 @@ $(document).ready(function() {
                 $('.section-container').css('background-color', '').css('opacity', '');
             }, 
             addDataToEditForm (targetSection) {
-                $('#edit-title').val(targetSection.title);
+                $('#edit-ar_title').val(targetSection.ar_title);
+                $('#edit-en_title').val(targetSection.en_title);
                 $('#edit-order').val(Number(targetSection.order));
 
                 $('#edit-products options').remove();
