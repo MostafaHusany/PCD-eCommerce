@@ -48,6 +48,20 @@ class ThemeController extends Controller
         return view('admin.themes.slider.index', compact('all_categories'));
     }
 
+    public function footer () {
+        /**
+         * Manage footer links,
+         * solcial icons,
+         * adds 
+         */
+
+        return view('admin.themes.footer.index');
+    }
+
+    public function contactInfo () {
+        return view('');
+    } 
+
     public function store (Request $request) {
 
         if (isset($request->navbar)) {
@@ -66,11 +80,13 @@ class ThemeController extends Controller
     private function storeNavbar ($request) {
         // validation ...
         
+        $data = [];
         foreach($request->links as $link) {
             $data[] = [
                 'section' => 'navbar',
                 'meta'    => json_encode([
-                    'title' => $link['title'],
+                    'title_ar' => $link['title_ar'],
+                    'title_en' => $link['title_en'],
                     'type'  => $link['type'],
                     'value' => $link['value'],
                 ]),
@@ -79,8 +95,8 @@ class ThemeController extends Controller
         }
 
         ThemeSetting::where('section', 'navbar')->delete();
-        $navbar_data = ThemeSetting::insert($data);
-        return response()->json(['data' => $navbar_data, 'success' => isset($navbar_data)]);
+        $navbar_data = sizeof($data) ? ThemeSetting::insert($data) : null;
+        return response()->json(['data' => $navbar_data, 'success' => true ]);
     }
 
     private function storeSlider ($request) {

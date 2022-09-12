@@ -119,7 +119,7 @@ $object_title = 'Navbar Editor';
 
             <div style="display: none;" class="category-link form-group row">
                 <label for="category" class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-5">
+                <div class="col-sm-10">
                     <select type="text" tabindex="1" class="form-control" id="category">
                         <option value="">-- select category --</option>
                         @foreach($all_categories as $category)
@@ -130,16 +130,30 @@ $object_title = 'Navbar Editor';
                         class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div>
+            </div><!-- /.category-link -->
+
+            <div style="display: none;" class="category-link form-group row">
+                <label for="categoryTitle" class="col-sm-2 col-form-label">Category Title</label>
                 
                 <div class="col-5">
                     <div class="form-group">
-                        <input id="categoryTitle" type="text" placeholder="category title" class="form-control">
-                        <div style="padding: 5px 7px; display: none" id="categoryTitleErr"
+                        <input id="categoryTitleEn" type="text" placeholder="category title" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="categoryTitleEnErr"
                             class="err-msg mt-2 alert alert-danger">
                         </div>
                     </div>
                 </div><!-- /.col-5 -->
-            </div>
+                
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="categoryTitleAr" type="text"  style="text-align: right" placeholder="عنوان الفئة" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="categoryTitleArErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+            </div><!-- /.category-link -->
+
 
             <div style="display: none;" class="external-link form-group row">
                 <div class="col-2">
@@ -163,7 +177,29 @@ $object_title = 'Navbar Editor';
                         </div>
                     </div>
                 </div><!-- /.col-5 -->
-            </div><!-- /.form-group -->
+            </div><!-- /.external-link -->
+
+            <div style="display: none;" class="external-link form-group row">
+                <label for="categoryTitle" class="col-sm-2 col-form-label">Link Title</label>
+                
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="externalUrlTitleEn" type="text" placeholder="link english title" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="externalUrlTitleEnErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+                
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="externalUrlTitleAr" type="text" style="text-align: right" placeholder="عنوان الرابط" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="externalUrlTitleArErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+            </div><!-- /.external-link -->
             
             <button !disabled="disabled" id="addLink" class="btn btn-primary float-right">Add Link</button>
         </div>
@@ -220,7 +256,29 @@ $object_title = 'Navbar Editor';
                         </div>
                     </div>
                 </div><!-- /.col-5 -->
-            </div>
+            </div><!-- /.edit-category-link -->
+
+            <div style="display: none;" class="edit-category-link form-group row">
+                <label for="edit-category" class="col-sm-2 col-form-label">Category Title</label>
+            
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="edit-categoryTitleEn" type="text" placeholder="category title" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="edit-categoryTitleEnErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+                
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="edit-categoryTitleAr" type="text" style="text-align: right" placeholder="عنوان الفئة" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="edit-categoryTitleArErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+            </div><!-- /.edit-category-link -->
 
             <div style="display: none;" class="edit-external-link form-group row">
                 <div class="col-2">
@@ -240,6 +298,30 @@ $object_title = 'Navbar Editor';
                     <div class="form-group">
                         <input id="edit-externalUrlTitle" type="text" placeholder="link title" class="form-control">
                         <div style="padding: 5px 7px; display: none" id="edit-externalUrlTitleErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+            </div><!-- /.form-group -->
+            
+            <div style="display: none;" class="edit-external-link form-group row">
+                <div class="col-2">
+                    <label for="" class="form-label">Link Title</label>
+                </div>
+
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="edit-externalUrlTitleEn" type="text" placeholder="link title" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="edit-externalUrlTitleEnErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.col-5 -->
+                
+                <div class="col-5">
+                    <div class="form-group">
+                        <input id="edit-externalUrlTitleAr" type="text" style="text-align: right" placeholder="link title" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="edit-externalUrlTitleArErr"
                             class="err-msg mt-2 alert alert-danger">
                         </div>
                     </div>
@@ -267,6 +349,7 @@ $object_title = 'Navbar Editor';
         <div class="form-group">
             <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" class="p-4 look-container">
                 <div class="custome-nav d-flex">
+                    {{--
                     <div class="categories_menu">
                         <div class="btn categories-btn">
                             <span>All Categories </span>
@@ -278,8 +361,9 @@ $object_title = 'Navbar Editor';
 
                             </ul>
                         </div>
-
                     </div><!-- /.categories_menu -->
+                    --}}
+
                     <nav class="nav-menu navbar navbar-expand-lg navbar-light bg-light">
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
@@ -485,16 +569,18 @@ $(document).ready(function() {
             },
             formFields : {
                 'category' : [
-                    'category', 'categoryTitle'
+                    'category', 'categoryTitleAr', 'categoryTitleEn'
                 ],
                 'externalLink' : [
-                    'externalUrl', 'externalUrlTitle'
+                    'externalUrl', 'externalUrlTitleAr', 'externalUrlTitleEn'
                 ],
                 'keys' : {
                     'category' : 'value', 
-                    'categoryTitle' : 'title', 
+                    'categoryTitleAr' : 'title_ar', 
+                    'categoryTitleEn' : 'title_en', 
                     'externalUrl' : 'value', 
-                    'externalUrlTitle' : 'title', 
+                    'externalUrlTitleAr' : 'title_ar', 
+                    'externalUrlTitleEn' : 'title_en', 
                 }
             }
         };
@@ -539,10 +625,12 @@ $(document).ready(function() {
 
                 if (data.type == 'category') {
                     $('#edit-category').val(data.value).trigger('change');
-                    $('#edit-categoryTitle').val(data.title);
+                    $('#edit-categoryTitleAr').val(data.title_ar);
+                    $('#edit-categoryTitleEn').val(data.title_en);
                 } else {
                     $('#edit-externalUrl').val(data.value);
-                    $('#edit-externalUrlTitle').val(data.title);
+                    $('#edit-externalUrlTitleAr').val(data.title_ar);
+                    $('#edit-externalUrlTitleEn').val(data.title_en);
                 }
             },
             toggleForm : (is_edit = false) => {
@@ -566,12 +654,12 @@ $(document).ready(function() {
                     let nav_link_li = `
                         <li class="nav-link-item nav-item active">
                             <span class="nav-link" href="#">
-                                ${nav_link.title}
+                                ${nav_link.title_ar}
                                 <span data-id="${nav_link.id}" class="edit-link badge rounded-pill bg-warning text-dark" style="cursor: pointer;padding: 5px;margin: 0 2px;">
                                     <i class="fas fa-pen"></i>
                                 </span>
 
-                                <span data-id="${nav_link.id}" data-title="${nav_link.title}" class="delete-link badge rounded-pill bg-danger" style="cursor: pointer;padding:5px 7px 4px 6px">
+                                <span data-id="${nav_link.id}" data-title-en="${nav_link.title_en}" data-title-ar="${nav_link.title_ar}" class="delete-link badge rounded-pill bg-danger" style="cursor: pointer;padding:5px 7px 4px 6px">
                                     <i class="fas fa-times"></i>
                                 </span>
                             </span>
