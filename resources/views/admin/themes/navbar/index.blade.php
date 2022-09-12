@@ -236,7 +236,7 @@ $object_title = 'Navbar Editor';
 
             <div style="display: none;" class="edit-category-link form-group row">
                 <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-5">
+                <div class="col-sm-10">
                     <select type="text" tabindex="1" class="form-control" id="edit-category">
                         <option value="">-- select category --</option>
                         @foreach($all_categories as $category)
@@ -247,15 +247,6 @@ $object_title = 'Navbar Editor';
                         class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div>
-                
-                <div class="col-5">
-                    <div class="form-group">
-                        <input id="edit-categoryTitle" type="text" placeholder="category title" class="form-control">
-                        <div style="padding: 5px 7px; display: none" id="edit-categoryTitleErr"
-                            class="err-msg mt-2 alert alert-danger">
-                        </div>
-                    </div>
-                </div><!-- /.col-5 -->
             </div><!-- /.edit-category-link -->
 
             <div style="display: none;" class="edit-category-link form-group row">
@@ -285,23 +276,14 @@ $object_title = 'Navbar Editor';
                     <label for="" class="form-label">External Link</label>
                 </div>
                 
-                <div class="col-5">
+                <div class="col-10">
                     <div class="form-group">
                         <input id="edit-externalUrl" type="url" placeholder="link url" class="form-control">
                         <div style="padding: 5px 7px; display: none" id="edit-externalUrlErr"
                             class="err-msg mt-2 alert alert-danger">
                         </div>
                     </div>
-                </div><!-- /.col-5 -->
-
-                <div class="col-5">
-                    <div class="form-group">
-                        <input id="edit-externalUrlTitle" type="text" placeholder="link title" class="form-control">
-                        <div style="padding: 5px 7px; display: none" id="edit-externalUrlTitleErr"
-                            class="err-msg mt-2 alert alert-danger">
-                        </div>
-                    </div>
-                </div><!-- /.col-5 -->
+                </div><!-- /.col-10 -->
             </div><!-- /.form-group -->
             
             <div style="display: none;" class="edit-external-link form-group row">
