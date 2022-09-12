@@ -182,14 +182,14 @@ $object_title = 'Cover Editor';
             <div class="form-group row">
                 <label for="edit-en_title" class="col-sm-2 col-form-label">Section Title</label>
                 <div class="col-sm-5">
-                    <input type="text" name="edit-en_title" id="edit-en_title" class="form-control">
+                    <input type="text" name="edit-en_title" id="edit-en_title" class="form-control" placeholder="section title">
                     <div style="padding: 5px 7px; display: none" id="edit-en_titleErr"
                         class="err-msg mt-2 alert alert-danger">
                     </div>
                 </div><!-- /.col-sm-5 -->
 
                 <div class="col-sm-5">
-                    <input type="text" name="edit-ar_title" style="text-align: right;" id="edit-ar_title" class="form-control">
+                    <input type="text" name="edit-ar_title" style="text-align: right;" id="edit-ar_title" class="form-control" placeholder="عنوان القسم">
                     <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr"
                         class="err-msg mt-2 alert alert-danger">
                     </div>
