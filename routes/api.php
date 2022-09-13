@@ -79,4 +79,5 @@ Route::group(['namespace' => 'ShopApi'], function () {
     // get theme data
     Route::get('theme', 'ThemesController@getHomeTheme');
     Route::get('nav-links', 'ThemesController@getNavbarLinks');
+    Route::get('layout', 'ThemesController@getThemeLayout');
 });
