@@ -206,6 +206,11 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
         
         Route::get('slider', 'ThemeController@slider');
         Route::post('slider', 'ThemeController@store');
+        
+        Route::get('footer', 'ThemeController@footer');
+
+        Route::get('contacts-info', 'ThemeController@contactsInfo');
+        Route::post('contacts-info', 'ThemeController@store');
 
         Route::post('/', 'ThemeController@store');
         Route::put('/{id}', 'ThemeController@update');
