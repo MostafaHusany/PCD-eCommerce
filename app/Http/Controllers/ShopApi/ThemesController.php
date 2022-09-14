@@ -49,7 +49,8 @@ class ThemesController extends Controller
                 'youtube'     => 'https://www.youtube.com/channel/UC5_WMJEpzcN1ONEs820ugHw',
                 'whatsapp'    => 'https://wa.me/966503362127',
                 'instagram'   => 'https://www.instagram.com/pc_doctor/',
-                'address'     => 'some address ....',
+                'ar_address'     => 'some address ....',
+                'en_address'     => 'some address ....',
                 'ar_description' => 'افضل متجر الكتروني علي شبكة الانترنت',
                 'en_description' => 'We are the best eCommerce ever',
             ]
