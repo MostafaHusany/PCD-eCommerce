@@ -38,22 +38,12 @@ class ThemesController extends Controller
     public function getThemeLayout () {
         // gets navbar data, and contacts info
         $navbraLinks = ThemeSetting::where('section', 'navbar')->with(['category'])->get();
+        $contacts_info = ThemeSetting::where('section', 'contacts_info')->first();
+        $contacts_info = isset($contacts_info->meta) ? (array) json_decode($contacts_info->meta) : [];
 
         $data = [
             'navbraLinks'  => $navbraLinks,
-            'contactsInfo' => [
-                'phone'       => '+201063200201',
-                'email'       => 'pcd@pcd.com',
-                'linkedin'    => '',
-                'facebook'    => 'https://www.facebook.com/pcdsa',
-                'youtube'     => 'https://www.youtube.com/channel/UC5_WMJEpzcN1ONEs820ugHw',
-                'whatsapp'    => 'https://wa.me/966503362127',
-                'instagram'   => 'https://www.instagram.com/pc_doctor/',
-                'ar_address'     => 'some address ....',
-                'en_address'     => 'some address ....',
-                'ar_description' => 'افضل متجر الكتروني علي شبكة الانترنت',
-                'en_description' => 'We are the best eCommerce ever',
-            ]
+            'contactsInfo' => $contacts_info
         ];
 
         return response()->json(array('data' => $data, 'success' => isset($data)));

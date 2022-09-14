@@ -58,8 +58,14 @@ class ThemeController extends Controller
         return view('admin.themes.footer.index');
     }
 
-    public function contactInfo () {
-        return view('');
+    public function contactsInfo (Request $request) {
+        if(isset($request->contacts_info)) {
+            $contacts_info = ThemeSetting::where('section', 'contacts_info')->first();
+            $contacts_info = isset($contacts_info->meta) ? (array) json_decode($contacts_info->meta) : [];
+            return response()->json(['data' => $contacts_info, 'success' => isset($contacts_info)]);
+        }
+
+        return view('admin.themes.contacts_info.index');
     } 
 
     public function store (Request $request) {
@@ -74,6 +80,10 @@ class ThemeController extends Controller
 
         if (isset($request->cSection)) {
             return $this->storeCSection($request);
+        }
+
+        if (isset($request->contacts_info)) {
+            return $this->storeContactsInfo($request);
         }
     }
 
@@ -156,6 +166,32 @@ class ThemeController extends Controller
         }
 
         return response()->json(['data' => null, 'success' => true]);
+    }
+
+    private function storeContactsInfo ($request) {
+        // dd($request->all());
+        ThemeSetting::where('section', 'contacts_info')->delete();
+        
+        $data = [
+            'section' => 'contacts_info',
+            'meta'    => json_encode([
+                'phone'       => $request->phone,
+                'email'       => $request->email,
+                'linkedin'    => $request->linkedin,
+                'facebook'    => $request->facebook,
+                'youtube'     => $request->youtube,
+                'whatsapp'    => $request->whatsapp,
+                'instagram'   => $request->instagram,
+                'ar_address'     => $request->ar_address,
+                'en_address'     => $request->en_address,
+                'ar_description' => $request->ar_description,
+                'en_description' => $request->en_description,
+            ])
+        ];
+
+        $contacts_info = ThemeSetting::create($data);
+        $contacts_info = isset($contacts_info->meta) ? (array) json_decode($contacts_info->meta) : [];
+        return response()->json(['data' => $contacts_info, 'success' => isset($contacts_info)]);
     }
 
     public function update (Request $request, $id) {

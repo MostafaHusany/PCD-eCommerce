@@ -241,6 +241,12 @@
                 <p>Custome Sections</p>
             </a>
         </li>
+        <li class="nav-item">
+            <a href="{{ url('admin/theme/contacts-info') }}" class="nav-link {{ Request::is('admin/theme/contacts-info') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-id-card"></i>
+                <p>Contacts Info</p>
+            </a>
+        </li>
     </ul>
 </li>
 @endif
