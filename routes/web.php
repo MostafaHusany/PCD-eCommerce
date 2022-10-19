@@ -92,6 +92,16 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
         ]
     ]);
 
+    Route::resource('products-names', 'ProductsNamesController', ['names' => [
+        'index'     => 'admin.products_names.index',
+        'store'     => 'admin.products_names.store',
+        'show'      => 'admin.products_names.show',
+        'edit'      => 'admin.products_names.edit',
+        'update'    => 'admin.products_names.update',
+        'destroy'   => 'admin.products_names.destroy'
+        ]
+    ]);
+
     Route::resource('orders', 'OrdersController', ['names' => [
         'index'     => 'admin.orders.index',
         'store'     => 'admin.orders.store',
@@ -228,6 +238,7 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
     Route::get('/shipping-search', 'ShippingController@dataAjax');
     Route::get('/brand-search', 'BrandController@dataAjax');
     Route::get('/districts-search', 'DistrictsController@dataAjax');
+    Route::get('/products-names-search', 'ProductsNamesController@dataAjax');
 
     Route::get('/test', function () {
         $tmp = User::first();

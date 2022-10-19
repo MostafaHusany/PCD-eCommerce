@@ -34,15 +34,20 @@ class DatabaseSeeder extends Seeder
         // $new_user = User::create($data);
         
         $data = [
-            "first_name" => "Mostafa",
-            "second_name" => "Hazem",
+            // "first_name" => "Mostafa",
+            // "second_name" => "Hazem",
             "name"      => "أ.مصطفي",
             "email"     => "admin@goo.com",
             "phone"     => "01063200201",
-            "city"      => "city 1",
             "address"   => "PCD",
+            "city"      => "city 1",
             "plain_password" => '123456',
         ];
+
+        
+        // 'name', 'email',
+        // 'phone', 'address', 'city', 'plain_password',
+        // 'user_id', 'meta', 'gove_id', 'country_id', 'phone_code'
 
         // $new_user->customer()->create($data);
 

@@ -88,6 +88,15 @@
             </a>
         </li>
         @endif
+
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_*'))
+        <li class="nav-item">
+            <a href="{{ route('admin.products_names.index') }}" class="nav-link {{ Request::is('admin/products-names') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-file-signature"></i>
+                <p>Products Names</p>
+            </a>
+        </li>
+        @endif
     </ul>
 </li>
 @endif
