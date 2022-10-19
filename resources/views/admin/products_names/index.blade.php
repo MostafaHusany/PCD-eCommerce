@@ -163,13 +163,13 @@ $(function () {
                 $(`#${prefix}skuErr`).slideDown(500);
             }
         } else {
-            // let valied_extensions = ['xlsx', 'xls', 'xls', 'xlw'];
-            // let file_struc    = data.get('importFile').split('.');
-            // let is_file_exist = data.get('importFile') != '' && file_struc.length == 2;
-            // if (!is_file_exist || !valied_extensions.includes(file_struc[1])) {
-            //     is_valide = false;
-            //     $('#importFileErr').text('File must be ont of this extentions xlsx, xls, xls or xlw.').slideDown(500);
-            // }
+            let valied_extensions = ['xlsx', 'xls', 'xls', 'xlw'];
+            let file_struc    = data.get('importFile').split('.');
+            let is_file_exist = data.get('importFile') != '' && file_struc.length == 2;
+            if (!is_file_exist || !valied_extensions.includes(file_struc[1])) {
+                is_valide = false;
+                $('#importFileErr').text('File must be ont of this extentions xlsx, xls, xls or xlw.').slideDown(500);
+            }
         }
 
         return is_valide;
