@@ -107,14 +107,13 @@ class ProductsNamesController extends Controller
         if($request->has('q')){
             $search = $request->q;
             $model = ProductName::query();
-            $model->select("id", "name", "sku", "quantity")
+            $model->select("id", "name", "sku")
             ->where(function ($model) use ($search) {
                 $model->orWhere('name','LIKE',"%$search%")
-                ->orWhere('en_name','LIKE',"%$search%")
                 ->orWhere('sku','LIKE',"%$search%");
             });
 
-            $data = $model->get();
+            $data = $model->limit('15')->get();
         }
         return response()->json($data);
     }

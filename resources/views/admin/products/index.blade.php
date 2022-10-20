@@ -486,7 +486,7 @@ $(function () {
 
                 sceditor.instance(en_description).keyDown(function () {
                     $(en_description).val(sceditor.instance(en_description).val())
-                })
+                });
 
                 var ar_description = document.getElementById('ar_description')
                 sceditor.create(ar_description, {
@@ -499,7 +499,7 @@ $(function () {
 
                 sceditor.instance(ar_description).keyDown(function () {
                     $(ar_description).val(sceditor.instance(ar_description).val())
-                })
+                });
 
 
 
@@ -514,7 +514,7 @@ $(function () {
 
                 sceditor.instance(edit_en_description).keyDown(function () {
                     $(edit_en_description).val(sceditor.instance(edit_en_description).val())
-                })
+                });
 
                 var edit_ar_description = document.getElementById('edit-ar_description')
                 let inst = sceditor.create(edit_ar_description, {
@@ -527,7 +527,7 @@ $(function () {
 
                 sceditor.instance(edit_ar_description).keyDown(function () {
                     $(edit_ar_description).val(sceditor.instance(edit_ar_description).val())
-                })
+                });
             }
         }
 
