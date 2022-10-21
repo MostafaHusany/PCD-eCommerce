@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Validator;
 
+use Hash;
+use Crypt;
 use App\User;
 use App\Models\Role;
 
@@ -170,6 +172,36 @@ class UsersController extends Controller
         $data['plain_password'] = '000'; 
 
         return $user->customer()->create($data);
+    }
+
+    // custome route profile
+    public function myProfile () {
+        $target_user = User::find(auth()->user()->id);
+
+        return view('admin.user_profile.index', compact('target_user'));
+    }
+
+    public function updateProfile (Request $request) {
+        $target_user = auth()->user();
+        $validator = Validator::make($request->all(), [
+            // 'asdasd' => 'required',
+            'email' => 'required|max:255|unique:users,email,' . $target_user->id,
+            'phone' => 'required|unique:users,phone,' . $target_user->id,
+            'password_old' => 'required',
+            'password' => 'required|string|min:8|confirmed'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        } else if (!Hash::check($request->password_old, auth()->user()->password)) {
+            return response()->json(['data' => null, 'success' => false, 'msg' => ['password' => ['your password is not correct !']]]); 
+        }
+
+        $data = $request->except('password_old');
+        $data['password'] = bcrypt($request->password);
+        $target_user->update($data);
+        
+        return response()->json(['data' => null, 'success' => isset($target_user)]);
     }
 }
 

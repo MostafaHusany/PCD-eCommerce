@@ -32,6 +32,9 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
     
     Route::get('error', 'ErrorsController@has_no_permission')->name('admin.error.no_permission');
 
+    Route::get('my-profile', 'UsersController@myProfile');
+    Route::post('my-profile', 'UsersController@updateProfile');
+
     Route::resource('users', 'UsersController', ['names' => [
         'index' => 'admin.users.index',
         'store' => 'admin.users.store',
