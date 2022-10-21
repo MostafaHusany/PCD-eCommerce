@@ -42,21 +42,21 @@
         <div class="form-group row">
             <label for="edit-password_old" class="col-sm-2 col-form-label">Old Password</label>
             <div class="col-sm-10">
-                <input type="password" value="12345678" class="form-control" id="edit-password_old" placeholder="Old password">
+                <input type="password" class="form-control" id="edit-password_old" placeholder="Old password">
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
             <label for="edit-password" class="col-sm-2 col-form-label">New Password</label>
             <div class="col-sm-10">
-                <input type="password" value="12345678" class="form-control" id="edit-password" placeholder="New password">
+                <input type="password" class="form-control" id="edit-password" placeholder="New password">
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
             <label for="edit-password_confirmation" class="col-sm-2 col-form-label">Confirm Password</label>
             <div class="col-sm-10">
-                <input type="password" value="12345678" class="form-control" id="edit-password_confirmation" placeholder="Confirm password">
+                <input type="password" class="form-control" id="edit-password_confirmation" placeholder="Confirm password">
             </div>
         </div><!-- /.form-group -->
 
