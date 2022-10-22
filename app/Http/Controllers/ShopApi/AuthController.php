@@ -20,6 +20,8 @@ use App\Traits\SMSSender;
 
 class AuthController extends Controller
 {
+    use SMSSender;
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'phoneLogin', 'register', 'countries', 'requestPhoneCode']]);
