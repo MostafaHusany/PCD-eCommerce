@@ -3,6 +3,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Http;
+
 trait SMSSender {
     private $api_url = 'https://www.4jawaly.net/api/sendsms.php?';
     private $user = 'username=pcdoctor';
@@ -14,6 +16,7 @@ trait SMSSender {
         $encode       = "sender=PCD%20SUPPORT&unicode=e&Rmduplicated=1&return=xml";
 
         $url_sms  = $this->api_url . $this->user . '&' . $this->pass . '&' . urlencode($message) . '&' . $phone_number . '&' . $encode;
-        $response_hmsms = file_get_contents($url_sms);
+        // $response_hmsms = file_get_contents($url_sms);
+        $response = Http::get($url_sms);
     }
 }
