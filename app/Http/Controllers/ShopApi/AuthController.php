@@ -15,6 +15,9 @@ use App\Customer;
 use App\District;
 use App\VCustomerPhone;
 
+
+use App\Traits\SMSSender;
+
 class AuthController extends Controller
 {
     public function __construct()
@@ -94,6 +97,8 @@ class AuthController extends Controller
         /**
          * # here send sms message with the cerification code ...
         */
+        $message = "dwingsa verification code : $random_code";
+        $this->sendSms($message, $target_phone);
 
         return response()->json(array('data' => null, 'success' => true));
     }
