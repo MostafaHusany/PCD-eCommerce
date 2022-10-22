@@ -4,7 +4,7 @@
 namespace App\Traits;
 
 trait SMSSender {
-    private $api_url = 'http://www.4jawaly.net/api/sendsms.php?';
+    private $api_url = 'https://www.4jawaly.net/api/sendsms.php?';
     private $user = 'username=pcdoctor';
     private $pass = 'password=pbdc741963';
 
