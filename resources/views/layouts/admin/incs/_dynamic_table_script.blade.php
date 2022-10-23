@@ -107,21 +107,26 @@ class DynamicTable {
             // send request
             if (is_valied) {
                 $('#loddingSpinner').show(500);
-
+                console.log('start test');
+                
                 current_objct._postRequest(current_objct.routs.store_route, data)
                 .then(res => {
                     if (res.success) {
-                        current_objct.table_object.draw();
                         current_objct.clearForm(current_objct.table_el_ids.fields_list);
                         current_objct.showAlertMsg('Request made successfully', current_objct.msg_container.success_el);
                         
                         toggleCard('#createObjectCard', '#objectsCard');
                     } else {
-                        current_objct.showAlertMsg('Somthing went rong please !!', current_objct.msg_container.danger_el);
+                        current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
                         console.log('my err response', res);// keep me for debuging
                         current_objct.showValidationErr(res.msg)
                     }// end :: if
                     
+                }).catch(err => {
+                    current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
+                    console.log('Bad Request Result : ', err);
+                }).finally(() => {
+                    current_objct.table_object.draw();
                     $('#loddingSpinner').hide(500);
                 });
             }// end :: if
@@ -145,17 +150,21 @@ class DynamicTable {
                 current_objct._postRequest(current_objct.routs.update_route + `/${data.get('id')}`, data)
                 .then(res => {
                     if (res.success) {
-                        current_objct.table_object.draw();
                         current_objct.clearForm(current_objct.table_el_ids.fields_list);
                         current_objct.showAlertMsg('Request made successfully', current_objct.msg_container.success_el);
                         
                         toggleCard('#editObjectsCard', '#objectsCard');
                     } else {
-                        current_objct.showAlertMsg('Somthing went rong please refresh the page !!', current_objct.msg_container.danger_el);
+                        current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
                         console.log('my err response', res);// keep me for debuging
                         current_objct.showValidationErr(res.msg, 'edit-')
                     }// end :: if
                     
+                }).catch(err => {
+                    current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
+                    console.log('Bad Request Result : ', err);
+                }).finally(() => {
+                    current_objct.table_object.draw();
                     $('#loddingSpinner').hide(500);
                 });
             }// end :: if
@@ -210,10 +219,16 @@ class DynamicTable {
                     let target_el_id  = $(this).data('target-card');
                     toggleCard(current_el_id, target_el_id);
                 } else {
-                    current_objct.showAlertMsg('Somthing went rong please refresh the page !!', current_objct.msg_container.danger_el);
+                    current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
                     console.log('my err response', res);// keep me for debuging
                 }// end :: if
                 
+                $('#loddingSpinner').hide(500);
+            }).catch(err => {
+                current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
+                console.log('Bad Request Result : ', err);
+            }).finally(() => {
+                current_objct.table_object.draw();
                 $('#loddingSpinner').hide(500);
             });
 
@@ -237,6 +252,12 @@ class DynamicTable {
 
                 current_objct._postRequest(current_objct.routs.destroy_route + `/${object_id}`, data)
                 .then(res => {
+                    current_objct.table_object.draw();
+                    current_objct.showAlertMsg('Record was deleted successfully !', current_objct.msg_container.warning_el);
+                }).catch(err => {
+                    current_objct.showAlertMsg('Somthing went wrong please refresh the page !!', current_objct.msg_container.danger_el);
+                    console.log('Bad Request Result : ', err);
+                }).finally(() => {
                     current_objct.table_object.draw();
                     $('#loddingSpinner').hide(500);
                 });
