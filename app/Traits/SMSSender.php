@@ -21,7 +21,7 @@ trait SMSSender {
 
         $message      = "message=" . urlencode($msg);
         $phone_number = "numbers=$phone";
-        $encode       = "sender=PCD%20SUPPORT&unicode=e&Rmduplicated=1&return=json";
+        $encode       = "sender=Dwingsa&unicode=e&Rmduplicated=1&return=json";
 
         $url_sms  = $this->api_url . $this->user . '&' . $this->pass . '&' . $message . '&' . $phone_number . '&' . $encode;
         $response = Http::get($url_sms);
