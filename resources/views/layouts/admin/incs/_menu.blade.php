@@ -165,7 +165,7 @@
 @endif
 
 @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('shipping_*') || auth()->user()->isAbleTo('fees_*') || auth()->user()->isAbleTo('taxes_*') || auth()->user()->isAbleTo('order_status_*'))
-<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') || str_contains(Request::path(), '/districts') ? 'menu-is-opening menu-open' : '' }}">
+<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') || str_contains(Request::path(), '/districts') || str_contains(Request::path(), '/sms') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-sliders-h"></i>
         <p>
@@ -218,6 +218,17 @@
             </a>
         </li>
         @endif
+
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('sms_*'))
+        <li class="nav-item">
+            <a href="{{ route('admin.sms.index') }}" class="nav-link {{ Request::is('admin/sms') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-sms"></i>
+                <p>SMS</p>
+            </a>
+        </li>
+        @endif
+
+
     </ul>
 </li>
 @endif

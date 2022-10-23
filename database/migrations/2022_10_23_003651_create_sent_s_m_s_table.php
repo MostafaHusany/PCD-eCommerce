@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFailedMessagesTable extends Migration
+class CreateSentSMSTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateFailedMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('failed_messages', function (Blueprint $table) {
+        Schema::create('sent_s_m_s', function (Blueprint $table) {
             $table->id();
             $table->string('phone');
+            $table->tinyInteger('status')->default(0);// 0, 1, -1
             $table->text('message');
-            $table->string('err_code');
-            $table->text('err_msg');
+            $table->string('err_code')->nullable();
+            $table->text('err_msg')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateFailedMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('failed_messages');
+        Schema::dropIfExists('sent_s_m_s');
     }
 }

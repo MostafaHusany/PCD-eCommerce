@@ -195,6 +195,16 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
         ]
     ]);
 
+    Route::resource('sms', 'SMSController', ['names' => [
+        'index'     => 'admin.sms.index',
+        'store'     => 'admin.sms.store',
+        'show'      => 'admin.sms.show',
+        'edit'      => 'admin.sms.edit',
+        'update'    => 'admin.sms.update',
+        'destroy'   => 'admin.sms.destroy'
+        ]
+    ]);
+
     Route::resource('invoices', 'InvoicesController', ['names' => [
         // 'index'     => 'admin.invoices.index',
         // 'store'     => 'admin.invoices.store',
@@ -262,3 +272,26 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 
         // );
     });
 });
+
+
+// Route::get('test', function () {
+//     $api_url = 'http://www.4jawaly.net/api/sendsms.php?';
+//     $user = 'username=pcdoctor';
+//     $pass = 'password=pbdc741963';
+
+//     $message = urlencode('Welcone PCD CEO to dwingsa store');
+//     $phone_number = '966559206469';
+
+//     $message      = "message=$message";
+//     $phone_number = "numbers=$phone_number";
+//     $encode       = "sender=PCD%20SUPPORT&unicode=e&Rmduplicated=1&return=json";
+
+//     $url_sms  = $api_url . $user . '&' . $pass . '&' . $message . '&' . $phone_number . '&' . $encode;
+//     // dd($url_sms);
+//     // $response_hmsms = file_get_contents($url_sms);
+//     // dd($response_hmsms);
+//     $response = Http::get($url_sms);
+//     $response = (array) json_decode($response->body());
+//     dd($response);
+//     // dd(json_decode($response_hmsms));
+// });
