@@ -120,6 +120,15 @@
                 <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link" !data-widget="fullscreen"     
+                href="{{ App::getLocale() == 'ar' ? LaravelLocalization::getLocalizedURL('en') : LaravelLocalization::getLocalizedURL('ar') }}"
+                role="button"
+            >
+                <i class="fas fa-language"></i>
+            </a>
+        </li>
         
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -144,10 +153,10 @@
                 </li>
                 <!-- Menu Footer-->
                 <li class="user-footer">
-                    <a href="{{ url('admin/my-profile') }}" class="btn btn-default btn-flat">Profile</a>
+                    <a href="{{ url('admin/my-profile') }}" class="btn btn-default btn-flat">@lang('_header.Profile')</a>
                     <a href="#" class="btn btn-default btn-flat float-right"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Sign out
+                        @lang('_header.sign_out')
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf

@@ -16,6 +16,28 @@
 @php 
     $object_title = 'District';
 @endphp
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{$object_title}}s</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url('admin') }}">Dashboard</a>
+                    </li>
+                    
+                    <li class="breadcrumb-item active">
+                        {{$object_title}}s
+                    </li>
+                </ol>
+            </div>
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div><!-- /.content-header -->
+
 <div class="container-fluid pt-3">
 
     <div id="successAlert" style="display: none" class="alert alert-success"></div>
@@ -52,15 +74,15 @@
         <div class="row">
             <div class="col-6">
                 <div class="form-group search-action">
-                    <label for="">Country</label>
-                    <select type="text" class="form-control" id="s-country"></select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-
-            <div class="col-6">
-                <div class="form-group search-action">
                     <label for="">Name</label>
                     <input type="text" class="form-control" id="s-name">
+                </div><!-- /.form-group -->
+            </div><!-- /.col-6 -->
+            
+            <div class="col-6">
+                <div class="form-group search-action">
+                    <label for="">Country</label>
+                    <select type="text" class="form-control" id="s-country"></select>
                 </div><!-- /.form-group -->
             </div><!-- /.col-6 -->
         </div><!-- /.row --> 
@@ -287,7 +309,7 @@ $(function () {
         $('#s-country').select2({
             allowClear: true,
             width: '100%',
-            placeholder: 'Select brand',
+            placeholder: 'Select country',
             ajax: {
                 url: '{{ url("admin/districts-search") }}',
                 dataType: 'json',

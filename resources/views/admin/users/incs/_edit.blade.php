@@ -1,7 +1,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update User</h5>
+            <h5>@lang('users.Update_User')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -17,34 +17,34 @@
         <input type="hidden" id="edit_form_flag" value="ready">
 
         <div class="form-group row">
-            <label for="edit-name" class="col-sm-2 col-form-label">Name</label>
+            <label for="edit-name" class="col-sm-2 col-form-label">@lang('users.Name')</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="edit-name" placeholder="Name">
+                <input type="text" class="form-control" id="edit-name" placeholder="@lang('users.Name')">
                 <div style="padding: 5px 7px; display: none" id="edit-nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-email" class="col-sm-2 col-form-label">Email</label>
+            <label for="edit-email" class="col-sm-2 col-form-label">@lang('users.Email')</label>
             <div class="col-sm-10">
-                <input type="email" class="form-control" id="edit-email" placeholder="Email">
+                <input type="email" class="form-control" id="edit-email" placeholder="@lang('users.Email')">
                 <div style="padding: 5px 7px; display: none" id="edit-emailErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-phone" class="col-sm-2 col-form-label">Phone</label>
+            <label for="edit-phone" class="col-sm-2 col-form-label">@lang('users.Phone')</label>
             <div class="col-sm-10">
-                <input type="phone" class="form-control" id="edit-phone" placeholder="Phone">
+                <input type="phone" class="form-control" id="edit-phone" placeholder="@lang('users.Phone')">
                 <div style="padding: 5px 7px; display: none" id="edit-phoneErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
+            <label for="edit-category" class="col-sm-2 col-form-label">@lang('users.Category')</label>
             <div class="col-sm-10">
                 <select class="form-control" id="edit-category">
                     <option selected="selected" value="admin">Admin</option>
@@ -56,7 +56,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row edit-technical-options" style="display: none">
-            <label for="edit-role" class="col-sm-2 col-form-label">Role</label>
+            <label for="edit-role" class="col-sm-2 col-form-label">@lang('users.Role')</label>
             <div class="col-sm-10">
                 <select class="form-control" id="edit-role"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-roleErr" class="err-msg mt-2 alert alert-danger">
@@ -65,12 +65,12 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row edit-technical-options" style="display: none">
-            <label for="edit-permissions" class="col-sm-2 col-form-label">Permissions</label>
+            <label for="edit-permissions" class="col-sm-2 col-form-label">@lang('users.Permissions')</label>
             <div class="col-sm-6">
                 <select name="permissions[]" id="edit-permissions" class="form-control" multiple="multiole" disabled="disabled"></select>
             </div>
             <label class="col-sm-3 pt-1">
-                <span class="pr-2">Custome Permissions</span>
+                <span class="pr-2">@lang('users.Custome_Permissions')</span>
                 <input type="hidden" id="edit-is_custome_permissions" value="false">
                 <input type="checkbox" id="edit-is_custome_permissions_flag"> 
             </label>
@@ -82,13 +82,13 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-password" class="col-sm-2 col-form-label">Password</label>
+            <label for="edit-password" class="col-sm-2 col-form-label">@lang('users.Password')</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="edit-password" placeholder="Password">
             </div>
         </div><!-- /.form-group -->
 
-        <button class="update-object btn btn-warning float-right">Update User</button>
+        <button class="update-object btn btn-warning float-right">@lang('users.Update_User')</button>
     </form>
 </div>
 

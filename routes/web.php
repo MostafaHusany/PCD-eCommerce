@@ -28,7 +28,10 @@ Route::get('/home', function() {
     return redirect('admin/');
 })->name('home');
 
-Route::group(['middleware' => ['auth:web', 'admin.permissions'], 'namespace' => 'Admin', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => ['auth:web', 'admin.permissions', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'], 
+                'namespace' => 'Admin', 
+                'prefix' => LaravelLocalization::setLocale() . '/admin'
+            ], function () {
     
     Route::get('error', 'ErrorsController@has_no_permission')->name('admin.error.no_permission');
 

@@ -1,113 +1,163 @@
 @extends('layouts.admin.app')
 
 
-@section('content')
 @php 
     $object_title = 'User';
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
 @endphp
-<div class="content-header">
+
+@push('page_css')
+<!-- <link rel="stylesheet" href="{{asset( LaravelLocalization::getCurrentLocale() == 'ar' ? 'shop/rtl_assets' : 'shop/ltr_assets' )}}/bootstrap/css/bootstrap.min.css"> -->
+@if($is_ar)
+<style>
+    .breadcrumb-item + .breadcrumb-item::before {
+        /* float: left;
+        padding-right: 0.5rem;
+        color: #6c757d; */
+        content: "" !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::after {
+        float: right;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        color: #6c757d;
+        content: "/" ;
+    }
+
+    .text-right {
+        text-align: left !important;
+    }
+
+    .text-left {
+        text-align: right !important;
+    }
+
+    .float-left {
+        float: right !important;
+    }
+
+    .float-right {
+        float: left !important;
+    }
+
+    .float-sm-left {
+        float: right !important;
+    }
+
+    .float-sm-right {
+        float: left !important;
+    }
+</style>
+@endif
+@endpush
+
+@section('content')
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('users.Users')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('users.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('users.Users')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Users</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        Users
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
-                </div>
-
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['users_add']))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
-                </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
-        <hr/>
-        
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
             
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Email</label>
-                    <input type="text" class="form-control" id="s-email">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Category</label>
-                    <select type="text" class="form-control" id="s-category">
-                        <option value="">-- select category --</option>
-                        <option value="technical">Technical</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
-
-        <div class="overflow-table">
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Category</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div><!-- /.card --> 
-    
-    @include('admin.users.incs._create')
 
-    @include('admin.users.incs._edit')
-    
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('users.Users_Adminstration')</h5>
+                </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
 
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['users_add']))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
+                </div>
+            </div><!-- /.row -->
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('users.Name')</label>
+                        <input type="text" class="form-control" id="s-name">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+                
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('users.Email')</label>
+                        <input type="text" class="form-control" id="s-email">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('users.Category')</label>
+                        <select type="text" class="form-control" id="s-category">
+                            <option value="">-- select category --</option>
+                            <option value="technical">Technical</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('users.Name')</th>
+                        <th>@lang('users.Email')</th>
+                        <th>@lang('users.Category')</th>
+                        <th>@lang('users.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div><!-- /.card --> 
+        
+        @include('admin.users.incs._create')
+
+        @include('admin.users.incs._edit')
+        
+
+    </div>
 </div>
 @endsection
 
