@@ -16,6 +16,7 @@ use App\Customer;
 use App\Shipping;
 use App\District;
 use App\OrderProduct;
+use App\SystemSetting;
 
 use App\Traits\MakeOrder;
 
@@ -274,6 +275,9 @@ class OrdersController extends Controller
         $target_order->status = $request->update_status;
         $target_order->save();
 
+        // send sms with order status
+        $this->SMSTemplate($target_order);
+
         return response()->json(['data' => $target_order, 'success' => isset($target_order)]);
     }
 
@@ -347,6 +351,18 @@ class OrdersController extends Controller
     //     $target_product->quantity -= $order_quantity;
     //     $target_product->save();
     // }
+
+    protected function SMSTemplate ($target_order) {
+        $sms_msgs = SystemSetting::where('setting_code', 'sms_settings')->first();
+        $sms_msgs = (array) json_decode($sms_msgs->meta);
+        $sms_temp = $sms_msgs['order-status-sms'];
+
+        $phone = $target_order->customer->phone;
+        $order_status = $target_order->status_obj->status_name_ar;
+        $message = $sms_temp . "\nالطلب : $target_order->code, الحالة : $order_status";
+        
+        $this->sendSms($message, $phone);
+    }
 
     
 }

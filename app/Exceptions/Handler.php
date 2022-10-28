@@ -56,9 +56,9 @@ class Handler extends ExceptionHandler
              * Response to unvalid api tokens
              */
             // dd($request->is('api/*') , $request->expectsJson() , $request->is('webhook/*'));
-            // if (auth('api')->user() ===  null) {
-            //     return response()->json(['success' => false, 'msg' => 'not_valied_token']);
-            // }
+            if (auth('api')->user() ===  null) {
+                return response()->json(['success' => false, 'msg' => 'not_valied_token']);
+            }
 
             if ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
 
