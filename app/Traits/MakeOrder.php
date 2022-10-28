@@ -12,9 +12,13 @@ use App\Customer;
 use App\Shipping;
 use App\PromoCode;
 use App\OrderProduct;
-use App\Traits\MakeOrder;
+use App\SystemSetting;
+
+use App\Traits\SMSSender;
 
 trait MakeOrder {
+    use SMSSender;
+
     /**
      * # In case of order updates : 
      * Can we reuse the create_customer_order , or should we build another method
@@ -64,6 +68,12 @@ trait MakeOrder {
         
         // create an invoive for the order Invoice
         $this->create_order_invoice($new_order);
+        
+        /**
+         * # here send sms message with the order creation ...
+        */
+        $order_code = ", order coder : $new_order->code";
+        $this->SMSTemplate($target_customer->phone, 'create-order-sms', $order_code);
 
         return $new_order;
     }
@@ -484,6 +494,15 @@ trait MakeOrder {
         $order_invoice->save();
 
         return $order_invoice;
+    }
+
+    private function SMSTemplate ($phone, $type , $sub_msg = null) {
+        $sms_msgs = SystemSetting::where('setting_code', 'sms_settings')->first();
+        $sms_msgs = (array) json_decode($sms_msgs->meta);
+        $sms_temp = $sms_msgs[$type];
+        $message = $sms_temp . $sub_msg;
+        
+        $this->sendSms($message, $phone);
     }
 
 }

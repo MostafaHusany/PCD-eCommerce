@@ -23,7 +23,6 @@ class ShopController extends Controller
     }
 
     public function search_all_products (Request $request) {
-        return 0;
         $model = Product::query()->with(['brand', 'categories', 'product_promotion_r', 'brand']);
 
         if (isset($request->name)) {

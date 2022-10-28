@@ -14,6 +14,7 @@ use App\Order;
 use App\Customer;
 use App\District;
 use App\VCustomerPhone;
+use App\SystemSetting;
 
 
 use App\Traits\SMSSender;
@@ -90,7 +91,7 @@ class AuthController extends Controller
             $target_phone->updated_at = Date('Y-m-d');
             $target_phone->save();
         } else {
-            VCustomerPhone::create([
+            $target_phone = VCustomerPhone::create([
                 'phone' => $request->phone,
                 'code' => $random_code
             ]);
@@ -99,8 +100,7 @@ class AuthController extends Controller
         /**
          * # here send sms message with the cerification code ...
         */
-        $message = "dwingsa verification code : $random_code";
-        $this->sendSms($message, $target_phone);
+        $this->SMSTemplate($target_phone->phone, 'verification-sms', $random_code);
 
         return response()->json(array('data' => null, 'success' => true));
     }
@@ -138,6 +138,12 @@ class AuthController extends Controller
         $target_verification->update(['user_id' => $target_user->id]);
         
         $token = auth('api')->attempt($request->only(['phone', 'password']));
+
+        /**
+         * # here send sms message with the cerification code ...
+        */
+        $this->SMSTemplate($target_user->phone, 'welcome-sms', '');
+
  
         return $this->respondWithToken($token);
     }
@@ -269,6 +275,15 @@ class AuthController extends Controller
             'token_type'   => 'bearer',
             'expires_in'   => auth('api')->factory()->getTTL() * 60
         ]);
+    }
+
+    protected function SMSTemplate ($phone, $type , $sub_msg = null) {
+        $sms_msgs = SystemSetting::where('setting_code', 'sms_settings')->first();
+        $sms_msgs = (array) json_decode($sms_msgs->meta);
+        $sms_temp = $sms_msgs[$type];
+        $message = $sms_temp . $sub_msg;
+        
+        $this->sendSms($message, $phone);
     }
 
     public function getOrders () {
