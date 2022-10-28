@@ -44,6 +44,9 @@ class ProductCategoriesController extends Controller
                 '---' :
                 ($row_object->categoryParent ? $row_object->categoryParent->en_title  : '---');
             })
+            ->addColumn('is_main', function ($row_object) {
+                return $row_object->is_main == 1  ? 'is main' : 'is sub';
+            })
             ->addColumn('products', function ($row_object) {
                 // return 0;
                 return $row_object->products()->count();

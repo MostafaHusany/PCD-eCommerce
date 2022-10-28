@@ -14,7 +14,7 @@
 
     <form action="/" id="objectForm">
         <div class="form-group row">
-            <label for="name" class="col-sm-2 col-form-label">@lang('users.Name')</label>
+            <label for="name" class="col-sm-2 col-form-label">@lang('users.Name')  <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="name" placeholder="@lang('users.Name')">
                 <div style="padding: 5px 7px; display: none" id="nameErr" class="err-msg mt-2 alert alert-danger">
@@ -23,7 +23,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="email" class="col-sm-2 col-form-label">@lang('users.Email')</label>
+            <label for="email" class="col-sm-2 col-form-label">@lang('users.Email')  <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="email" class="form-control" id="email" placeholder="@lang('users.Email')">
                 <div style="padding: 5px 7px; display: none" id="emailErr" class="err-msg mt-2 alert alert-danger">
@@ -32,7 +32,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="phone" class="col-sm-2 col-form-label">@lang('users.Phone')</label>
+            <label for="phone" class="col-sm-2 col-form-label">@lang('users.Phone')  <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="phone" class="form-control" id="phone" placeholder="@lang('users.Phone')">
                 <div style="padding: 5px 7px; display: none" id="phoneErr" class="err-msg mt-2 alert alert-danger">
@@ -41,7 +41,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="category" class="col-sm-2 col-form-label">@lang('users.Category')</label>
+            <label for="category" class="col-sm-2 col-form-label">@lang('users.Category')  <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select class="form-control" id="category">
                     <option selected="selected" value="admin">Admin</option>
@@ -53,7 +53,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row technical-options" style="display: none">
-            <label for="role" class="col-sm-2 col-form-label">@lang('users.Role')</label>
+            <label for="role" class="col-sm-2 col-form-label">@lang('users.Role') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select class="form-control" id="role"></select>
                 <div style="padding: 5px 7px; display: none" id="roleErr" class="err-msg mt-2 alert alert-danger">

@@ -1,7 +1,7 @@
 <div style="display: none" id="createObjectCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Create New {{ $object_title }}</h5>
+            <h5>@lang('promotions.Create_Promotion')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#createObjectCard" data-target-card="#objectsCard">
@@ -13,16 +13,16 @@
 
     <div id="objectForm">
         <div class="form-group row">
-            <label for="title" class="col-sm-2 col-form-label">Title</label>
+            <label for="title" class="col-sm-2 col-form-label">@lang('promotions.Title')</label>
             <div class="col-sm-10">
-                <input type="text" tabindex="1"  class="form-control" id="title" placeholder="Title">
+                <input type="text" tabindex="1"  class="form-control" id="title" placeholder="@lang('promotions.Title')">
                 <div style="padding: 5px 7px; display: none" id="titleErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="start_date" class="col-sm-2 col-form-label">Start Time</label>
+            <label for="start_date" class="col-sm-2 col-form-label">@lang('promotions.Start_Time')</label>
             <div class="col-sm-10">
                 <input type="date" tabindex="2" id="start_date" class="form-control">
                 <div style="padding: 5px 7px; display: none" id="start_dateErr" class="err-msg mt-2 alert alert-danger">
@@ -31,7 +31,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="end_date" class="col-sm-2 col-form-label">End Date</label>
+            <label for="end_date" class="col-sm-2 col-form-label">@lang('promotions.End_Date')</label>
             <div class="col-sm-10">
                 <input type="date" tabindex="3" id="end_date" class="form-control">
                 <div style="padding: 5px 7px; display: none" id="end_dateErr" class="err-msg mt-2 alert alert-danger">
@@ -40,7 +40,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="find-products" class="col-sm-2 col-form-label">Select Products</label>
+            <label for="find-products" class="col-sm-2 col-form-label">@lang('promotions.Select_Products')</label>
             <div class="col-sm-10">
                 <select class="form-control" tabindex="4" id="find-products" data-prefix=""></select>
                 <div style="padding: 5px 7px; display: none" id="productsErr" class="err-msg mt-2 alert alert-danger">
@@ -61,22 +61,22 @@
             <table class="table" style="font-size: 12px; !width: max-content;">
                 <thead>
                     <tr>
-                        <td>Img</td>
-                        <td style="width:100px;">Name</td>
-                        <td>SKU</td>
-                        <td>Price</td>
-                        <td>Price On Sale</td>
-                        <td>Sale Ratio</td>
-                        <td>Valied Quantity</td>
-                        <td>Quantity On Sale</td>
-                        <td>Actions</td>
+                        <td>@lang('promotions.Img')</td>
+                        <td style="width:100px;">@lang('promotions.Name')</td>
+                        <td>@lang('promotions.SKU')</td>
+                        <td>@lang('promotions.Price')</td>
+                        <td>@lang('promotions.Price_On_Sale')</td>
+                        <td>@lang('promotions.Sale_Ratio')</td>
+                        <td>@lang('promotions.Valied_Quantity')</td>
+                        <td>@lang('promotions.Quantity_On_Sale')</td>
+                        <td>@lang('promotions.Actions')</td>
                     </tr>
                 </thead>
                 <tbody id="selected_product_table"></tbody>
             </table>
         </div>
 
-        <button tabindex="5" class="create-object btn btn-primary float-right">Create {{ $object_title }}</button>
+        <button tabindex="5" class="create-object btn btn-primary float-right">@lang('promotions.Create_Promotion')</button>
     </div>
 </div>
 
@@ -245,7 +245,7 @@ $(document).ready(function () {
             $('#find-products').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select products',
+                placeholder: '@lang("promotions.Select_products")',
                 ajax: {
                     url: '{{ url("admin/products-search") }}/?all_products=true',
                     dataType: 'json',

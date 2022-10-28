@@ -17,7 +17,7 @@
         <input type="hidden" id="edit_form_flag" value="ready">
 
         <div class="form-group row">
-            <label for="edit-name" class="col-sm-2 col-form-label">@lang('users.Name')</label>
+            <label for="edit-name" class="col-sm-2 col-form-label">@lang('users.Name') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="edit-name" placeholder="@lang('users.Name')">
                 <div style="padding: 5px 7px; display: none" id="edit-nameErr" class="err-msg mt-2 alert alert-danger">
@@ -26,7 +26,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-email" class="col-sm-2 col-form-label">@lang('users.Email')</label>
+            <label for="edit-email" class="col-sm-2 col-form-label">@lang('users.Email') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="email" class="form-control" id="edit-email" placeholder="@lang('users.Email')">
                 <div style="padding: 5px 7px; display: none" id="edit-emailErr" class="err-msg mt-2 alert alert-danger">
@@ -35,7 +35,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-phone" class="col-sm-2 col-form-label">@lang('users.Phone')</label>
+            <label for="edit-phone" class="col-sm-2 col-form-label">@lang('users.Phone') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="phone" class="form-control" id="edit-phone" placeholder="@lang('users.Phone')">
                 <div style="padding: 5px 7px; display: none" id="edit-phoneErr" class="err-msg mt-2 alert alert-danger">
@@ -44,7 +44,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-category" class="col-sm-2 col-form-label">@lang('users.Category')</label>
+            <label for="edit-category" class="col-sm-2 col-form-label">@lang('users.Category') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select class="form-control" id="edit-category">
                     <option selected="selected" value="admin">Admin</option>
@@ -56,7 +56,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row edit-technical-options" style="display: none">
-            <label for="edit-role" class="col-sm-2 col-form-label">@lang('users.Role')</label>
+            <label for="edit-role" class="col-sm-2 col-form-label">@lang('users.Role') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select class="form-control" id="edit-role"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-roleErr" class="err-msg mt-2 alert alert-danger">

@@ -1,7 +1,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update {{ $object_title }}y</h5>
+            <h5>@lang('products.Update_Product')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -15,35 +15,43 @@
         <input type="hidden" id="edit-id">
         
         <div class="form-group row">
-            <label for="edit-en_name" class="col-sm-2 col-form-label">Name</label>
-            <div class="col-sm-5">
-                <input id="edit-en_name" type="text" tabindex="1"  class="form-control" placeholder="Product Name">
-                <div style="padding: 5px 7px; display: none" id="edit-en_nameErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <input id="edit-ar_name" type="text"  tabindex="4" class="form-control text-right" dir="rtl" placeholder="اسم المنتج">
-                <div style="padding: 5px 7px; display: none" id="edit-ar_nameErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
+            <label for="edit-en_name" class="col-sm-2 col-form-label">@lang('products.Name')</label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <input id="edit-en_name" type="text" tabindex="1" class="form-control" style="text-align: left !important;" placeholder="Product Name">
+                        <div style="padding: 5px 7px; display: none" id="edit-en_nameErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <input id="edit-ar_name" type="text"  tabindex="4" class="form-control" style="text-align: right !important;" dir="rtl" placeholder="اسم المنتج">
+                        <div style="padding: 5px 7px; display: none" id="edit-ar_nameErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
       
         <div class="form-group row">
-            <label for="edit-en_small_description" class="col-sm-2 col-form-label">Short Description</label>
-            <div class="col-sm-5">
-                <textarea id="edit-en_small_description" type="text" tabindex="2"  class="form-control" placeholder="Product Short Description"></textarea>
-                <div style="padding: 5px 7px; display: none" id="edit-en_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <textarea id="edit-ar_small_description" type="text"  tabindex="5" class="form-control text-right" dir="rtl" placeholder="وصف مختصر للمنتج"></textarea>
-                <div style="padding: 5px 7px; display: none" id="edit-ar_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
+            <label for="edit-en_small_description" class="col-sm-2 col-form-label">@lang('products.Short_Description')</label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <textarea id="edit-en_small_description" type="text" tabindex="2" class="form-control" style="text-align: left !important;" placeholder="Product Short Description"></textarea>
+                        <div style="padding: 5px 7px; display: none" id="edit-en_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <textarea id="edit-ar_small_description" type="text"  tabindex="5" class="form-control" style="text-align: right !important;" dir="rtl" placeholder="وصف مختصر للمنتج"></textarea>
+                        <div style="padding: 5px 7px; display: none" id="edit-ar_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-en_description" class="col-sm-2 col-form-label">Description</label>
+            <label for="edit-en_description" class="col-sm-2 col-form-label">@lang('products.Description')</label>
             <div class="col-sm-10">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -79,16 +87,16 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-is_composite" class="col-sm-2 col-form-label">Product Type</label>
+            <label for="edit-is_composite" class="col-sm-2 col-form-label">@lang('products.Product_Type')</label>
             <div class="col-sm-10">
                 <select tabindex="8" name="edit-is_composite" class="form-control" id="edit-is_composite"
                     data-first-target=".edit-child-products-container" 
                     data-second-target="#edit-productQuantityContainer" 
                     data-third-target=".edit-upgradable-options">
 
-                    <option value="0">Usual product</option>
-                    <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
-                    <option value="2">Upgradable Product (تجميعات)</option>
+                    <option value="0">@lang('products.Usual')</option>
+                    <option value="1">@lang('products.Composite') (تجميعات, حزمة عروض)</option>
+                    <option value="2">@lang('products.Upgradable') (تجميعات)</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="edit-is_compositeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
@@ -96,7 +104,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-storage_quantity" class="col-sm-2 col-form-label">Storage Quantity</label>
+            <label for="edit-storage_quantity" class="col-sm-2 col-form-label">@lang('products.Storage_Quantity')</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="9"  class="form-control" min="0" id="edit-storage_quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-storage_quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -105,14 +113,14 @@
         </div><!-- /.form-group -->
 
         <div id="container-reserved_quantity" class="form-group row">
-            <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
+            <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">@lang('products.Reserved_Quantity')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" type="number" tabindex="9"  class="form-control" min="0" id="edit-reserved_quantity-show" value="0">
             </div>
         </div><!-- /.form-group -->
         
         <div class="edit-upgradable-options edit-child-products-container form-group row" style="display: none;">
-            <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
+            <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">@lang('products.Reserved_Quantity')</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="9"  class="form-control" min="0" id="edit-reserved_quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-reserved_quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -121,14 +129,14 @@
             <div class="col-sm-2"></div>
             <div class="col-sm-10 mt-2">
                 <div style="padding: 5px 7px; !font-size: 12px" class="alert alert-info">
-                    This quantity will be reserved from the child products and will not sold as individual products 
+                    @lang('products.reserved_des_1')
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="edit-upgradable-options form-group row mt-4 mb-2 pt-2 pb-2" style="display: none;">
             <div class="col-sm-2">
-                <label for="">Selected Categories</label>
+                <label for="">@lang('products.Selected_Categories')</label>
             </div>
             <div class="col-sm-10">
                 <select tabindex="9" !multiple="multiple" id="edit-categories-upgradable" class="form-control"></select>
@@ -152,29 +160,29 @@
                 <div class="col-4" style="overflow-y: scroll; height: 450px;">
                     <ul class="list-group" id="edit-upgradableOptionsList">
                         <li class="list-group-item">
-                            <h5>Expected price : <span id="edit-upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
+                            <h5>@lang('products.Expected_price') : <span id="edit-upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
                         </li>
                     </ul>
                 </div>
                 <div class="col-8" style="overflow-y: scroll; min-height: 300px; height: 450px;">
                     <div class="form-group">
                         <select name="edit-findCategoryProduct" !multiple="multiple" id="edit-findCategoryProduct" class="form-control">
-                            <option value="">-- select product --</option>
+                            <option value="">-- @lang('products.select_product') --</option>
                         </select>
                     </div><!-- /.form-group -->
                     <table class="text-center table !table-responsive">
                         <thead>
                             <tr>
                                 <td>#</td>
-                                <td>Name</td>
-                                <td>SKU</td>
-                                <td>Price</td>
-                                <td>Edit Price</td>
-                                <td>Valied Quantity</td>
-                                <td>Quantity For Each Package</td>
-                                <td>Total Quantity</td>
-                                <td>Is Default</td>
-                                <td>Actions</td>
+                                <td>@lang('products.Name')</td>
+                                <td>@lang('products.SKU')</td>
+                                <td>@lang('products.Price')</td>
+                                <td>@lang('products.Edit_Price')</td>
+                                <td>@lang('products.Valied_Quantity')</td>
+                                <td>@lang('products.Quantity_For_Each Package')</td>
+                                <td>@lang('products.Total_Quantity')</td>
+                                <td>@lang('products.Is_Default')</td>
+                                <td>@lang('products.Actions')</td>
                             </tr>
                         </thead>
                         <tbody id="edit-upgradableOptionCategoryProducts"></tbody>
@@ -186,7 +194,7 @@
 
         <div class="edit-child-products-container form-group row mt-2 mb-2 pt-2 pb-2" style="display: none; !border: 1px solid #ddd; !border-radius: 5px">
             <div class="col-sm-2">
-                <label for="">Child Products</label>
+                <label for="">@lang('products.Child_Products')</label>
             </div>
             <div class="col-sm-10">
                 <select name="edit-find_child_products" id="edit-find_child_products" class="form-control"></select>
@@ -207,13 +215,13 @@
                 <thead>
                     <tr>
                         <td>#</td>
-                        <td>Name</td>
-                        <td>SKU</td>
-                        <td>Price</td>
-                        <td>Valied Quantity</td>
-                        <td>Quantity For Each Package</td>
-                        <td>Total Quantity</td>
-                        <td>Actions</td>
+                        <td>@lang('products.Name')</td>
+                        <td>@lang('products.SKU')</td>
+                        <td>@lang('products.Price')</td>
+                        <td>@lang('products.Valied Quantity')</td>
+                        <td>@lang('products.Quantity For Each Package')</td>
+                        <td>@lang('products.Total Quantity')</td>
+                        <td>@lang('products.Actions')</td>
                     </tr>
                 </thead>
                 <tbody id="edit-selected_child_product_container"></tbody>
@@ -221,7 +229,7 @@
         </div>
 
         <div id="edit-productQuantityContainer" class="form-group row">
-            <label for="edit-quantity" class="col-sm-2 col-form-label">Quantity</label>
+            <label for="edit-quantity" class="col-sm-2 col-form-label">@lang('products.Quantity')</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="7"  class="form-control" min="0" id="edit-quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -239,13 +247,13 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-price" class="col-sm-2 col-form-label">Price Without Tax</label>
+            <label for="edit-price" class="col-sm-2 col-form-label">@lang('products.Price_Without_Tax')</label>
             <div class="col-sm-2">
                 <input type="number" min="0" step="0.5" tabindex="9"  class="form-control" id="edit-price" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-priceErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
-            <label for="edit-price_after_sale" class="col-sm-2 col-form-label">Price After Sale</label>
+            <label for="edit-price_after_sale" class="col-sm-2 col-form-label">@lang('products.Price_After_Sale')</label>
             <div class="col-sm-2">
                 <input type="number" min="0" step="0.5" tabindex="10"  class="form-control" id="edit-price_after_sale" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-price_after_saleErr" class="err-msg mt-2 alert alert-danger">
@@ -253,13 +261,13 @@
             </div>
             <div class="col-sm-4">
                 <div style="padding: 5px 7px;" class="alert alert-info">
-                    Leave price after sale emty if there is no sale
+                    @lang('products.price_des_1')
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-main_image" class="col-sm-2 col-form-label">Main Image</label>
+            <label for="edit-main_image" class="col-sm-2 col-form-label">@lang('products.Main_Image')</label>
             <div class="col-sm-10">
                 <input id="edit-main_image" tabindex="12" type="file" data-jpreview-container="#demo-3-container">
                 <div id="demo-3-container" class="jpreview-container"></div>
@@ -269,7 +277,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-images" class="col-sm-2 col-form-label">Product Images</label>
+            <label for="edit-images" class="col-sm-2 col-form-label">@lang('products.Product_Images')</label>
             <div class="col-sm-10">
                 <input id="edit-images" name="edit-images[]" tabindex="13" type="file" multiple data-jpreview-container="#demo-4-container">
                 <div id="demo-4-container" class="jpreview-container"></div>
@@ -279,7 +287,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-images" class="col-sm-2 col-form-label">Brand</label>
+            <label for="edit-images" class="col-sm-2 col-form-label">@lang('products.Brand')</label>
             <div class="col-sm-10">
                 <select tabindex="15" id="edit-brand_id" name="edit-brand_id" class="form-control"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-brandErr" class="err-msg mt-2 alert alert-danger">
@@ -288,9 +296,9 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-categories" class="col-sm-2 col-form-label">Category</label>
+            <label for="edit-categories" class="col-sm-2 col-form-label">@lang('products.Category')</label>
             <div class="col-sm-10">
-                <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="SKU"></select>
+                <select type="text" tabindex="11" name="edit-categories[]" class="form-control"  multiple="multiple" id="edit-categories" placeholder="Category"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-categoriesErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -308,7 +316,7 @@
         </div><!-- /.form-group -->
 
 
-        <button class="update-object btn btn-warning float-right">Update Product</button>
+        <button class="update-object btn btn-warning float-right">@lang('products.Update_Product')</button>
     </form>
 </div>
 

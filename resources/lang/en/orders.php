@@ -1,0 +1,67 @@
+<?php
+
+return [
+    'orders'    => 'Orders',
+    'Dashboard' => 'Dashboard',
+    'Orders_Adminstration' => 'Orders Adminstration',
+    'Code' => 'Code',
+    'Customer' => 'Customer',
+    'Email' => 'Email',
+    'Phone' => 'Phone',
+    'Country' => 'Country',
+    'Governorate' => 'Governorate',
+    'Start_Date' => 'Start Date',
+    'End_Date' => 'End Date',
+    'Status' => 'Status',
+    'Status_Action' => 'Status_Action',
+    'Actions' => 'Actions',
+    'Government' => 'Government',
+    'Total' => 'Total',
+    'Date' => 'Date',
+    'Payment' => 'Payment',
+
+    // create form
+    'Create_New_Order' => 'Create New Order',
+    'Select_Customer' => 'Select Customer',
+    'Name' => 'Name',
+    'Select_Products' => 'Select Products',
+    'Img' => 'Img',
+    'SKU' => 'SKU',
+    'Price' => 'Price',
+    'Edit_Price' => 'Edit Price',
+    'Quantity' => 'Quantity',
+    'Valied_Quantity' => 'Valied Quantity',
+    'Requested_Quantity' => 'Requested Quantity',
+    'Sub_Total_Price' => 'Sub Total Price',
+    'Total_Price' => 'Total Price',
+    'Shipping' => 'Shipping',
+    'Free_Shipping' => 'Free_Shipping',
+    'Fees' => 'Fees',
+    'Taxes' => 'Taxes',
+    'Calculation_Type' => 'Calculation Type',
+    'Cost_Type' => 'Cost Type',
+    'Value' => 'Value',
+    'Total' => 'Total',
+    'Address' => 'Address',
+
+    'Sub_Total' => 'Sub Total',
+    'Taxes_Total' => 'Taxes Total',
+    'Fee_Total' => 'Fee Total',
+    'SAR' => 'SAR',
+    'Shipping_Total' => 'Shipping_Total',
+    'Fee' => 'Fees',
+    'Taxe' => 'Taxe',
+    'Create_Order' => 'Create Order',
+    'Update_Order' => 'Update Order',
+    'Show_Order' => 'Show Order',
+    'Free_Shipping' => 'Free Shipping',
+    'No_Free_Shipping' => 'No Free Shipping',
+
+    // validation 
+    'customer_is_required' => 'customer is required',
+    'products_is_required' => 'products is required',
+    'shipping_is_required' => 'shipping is required',
+    'shipping_cost_is_required' => 'shipping cost is required'
+
+
+];

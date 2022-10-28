@@ -1,95 +1,105 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
+
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
 
 @section('content')
 @php 
     $object_title = 'Brand';
 @endphp
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('brands.Brands')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('brands.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('brands.Brands')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
-<div class="content-header">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
 
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('brands.Brands_Adminstration')</h5>
                 </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('brands_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('brands_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
                 </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
+            </div><!-- /.row -->
 
-        <hr/>
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('brands.Title')</label>
+                        <input type="text" class="form-control" id="s-title">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('brands.AR_Title')</th>
+                    <th>@lang('brands.EN_Title')</th>
+                    <th>@lang('brands.Image')</th>
+                    <th>@lang('brands.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Title</label>
-                    <input type="text" class="form-control" id="s-title">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        @include('admin.brands.incs._create')
+        @include('admin.brands.incs._show')
+        @include('admin.brands.incs._edit')
+        
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>AR Title</th>
-                <th>EN Title</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.brands.incs._create')
-    @include('admin.brands.incs._show')
-    @include('admin.brands.incs._edit')
-    
-
+    </div>
 </div>
 @endsection
 

@@ -20,4 +20,9 @@ return [
     'Password' => 'Password',
     'Create_User' => 'Create User',
     'Update_User' => 'Update User',
+
+    // valiation 
+    'name_is_required' => 'name is required',
+    'email_name_is_required' => 'email name is required',
+    'phone_name_is_required' => 'phone name is required',
 ];

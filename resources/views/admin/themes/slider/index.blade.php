@@ -1,365 +1,173 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
 
 @push('page_css')
-<style>
-.categories_menu {
-    /* width: 229px; */
-    width: 22.5%;
-}
+    <style>
+        .categories_menu {
+            /* width: 229px; */
+            width: 22.5%;
+        }
 
-.categories-list {
-    min-height: 400px;
-    /* min-height: 200px; */
-    padding: 5px;
-    border: 1px solid #aaa;
-    box-shadow: 0px 5px 10px rgb(0 0 0 / 10%);
-    width: 100%;
-}
+        .categories-list {
+            min-height: 400px;
+            /* min-height: 200px; */
+            padding: 5px;
+            border: 1px solid #aaa;
+            box-shadow: 0px 5px 10px rgb(0 0 0 / 10%);
+            width: 100%;
+        }
 
-.categories-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 5px;
-    font-size: 14px;
-}
+        .categories-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
 
-.categories-list .show-sub {
-    float: right;
-    margin-top: 5px;
-}
+        .categories-list .show-sub {
+            float: right;
+            margin-top: 5px;
+        }
 
-.categories-btn {
-    background-color: #000;
-    border: 1px solid #000;
-    padding: 13px 15px;
-    color: #fff;
-    text-align: left;
-    width: 100%;
-    color: #fff;
-    text-transform: uppercase;
-    ;
-}
+        .categories-btn {
+            background-color: #000;
+            border: 1px solid #000;
+            padding: 13px 15px;
+            color: #fff;
+            text-align: left;
+            width: 100%;
+            color: #fff;
+            text-transform: uppercase;
+            ;
+        }
 
-.categories-btn span {
-    font-weight: bold;
-}
+        .categories-btn span {
+            font-weight: bold;
+        }
 
-.categories-btn:hover {
-    color: #fff;
-}
+        .categories-btn:hover {
+            color: #fff;
+        }
 
-.category-icon {
-    font-size: 1.3rem;
-    margin-right: 0;
-    float: right;
-}
+        .category-icon {
+            font-size: 1.3rem;
+            margin-right: 0;
+            float: right;
+        }
 
-.nav-menu {
-    height: 55px;
-    width: 100%;
-}
+        .nav-menu {
+            height: 55px;
+            width: 100%;
+        }
 
-</style>
+    </style>
+    
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
 @endpush
 
 @section('content')
-@php
-$object_title = 'Cover Editor';
-@endphp
-
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
-
-<div id="selectNavbarCategories" class="card card-body">
-    
-    <div>
-
-        <div id="createForm" class="clearfix">
-            <div class="row">
-                <div class="col-6">
-                    <h5>Create Slider</h5>
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('cover.Cover_Editor')</h1>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('cover.Dashboard')</a>
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            @lang('cover.Cover_Editor')
+                        </li>
+                    </ol>
                 </div>
             </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
+    <div id="selectNavbarCategories" class="card card-body">
+        
+        <div>
+
+            @include('admin.themes.slider.incs._create')
+
+            @include('admin.themes.slider.incs._edit')
+            
             <hr />
+
+            <div id="successAlert" style="display: none" class="alert alert-success"></div>
             
-            <div class="form-group row"> 
-                <label for="sliderImage" class="col-sm-2 col-form-label">Select Image</label>
-                <div class="col-sm-4">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="sliderImage" aria-describedby="inputGroupFileAddon04">
-                        <label class="custom-file-label" for="sliderImage">Choose image</label>
-                    </div>
-                    <div style="padding: 5px 7px; display: none" id="sliderImageErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-
-                <label for="sliderOrder" class="col-sm-1 col-form-label">Order</label>
-                <div class="col-sm-5">
-                    <div class="form-group">
-                        <input type="number" min="1" value="1" class="form-control" id="sliderOrder">
-                    </div>
-                    <div style="padding: 5px 7px; display: none" id="sliderOrderErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-
-            <div class="form-group row"> 
-                <label for="linkType" class="col-sm-2 col-form-label">Link Type</label>
-                <div class="col-sm-8">
-                    <select disabled="disabled" type="text" tabindex="1" class="form-control" id="linkType">
-                        <option value="">-- select link type --</option>
-                        <option value="product">product</option>
-                        <option value="category">category</option>
-                        <option value="externalLink">external link</option>
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="linkTypeErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="custom-control custom-switch mt-2">
-                        <input type="checkbox" class="custom-control-input" id="isClickable">
-                        <label class="custom-control-label" for="isClickable">Is clickable</label>
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-
-            <div style="display: none;" class="category-link form-group row">
-                <label for="category" class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-10">
-                    <select type="text" tabindex="1" class="form-control" id="category">
-                        <option value="">-- select category --</option>
-                        @foreach($all_categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->ar_title . ' || ' . $category->ar_title }}</option>
-                        @endforeach
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="categoryErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div>
-            
-            <div style="display: none;" class="products-link form-group row">
-                <label for="product" class="col-sm-2 col-form-label">Product</label>
-                <div class="col-sm-10">
-                    <select type="text" tabindex="1" class="form-control" id="product"></select>
-                    <div style="padding: 5px 7px; display: none" id="productErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: none;" class="external-link form-group row">
-                <div class="col-2">
-                    <label for="" class="form-label">External Link</label>
-                </div>
+            <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
                 
-                <div class="col-10">
-                    <div class="form-group">
-                        <input id="externalLink" type="url" placeholder="link url" class="form-control">
-                        <div style="padding: 5px 7px; display: none" id="externalLinkErr"
-                            class="err-msg mt-2 alert alert-danger">
-                        </div>
-                    </div>
-                </div><!-- /.col-5 -->
-
-            </div><!-- /.form-group -->
+            <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
             
-            <button !disabled="disabled" id="addLink" class="btn btn-primary float-right">Add Link</button>
-        </div>
-
-        <div id="editForm" style="display: none;" class="clearfix" >
-            <div class="row">
-                <div class="col-6">
-                    <h5>Edit Slider</h5>
-                </div>
-                <div class="col-6 text-right">
-                    <div id="closeEditForm" class="toggle-btn btn btn-default btn-sm" data-current-card="#selectNavbarCategories"
-                        data-target-card="#objectsCard">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </div>
-            </div><!-- /.row -->
-
-            <hr />
-
-            <div class="form-group row"> 
-                <label for="edit-sliderImage" class="col-sm-2 col-form-label">Select Image</label>
-                <div class="col-sm-4">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="edit-sliderImage" aria-describedby="inputGroupFileAddon04">
-                        <label class="custom-file-label" for="edit-sliderImage">Choose image</label>
-                    </div>
-                    <div style="padding: 5px 7px; display: none" id="edit-sliderImageErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-
-                <label for="edit-sliderOrder" class="col-sm-1 col-form-label">Order</label>
-                <div class="col-sm-5">
-                    <div class="form-group">
-                        <input type="number" min="1" value="1" class="form-control" id="edit-sliderOrder">
-                    </div>
-                    <div style="padding: 5px 7px; display: none" id="edit-sliderOrderErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-
-            <div class="form-group row"> 
-                <label for="edit-linkType" class="col-sm-2 col-form-label">Link Type</label>
-                <div class="col-sm-8">
-                    <select data-edit="true" disabled="disabled" type="text" tabindex="1" class="form-control" id="edit-linkType">
-                        <option value="">-- select link type --</option>
-                        <option value="product">product</option>
-                        <option value="category">category</option>
-                        <option value="externalLink">external link</option>
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="edit-linkTypeErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="custom-control custom-switch mt-2">
-                        <input data-edit="true" type="checkbox" class="custom-control-input" id="edit-isClickable">
-                        <label class="custom-control-label" for="edit-isClickable">Is clickable</label>
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-
-            <div style="display: none;" class="edit-category-link form-group row">
-                <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-10">
-                    <select type="text" tabindex="1" class="form-control" id="edit-category">
-                        <option value="">-- select category --</option>
-                        @foreach($all_categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->ar_title . ' || ' . $category->ar_title }}</option>
-                        @endforeach
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="edit-categoryErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div>
-            
-            <div style="display: none;" class="edit-products-link form-group row">
-                <label for="edit-product" class="col-sm-2 col-form-label">Product</label>
-                <div class="col-sm-10">
-                    <select type="text" tabindex="1" class="form-control" id="edit-product"></select>
-                    <div style="padding: 5px 7px; display: none" id="edit-productErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
+            <div class="d-flex justify-content-center mb-3">
+                <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
                 </div>
             </div>
 
-            <div style="display: none;" class="edit-external-link form-group row">
-                <div class="col-2">
-                    <label for="externalLink" class="form-label">External Link</label>
-                </div>
-                <div class="col-10">
-                    <div class="form-group">
-                        <input id="edit-externalLink" type="url" placeholder="link url" class="form-control">
-                        <div style="padding: 5px 7px; display: none" id="edit-externalLinkErr"
-                            class="err-msg mt-2 alert alert-danger">
-                        </div>
-                    </div>
-                </div><!-- /.col-5 -->
+            <!-- load the look of the navbar -->
+            <div class="form-group">
+                <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" class="p-4 look-container">
+                    <div class="custome-nav d-flex">
+                        <div class="categories_menu">
+                            <div class="btn categories-btn">
+                                <span>All Categories </span>
+                                <i class="category-icon fas fa-bars"></i>
+                            </div>
+                        </div><!-- /.categories_menu -->
+                        <nav class="nav-menu navbar navbar-expand-lg navbar-light bg-light">
+                            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                                <ul id="linksContainer" class="navbar-nav">
+                                </ul>
+                            </div>
+                        </nav>
+                    </div><!-- /.custome-nav -->
 
+                    <div class="row">
+                        <!-- START CATEGORY LIST -->
+                        <div style="display: none; !width: 18% !important; margin: 0 8px; margin-top: 5px; float: left;">
+                            <div class="categories-list">
+                                <ul>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- START SLIDER LIST -->
+                        <div style="width: 99.9%; margin-top: 5px; position: relative;">
+                            <div class="image-container">
+                            
+                            </div>
+                            
+                            <div class="slider-points"
+                                    style="
+                                    position: absolute;
+                                    bottom: 10px;
+                                    left: 25px;">
+                            
+                            </div>
+                        </div><!-- /.image-container -->
+                    </div>
+                </div><!-- /.look-container -->
             </div><!-- /.form-group -->
-            
-            <button !disabled="disabled" id="editLink" class="btn btn-warning float-right">Edit Slider</button>
+
+            <!-- <button id="updateNavbar" class="btn btn-warning float-right">Update Navbar Settings</button> -->
         </div>
-
-        <hr />
-
-        <div id="successAlert" style="display: none" class="alert alert-success"></div>
-        
-        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
-            
-        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-        
-        <div class="d-flex justify-content-center mb-3">
-            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-
-        <!-- load the look of the navbar -->
-        <div class="form-group">
-            <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" class="p-4 look-container">
-                <div class="custome-nav d-flex">
-                    <div class="categories_menu">
-                        <div class="btn categories-btn">
-                            <span>All Categories </span>
-                            <i class="category-icon fas fa-bars"></i>
-                        </div>
-                    </div><!-- /.categories_menu -->
-                    <nav class="nav-menu navbar navbar-expand-lg navbar-light bg-light">
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                            aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                            <ul id="linksContainer" class="navbar-nav">
-                            </ul>
-                        </div>
-                    </nav>
-                </div><!-- /.custome-nav -->
-
-                <div class="row">
-                    <!-- START CATEGORY LIST -->
-                    <div style="display: none; !width: 18% !important; margin: 0 8px; margin-top: 5px; float: left;">
-                        <div class="categories-list">
-                            <ul>
-
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- START SLIDER LIST -->
-                    <div style="width: 99.9%; margin-top: 5px; position: relative;">
-                        <div class="image-container">
-                           
-                        </div>
-                        
-                        <div class="slider-points"
-                                style="
-                                position: absolute;
-                                bottom: 10px;
-                                left: 25px;">
-                          
-                        </div>
-                    </div><!-- /.image-container -->
-                </div>
-            </div><!-- /.look-container -->
-        </div><!-- /.form-group -->
-
-        <!-- <button id="updateNavbar" class="btn btn-warning float-right">Update Navbar Settings</button> -->
     </div>
 </div>
 @endsection
@@ -581,7 +389,7 @@ $(document).ready(function() {
                     let nav_link_li = `
                         <li class="nav-link-item nav-item active">
                             <span class="nav-link" href="#">
-                                ${nav_link.title}
+                                ${nav_link.ar_title}
                             </span>
                         </li>
                     `;

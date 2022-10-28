@@ -4,11 +4,12 @@ return [
     'Dashboard' => 'Dashboard',
 
     'Users' => 'Users',
-    'Rolles' => 'Rolles',
+    'Roles' => 'Roles',
 
     'Customers' => 'Customers',
 
     'Products' => 'Products',
+    'Categories' => 'Categories',
     'Brands' => 'Brands',
     'Products_Names' => 'Products_Names',
 

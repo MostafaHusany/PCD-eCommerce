@@ -1,0 +1,35 @@
+<?php 
+
+return [
+    'Sold_Products' => 'المنتجات المباعة',
+    'Dashboard'     => 'لوحة التحكم',
+    'Sold_Products_Adminstration' => 'ادارة المنتجات المباعة',
+    'Sold_Products' => 'المنتجات المباعة',
+    'Dashboard'     => 'لوحة التحكم',
+    'Name'          => 'اسم المنتج',
+    'Order_Code'    => 'كود الطلب',
+    'select_status' => 'حدد الحالة',
+    'Sold'       => 'مباع',
+    'Restored'   => 'مرتجع',
+    'SKU'        => 'SKU',
+    'Start_Date' => 'من تاريخ',
+    'End_Date'   => 'الي تاريخ',
+    'Type'       => 'النوع',
+    'All'        => 'الكل',
+    'Usual'      => 'عادي',
+    'Composite'  => 'مركب',
+    'Upgradable' => 'قابل للتحديث',
+    'Category'   => 'الفئة',
+    'Image'      => 'الصورة',
+    'Date'       => 'التاريخ',
+    'Action'     => 'الاحداث',
+    'Categories' => 'الفئات',
+    'Parent'     => 'المنتج ألاب',
+    'Status'     => 'الحالة',
+    'Price'      => 'الاسعار',
+
+    'restore_1' => 'هل انت متاكد انك تريد استرجاع هذا المنتج',
+    'restore_2' => 'تم استرجاع المنتج بنجاح',
+    'Select_categories' => 'حدد الفئات',
+
+];

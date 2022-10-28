@@ -126,10 +126,10 @@
                 href="{{ App::getLocale() == 'ar' ? LaravelLocalization::getLocalizedURL('en') : LaravelLocalization::getLocalizedURL('ar') }}"
                 role="button"
             >
-                <i class="fas fa-language"></i>
+            <span class="text-uppercase badge badge-pill badge-dark">{{ App::getLocale() }}</span>
             </a>
         </li>
-        
+
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>
@@ -154,7 +154,7 @@
                 <!-- Menu Footer-->
                 <li class="user-footer">
                     <a href="{{ url('admin/my-profile') }}" class="btn btn-default btn-flat">@lang('_header.Profile')</a>
-                    <a href="#" class="btn btn-default btn-flat float-right"
+                    <a href="#" class="btn btn-default btn-flat" style="float: right;"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         @lang('_header.sign_out')
                     </a>

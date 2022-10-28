@@ -1,169 +1,130 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
 
 @push('page_css')
-<style>
-
-</style>
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
 @endpush
 
 @section('content')
-@php
-$object_title = 'Contacts Info';
-@endphp
-
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
-
-<div id="selectNavbarCategories" class="card card-body">
-    
-    <div>
-
-
-        <div id="editForm" style="display: none;" class="clearfix" >
-            <div class="row">
-                <div class="col-6">
-                    <h5>Edit Footer Column</h5>
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('contacts_info.Contacts_Info')</h1>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('contacts_info.Dashboard')</a>
+                        </li>
 
-                    <div class="form-group">
-                        <label for="Title">Column Title</label>
-                        <input type="text" class="form-control" placeholder="add column title">
-                    </div><!-- /.form-group -->
-
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-4">
-                                <label for="" class="form-label">Link</label>
-                                <input type="text" class="form-control">
-                            </div><!-- /.col-4 -->
-                            
-                            <div class="col-4">
-                                <label for="" class="form-label">Link</label>
-                                <input type="text" class="form-control">
-                            </div><!-- /.col-4 -->
-                            
-                            <div class="col-4">
-                                <label for="" class="form-label">Link</label>
-                                <input type="text" class="form-control">
-                            </div><!-- /.col-4 -->
-                        </div><!-- /.row -->
-                    </div><!-- /.form-group -->
-
-                    <div id="closeEditForm" class="toggle-btn btn btn-default btn-sm" data-current-card="#selectNavbarCategories"
-                        data-target-card="#objectsCard">
-                        <i class="fas fa-times"></i>
-                    </div>
+                        <li class="breadcrumb-item active">
+                            @lang('contacts_info.Contacts_Info')
+                        </li>
+                    </ol>
                 </div>
             </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
-            <hr />
-
-            
-            <button !disabled="disabled" id="editLink" class="btn btn-warning float-right">Edit Slider</button>
-        </div><!-- #editForm -->
-
-        <hr />
-
-        <div id="successAlert" style="display: none" class="alert alert-success"></div>
+    <div id="selectNavbarCategories" class="card card-body">
         
-        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div>
+            <div id="successAlert" style="display: none" class="alert alert-success"></div>
             
-        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-        
-        <div class="d-flex justify-content-center mb-3">
-            <!-- <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
-            </div> -->
+            <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+                
+            <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+            
+            <div class="d-flex justify-content-center mb-3">
+                <!-- <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div> -->
+            </div>
+
+            <!-- load contacts edit form -->
+            <div style="position: relative;">
+                <div style="
+                        display: none;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        font-size: 2rem;
+                        left: 0;" 
+                        id="loddingSpinner" class="overlay mb-3"
+                    >
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+                
+                <div class="form-group row">
+                    <label for="email" class="col-2 form-control-label">@lang('contacts_info.Email')</label>
+                    <input type="type" id="email" class="col-10 form-control">
+                </div><!-- /.form-group -->
+
+                
+                <div class="form-group row">
+                    <label for="phone" class="col-2 form-control-label">@lang('contacts_info.Phone')</label>
+                    <input type="number" id="phone" class="col-10 form-control">
+                </div><!-- /.form-group -->
+                
+                <div class="form-group row">
+                    <label for="whatsapp" class="col-2 form-control-label">@lang('contacts_info.Whatsapp_Number')</label>
+                    <input type="number" id="whatsapp" class="col-10 form-control">
+                </div><!-- /.form-group -->
+
+                <div class="form-group row">
+                    <label for="facebook" class="col-2 form-control-label">@lang('contacts_info.Facebook')</label>
+                    <input type="linke" id="facebook" class="col-10 form-control">
+                </div><!-- /.form-group -->
+                
+                <div class="form-group row">
+                    <label for="instagram" class="col-2 form-control-label">@lang('contacts_info.Instagram')</label>
+                    <input type="linke" id="instagram" class="col-10 form-control">
+                </div><!-- /.form-group -->
+
+                <div class="form-group row">
+                    <label for="linkedin" class="col-2 form-control-label">@lang('contacts_info.Linkedin')</label>
+                    <input type="linke" id="linkedin" class="col-10 form-control">
+                </div><!-- /.form-group -->
+
+                <div class="form-group row">
+                    <label for="en_description" class="col-2">@lang('contacts_info.Description')</label>
+                    <div class="col-sm-10">
+                        <div class="row" dir="ltr">
+                            <div class="col-sm-6">
+                                <textarea class="form-control" style="text-align: left !important;" id="en_description" placeholder="about the company"></textarea>
+                            </div><!-- /.col-6 -->
+                            <div class="col-sm-6">
+                                <textarea class="form-control" style="text-align: right !important;" dir="rtl" placeholder="عن الشركة" id="ar_description" ></textarea>
+                            </div><!-- /.col-6 -->
+                        </div><!-- /.row -->
+                    </div><!-- /.col-sm-10 -->
+                </div>
+
+                <div class="form-group row">
+                    <label for="en_address" class="col-2">@lang('contacts_info.Address')</label>
+                    <div class="col-sm-10">
+                        <div class="row" dir="ltr">
+                            <div class="col-sm-6">
+                                <textarea class="form-control" style="text-align: left !important;" id="en_address" placeholder="address"></textarea>
+                            </div><!-- /.col-6 -->
+                            <div class="col-6">
+                                <textarea class="form-control" style="text-align: right !important;" dir="rtl" placeholder="العنوان" id="ar_address"></textarea>
+                            </div><!-- /.col-6 -->
+                        </div><!-- /.row -->
+                    </div><!-- /.col-sm-10 -->
+                </div>
+
+                <button class="update-contacts btn btn-warning float-right mt-4">@lang('contacts_info.Update_Contacts_Info')</button>
+            </div><!-- /.load contacts edit form -->
         </div>
-
-        <!-- load contacts edit form -->
-        <div style="position: relative;">
-            <div style="
-                    display: none;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    font-size: 2rem;
-                    left: 0;" 
-                    id="loddingSpinner" class="overlay mb-3"
-                >
-                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-            </div>
-            
-            <div class="form-group row">
-                <label for="email" class="col-2 form-control-label">Email</label>
-                <input type="type" id="email" class="col-10 form-control">
-            </div><!-- /.form-group -->
-
-            
-            <div class="form-group row">
-                <label for="phone" class="col-2 form-control-label">Phone</label>
-                <input type="number" id="phone" class="col-10 form-control">
-            </div><!-- /.form-group -->
-            
-            <div class="form-group row">
-                <label for="whatsapp" class="col-2 form-control-label">Whatsapp Number</label>
-                <input type="number" id="whatsapp" class="col-10 form-control">
-            </div><!-- /.form-group -->
-
-            <div class="form-group row">
-                <label for="facebook" class="col-2 form-control-label">Facebook</label>
-                <input type="linke" id="facebook" class="col-10 form-control">
-            </div><!-- /.form-group -->
-            
-            <div class="form-group row">
-                <label for="instagram" class="col-2 form-control-label">Instagram</label>
-                <input type="linke" id="instagram" class="col-10 form-control">
-            </div><!-- /.form-group -->
-
-            <div class="form-group row">
-                <label for="linkedin" class="col-2 form-control-label">Linkedin</label>
-                <input type="linke" id="linkedin" class="col-10 form-control">
-            </div><!-- /.form-group -->
-
-            <div class="form-group row">
-                <label for="en_description" class="col-2">Description</label>
-                <div class="col-5" style="padding-left: 0;">
-                    <textarea class="form-control" id="en_description" placeholder="about the company"></textarea>
-                </div><!-- /.col-5 -->
-                <div class="col-5" style="padding-left: 0;">
-                    <textarea class="form-control" style="text-align: right;" placeholder="عن الشركة" id="ar_description" ></textarea>
-                </div><!-- /.col-5 -->
-            </div>
-
-            <div class="form-group row">
-                <label for="en_address" class="col-2">Address</label>
-                <div class="col-5" style="padding-left: 0;">
-                    <textarea class="form-control" id="en_address" placeholder="address"></textarea>
-                </div><!-- /.col-5 -->
-                <div class="col-5">
-                    <textarea class="form-control" style="text-align: right;" placeholder="العنوان" id="ar_address"></textarea>
-                </div><!-- /.col-5 -->
-            </div>
-
-            <button class="update-contacts btn btn-warning float-right mt-4">Update Contacts Info</button>
-        </div><!-- /.load contacts edit form -->
     </div>
 </div>
 @endsection

@@ -1,9 +1,14 @@
+
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
+
 <div class="text-center">
     <div class="btn-group">
         <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-sliders-h"></i>
         </button>
-        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left">
+        <div class="dropdown-menu {{ !$is_ar ? 'dropdown-menu-right dropdown-menu-lg-right' : 'dropdown-menu-left dropdown-menu-lg-left' }}">
 
             @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_show'))
             <button class="dropdown-item show-object text-info" data-object-id="{{$row_object->id}}">

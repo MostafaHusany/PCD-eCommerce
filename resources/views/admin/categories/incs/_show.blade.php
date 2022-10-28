@@ -2,7 +2,7 @@
 <div style="display: none" id="showObjectCard" class="card card-body">
     <div class="row mb-1">
         <div class="col-6">
-            <h5>Show {{ $object_title }}</h5>
+            <h5>@lang('categories.Show_Category')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#showObjectCard" data-target-card="#objectsCard">
@@ -15,27 +15,35 @@
 
     <div class="form-container">
         <div class="form-group row">
-            <label for="show-en_title" class="col-sm-2 col-form-label">Title</label>
-            <div class="col-sm-5">
-                <input disabled="disabled" type="text" tabindex="1"  class="form-control" id="show-en_title" placeholder="Title">
-            </div>
-            <div class="col-sm-5">
-                <input disabled="disabled" type="text"  tabindex="3" class="form-control text-right" dir="rtl" id="show-ar_title" placeholder="العنوان">
-            </div>
+            <label for="show-en_title" class="col-sm-2 col-form-label">@lang('categories.Title')</label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <input disabled="disabled" type="text" tabindex="1"  class="form-control" style="text-align: left !important;" id="show-en_title" placeholder="@lang('categories.title_en')">
+                    </div>
+                    <div class="col-sm-6">
+                        <input disabled="disabled" type="text"  tabindex="3" class="form-control" style="text-align: right !important;" dir="rtl" id="show-ar_title" placeholder="@lang('categories.title_ar')">
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="show-en_description" class="col-sm-2 col-form-label">Description</label>
-            <div class="col-sm-5">
-                <textarea disabled="disabled"  tabindex="2" class="form-control" id="show-en_description" placeholder="Description"></textarea>
-            </div>
-            <div class="col-sm-5">
-                <textarea disabled="disabled"  tabindex="4" class="form-control text-right" id="show-ar_description" dir="rtl" placeholder="الوصف"></textarea>
-            </div>
+            <label for="show-en_description" class="col-sm-2 col-form-label">@lang('categories.Description')</label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <textarea disabled="disabled" tabindex="2" class="form-control" style="text-align: left !important;"  id="show-en_description" placeholder="@lang('categories.description_en')"></textarea>
+                    </div>
+                    <div class="col-sm-6">
+                        <textarea disabled="disabled" tabindex="4" class="form-control" style="text-align: right !important;" dir="rtl" id="show-ar_description" dir="rtl" placeholder="@lang('categories.description_ar')"></textarea>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="show-is_main" class="col-sm-2 col-form-label">Is Main</label>
+            <label for="show-is_main" class="col-sm-2 col-form-label">@lang('categories.Is_Main')</label>
             <div class="col-sm-5">
                 <input disabled="disabled" class="form-control" id="show-is_main" data-target="#category_id" />
             </div>
@@ -46,28 +54,28 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="rule" class="col-sm-2 col-form-label">Rule</label>
+            <label for="rule" class="col-sm-2 col-form-label">@lang('categories.Rule')</label>
             <div class="col-sm-5" id="show-rule">
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="show-brands" class="col-sm-2 col-form-label">Brands</label>
+            <label for="show-brands" class="col-sm-2 col-form-label">@lang('categories.Brands')</label>
             <div class="col-sm-10" id="show-brands">
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row" id="show-categories-container">
-            <label for="show-brands" class="col-sm-2 col-form-label">Child Categories</label>
+            <label for="show-brands" class="col-sm-2 col-form-label">@lang('categories.Child_Categories')</label>
             <div class="col-sm-10" id="show-categories">
             </div>
         </div><!-- /.form-group -->
 
         
         <div class="form-group row" id="show-categories-container">
-            <label for="show-brands" class="col-sm-2 col-form-label">Attributes</label>
+            <label for="show-brands" class="col-sm-2 col-form-label">@lang('categories.Attributes')</label>
             <div class="col-sm-10">
-                <ul id="show-attributes" class="list-group"></li>
+                <ul id="show-attributes" class="list-group" style="padding: 0;"></li>
             </div>
         </div><!-- /.form-group -->
 

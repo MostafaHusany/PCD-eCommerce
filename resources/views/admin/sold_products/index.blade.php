@@ -1,5 +1,14 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
+
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
 
 @push('page_css')
 <link rel="stylesheet" type="text/css" href="{{ asset('plugins/input_img_privew/jpreview.css') }}">
@@ -9,162 +18,163 @@
 @php 
     $object_title = 'Sold Product';
 @endphp
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('sold_products.Sold_Products')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('sold_products.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('sold_products.Sold_Products')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
+    <div class="container-fluid pt-3">
 
-<div class="container-fluid pt-3">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
             
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('sold_products.Sold_Products_Adminstration')</h5>
                 </div>
                 
-                {{--
-                <!-- There is no create for sold products -->
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
+                    
+                    {{--
+                    <!-- There is no create for sold products -->
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    --}}
                 </div>
-                --}}
-            </div>
-        </div><!-- /.row -->
+            </div><!-- /.row -->
 
-        <hr/>
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sold_products.Name')</label>
+                        <input type="text" class="form-control" id="s-name">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+                
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sold_products.Order_Code')</label>
+                        <input type="text" class="form-control" id="s-code">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-status">Status</label>
+                        <select class="form-control" id="s-status">
+                            <option value="">-- @lang('sold_products.select_status') --</option>
+                            <option value="1">@lang('sold_products.Sold')</option>
+                            <option value="0">@lang('sold_products.Restored')</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+                
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sold_products.SKU')</label>
+                        <input type="text" class="form-control" id="s-sku">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-status">@lang('sold_products.Start_Date')</label>
+                        <input type="date" class="form-control" id="s-start_date">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-status">@lang('sold_products.End_Date')</label>
+                        <input type="date" class="form-control" id="s-end_date">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+                
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sold_products.Type')</label>
+                        <select class="form-control" id="s-type">
+                            <option value="">@lang('sold_products.All')</option>
+                            <option value="0">@lang('sold_products.Usual')</option>
+                            <option value="1">@lang('sold_products.Composite')</option>
+                            <option value="2">@lang('sold_products.Upgradable')</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sold_products.Category')</label>
+                        <select class="form-control" id="s-category"></select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+                
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('sold_products.Image')</th>
+                    <th>@lang('sold_products.Order_Code')</th>
+                    <th>@lang('sold_products.Name')</th>
+                    <th>@lang('sold_products.Type')</th>
+                    <th>@lang('sold_products.Parent')</th>
+                    <th>@lang('sold_products.Status')</th>
+                    <th>@lang('sold_products.Categories')</th>
+                    <th>@lang('sold_products.SKU')</th>
+                    <th>@lang('sold_products.Price')</th>
+                    <th>@lang('sold_products.Date')</th>
+                    <th>@lang('sold_products.Action')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">Name</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">Order Code</label>
-                    <input type="text" class="form-control" id="s-code">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+        
+        @include('admin.orders.incs._show')
+        {{--
+            @include('admin.products.incs._edit')
+            <!-- There is no create for sold products -->
+            @include('admin.products.incs._create')
+        --}}
 
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-status">Status</label>
-                    <select class="form-control" id="s-status">
-                        <option value="">-- select status --</option>
-                        <option value="1">Sold</option>
-                        <option value="0">Restored</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">SKU</label>
-                    <input type="text" class="form-control" id="s-sku">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-status">Start Date</label>
-                    <input type="date" class="form-control" id="s-start_date">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-status">End Date</label>
-                    <input type="date" class="form-control" id="s-end_date">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">Type</label>
-                    <select class="form-control" id="s-type">
-                        <option value="">All</option>
-                        <option value="0">Usual</option>
-                        <option value="1">Composite</option>
-                        <option value="2">Upgradable</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">Category</label>
-                    <select class="form-control" id="s-category"></select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
-
-        <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Image</th>
-                <th>Order Code</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Parent</th>
-                <th>Status</th>
-                <th>Categories</th>
-                <th>SKU</th>
-                <th>Price</th>
-                <th>Date</th>
-                <th>Action</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    
-    @include('admin.orders.incs._show')
-    @include('admin.products.incs._edit')
-    {{--
-        <!-- There is no create for sold products -->
-        @include('admin.products.incs._create')
-    --}}
-
+    </div>
 </div>
 @endsection
 
@@ -250,7 +260,7 @@ $(function () {
         $('#s-category').select2({
             allowClear: true,
             width: '100%',
-            placeholder: 'Select categories',
+            placeholder: '@lang("sold_products.Select_categories")',
             ajax: {
                 url: '{{ url("admin/products-categories-search") }}',
                 dataType: 'json',
@@ -275,7 +285,7 @@ $(function () {
             let target_order_product_id   = $(this).data('object-id');
             let target_order_product_name = $(this).data('object-name');
             
-            let flag = confirm(`Are you sure you want to restor "${target_order_product_name}"`);
+            let flag = confirm(`@lang('sold_products.restore_1') "${target_order_product_name}"`);
             
             if (flag) {
                 axios.post(`{{ url('admin/sold-products') }}/${target_order_product_id}`, {
@@ -289,7 +299,7 @@ $(function () {
                     if (res.data.success) {
                         objects_dynamic_table.table_object.draw();
 
-                        $('#warningAlert').text('You restored the item successfully').slideDown();
+                        $('#warningAlert').text('@lang("sold_products.restore_2")').slideDown();
                         setTimeout(() => {
                             $('#warningAlert').text('').slideUp();
                         }, 3000);

@@ -2,7 +2,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Create New {{$object_title}}</h5>
+            <h5>@lang('orders.Update_Order')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -18,7 +18,7 @@
 
         <div class="customer-phase">
             <div class="form-group row">
-                <label for="edit-customer" class="col-sm-2 col-form-label">Select Customer</label>
+                <label for="edit-customer" class="col-sm-2 col-form-label">@lang('orders.Select_Customer')</label>
                 <div class="col-sm-10">
                     <select class="form-control" id="edit-customer" data-prefix="edit-"></select>
                     <div style="padding: 5px 7px; display: none" id="edit-customerErr" class="err-msg mt-2 alert alert-danger">
@@ -29,32 +29,32 @@
             <div class="form-group">
                 <table class="table">
                     <tr>
-                        <td>Name</td>
+                        <td>@lang('orders.Name')</td>
                         <td style="text-right" fir="rtl" id="edit-customer_name">---</td>
                     </tr>
                     
                     <tr>
-                        <td>Email</td>
+                        <td>@lang('orders.Email')</td>
                         <td id="edit-customer_email">---</td>
                     </tr>
                     
                     <tr>
-                        <td>Phone</td>
+                        <td>@lang('orders.Phone')</td>
                         <td id="edit-customer_phone">---</td>
                     </tr>
                     
                     <tr>
-                        <td>Country</td>
+                        <td>@lang('orders.Country')</td>
                         <td id="edit-customer_country">---</td>
                     </tr>
 
                     <tr>
-                        <td>Government</td>
+                        <td>@lang('orders.Government')</td>
                         <td id="edit-customer_government">---</td>
                     </tr>
 
                     <tr>
-                        <td>Address</td>
+                        <td>@lang('orders.Address')</td>
                         <td id="edit-customer_address">---</td>
                     </tr>
                 </table>
@@ -66,7 +66,7 @@
             <input type="hidden" id="edit-products" value="">
 
             <div class="form-group row">
-                <label for="edit-find-products" class="col-sm-2 col-form-label">Select Products</label>
+                <label for="edit-find-products" class="col-sm-2 col-form-label">@lang('orders.Select_Products')</label>
                 <div class="col-sm-10">
                     <select class="form-control" id="edit-find-products" data-prefix=""></select>
                     <div style="padding: 5px 7px; display: none" id="edit-productsErr" class="err-msg mt-2 alert alert-danger">
@@ -85,16 +85,16 @@
             <div class="form-group" style="height: 400px; overflow: scroll;">
                 <table class="table" style="font-size: 12px; width: max-content; ">
                     <tr>
-                        <td>Img</td>
-                        <td style="width: 160px">Name</td>
-                        <td>SKU</td>
-                        <td style="width: 100px">Price</td>
-                        <td>Edit Price</td>
-                        <td>Valied Quantity</td>
-                        <td>Requested Quantity</td>
-                        <td id="edit-products_table_header">Sub Total Price</td>
-                        <td>Total Price</td>
-                        <td>Actions</td>
+                        <td>@lang('orders.Img')</td>
+                        <td style="width: 160px">@lang('orders.Name')</td>
+                        <td>@lang('orders.SKU')</td>
+                        <td style="width: 100px">@lang('orders.Price')</td>
+                        <td>@lang('orders.Edit_Price')</td>
+                        <td>@lang('orders.Valied_Quantity')</td>
+                        <td>@lang('orders.Requested_Quantity')</td>
+                        <td id="edit-products_table_header">@lang('orders.Sub_Total_Price')</td>
+                        <td>@lang('orders.Total_Price')</td>
+                        <td>@lang('orders.Actions')</td>
                     </tr>
                     <tbody id="edit-selected_product_table">
                         
@@ -105,7 +105,7 @@
 
         <!-- START SHIPPING PHASE -->
         <div class="form-group row">
-            <label for="" class="col-2">Shipping</label>
+            <label for="" class="col-2">@lang('orders.Shipping')</label>
             <div class="form-group col-4">
                 <select id="edit-shipping" class="form-control"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-shippingErr" class="err-msg mt-2 alert alert-danger">
@@ -122,7 +122,7 @@
                 <input type="hidden" id="edit-is_free_shipping">
                 <div class="custom-control custom-switch" value="0">
                     <input type="checkbox" class="custom-control-input" id="edit-is_free_shipping_toggle">
-                    <label class="custom-control-label" for="edit-is_free_shipping_toggle">Free Shipping</label>
+                    <label class="custom-control-label" for="edit-is_free_shipping_toggle">@lang('orders.Free_Shipping')</label>
                 </div>
                 
                 <div style="padding: 5px 7px; display: none" id="edit-is_free_shippingErr" class="err-msg mt-2 alert alert-danger">
@@ -133,7 +133,7 @@
 
         <!-- START FEES PHASE -->
         <div class="form-group row">
-            <label for="edit-fees" class="col-2">Fees</label>
+            <label for="edit-fees" class="col-2">@lang('orders.Fees')</label>
             <div class="form-group col-10">
                 <select id="edit-fees" data-prefix="" class="form-control" multiple="multiple"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-feesErr" class="err-msg mt-2 alert alert-danger">
@@ -146,15 +146,15 @@
             
         <div class="form-group row">
             <div class="col-6">
-                <h4>Taxes</h4>
+                <h4>@lang('orders.Taxes')</h4>
                 <table class="table" style="font-size: 12px">
                     <thead>
                         <tr>
-                            <th>Taxe</th>
-                            <th>Calculation Type</th>
-                            <th>Cost Type</th>
-                            <th>Value</th>
-                            <th>Total</th>
+                            <th>@lang('orders.Taxe')</th>
+                            <th>@lang('orders.Calculation_Type')</th>
+                            <th>@lang('orders.Cost_Type')</th>
+                            <th>@lang('orders.Value')</th>
+                            <th>@lang('orders.Total')</th>
                         </tr>
                     </thead>
                     <tbody id="edit-taxes_list_table_container"></tbody>
@@ -166,11 +166,11 @@
                 <table class="table" style="font-size: 12px">
                     <thead>
                         <tr>
-                            <th>Fee</th>
-                            <th>Calculation Type</th>
-                            <th>Cost Type</th>
-                            <th>Value</th>
-                            <th>Total</th>
+                            <th>@lang('orders.Fee')</th>
+                            <th>@lang('orders.Calculation_Type')</th>
+                            <th>@lang('orders.Cost_Type')</th>
+                            <th>@lang('orders.Value')</th>
+                            <th>@lang('orders.Total')</th>
                         </tr>
                     </thead>
                     <tbody id="edit-fees_list_table_container"></tbody>
@@ -182,46 +182,46 @@
             <table class="table">
                 <tr>
                     <td class="text-center" colspan="7">
-                        <h5>Sub Total</h5>
+                        <h5>@lang('orders.Sub_Total')</h5>
                     </td>
                     <td>
-                        <span id="edit-selected_products_sub_total"> --- </span> SAR
+                        <span id="edit-selected_products_sub_total"> --- </span> @lang('orders.SAR')
                     </td>
                     <td></td>
                 </tr>
                 <tr>
                     <td class="text-center" colspan="7">
-                        <h5>Shipping Total</h5>
+                        <h5>@lang('orders.Shipping_Total')</h5>
                     </td>
                     <td>
-                        <span id="edit-selected_shipping_cost"> --- </span> SAR
+                        <span id="edit-selected_shipping_cost"> --- </span> @lang('orders.SAR')
                     </td>
                     <td></td>
                 </tr>
                 <tr>
                     <td class="text-center" colspan="7">
-                        <h5>Taxes Total</h5>
+                        <h5>@lang('orders.Taxes_Total')</h5>
                     </td>
                     <td>
-                        <span id="edit-selected_taxe_cost"> --- </span> SAR
+                        <span id="edit-selected_taxe_cost"> --- </span> @lang('orders.SAR')
                     </td>
                     <td></td>
                 </tr>
                 <tr>
                     <td class="text-center" colspan="7">
-                        <h5>Fee Total</h5>
+                        <h5>@lang('orders.Fee_Total')</h5>
                     </td>
                     <td>
-                        <span id="edit-selected_fee_cost"> --- </span> SAR
+                        <span id="edit-selected_fee_cost"> --- </span> @lang('orders.SAR')
                     </td>
                     <td></td>
                 </tr>
                 <tr>
                     <td class="text-center" colspan="7">
-                        <h5>Total</h5>
+                        <h5>@lang('orders.Total')</h5>
                     </td>
                     <td>
-                        <span id="edit-selected_products_total"> --- </span> SAR
+                        <span id="edit-selected_products_total"> --- </span> @lang('orders.SAR')
                     </td>
                     <td></td>
                 </tr>
@@ -229,7 +229,7 @@
         </div><!-- /.form-group -->
         
 
-        <button !id="createorder" class="update-object btn btn-warning float-right">Update Order</button>
+        <button !id="createorder" class="update-object btn btn-warning float-right">@lang('orders.Update_Order')</button>
     </form>
 </div>
 

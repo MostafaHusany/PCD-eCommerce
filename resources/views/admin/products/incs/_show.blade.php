@@ -2,7 +2,7 @@
 <div style="display: none" id="showObjectCard" class="card card-body">
     <div class="row mb-1">
         <div class="col-6">
-            <h5>Show {{ $object_title }}</h5>
+            <h5>@lang('products.Show_Product')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#showObjectCard" data-target-card="#objectsCard">
@@ -16,7 +16,7 @@
     <div action="/" id="objectForm">
         
         <div class="form-group row">
-            <label for="show-en_name" class="col-sm-2 col-form-label">Name</label>
+            <label for="show-en_name" class="col-sm-2 col-form-label">@lang('products.Name')</label>
             <div class="col-sm-5">
                 <input disabled="disabled" id="show-en_name" type="text" tabindex="1"  class="form-control" placeholder="Product Name">
             </div>
@@ -26,7 +26,7 @@
         </div><!-- /.form-group -->
       
         <div class="form-group row">
-            <label for="show-en_small_description" class="col-sm-2 col-form-label">Short Description</label>
+            <label for="show-en_small_description" class="col-sm-2 col-form-label">@lang('products.Short_Description')</label>
             <div class="col-sm-5">
                 <textarea disabled="disabled" id="show-en_small_description" type="text" tabindex="2"  class="form-control" placeholder="Product Short Description"></textarea>
             </div>
@@ -36,7 +36,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="show-en_description" class="col-sm-2 col-form-label">Description</label>
+            <label for="show-en_description" class="col-sm-2 col-form-label">@lang('products.Description')</label>
             <div class="col-sm-5">
                 <textarea disabled="disabled" id="show-en_description" type="text" tabindex="3"  class="form-control" placeholder="Product Description"></textarea>
             </div>
@@ -46,32 +46,32 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="show-is_composite" class="col-sm-2 col-form-label">Product Type</label>
+            <label for="show-is_composite" class="col-sm-2 col-form-label">@lang('products.Product_Type')</label>
             <div class="col-sm-10">
                 <select disabled="disabled" tabindex="8" name="show-is_composite" data-first-target=".show-child-products-container" data-second-target="#show-productQuantityContainer" class="form-control" id="show-is_composite">
-                    <option value="0">Usual product</option>
-                    <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
-                    <option value="2">Upgradable Product (تجميعات)</option>
+                    <option value="0">@lang('products.Usual')</option>
+                    <option value="1">@lang('products.Composite') (تجميعات, حزمة عروض)</option>
+                    <option value="2">@lang('products.Upgradable') (تجميعات)</option>
                 </select>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="show-storage_quantity" class="col-sm-2 col-form-label">Storage Quantity</label>
+            <label for="show-storage_quantity" class="col-sm-2 col-form-label">@lang('products.Storage_Quantity')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" type="number" tabindex="9"  class="form-control" min="0" id="show-storage_quantity" value="0">
             </div>
         </div><!-- /.form-group -->
 
         <div id="show-container-reserved_quantity" class="form-group row">
-            <label for="show-reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
+            <label for="show-reserved_quantity" class="col-sm-2 col-form-label">@lang('products.Reserved_Quantity')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" type="number" tabindex="9"  class="form-control" min="0" id="show-reserved_quantity-show" value="0">
             </div>
         </div><!-- /.form-group -->
 
         <div id="show-productQuantityContainer" class="form-group row">
-            <label for="show-quantity" class="col-sm-2 col-form-label">Quantity</label>
+            <label for="show-quantity" class="col-sm-2 col-form-label">@lang('products.Quantity')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" tabindex="7"  class="form-control" min="0" id="show-quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="show-quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -84,12 +84,12 @@
                 <thead>
                     <tr>
                         <td>#</td>
-                        <td>Name</td>
-                        <td>SKU</td>
-                        <td>Price</td>
-                        <td>Valied Quantity</td>
-                        <td>Quantity For Each Package</td>
-                        <td>Total Quantity</td>
+                        <td>@lang('products.Name')</td>
+                        <td>@lang('products.SKU')</td>
+                        <td>@lang('products.Price')</td>
+                        <td>@lang('products.Valied_Quantity')</td>
+                        <td>@lang('products.Quantity_For_Each_Package')</td>
+                        <td>@lang('products.Total_Quantity')</td>
                     </tr>
                 </thead>
                 <tbody id="show-selected_child_product_container"></tbody>
@@ -107,7 +107,7 @@
                 <div class="col-4" style="overflow-y: scroll; height: 450px;">
                     <ul class="list-group" id="show-upgradableOptionsList">
                         <li class="list-group-item">
-                            <h5>Expected price : <span id="show-upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
+                            <h5>@lang('products.Expected_price') : <span id="show-upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
                         </li>
                     </ul>
                 </div>
@@ -116,13 +116,13 @@
                         <thead>
                             <tr>
                                 <td>#</td>
-                                <td>Name</td>
-                                <td>SKU</td>
-                                <td>Price</td>
-                                <td>Edit Price</td>
-                                <td>Quantity For Each Package</td>
-                                <td>Total Quantity</td>
-                                <td>Is Default</td>
+                                <td>@lang('products.Name')</td>
+                                <td>@lang('products.SKU')</td>
+                                <td>@lang('products.Price')</td>
+                                <td>@lang('products.Edit_Price')</td>
+                                <td>@lang('products.Quantity_For_Each_Package')</td>
+                                <td>@lang('products.Total_Quantity')</td>
+                                <td>@lang('products.Is_Default')</td>
                             </tr>
                         </thead>
                         <tbody id="show-upgradableOptionCategoryProducts"></tbody>
@@ -140,30 +140,30 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="show-price" class="col-sm-2 col-form-label">Price</label>
+            <label for="show-price" class="col-sm-2 col-form-label">@lang('products.Price')</label>
             <div class="col-sm-4">
                 <input disabled="disabled" type="number" min="0" step="0.5" tabindex="9"  class="form-control" id="show-price" value="0">
             </div>
-            <label for="show-price_after_sale" class="col-sm-2 col-form-label">Price After Sale</label>
+            <label for="show-price_after_sale" class="col-sm-2 col-form-label">@lang('products.Price_After_Sale')</label>
             <div class="col-sm-4">
                 <input disabled="disabled" type="number" min="0" step="0.5" tabindex="10"  class="form-control" id="show-price_after_sale" value="0">
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="show-images" class="col-sm-2 col-form-label">Product Images</label>
+            <label for="show-images" class="col-sm-2 col-form-label">@lang('products.Product_Images')</label>
             <div class="col-sm-10 row" id="show-images">
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="show-images" class="col-sm-2 col-form-label">Brand</label>
+            <label for="show-images" class="col-sm-2 col-form-label">@lang('products.Brand')</label>
             <div class="col-sm-10" id="show-brand">
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="show-categories" class="col-sm-2 col-form-label">Category</label>
+            <label for="show-categories" class="col-sm-2 col-form-label">@lang('products.Category')</label>
             <div class="col-sm-10" id="show-categories">
                 
             </div>

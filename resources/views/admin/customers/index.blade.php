@@ -1,140 +1,146 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
+
 @push('page_css')
-<link rel="stylesheet" href="{{ asset('plugins/telphone_code/css/intlTelInput.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/telphone_code/css/intlTelInput.min.css') }}">
+
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
 @endpush
 
 @section('content')
-@php 
-    $object_title = 'Customer';
-@endphp
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('customers.Customers')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('customers.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('customers.Customers')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
-<div class="content-header">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
 
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('customers.Customers_Adminstration')</h5>
                 </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customers_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customers_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
                 </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
+            </div><!-- /.row -->
 
-        <hr/>
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="">@lang('customers.Name')</label>
+                        <input type="text" class="form-control" id="s-name">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+                
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="">@lang('customers.Email')</label>
+                        <input type="text" class="form-control" id="s-email">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="">@lang('customers.Phone')</label>
+                        <input type="text" class="form-control" id="s-phone">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="">@lang('customers.Country')</label>
+                        <select type="text" class="form-control" id="s-country">
+                            <option value="">-- @lang('customers.select_country') --</option>
+                            @foreach($countries as $country)
+                            <option value="{{$country->id}}">{{$country->name}}</option>
+                            @endforeach
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('customers.Governorate')</label>
+                        <select type="text" class="form-control" id="s-governorate" multiple="multiple">
+                            <option value="">-- @lang('customers.select_governorate') --</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('customers.Name')</th>
+                    <th>@lang('customers.Email')</th>
+                    <th>@lang('customers.Phone')</th>
+                    <th>@lang('customers.Country')</th>
+                    <th>@lang('customers.Government')</th>
+                    <th>@lang('customers.Active')</th>
+                    <th>@lang('customers.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">Email</label>
-                    <input type="text" class="form-control" id="s-email">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+        @include('admin.customers.incs._create')
 
-            
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">Phone</label>
-                    <input type="text" class="form-control" id="s-phone">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
+        @include('admin.customers.incs._edit')
 
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="">Country</label>
-                    <select type="text" class="form-control" id="s-country">
-                        <option value="">-- select category --</option>
-                        @foreach($countries as $country)
-                        <option value="{{$country->id}}">{{$country->name}}</option>
-                        @endforeach
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
+        @include('admin.customers.incs._show')
+        
 
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Governorate</label>
-                    <select type="text" class="form-control" id="s-governorate" multiple="multiple">
-                        <option value="">-- select category --</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
-
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Country</th>
-                <th>Government</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.customers.incs._create')
-
-    @include('admin.customers.incs._edit')
-
-    @include('admin.customers.incs._show')
-    
-
+    </div>
 </div>
 @endsection
 
@@ -206,7 +212,7 @@ $(function () {
 
         if (data.get('name') === '') {
             is_valide = false;
-            let err_msg = 'name is required';
+            let err_msg = '@lang("customers.name_is_required")';
             $(`#${prefix}nameErr`).text(err_msg);
             $(`#${prefix}nameErr`).slideDown(500);
         }
@@ -216,26 +222,26 @@ $(function () {
             // let err_msg = 'email is required';
             // $(`#${prefix}emailErr`).text(err_msg);
             // $(`#${prefix}emailErr`).slideDown(500);
-            data.delete('email')
+            // data.delete('email')
         }
 
         if (data.get('phone') === '') {
             is_valide = false;
-            let err_msg = 'phone is required';
+            let err_msg = '@lang("customers.phone_is_required")';
             $(`#${prefix}phoneErr`).text(err_msg);
             $(`#${prefix}phoneErr`).slideDown(500);
         }
 
         if (data.get('country_id') === '') {
             is_valide = false;
-            let err_msg = 'country is required';
+            let err_msg = '@lang("customers.country_is_required")';
             $(`#${prefix}country_idErr`).text(err_msg);
             $(`#${prefix}country_idErr`).slideDown(500);
         }
 
         if (data.get('gove_id') === '') {
             is_valide = false;
-            let err_msg = 'governorate is required';
+            let err_msg = '@lang("customers.governorate_is_required")';
             $(`#${prefix}gove_idErr`).text(err_msg);
             $(`#${prefix}gove_idErr`).slideDown(500);
         }

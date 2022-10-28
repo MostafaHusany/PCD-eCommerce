@@ -1,5 +1,14 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
+
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
 
 @push('page_css')
 <style>
@@ -13,105 +22,103 @@
 @endpush
 
 @section('content')
-@php 
-    $object_title = 'District';
-@endphp
-
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
-
-<div class="container-fluid pt-3">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
-        
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('districts.Districts')</h1>
                 </div>
-                
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('districts.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('districts.Districts')
+                        </li>
+                    </ol>
                 </div>
-            </div>
-        </div><!-- /.row -->
-        <hr/>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
+    <div class="container-fluid pt-3">
+
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
             
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="">Country</label>
-                    <select type="text" class="form-control" id="s-country"></select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Code</th>
-                <th>Parent</th>
-                <th>Customers</th>
-                <th>Orders</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.districts.incs._create')
-    
-    @include('admin.districts.incs._edit')
-    
-    {{--
-    @include('admin.tags.incs._show')
-    --}}
-    
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('districts.Districts_Adminstration')</h5>
+                </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
+                    
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+            </div><!-- /.row -->
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="">@lang('districts.Name')</label>
+                        <input type="text" class="form-control" id="s-name">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+                
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="">@lang('districts.Country')</label>
+                        <select type="text" class="form-control" id="s-country"></select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('districts.Type')</th>
+                    <th>@lang('districts.Name')</th>
+                    <th>@lang('districts.Code')</th>
+                    <th>@lang('districts.Parent')</th>
+                    <th>@lang('districts.Customers')</th>
+                    <th>@lang('districts.Orders')</th>
+                    <th>@lang('districts.Active')</th>
+                    <th>@lang('districts.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
+        
+        @include('admin.districts.incs._create')
+        
+        @include('admin.districts.incs._edit')
+        
+        {{--
+        @include('admin.tags.incs._show')
+        --}}
+        
+    </div>
 </div>
 @endsection
 
@@ -175,21 +182,21 @@ $(function () {
         
         if (data.get('name') === '') {
             is_valide = false;
-            let err_msg = 'name is required';
+            let err_msg = '@lang("districts.name_is_required")';
             $(`#${prefix}nameErr`).text(err_msg);
             $(`#${prefix}nameErr`).slideDown(500);
         }
         
         if ($('#is-main').val() === 'main' && data.get('phone_code') === '') {
             is_valide = false;
-            let err_msg = 'phone code is required';
+            let err_msg = '@lang("districts.phone_code_is_required")';
             $(`#${prefix}phone_codeErr`).text(err_msg);
             $(`#${prefix}phone_codeErr`).slideDown(500);
         }
 
         if ($('#is-main').val() === 'main' && (data.get('children_tags') === '' || data.get('children_tags') === '[]')) {
             is_valide = false;
-            let err_msg = 'children tags is required';
+            let err_msg = '@lang("districts.children_tags_is_required")';
             $(`#${prefix}children_tagsErr`).text(err_msg);
             $(`#${prefix}children_tagsErr`).slideDown(500);
         }
@@ -309,7 +316,7 @@ $(function () {
         $('#s-country').select2({
             allowClear: true,
             width: '100%',
-            placeholder: 'Select country',
+            placeholder: '@lang("districts.Select_country")',
             ajax: {
                 url: '{{ url("admin/districts-search") }}',
                 dataType: 'json',
@@ -327,8 +334,6 @@ $(function () {
                 cache: true
             }
         });
-
-
     })();
 
 });

@@ -2,7 +2,7 @@
 <div style="display: none" id="createObjectCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Create New {{$object_title}}</h5>
+            <h5>@lang('districts.Create_District')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#createObjectCard" data-target-card="#objectsCard">
@@ -14,18 +14,18 @@
 
     <div action="/" id="objectForm">
         <div class="form-group row">
-            <label for="name" class="col-sm-2 col-form-label">Name</label>
+            <label for="name" class="col-sm-2 col-form-label">@lang('districts.Name')</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="name" placeholder="Name">
+                <input type="text" class="form-control" id="name" placeholder="@lang('districts.Name')">
                 <div style="padding: 5px 7px; display: none" id="nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="phone_code" class="col-sm-2 col-form-label">Phone Code</label>
+            <label for="phone_code" class="col-sm-2 col-form-label">@lang('districts.Phone_Code')</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="phone_code" placeholder="Phone code">
+                <input type="text" class="form-control" id="phone_code" placeholder="@lang('districts.Phone_Code')">
                 <div style="padding: 5px 7px; display: none" id="phone_codeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -33,7 +33,7 @@
         
         <div class="form-group row">
             <input type="hidden" id="children_tags">
-            <label for="child_tag_field" class="col-sm-2">Governorate</label>
+            <label for="child_tag_field" class="col-sm-2">@lang('districts.Governorate')</label>
             <div class="col-sm-8">
                 <input class="form-control" id="child_tag_field">
                 <div style="padding: 5px 7px; display: none" id="children_tagsErr" class="err-msg mt-2 alert alert-danger">
@@ -51,8 +51,8 @@
             <div class="col-sm-10">
                 <table class="table">
                     <tr>
-                        <td>Name</td>
-                        <td>Action</td>
+                        <td>@lang('districts.Name')</td>
+                        <td>@lang('districts.Actions')</td>
                     </tr>
                     <tbody id="childrenTableContainer">
 
@@ -61,7 +61,7 @@
             </div><!-- /.col-sm-10 -->
         </div>
 
-        <button class="create-object btn btn-primary float-right">Create {{$object_title}}y</button>
+        <button class="create-object btn btn-primary float-right">@lang('districts.Create_District')</button>
     </div>
 </div>
 

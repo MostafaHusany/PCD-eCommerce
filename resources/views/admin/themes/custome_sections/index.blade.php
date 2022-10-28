@@ -1,288 +1,299 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
 
 @push('page_css')
-<style>
-.categories_menu {
-    /* width: 229px; */
-    width: 22.5%;
-}
+    <style>
+        .categories_menu {
+            /* width: 229px; */
+            width: 22.5%;
+        }
 
-.categories-list {
-    min-height: 400px;
-    /* min-height: 200px; */
-    padding: 5px;
-    border: 1px solid #aaa;
-    box-shadow: 0px 5px 10px rgb(0 0 0 / 10%);
-    width: 100%;
-}
+        .categories-list {
+            min-height: 400px;
+            /* min-height: 200px; */
+            padding: 5px;
+            border: 1px solid #aaa;
+            box-shadow: 0px 5px 10px rgb(0 0 0 / 10%);
+            width: 100%;
+        }
 
-.categories-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 5px;
-    font-size: 14px;
-}
+        .categories-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
 
-.categories-list .show-sub {
-    float: right;
-    margin-top: 5px;
-}
+        .categories-list .show-sub {
+            float: right;
+            margin-top: 5px;
+        }
 
-.categories-btn {
-    background-color: #000;
-    border: 1px solid #000;
-    padding: 13px 15px;
-    color: #fff;
-    text-align: left;
-    width: 100%;
-    color: #fff;
-    text-transform: uppercase;
-    ;
-}
+        .categories-btn {
+            background-color: #000;
+            border: 1px solid #000;
+            padding: 13px 15px;
+            color: #fff;
+            text-align: left;
+            width: 100%;
+            color: #fff;
+            text-transform: uppercase;
+            ;
+        }
 
-.categories-btn span {
-    font-weight: bold;
-}
+        .categories-btn span {
+            font-weight: bold;
+        }
 
-.categories-btn:hover {
-    color: #fff;
-}
+        .categories-btn:hover {
+            color: #fff;
+        }
 
-.category-icon {
-    font-size: 1.3rem;
-    margin-right: 0;
-    float: right;
-}
+        .category-icon {
+            font-size: 1.3rem;
+            margin-right: 0;
+            float: right;
+        }
 
-.nav-menu {
-    height: 55px;
-    width: 100%;
-}
+        .nav-menu {
+            height: 55px;
+            width: 100%;
+        }
+    </style>
 
-</style>
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
 @endpush
 
 @section('content')
-@php
-$object_title = 'Cover Editor';
-@endphp
-
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
-
-<div id="selectNavbarCategories" class="card card-body">
-    
-    <div>
-
-        <div id="createForm" class="clearfix">
-            <div class="row">
-                <div class="col-6">
-                    <h5>Create Slider</h5>
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('themes.Custome_Section')</h1>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('themes.Dashboard')</a>
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            @lang('themes.Custome_Section')
+                        </li>
+                    </ol>
                 </div>
             </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
+    <div id="selectNavbarCategories" class="card card-body">
+        
+        <div>
+
+            <div id="createForm" class="clearfix">
+                <div class="row">
+                    <div class="col-6">
+                        <h5>@lang('themes.Create_Slider')</h5>
+                    </div>
+                    <div class="col-6 text-right">
+                    </div>
+                </div><!-- /.row -->
+
+                <hr />
+                
+                <div class="form-group row">
+                    <label for="products" class="col-sm-2 col-form-label">@lang('themes.Section_Title')</label>
+                    <div class="col-sm-10">
+                        <div class="row" dir="ltr">
+                            <div class="col-sm-6">
+                                <input type="text" name="en_title" id="en_title" class="form-control" style="text-align: left !important;"  placeholder="section title">
+                                <div style="padding: 5px 7px; display: none" id="titleEnErr"
+                                    class="err-msg mt-2 alert alert-danger">
+                                </div>
+                            </div><!-- /.col-sm-6 -->
+                            <div class="col-sm-6">
+                                <input type="text" name="ar_title" id="ar_title" class="form-control" style="text-align: right !important;" dir="rtl" placeholder="عنوان القسم">
+                                <div style="padding: 5px 7px; display: none" id="titleArErr"
+                                    class="err-msg mt-2 alert alert-danger">
+                                </div>
+                            </div><!-- /.col-sm-6 -->
+                        </div><!-- /.row -->
+                    </div><!-- /.col-sm-10 -->
+                </div><!-- /.form-group -->
+
+                <div class="form-group row">
+                    <label for="products" class="col-sm-2 col-form-label">@lang('themes.Order')</label>
+                    <div class="col-sm-10">
+                        <input type="number" min="0" value="0" name="order" id="order" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="orderErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div><!-- /.col-sm-5 -->
+                </div><!-- /.form-group -->
+
+
+                {{--
+                    <div class="form-group row">
+                        <label for="category" class="col-sm-2 col-form-label">Category</label>
+                        <div class="col-sm-10">
+                            <select name="category" id="category" class="form-control">
+                                <option value="">-- select category --</option>
+                                @foreach($all_categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->ar_title . ' || ' . $category->ar_title }}</option>
+                                @endforeach
+                            </select>
+                            <div style="padding: 5px 7px; display: none" id="categoryErr"
+                                class="err-msg mt-2 alert alert-danger">
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+                --}}
+
+                <div class="form-group row">
+                    <label for="products" class="col-sm-2 col-form-label">@lang('themes.Products')</label>
+                    <div class="col-sm-10">
+                        <select name="products" id="products" multiple="multiple" class="form-control">
+                            <option value="">-- select products --</option>
+                        </select>
+                        <div style="padding: 5px 7px; display: none" id="productsErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.form-group -->
+
+                <button !disabled="disabled" id="addLink" class="btn btn-primary float-right">@lang('themes.Add_Section')</button>
+            </div>
+
+            <div style="display: none" id="editForm" class="clearfix">
+                <div class="row">
+                    <div class="col-6">
+                        <h5>@lang('themes.Update_Section')</h5>
+                    </div>
+                    <div class="col-6 text-right">
+                        <div id="closeEditForm" class="toggle-btn btn btn-default btn-sm" data-current-card="#selectNavbarCategories"
+                            data-target-card="#objectsCard">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+
+                <hr />
+                
+                <div class="form-group row">
+                    <label for="edit-en_title" class="col-sm-2 col-form-label">@lang('themes.Section_Title')</label>
+                    <div class="col-sm-10">
+                        <div class="row" dir="ltr">
+                            <div class="col-sm-6">
+                                <input type="text" name="edit-en_title" id="edit-en_title" class="form-control" placeholder="section title">
+                                <div style="padding: 5px 7px; display: none" id="edit-en_titleErr"
+                                    class="err-msg mt-2 alert alert-danger">
+                                </div>
+                            </div><!-- /.col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <input type="text" name="edit-ar_title" style="text-align: right;" id="edit-ar_title" class="form-control" placeholder="عنوان القسم">
+                                <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr"
+                                    class="err-msg mt-2 alert alert-danger">
+                                </div>
+                            </div><!-- /.col-sm-6 -->
+                        </div><!-- /.row -->
+                    </div><!-- /.col-sm-10 -->
+                </div><!-- /.form-group -->
+
+                <div class="form-group row">
+                    <label for="edit-order" class="col-sm-2 col-form-label">@lang('themes.Order')</label>
+                    <div class="col-sm-10">
+                        <input type="number" min="0" value="0" name="edit-order" id="edit-order" class="form-control">
+                        <div style="padding: 5px 7px; display: none" id="edit-orderErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div><!-- /.col-sm-5 -->
+                </div><!-- /.form-group -->
+
+                {{--
+                    <div class="form-group row">
+                        <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
+                        <div class="col-sm-10">
+                            <select name="edit-category" id="edit-category" class="form-control">
+                                <option value="">-- select category --</option>
+                                @foreach($all_categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->ar_title . ' || ' . $category->ar_title }}</option>
+                                @endforeach
+                            </select>
+                            <div style="padding: 5px 7px; display: none" id="edit-categoryErr"
+                                class="err-msg mt-2 alert alert-danger">
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+                --}}
+
+                <div class="form-group row">
+                    <label for="edit-products" class="col-sm-2 col-form-label">@lang('themes.Products')</label>
+                    <div class="col-sm-10">
+                        <select name="edit-products" id="edit-products" multiple="multiple" class="form-control">
+                            <option value="">-- select products --</option>
+                        </select>
+                        <div style="padding: 5px 7px; display: none" id="edit-productsErr"
+                            class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.form-group -->
+
+                <button !disabled="disabled" id="editLink" class="btn btn-warning float-right">@lang('themes.Update_Section')</button>
+            </div>
 
             <hr />
-            
-            <div class="form-group row">
-                <label for="products" class="col-sm-2 col-form-label">Section Title</label>
-                <div class="col-sm-5">
-                    <input type="text" name="en_title" id="en_title" class="form-control" placeholder="section title">
-                    <div style="padding: 5px 7px; display: none" id="titleEnErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div><!-- /.col-sm-5 -->
 
-                <div class="col-sm-5">
-                    <input type="text" name="ar_title" id="ar_title" class="form-control" style="text-align: right" placeholder="عنوان القسم">
-                    <div style="padding: 5px 7px; display: none" id="titleArErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div><!-- /.col-sm-5 -->
-            </div><!-- /.form-group -->
-
-            <div class="form-group row">
-                <label for="products" class="col-sm-2 col-form-label">Order</label>
-                <div class="col-sm-10">
-                    <input type="number" min="0" value="0" name="order" id="order" class="form-control">
-                    <div style="padding: 5px 7px; display: none" id="orderErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div><!-- /.col-sm-5 -->
-            </div><!-- /.form-group -->
-
-
-            {{--
-            <div class="form-group row">
-                <label for="category" class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-10">
-                    <select name="category" id="category" class="form-control">
-                        <option value="">-- select category --</option>
-                        @foreach($all_categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->ar_title . ' || ' . $category->ar_title }}</option>
-                        @endforeach
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="categoryErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-            --}}
-
-            <div class="form-group row">
-                <label for="products" class="col-sm-2 col-form-label">Products</label>
-                <div class="col-sm-10">
-                    <select name="products" id="products" multiple="multiple" class="form-control">
-                        <option value="">-- select products --</option>
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="productsErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-
-            <button !disabled="disabled" id="addLink" class="btn btn-primary float-right">Add Section</button>
-        </div>
-
-        <div style="display: none" id="editForm" class="clearfix">
-            <div class="row">
-                <div class="col-6">
-                    <h5>Update Slider</h5>
-                </div>
-                <div class="col-6 text-right">
-                    <div id="closeEditForm" class="toggle-btn btn btn-default btn-sm" data-current-card="#selectNavbarCategories"
-                        data-target-card="#objectsCard">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </div>
-            </div><!-- /.row -->
-
-            <hr />
-            
-            <div class="form-group row">
-                <label for="edit-en_title" class="col-sm-2 col-form-label">Section Title</label>
-                <div class="col-sm-5">
-                    <input type="text" name="edit-en_title" id="edit-en_title" class="form-control" placeholder="section title">
-                    <div style="padding: 5px 7px; display: none" id="edit-en_titleErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div><!-- /.col-sm-5 -->
-
-                <div class="col-sm-5">
-                    <input type="text" name="edit-ar_title" style="text-align: right;" id="edit-ar_title" class="form-control" placeholder="عنوان القسم">
-                    <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div><!-- /.col-sm-5 -->
-            </div><!-- /.form-group -->
-
-            <div class="form-group row">
-                <label for="edit-order" class="col-sm-2 col-form-label">Order</label>
-                <div class="col-sm-10">
-                    <input type="number" min="0" value="0" name="edit-order" id="edit-order" class="form-control">
-                    <div style="padding: 5px 7px; display: none" id="edit-orderErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div><!-- /.col-sm-5 -->
-            </div><!-- /.form-group -->
-
-            {{--
-            <div class="form-group row">
-                <label for="edit-category" class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-10">
-                    <select name="edit-category" id="edit-category" class="form-control">
-                        <option value="">-- select category --</option>
-                        @foreach($all_categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->ar_title . ' || ' . $category->ar_title }}</option>
-                        @endforeach
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="edit-categoryErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-            --}}
-
-            <div class="form-group row">
-                <label for="edit-products" class="col-sm-2 col-form-label">Products</label>
-                <div class="col-sm-10">
-                    <select name="edit-products" id="edit-products" multiple="multiple" class="form-control">
-                        <option value="">-- select products --</option>
-                    </select>
-                    <div style="padding: 5px 7px; display: none" id="edit-productsErr"
-                        class="err-msg mt-2 alert alert-danger">
-                    </div>
-                </div>
-            </div><!-- /.form-group -->
-
-            <button !disabled="disabled" id="editLink" class="btn btn-warning float-right">Update Section</button>
-        </div>
-
-        <hr />
-
-        <div class="alerts-container">
-            <div id="successAlert" style="display: none" class="alert alert-success"></div>
-            
-            <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            <div class="alerts-container">
+                <div id="successAlert" style="display: none" class="alert alert-success"></div>
                 
-            <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-            
-            <!-- <div class="d-flex justify-content-center mb-3">
-                <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div> -->
-
-            <!-- <div id="loddingSpinner" class="overlay  mb-3">
-                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-            </div> -->
-        </div><!-- /.alerts-container -->
-
-        <!-- load the look of the navbar -->
-        <div class="form-group" style="position: relative">
-            <div style="
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    font-size: 2rem;
-                    left: 0;" 
-            id="loddingSpinner" class="overlay  mb-3">
-                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-            </div>
-            
-            <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" id="linksContainer" class="p-4 look-container">
+                <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+                    
+                <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
                 
-            </div><!-- /.look-container -->
-            
-            <div class="text-right my-2">
-                <button id="upgradeSection" class="btn btn-warning">
-                    Update Slider
-                </button>
-            </div>
-        </div><!-- /.form-group -->
+                <!-- <div class="d-flex justify-content-center mb-3">
+                    <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div> -->
 
-        <!-- <button id="updateNavbar" class="btn btn-warning float-right">Update Navbar Settings</button> -->
+                <!-- <div id="loddingSpinner" class="overlay  mb-3">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div> -->
+            </div><!-- /.alerts-container -->
+
+            <!-- load the look of the navbar -->
+            <div class="form-group" style="position: relative">
+                <div style="
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        font-size: 2rem;
+                        left: 0;" 
+                id="loddingSpinner" class="overlay  mb-3">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+                
+                <div style="background: #fff; min-height: 400px; border: 1px solid #ddd" id="linksContainer" class="p-4 look-container">
+                    
+                </div><!-- /.look-container -->
+                
+                <div class="text-right my-2">
+                    <button id="upgradeSection" class="btn btn-warning">
+                    @lang('themes.Update_Sliders')
+                    </button>
+                </div>
+            </div><!-- /.form-group -->
+
+            <!-- <button id="updateNavbar" class="btn btn-warning float-right">Update Navbar Settings</button> -->
+        </div>
     </div>
 </div>
 @endsection
@@ -569,13 +580,13 @@ $(document).ready(function() {
         const pluginCall = (() => {
             $('#category, #edit-category').select2({
                 width: '100%',
-                placeholder: 'Select categories',
+                placeholder: '@lang("themes.Select_categories")',
             });
 
             $('#products, #edit-products').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select products, by name, id, or sku',
+                placeholder: '@lang("themes.Select_products_by_name_id_or_sku")',
                 ajax: {
                     url: '{{ url("admin/products-search") }}?all_products=true',
                     dataType: 'json',

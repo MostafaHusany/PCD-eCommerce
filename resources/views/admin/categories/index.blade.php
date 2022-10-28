@@ -1,127 +1,134 @@
 @extends('layouts.admin.app')
 
-
-@section('content')
 @php 
-    $object_title = 'Categor';
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
 @endphp
 
-<div class="content-header">
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
+
+@section('content')
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('categories.Categories')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('categories.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('categories.Categories')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}ies</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}ies
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
 
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}ies Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                {{--
-                <div class="!toggle-btn  update-categories-navbar btn btn-warning btn-sm" 
-                    data-current-card="#objectsCard" data-target-card="#selectNavbarCategories"
-                    data-toggle="tooltip" data-placement="top" title="Select Categories For Navbar"
-                >
-                    <i class="fas fa-stream"></i>
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('categories.Categories_Adminstration')</h5>
                 </div>
-                --}}
+                <div class="col-6 text-right">
+                    {{--
+                    <div class="!toggle-btn  update-categories-navbar btn btn-warning btn-sm" 
+                        data-current-card="#objectsCard" data-target-card="#selectNavbarCategories"
+                        data-toggle="tooltip" data-placement="top" title="Select Categories For Navbar"
+                    >
+                        <i class="fas fa-stream"></i>
+                    </div>
+                    --}}
 
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
+
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products-categories_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
                 </div>
+            </div><!-- /.row -->
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products-categories_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
-                </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('categories.Title')</label>
+                        <input type="text" class="form-control" id="s-title">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('categories.Type')</label>
+                        <select type="text" class="form-control" id="s-is_main">
+                            <option value="">All</option>
+                            <option value="1">is main</option>
+                            <option value="0">is sub</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
 
-        <hr/>
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('categories.Icon')</th>
+                    <th>@lang('categories.Ar_Title')</th>
+                    <th>@lang('categories.En_Title')</th>
+                    <th>@lang('categories.Is_Main')</th>
+                    <th>@lang('categories.Parent')</th>
+                    <th>@lang('categories.Products')</th>
+                    <th>@lang('categories.Rule')</th>
+                    <th>@lang('categories.Active')</th>
+                    <th>@lang('categories.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Title</label>
-                    <input type="text" class="form-control" id="s-title">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Type</label>
-                    <select type="text" class="form-control" id="s-is_main">
-                        <option value="">All</option>
-                        <option value="1">is main</option>
-                        <option value="0">is sub</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        @include('admin.categories.incs._create')
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Icon</th>
-                <th>Ar Title</th>
-                <th>En Title</th>
-                <th>Is Main</th>
-                <th>Parent</th>
-                <th>Products</th>
-                <th>Rule</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.categories.incs._create')
+        @include('admin.categories.incs._edit')
 
-    @include('admin.categories.incs._edit')
+        @include('admin.categories.incs._show')
+        
+        @include('admin.categories.incs._custome_fields')
 
-    @include('admin.categories.incs._show')
-    
-    @include('admin.categories.incs._custome_fields')
+        {{--
+        @include('admin.categories.incs._settings')
+        --}}
+        
 
-    {{--
-    @include('admin.categories.incs._settings')
-    --}}
-    
-
+    </div>
 </div>
 @endsection
 
@@ -186,35 +193,35 @@ $(function () {
 
         if (data.get('ar_title') === '') {
             is_valide = false;
-            let err_msg = 'arabic title is required';
+            let err_msg = '@lang("categories.arabic_title_is_required")';
             $(`#${prefix}ar_titleErr`).text(err_msg);
             $(`#${prefix}ar_titleErr`).slideDown(500);
         }
 
         if (data.get('en_title') === '') {
             is_valide = false;
-            let err_msg = 'english title is required';
+            let err_msg = '@lang("categories.english_title_is_required")';
             $(`#${prefix}en_titleErr`).text(err_msg);
             $(`#${prefix}en_titleErr`).slideDown(500);
         }
 
         if (data.get('ar_description') === '') {
             is_valide = false;
-            let err_msg = 'arabic description is required';
+            let err_msg = '@lang("categories.arabic_description_is_required")';
             $(`#${prefix}ar_descriptionErr`).text(err_msg);
             $(`#${prefix}ar_descriptionErr`).slideDown(500);
         }
 
         if (data.get('en_description') === '') {
             is_valide = false;
-            let err_msg = 'english description is required';
+            let err_msg = '@lang("categories.english_description_is_required")';
             $(`#${prefix}en_descriptionErr`).text(err_msg);
             $(`#${prefix}en_descriptionErr`).slideDown(500);
         }
 
         if (data.get('is_main') === '0' && data.get('category_id') === '') {
             is_valide = false;
-            let err_msg = 'main category is required';
+            let err_msg = '@lang("categories.main_category_is_required")';
             $(`#${prefix}category_idErr`).text(err_msg);
             $(`#${prefix}category_idErr`).slideDown(500);
         }
@@ -284,7 +291,7 @@ $(function () {
             $('#category_id, #edit-category_id, #s-category').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select categories',
+                placeholder: '@lang("categories.Select_categories")',
                 ajax: {
                     url: '{{ url("admin/products-categories-search") }}?is_main=true',
                     dataType: 'json',
@@ -306,7 +313,7 @@ $(function () {
             $('#brands, #edit-brands').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select Brands',
+                placeholder: '@lang("categories.Select_Brands")',
                 ajax: {
                     url: '{{ url("admin/brand-search") }}',
                     dataType: 'json',

@@ -2,7 +2,7 @@
 <div style="display: none" id="createObjectCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Create New {{ $object_title }}y</h5>
+            <h5>@lang('products.Create_Product')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#createObjectCard" data-target-card="#objectsCard">
@@ -14,44 +14,52 @@
 
     <form action="/" id="objectForm">
         <div class="form-group row">
-            <label for="productName" class="col-sm-2 col-form-label">Search Product</label>
+            <label for="productName" class="col-sm-2 col-form-label">@lang('products.Search_Product')</label>
             <div class="col-sm-10">
-                <select id="productName" type="text" tabindex="1"  class="form-control" placeholder="Search Product Name"></select>
+                <select id="productName" type="text" tabindex="1"  class="form-control" placeholder="@lang('products.Search_Product')"></select>
                 <div style="padding: 5px 7px; display: none" id="productNameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="en_name" class="col-sm-2 col-form-label">Name <span class="text-danger float-right">*</span></label>
-            <div class="col-sm-5">
-                <input id="en_name" type="text" tabindex="1"  class="form-control" placeholder="Product Name">
-                <div style="padding: 5px 7px; display: none" id="en_nameErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <input id="ar_name" type="text"  tabindex="4" class="form-control text-right" dir="rtl" placeholder="اسم المنتج">
-                <div style="padding: 5px 7px; display: none" id="ar_nameErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
+            <label for="en_name" class="col-sm-2 col-form-label">@lang('products.Name') <span class="text-danger float-right">*</span></label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <input id="en_name" type="text" tabindex="1" class="form-control" style="text-align: left !important;" placeholder="Product Name">
+                        <div style="padding: 5px 7px; display: none" id="en_nameErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <input id="ar_name" type="text"  tabindex="4" class="form-control" style="text-align: right !important;" dir="rtl" placeholder="اسم المنتج">
+                        <div style="padding: 5px 7px; display: none" id="ar_nameErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
       
         <div class="form-group row">
-            <label for="en_small_description" class="col-sm-2 col-form-label">Short Description <span class="text-danger float-right">*</span></label>
-            <div class="col-sm-5">
-                <textarea id="en_small_description" type="text" tabindex="2"  class="form-control" placeholder="Product Short Description"></textarea>
-                <div style="padding: 5px 7px; display: none" id="en_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <textarea id="ar_small_description" type="text"  tabindex="5" class="form-control text-right" dir="rtl" placeholder="وصف مختصر للمنتج"></textarea>
-                <div style="padding: 5px 7px; display: none" id="ar_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
+            <label for="en_small_description" class="col-sm-2 col-form-label">@lang('products.Short_Description') <span class="text-danger float-right">*</span></label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <textarea id="en_small_description" type="text" tabindex="2" class="form-control" style="text-align: left !important;" placeholder="Product Short Description"></textarea>
+                        <div style="padding: 5px 7px; display: none" id="en_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <textarea id="ar_small_description" type="text"  tabindex="5" class="form-control" style="text-align: right !important;" dir="rtl" placeholder="وصف مختصر للمنتج"></textarea>
+                        <div style="padding: 5px 7px; display: none" id="ar_small_descriptionErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="en_description" class="col-sm-2 col-form-label">Description <span class="text-danger float-right">*</span></label>
+            <label for="en_description" class="col-sm-2 col-form-label">@lang('products.Description') <span class="text-danger float-right">*</span></label>
 
             <div class="col-sm-10">
                 <nav>
@@ -88,7 +96,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="is_composite" class="col-sm-2 col-form-label">Product Type <span class="text-danger float-right">*</span></label>
+            <label for="is_composite" class="col-sm-2 col-form-label">@lang('products.Product_Type') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select tabindex="7" id="is_composite" name="is_composite" 
                     data-first-target=".child-products-container" 
@@ -96,9 +104,9 @@
                     data-third-target=".upgradable-options"
                      
                     class="form-control">
-                    <option value="0">Usual product</option>
-                    <option value="1">Composite Product (تجميعات, حزمة عروض)</option>
-                    <option value="2">Upgradable Product (تجميعات)</option>
+                    <option value="0">@lang('products.Usual')</option>
+                    <option value="1">@lang('products.Composite') (تجميعات, حزمة عروض)</option>
+                    <option value="2">@lang('products.Upgradable') (تجميعات)</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="is_compositeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
@@ -106,7 +114,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="storage_quantity" class="col-sm-2 col-form-label">Storage Quantity <span class="text-danger float-right">*</span></label>
+            <label for="storage_quantity" class="col-sm-2 col-form-label">@lang('products.Storage_Quantity') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="number" tabindex="9"  class="form-control" min="0" id="storage_quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="storage_quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -115,7 +123,7 @@
         </div><!-- /.form-group -->
 
         <div class="upgradable-options child-products-container form-group row" style="display: none;">
-            <label for="reserved_quantity" class="col-sm-2 col-form-label">Reserved Quantity</label>
+            <label for="reserved_quantity" class="col-sm-2 col-form-label">@lang('products.Reserved_Quantity')</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="8"  class="form-control" min="0" id="reserved_quantity" value="1">
                 <div style="padding: 5px 7px; display: none" id="reserved_quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -124,14 +132,14 @@
             <div class="col-sm-2"></div>
             <div class="col-sm-10 mt-2">
                 <div style="padding: 5px 7px; !font-size: 12px" class="alert alert-info">
-                    This quantity will be reserved from the child products and will not sold as individual products 
+                    @lang('products.reserved_des_1')
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="child-products-container form-group row mt-2 mb-2 pt-2 pb-2" style="display: none;">
             <div class="col-sm-2">
-                <label for="">Child Products</label>
+                <label for="">@lang('products.Child_Products')</label>
             </div>
             <div class="col-sm-10">
                 <select name="find_child_products"  !multiple="multiple" id="find_child_products" class="form-control"></select>
@@ -142,7 +150,7 @@
         
         <div class="upgradable-options form-group row mt-4 mb-2 pt-2 pb-2" style="display: none;">
             <div class="col-sm-2">
-                <label for="">Selected Categories</label>
+                <label for="">@lang('products.Selected_Categories')</label>
             </div>
             <div class="col-sm-10">
                 <select name="categories-upgradable" tabindex="9"  !multiple="multiple" id="categories-upgradable" class="form-control"></select>
@@ -166,29 +174,29 @@
                 <div class="col-4" style="overflow-y: scroll; height: 450px;">
                     <ul class="list-group" id="upgradableOptionsList">
                         <li class="list-group-item">
-                            <h5>Expected price : <span id="upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
+                            <h5>@lang('products.Expected_price') : <span id="upgradeExpectedPrice" class="text-primary">0</span>SR<h5>
                         </li>
                     </ul>
                 </div>
                 <div class="col-8" style="overflow-y: scroll; min-height: 300px; height: 450px;">
                     <div class="form-group">
                         <select name="findCategoryProduct" !multiple="multiple" id="findCategoryProduct" class="form-control">
-                            <option value="">-- select product --</option>
+                            <option value="">-- @lang('products.select_product') --</option>
                         </select>
                     </div><!-- /.form-group -->
                     <table class="text-center table !table-responsive">
                         <thead>
                             <tr>
                                 <td>#</td>
-                                <td>Name</td>
-                                <td>SKU</td>
-                                <td>Price</td>
-                                <td>Edit Price</td>
-                                <td>Valied Quantity</td>
-                                <td>Quantity For Each Package</td>
-                                <td>Total Quantity</td>
-                                <td>Is Default</td>
-                                <td>Actions</td>
+                                <td>@lang('products.Name')</td>
+                                <td>@lang('products.SKU')</td>
+                                <td>@lang('products.Price')</td>
+                                <td>@lang('products.Edit_Price')</td>
+                                <td>@lang('products.Valied_Quantity')</td>
+                                <td>@lang('products.Quantity_For_Each_Package')</td>
+                                <td>@lang('products.Total_Quantity')</td>
+                                <td>@lang('products.Is_Default')</td>
+                                <td>@lang('products.Actions')</td>
                             </tr>
                         </thead>
                         <tbody id="upgradableOptionCategoryProducts"></tbody>
@@ -212,13 +220,13 @@
                 <thead>
                     <tr>
                         <td>#</td>
-                        <td>Name</td>
-                        <td>SKU</td>
-                        <td>Price</td>
-                        <td>Valied Quantity</td>
-                        <td>Quantity For Each Package</td>
-                        <td>Total Quantity</td>
-                        <td>Actions</td>
+                        <td>@lang('products.Name')</td>
+                        <td>@lang('products.SKU')</td>
+                        <td>@lang('products.Price')</td>
+                        <td>@lang('products.Valied_Quantity')</td>
+                        <td>@lang('products.Quantity_For_Each_Package')</td>
+                        <td>@lang('products.Total_Quantity')</td>
+                        <td>@lang('products.Actions')</td>
                     </tr>
                 </thead>
                 <tbody id="selected_child_product_container"></tbody>
@@ -226,7 +234,7 @@
         </div>
 
         <div id="productQuantityContainer" class="form-group row">
-            <label for="quantity" class="col-sm-2 col-form-label">Quantity <span class="text-danger float-right">*</span></label>
+            <label for="quantity" class="col-sm-2 col-form-label">@lang('products.Quantity') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input type="number" tabindex="9"  class="form-control" min="0" id="quantity" value="0">
                 <div style="padding: 5px 7px; display: none" id="quantityErr" class="err-msg mt-2 alert alert-danger">
@@ -244,13 +252,13 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="price" class="col-sm-2 col-form-label">Price Without Tax <span class="text-danger float-right">*</span></label>
+            <label for="price" class="col-sm-2 col-form-label">@lang('products.Price_Without_Tax') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-2">
                 <input type="number" min="0" step="0.5" tabindex="11"  class="form-control" id="price" value="0">
                 <div style="padding: 5px 7px; display: none" id="priceErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
-            <label for="price_after_sale" class="col-sm-2 col-form-label">Price After Sale</label>
+            <label for="price_after_sale" class="col-sm-2 col-form-label">@lang('products.Price_After_Sale')</label>
             <div class="col-sm-2">
                 <input type="number" min="0" step="0.5" tabindex="12"  class="form-control" id="price_after_sale" value="0">
                 <div style="padding: 5px 7px; display: none" id="price_after_saleErr" class="err-msg mt-2 alert alert-danger">
@@ -258,13 +266,13 @@
             </div>
             <div class="col-sm-4">
                 <div style="padding: 5px 7px;" class="alert alert-info">
-                    Leave price after sale empty if there is no sale
+                    @lang('products.price_des_1')
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="main_image" class="col-sm-2 col-form-label">Main Image <span class="text-danger float-right">*</span></label>
+            <label for="main_image" class="col-sm-2 col-form-label">@lang('products.Main_Image') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <input id="main_image" tabindex="13" type="file" data-jpreview-container="#demo-1-container">
                 <div id="demo-1-container" class="jpreview-container"></div>
@@ -274,7 +282,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="images" class="col-sm-2 col-form-label">Product Images</label>
+            <label for="images" class="col-sm-2 col-form-label">@lang('products.Product_Images')</label>
             <div class="col-sm-10">
                 <input id="images" name="images[]" tabindex="14" type="file" multiple data-jpreview-container="#demo-2-container">
                 <div id="demo-2-container" class="jpreview-container"></div>
@@ -284,7 +292,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="images" class="col-sm-2 col-form-label">Brand <span class="text-danger float-right">*</span></label>
+            <label for="images" class="col-sm-2 col-form-label">@lang('products.Brand') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select tabindex="15" id="brand_id" name="brand_id" class="form-control"></select>
                 <div style="padding: 5px 7px; display: none" id="brandErr" class="err-msg mt-2 alert alert-danger">
@@ -293,7 +301,7 @@
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="categories" class="col-sm-2 col-form-label">Category <span class="text-danger float-right">*</span></label>
+            <label for="categories" class="col-sm-2 col-form-label">@lang('products.Category') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-10">
                 <select type="text" tabindex="16" name="categories[]" class="form-control"  multiple="multiple" id="categories"></select>
                 <div style="padding: 5px 7px; display: none" id="categoriesErr" class="err-msg mt-2 alert alert-danger">
@@ -312,7 +320,7 @@
             </div><!-- /.justify-content-center -->
         </div><!-- /.form-group -->
 
-        <button tabindex="17" class="create-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button tabindex="17" class="create-object btn btn-primary float-right">@lang('products.Create_Product')</button>
     </form>
 </div>
 
@@ -976,7 +984,7 @@ $(function () {
     $('#productName').select2({
         allowClear: true,
         width: '100%',
-        placeholder: 'Search a products name or sku',
+        placeholder: '@lang("products.Search_a_products_name_or_sku")',
         ajax: {
             url: '{{ url("admin/products-names-search") }}',
             dataType: 'json',

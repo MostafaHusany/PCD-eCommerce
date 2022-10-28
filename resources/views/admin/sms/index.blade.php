@@ -1,116 +1,123 @@
 @extends('layouts.admin.app')
 
-
-@section('content')
 @php 
-    $object_title = 'SMS';
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
 @endphp
 
-<div class="content-header">
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
+
+@section('content')
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('sms.sms')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('sms.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('sms.sms')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
-
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}} Settings</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
-                </div>
-
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('edit_sms_template'))
-                <div class="edit-sms-btn toggle-btn btn btn-warning btn-sm" data-current-card="#objectsCard" data-target-card="#editObjectsCard">
-                    <i class="fas fa-edit"></i>
-                </div>
-                @endif
-
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('send_sms'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-sms"></i>
-                </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
-
-        <hr/>
-        
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Phone</label>
-                    <input type="text" class="form-control" id="s-phone">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
             
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Status</label>
-                    <select type="text" class="form-control" id="s-status">
-                        <option value="">all</option>
-                        <option value="1">success</option>
-                        <option value="0">no response</option>
-                        <option value="-1">failed</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Phone</th>
-                <th>SMS</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Err Code</th>
-                <th>Err Msg</th>
-                <th>Resend</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.sms.incs._create')
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
 
-    @include('admin.sms.incs._edit')
-    
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('sms.SMS_Settings')</h5>
+                </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
+
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('edit_sms_template'))
+                    <div class="edit-sms-btn toggle-btn btn btn-warning btn-sm" data-current-card="#objectsCard" data-target-card="#editObjectsCard">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    @endif
+
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('send_sms'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-sms"></i>
+                    </div>
+                    @endif
+                </div>
+            </div><!-- /.row -->
+
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sms.Phone')</label>
+                        <input type="text" class="form-control" id="s-phone">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+                
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('sms.Status')</label>
+                        <select type="text" class="form-control" id="s-status">
+                            <option value="">all</option>
+                            <option value="1">success</option>
+                            <option value="0">no response</option>
+                            <option value="-1">failed</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('sms.Phone')</th>
+                    <th>@lang('sms.SMS')</th>
+                    <th>@lang('sms.Status')</th>
+                    <th>@lang('sms.Date')</th>
+                    <th>@lang('sms.Err_Code')</th>
+                    <th>@lang('sms.Err_Msg')</th>
+                    <th>@lang('sms.Resend')</th>
+                    <th>@lang('sms.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
+        
+        @include('admin.sms.incs._create')
+
+        @include('admin.sms.incs._edit')
+        
+    </div>
 </div>
 @endsection
 
@@ -179,21 +186,21 @@ $(function () {
         if (prefix == '') {
             if (!Boolean(data.get('phone')) || data.get('phone') == 'null') {
                 is_valide = false;
-                let err_msg = 'phone is required !';
+                let err_msg = '@lang("sms.phone_is_required")';
                 $(`#phoneErr`).text(err_msg);
                 $(`#phoneErr`).slideDown(500);
             }
 
             if (!Boolean(data.get('sms'))) {
                 is_valide = false;
-                let err_msg = 'sms is required !';
+                let err_msg = '@lang("sms.sms_is_required")';
                 $(`#smsErr`).text(err_msg);
                 $(`#smsErr`).slideDown(500);
             }
 
             if (Boolean(data.get('sms')) && data.get('sms').length > 50) {
                 is_valide = false;
-                let err_msg = 'sms max length is 50';
+                let err_msg = '@lang("sms.sms_max_length_is_50")';
                 $(`#smsErr`).text(err_msg);
                 $(`#smsErr`).slideDown(500);
             }
@@ -202,28 +209,28 @@ $(function () {
             console.log(prefix, prefix == 'edit-', Boolean(data.get('verification-sms')), data.get('verification-sms'), data.get('welcome-sms'));
             if (!Boolean(data.get('verification-sms'))) {
                 is_valide = false;
-                let err_msg = 'verification sms is required !';
+                let err_msg = '@lang("sms.verification sms is required")';
                 $(`#${prefix}verification-smsErr`).text(err_msg);
                 $(`#${prefix}verification-smsErr`).slideDown(500);
             }
 
             if (!Boolean(data.get('welcome-sms'))) {
                 is_valide = false;
-                let err_msg = 'welcome sms is required !';
+                let err_msg = '@lang("sms.welcome_sms_is_required")"';
                 $(`#${prefix}welcome-smsErr`).text(err_msg);
                 $(`#${prefix}welcome-smsErr`).slideDown(500);
             }
 
             if (!Boolean(data.get('create-order-sms'))) {
                 is_valide = false;
-                let err_msg = 'welcome sms is required !';
+                let err_msg = '@lang("sms.order_sms_is_required")';
                 $(`#${prefix}create-order-smsErr`).text(err_msg);
                 $(`#${prefix}create-order-smsErr`).slideDown(500);
             }
 
             if (!Boolean(data.get('order-status-sms'))) {
                 is_valide = false;
-                let err_msg = 'welcome sms is required !';
+                let err_msg = '@lang("sms.status_sms_sms_is_required")';
                 $(`#${prefix}order-status-smsErr`).text(err_msg);
                 $(`#${prefix}order-status-smsErr`).slideDown(500);
             }

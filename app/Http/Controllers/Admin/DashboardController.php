@@ -20,12 +20,6 @@ class DashboardController extends Controller
         $soldProducts     = OrderProduct::where('status', 1)->where('is_child', 0)->whereDate('created_at', 'like', Date('Y-') . '%')->count();
         $restoredProductsCount = OrderProduct::where('status', 0)->where('is_child', 0)->whereDate('created_at', 'like', Date('Y-') . '%')->count();
         
-        // dd($restoredProducts);
-        // $data = OrderProduct::select('*')
-        // ->get()
-        // ->groupBy(function($val) {
-        //     return Carbon::parse($val->created_at)->format('m');
-        // });
         $saliesOverYear = OrderProduct::select(
             DB::raw('SUM(price_when_order) as `data`'),
             DB::raw("DATE_FORMAT(created_at, '%Y-%m') as new_date")

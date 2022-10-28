@@ -4,7 +4,7 @@ return [
     'Dashboard' => 'لوحة التحكم',
 
     'Users' => 'المستخدمين',
-    'Rolles' => 'الصلاحيات',
+    'Roles' => 'الفئات',
 
     'Customers' => 'العملاء',
 
@@ -15,7 +15,7 @@ return [
 
     'Sales' => 'المبيعات',
     'Orders' => 'الطلبات',
-    'Sold_Products' => 'النتجات المباعة',
+    'Sold_Products' => 'المنتجات المباعة',
 
     'Promotions' => 'الترويج',
     'Discounts' => 'العروض',

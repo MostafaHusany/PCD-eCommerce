@@ -1,7 +1,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update {{ $object_title }}</h5>
+            <h5>@lang('fees.Update_Fee')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -15,25 +15,25 @@
         <input type="hidden" id="edit-id">
         
         <div class="form-group row">
-            <label for="edit-title" class="col-sm-2 col-form-label">Title</label>
+            <label for="edit-title" class="col-sm-2 col-form-label">@lang('fees.Title')</label>
             <div class="col-sm-10">
-                <input type="text" tabindex="1"  class="form-control" id="edit-title" placeholder="Title">
+                <input type="text" tabindex="1"  class="form-control" id="edit-title" placeholder="@lang('fees.Title')">
                 <div style="padding: 5px 7px; display: none" id="edit-titleErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-description" class="col-sm-2 col-form-label">Description</label>
+            <label for="edit-description" class="col-sm-2 col-form-label">@lang('fees.Description')</label>
             <div class="col-sm-10">
-                <textarea tabindex="2" class="form-control" id="edit-description" placeholder="Description"></textarea>
+                <textarea tabindex="2" class="form-control" id="edit-description" placeholder="@lang('fees.Description')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-cost_type" class="col-sm-2 col-form-label">Cost Type</label>
+            <label for="edit-cost_type" class="col-sm-2 col-form-label">@lang('fees.Cost_Type')</label>
             <div class="col-sm-10">
                 <select  tabindex="3" class="form-control" id="edit-cost_type">
                     <option selected="selected" value="0">Per Package</option>
@@ -45,7 +45,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-cost" class="col-sm-2 col-form-label">Cost</label>
+            <label for="edit-cost" class="col-sm-2 col-form-label">@lang('fees.Cost')</label>
             <div class="col-sm-5">
                 <input tabindex="4" type="number" min="0" value="1" step="0.5" class="form-control" id="edit-cost">
                 <div style="padding: 5px 7px; display: none" id="edit-costErr" class="err-msg mt-2 alert alert-danger">
@@ -62,6 +62,6 @@
             </div>
         </div><!-- /.form-group -->
 
-        <button tabindex="6" class="update-object btn btn-primary float-right">Create {{ $object_title }}y</button>
+        <button tabindex="6" class="update-object btn btn-warning float-right">@lang('fees.Update_Fee')</button>
     </form>
 </div>

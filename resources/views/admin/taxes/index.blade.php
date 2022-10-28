@@ -1,97 +1,104 @@
 @extends('layouts.admin.app')
 
-
-@section('content')
 @php 
-    $object_title = 'Taxe';
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
 @endphp
 
-<div class="content-header">
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
+
+@section('content')
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('taxes.Taxes')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('taxes.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                        @lang('taxes.Taxes')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
 
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('taxes.Taxes_Adminstration')</h5>
                 </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('taxes_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('taxes_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
                 </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
+            </div><!-- /.row -->
 
-        <hr/>
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('taxes.Title')</label>
+                        <input type="text" class="form-control" id="s-title">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('taxes.Title')</")th>
+                    <th>@lang('taxes.Cost')</th>
+                    <th>@lang('taxes.Cost_Type')</th>
+                    <th>@lang('taxes.System')</th>
+                    <th>@lang('taxes.Active')</th>
+                    <th>@lang('taxes.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Title</label>
-                    <input type="text" class="form-control" id="s-title">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        @include('admin.taxes.incs._create')
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Title</th>
-                <th>Cost</th>
-                <th>Cost Type</th>
-                <th>System</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.taxes.incs._create')
+        @include('admin.taxes.incs._edit')
+        
 
-    @include('admin.taxes.incs._edit')
-    
-
+    </div>
 </div>
 @endsection
 
@@ -146,28 +153,28 @@ $(function () {
 
         if (data.get('title') === '') {
             is_valide = false;
-            let err_msg = 'title is required';
+            let err_msg = '@lang("taxes.title_is_required")';
             $(`#${prefix}titleErr`).text(err_msg);
             $(`#${prefix}titleErr`).slideDown(500);
         }
 
         if (data.get('description') === '') {
             is_valide = false;
-            let err_msg = 'description is required';
+            let err_msg = '@lang("taxes.description_is_required")';
             $(`#${prefix}descriptionErr`).text(err_msg);
             $(`#${prefix}descriptionErr`).slideDown(500);
         }
 
         if (data.get('cost_type') === '' || data.get('cost_type') === null) {
             is_valide = false;
-            let err_msg = 'cost type is required';
+            let err_msg = '@lang("taxes.cost_type_is") required';
             $(`#${prefix}cost_typeErr`).text(err_msg);
             $(`#${prefix}cost_typeErr`).slideDown(500);
         }
         
         if (data.get('cost') == 0 || data.get('cost') === '') {
             is_valide = false;
-            let err_msg = 'cost is required and can\'t be zero';
+            let err_msg = '@lang("taxes.cost_is_required_and_cant_be_zero")';
             $(`#${prefix}costErr`).text(err_msg);
             $(`#${prefix}costErr`).slideDown(500);
         }

@@ -1,7 +1,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update {{ $object_title }}y</h5>
+            <h5>@lang('categories.Update_Category')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -15,39 +15,43 @@
         <input type="hidden" id="edit-id">
         
         <div class="form-group row">
-            <label for="edit-en_title" class="col-sm-2 col-form-label">Title</label>
-            <div class="col-sm-5">
-                <input type="text" tabindex="1"  class="form-control" id="edit-en_title" placeholder="Title">
-                <div style="padding: 5px 7px; display: none" id="edit-en_titleErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <input type="text"  tabindex="3" class="form-control text-right" dir="rtl" id="edit-ar_title" placeholder="العنوان">
-                <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr" class="err-msg mt-2 alert alert-danger">
-                </div>
-            </div>
+            <label for="edit-en_title" class="col-sm-2 col-form-label">@lang('categories.Title') <span class="text-danger float-right">*</span></label>
+            <div class="col-sm-10">
+                <div class="row" dir="ltr">
+                    <div class="col-sm-6">
+                        <input type="text" tabindex="1"  class="form-control" style="text-align: left !important;" id="edit-en_title" placeholder="@lang('categories.title_en')">
+                        <div style="padding: 5px 7px; display: none" id="edit-en_titleErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text"  tabindex="3" class="form-control" style="text-align: right !important;" dir="rtl" id="edit-ar_title" placeholder="@lang('categories.title_ar')">
+                        <div style="padding: 5px 7px; display: none" id="edit-ar_titleErr" class="err-msg mt-2 alert alert-danger">
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.col-sm-10 -->
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="edit-en_description" class="col-sm-2 col-form-label">Description</label>
+            <label for="edit-en_description" class="col-sm-2 col-form-label">@lang('categories.Description') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-5">
-                <textarea  tabindex="2" class="form-control" id="edit-en_description" placeholder="Description"></textarea>
+                <textarea  tabindex="2" class="form-control" id="edit-en_description" placeholder="@lang('categories.description_en')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-en_descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
             <div class="col-sm-5">
-                <textarea  tabindex="4" class="form-control text-right" id="edit-ar_description" dir="rtl" placeholder="الوصف"></textarea>
+                <textarea  tabindex="4" class="form-control text-right" id="edit-ar_description" dir="rtl" placeholder="@lang('categories.description_ar')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-ar_descriptionErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-is_main" class="col-sm-2 col-form-label">Is Main</label>
+            <label for="edit-is_main" class="col-sm-2 col-form-label">@lang('categories.Is_Main') <span class="text-danger float-right">*</span></label>
             <div class="col-sm-5">
                 <select tabindex="5" class="form-control" id="edit-is_main" data-target="#edit-category_id">
-                    <option selected="selected" value="1">Is Main</option>
-                    <option value="0">Is Sub</option>
+                    <option selected="selected" value="1">@lang('categories.Is_Main')</option>
+                    <option value="0">@lang('categories.Is_Sub')</option>
                 </select>
                 <div style="padding: 5px 7px; display: none" id="edit-is_mainErr" class="err-msg mt-2 alert alert-danger">
                 </div>
@@ -55,7 +59,7 @@
 
             <div class="col-sm-5">
                 <select tabindex="6" class="form-control" id="edit-category_id" disabled="disabled">
-                    <option value="">-- select main category --</option>
+                    <option value="">-- @lang('categories.select_main_category') --</option>
                     @foreach($all_categories as $category)
                     <option value="{{ $category->id }}">{{ $category['ar_title'] . '||' . $category['en_title'] }}</option>
                     @endforeach
@@ -66,7 +70,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="edit-brands" class="col-sm-2 col-form-label">Brands</label>
+            <label for="edit-brands" class="col-sm-2 col-form-label">@lang('categories.Brands')</label>
             <div class="col-sm-10">
                 <select tabindex="8" class="form-control" id="edit-brands" min="0" value="0" multiple="multiple"></select>
                 <div style="padding: 5px 7px; display: none" id="edit-brandsErr" class="err-msg mt-2 alert alert-danger">
@@ -80,7 +84,7 @@
                 'gc.webp' => 'graphic cards', 'hdd.webp' => 'hard disck', 'ssdm2.webp' => 'solid state', 'mb.webp' => 'mother board', 'ps-1.webp' => 'power supply',
                 'ram.webp' => 'ram', 'wc-1.webp' => 'water cooling', 'wf-1.webp' => 'wifi adapter'];
             ?>
-            <label for="rule" class="col-sm-2 col-form-label">Category Icon</label>
+            <label for="rule" class="col-sm-2 col-form-label">@lang('categories.Category_Icon')</label>
             <div class="col-5">
                 <select tabindex="9" id="edit-icon" class="form-control">
                     <option value="">-- select icon --</option>
@@ -101,13 +105,13 @@
         <div class="form-group row">
             <div class="col-sm-12">
                 <div style="padding: 5px 7px;" class="alert alert-info">
-                    <b>If there is no rule leave the dafault value 0</b>  
+                    <b>@lang('categories.order_rule_dis_2')</b>  
                 </div>
             </div>
         </div>
         
         <div class="form-group row">
-            <label for="edit-rule" class="col-sm-2 col-form-label">Rule</label>
+            <label for="edit-rule" class="col-sm-2 col-form-label">@lang('categories.Rule')</label>
             <div class="col-sm-12">
                 <input tabindex="10" type="number" class="form-control" id="edit-rule" min="0" value="0">
                 <div style="padding: 5px 7px; display: none" id="edit-ruleErr" class="err-msg mt-2 alert alert-danger">
@@ -115,7 +119,7 @@
             </div>
         </div><!-- /.form-group -->
 
-        <button tabindex="10" class="update-object btn btn-warning float-right">Update User</button>
+        <button tabindex="10" class="update-object btn btn-warning float-right">@lang('categories.Update_Category')</button>
     </form>
 </div>
 

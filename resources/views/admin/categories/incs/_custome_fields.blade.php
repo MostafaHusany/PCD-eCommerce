@@ -9,7 +9,7 @@
 <div style="display: none" id="customeObjectCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Category Custome Fields</h5>
+            <h5>@lang('categories.Category_Custome_Fields')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#customeObjectCard" data-target-card="#objectsCard">
@@ -21,27 +21,27 @@
 
     <div id="objectForm">
         <div class="form-group row">
-            <label for="custome-en_title" class="col-sm-2 col-form-label">Title</label>
+            <label for="custome-en_title" class="col-sm-2 col-form-label">@lang('categories.Title')</label>
             <div class="col-sm-5">
-                <input disabled="disabled" type="text" tabindex="1"  class="form-control" id="custome-en_title" placeholder="Title">
+                <input disabled="disabled" type="text" tabindex="1"  class="form-control" id="custome-en_title" placeholder="@lang('categories.title_en')">
             </div>
             <div class="col-sm-5">
-                <input disabled="disabled" type="text" tabindex="3" class="form-control text-right" dir="rtl" id="custome-ar_title" placeholder="العنوان">
+                <input disabled="disabled" type="text" tabindex="3" class="form-control text-right" dir="rtl" id="custome-ar_title" placeholder="@lang('categories.title_ar')">
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="is_main" class="col-sm-2 col-form-label">Is Main</label>
+            <label for="is_main" class="col-sm-2 col-form-label">@lang('categories.Is_Main')</label>
             <div class="col-sm-5">
                 <select disabled="disabled" class="form-control" id="custome-is_main">
-                    <option selected="selected" value="1">Is Main</option>
-                    <option value="0">Is Sub</option>
+                    <option selected="selected" value="1">@lang('categories.Is_Main')</option>
+                    <option value="0">@lang('categories.Is_Sub')</option>
                 </select>
             </div>
 
             <div class="col-sm-5">
                 <select disabled="disabled" class="form-control" id="custome-category_id">
-                    <option value="">-- select main category --</option>
+                    <option value="">-- @lang('categories.select_main_category') --</option>
                     @foreach($all_categories as $category)
                     <option value="{{ $category->id }}">{{ $category['ar_title'] . '||' . $category['en_title'] }}</option>
                     @endforeach
@@ -52,15 +52,15 @@
         <hr />
 
         <div class="form-group row">
-            <label for="" class="col-sm-2 col-form-label mt-4">Custome Fields</label>
+            <label for="" class="col-sm-2 col-form-label mt-4">@lang('categories.Custome_Fields')</label>
 
             <div class="col-sm-2">
-                <label for="field_title">Field Title</label>
+                <label for="field_title">@lang('categories.Field_Title')</label>
                 <input tabindex="6" id="custome-title" class="form-control" placeholder="Field Title">
             </div><!-- /.col-sm-2 -->
 
             <div class="col-sm-2">
-                <label for="">Field Type</label>
+                <label for="">@lang('categories.Field_Type')</label>
                 <select tabindex="7" id="custome-type" class="form-control">
                     <option value="options" selected="selected">Options</option>
                     <option value="number">Number</option>
@@ -77,20 +77,18 @@
         <div class="form-group" style="height: 300px; overflow-y: scroll">
             <table class="table">
                 <tr>
-                    <td>Title</td>
-                    <td>Type</td>
-                    <td>Values</td>
-                    <td>Actions</td>
+                    <td>@lang('categories.Title')</td>
+                    <td>@lang('categories.Type')</td>
+                    <td>@lang('categories.Values')</td>
+                    <td>@lang('categories.Actions')</td>
                 </tr>
-                <!-- <input id="custome-attributes" type="hidden" value="">
-                <input id="custome-category_id" type="hidden" value=""> -->
                 <tbody id="custome-fields_container">
                     
                 </tbody>
             </table>
         </div>
 
-        <button class="custome-field-create btn btn-warning float-right">Update Category Custome Fields</button>
+        <button class="custome-field-create btn btn-warning float-right">@lang('categories.Update_Custome_Fields')</button>
     </div>
 </div>
 

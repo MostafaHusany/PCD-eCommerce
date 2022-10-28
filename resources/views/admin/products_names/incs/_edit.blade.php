@@ -1,7 +1,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update {{ $object_title }}y</h5>
+            <h5>@lang('products.Update_Products')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -16,9 +16,9 @@
         <input type="file" style="display:none" id="edit-importFile">
 
         <div class="form-group row">
-            <label for="edit-name" class="col-sm-2 col-form-label">Name</label>
+            <label for="edit-name" class="col-sm-2 col-form-label">@lang('products.Name')</label>
             <div class="col-sm-10">
-                <input tabindex="1" type="text"  class="form-control" id="edit-name" placeholder="Name">
+                <input tabindex="1" type="text"  class="form-control" id="edit-name" placeholder="@lang('products.Name')">
                 <div style="padding: 5px 7px; display: none" id="edit-nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -33,6 +33,6 @@
             </div>
         </div><!-- /.form-group -->
 
-        <button tabindex="7" class="update-object btn btn-warning float-right">Update {{$object_title}}</button>
+        <button tabindex="7" class="update-object btn btn-warning float-right">@lang('products.Update_Products')</button>
     </form>
 </div>

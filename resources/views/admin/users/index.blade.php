@@ -1,56 +1,15 @@
 @extends('layouts.admin.app')
 
-
 @php 
-    $object_title = 'User';
     $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
 @endphp
 
 @push('page_css')
-<!-- <link rel="stylesheet" href="{{asset( LaravelLocalization::getCurrentLocale() == 'ar' ? 'shop/rtl_assets' : 'shop/ltr_assets' )}}/bootstrap/css/bootstrap.min.css"> -->
-@if($is_ar)
-<style>
-    .breadcrumb-item + .breadcrumb-item::before {
-        /* float: left;
-        padding-right: 0.5rem;
-        color: #6c757d; */
-        content: "" !important;
-    }
-    
-    .breadcrumb-item + .breadcrumb-item::after {
-        float: right;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        color: #6c757d;
-        content: "/" ;
-    }
-
-    .text-right {
-        text-align: left !important;
-    }
-
-    .text-left {
-        text-align: right !important;
-    }
-
-    .float-left {
-        float: right !important;
-    }
-
-    .float-right {
-        float: left !important;
-    }
-
-    .float-sm-left {
-        float: right !important;
-    }
-
-    .float-sm-right {
-        float: left !important;
-    }
-</style>
-@endif
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
 @endpush
+
 
 @section('content')
 <div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
@@ -219,21 +178,21 @@ $(function () {
 
         if (data.get('name') === '') {
             is_valide = false;
-            let err_msg = 'name is required';
+            let err_msg = '@lang("users.name_is_required")';
             $(`#${prefix}nameErr`).text(err_msg);
             $(`#${prefix}nameErr`).slideDown(500);
         }
 
         if (data.get('email') === '') {
             is_valide = false;
-            let err_msg = 'email name is required';
+            let err_msg = '@lang("users.email_name_is_required")';
             $(`#${prefix}emailErr`).text(err_msg);
             $(`#${prefix}emailErr`).slideDown(500);
         }
 
         if (data.get('phone') === '') {
             is_valide = false;
-            let err_msg = 'phone name is required';
+            let err_msg = '@lang("users.phone_name_is_required")';
             $(`#${prefix}phoneErr`).text(err_msg);
             $(`#${prefix}phoneErr`).slideDown(500);
         }

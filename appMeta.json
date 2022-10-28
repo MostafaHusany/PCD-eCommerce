@@ -1,0 +1,76 @@
+{
+    "upgrade_categories":[7,1,3,19],
+    "upgrade_products_id": {
+            "1":[5,6],
+            "3":[101,104],
+            "7":[303,301],
+            "19":[902,904,905]
+    },
+    "upgrade_products": {
+            "1": {
+                    "5" : {"id":5,"upgrade_price":201,"needed_quantity":"1","is_default":true},
+                    "6":  {"id":6,"upgrade_price":107,"needed_quantity":0,"is_default":false}
+            },
+            "3" : {
+                    "101":{"id":101,"upgrade_price":467,"needed_quantity":"1","is_default":true},
+                    "104":{"id":104,"upgrade_price":213,"needed_quantity":"1","is_default":false}},
+                    "7" : {"301":{"id":301,"upgrade_price":"600","needed_quantity":"1","is_default":false},
+                    "303":{"id":303,"upgrade_price":"200","needed_quantity":"1","is_default":true}
+            },
+            "19" : {
+                    "902": {"id":902,"upgrade_price":456,"needed_quantity":"1","is_default":true},
+                    "904": {"id":904,"upgrade_price":410,"needed_quantity":"1","is_default":false},
+                    "905":{"id":905,"upgrade_price":251,"needed_quantity":"1","is_default":false}
+            }
+    },
+    "child_products_id" : [752, 551, 851],
+    "products_quantity" : {"551":2, "752":2, "851":1}
+
+};
+
+
+{
+    "child_products_id" : [752, 551, 851],
+    "products_quantity" : {"551":2, "752":2, "851":1}
+}
+
+
+{
+    "products_id": ["2019"],
+    "products_quantity": {
+        "2019": {"quantity":1,"price":100}
+    },
+    "products_prices": {"2019":100},
+    "restored_quantity": {"2019":0},
+    "taxes": [],
+    "fees":[]
+}
+
+
+{
+    "upgrade_categories":[7,1,3,19],
+    "upgrade_products_id":{"1":[5,6],"3":[101,104],"7":[303,301],"19":[902,904,905]},
+    "upgrade_products":{
+        "1": {
+                "5": {"id":5,"upgrade_price":201,"needed_quantity":"1","is_default":true},
+                "6": {"id":6,"upgrade_price":107,"needed_quantity":0,"is_default":false}},
+                "3": {"101":{"id":101,"upgrade_price":467,"needed_quantity":"1","is_default":true}, 
+                "104":{"id":104,"upgrade_price":213,"needed_quantity":"1","is_default":false}},
+                "7":{"301":{"id":301,"upgrade_price":"600","needed_quantity":"1","is_default":false},
+                "303":{"id":303,"upgrade_price":"200","needed_quantity":"1","is_default":true}},
+                "19":{"902":{"id":902,"upgrade_price":456,"needed_quantity":"1","is_default":true},
+                "904":{"id":904,"upgrade_price":410,"needed_quantity":"1","is_default":false},
+                "905":{"id":905,"upgrade_price":251,"needed_quantity":"1","is_default":false}
+            }
+    },
+    "products_prices": {"2018":1324},
+    "restored_quantity":{"2018":0},
+    "taxes":[],
+    "fees":[]
+}
+/*
+ when making an order for upgradable product
+
+
+
+ */

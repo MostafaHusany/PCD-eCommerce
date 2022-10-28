@@ -1,6 +1,9 @@
+@php 
+$lang = LaravelLocalization::getCurrentLocale(); 
+@endphp
 <!-- need to remove -->
 <li class="nav-item">
-    <a href="{{ route('home') }}" class="nav-link {{ Request::is('admin') ? 'active' : '' }}">
+    <a href="{{ route('home') }}" class="nav-link {{ Request::is($lang.'/admin') ? 'active' : '' }}">
         <i class="nav-icon fas fa-tachometer-alt"></i>
         <p>@lang('_menu.Dashboard')</p>
     </a>
@@ -18,7 +21,7 @@
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
         <li class="nav-item">
-            <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : ''}}">
+            <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is($lang . '/admin/users') ? 'active' : ''}}">
                 <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
                 <i class="nav-icon fas fa-headset"></i>
                 <p>@lang('_menu.Users')</p>
@@ -26,17 +29,17 @@
         </li>
         
         <li class="nav-item">
-            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ Request::is('admin/roles') ? 'active' : ''}}">
+            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ Request::is($lang . '/admin/roles') ? 'active' : ''}}">
                 <!-- <i class="nav-icon fas fa-copyright"></i> -->
                 <i class="nav-icon fas fa-id-card"></i>
-                <p>@lang('_menu.Rolles')</p>
+                <p>@lang('_menu.Roles')</p>
             </a>
         </li>
     </ul>
 </li>
 @elseif(auth()->user()->isAbleTo('users_*'))
 <li class="nav-item">
-    <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}">
+    <a href="{{ route('admin.users.index') }}" class="nav-link {{ Request::is($lang . '/admin/users') ? 'active' : '' }}">
         <i class="nav-icon fas fa-headset"></i>
         <p>@lang('_menu.Users')</p>
     </a>
@@ -45,7 +48,7 @@
 
 @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('customer*'))
 <li class="nav-item">
-    <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is('admin/customers') ? 'active' : '' }}">
+    <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Request::is($lang . '/admin/customers') ? 'active' : '' }}">
         <i class="nav-icon fas fa-users"></i>
         <p>@lang('_menu.Customers')</p>
     </a>
@@ -64,7 +67,7 @@
     <ul class="nav nav-treeview" !style="display: block;">
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products-categories_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.products-categories.index') }}" class="nav-link {{ Request::is('admin/products-categories') ? 'active' : ''}}">
+            <a href="{{ route('admin.products-categories.index') }}" class="nav-link {{ Request::is($lang . '/admin/products-categories') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-clipboard-list"></i>
                 <p>@lang('_menu.Categories')</p>
             </a>
@@ -73,7 +76,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('brands_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.brands.index') }}" class="nav-link {{ Request::is('admin/brands') ? 'active' : ''}}">
+            <a href="{{ route('admin.brands.index') }}" class="nav-link {{ Request::is($lang . '/admin/brands') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-copyright"></i>
                 <p>@lang('_menu.Brands')</p>
             </a>
@@ -82,7 +85,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is('admin/products') ? 'active' : ''}}">
+            <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is($lang . '/admin/products') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-boxes"></i>
                 <p>@lang('_menu.Products')</p>
             </a>
@@ -91,7 +94,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.products_names.index') }}" class="nav-link {{ Request::is('admin/products-names') ? 'active' : ''}}">
+            <a href="{{ route('admin.products_names.index') }}" class="nav-link {{ Request::is($lang . '/admin/products-names') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-file-signature"></i>
                 <p>@lang('_menu.Products_Names')</p>
             </a>
@@ -114,7 +117,7 @@
     <ul class="nav nav-treeview" !style="display: block;">
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('orders_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is($lang . '/admin/orders') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-dolly"></i>
                 <p>@lang('_menu.Orders')</p>
             </a>
@@ -123,7 +126,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('sold_products_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is('admin/sold-products') ? 'active' : ''}}">
+            <a href="{{ route('admin.sold_products.index') }}" class="nav-link {{ Request::is($lang . '/admin/sold-products') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-box-open"></i>
                 <p>@lang('_menu.Sold_Products')</p>
             </a>
@@ -145,7 +148,7 @@
     <ul class="nav nav-treeview" !style="display: block;">
         @if(auth()->user()->hasRole('admin')  || auth()->user()->isAbleTo('promotions_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.promotions.index') }}" class="nav-link {{ Request::is('admin/promotions') ? 'active' : ''}}">
+            <a href="{{ route('admin.promotions.index') }}" class="nav-link {{ Request::is($lang . '/admin/promotions') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-percentage"></i>
                 <p>@lang('_menu.Discounts')</p>
             </a>
@@ -154,7 +157,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('promo_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.promo.index') }}" class="nav-link {{ Request::is('admin/promo-codes') ? 'active' : ''}}">
+            <a href="{{ route('admin.promo.index') }}" class="nav-link {{ Request::is($lang . '/admin/promo-codes') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-gift"></i>
                 <p>@lang('_menu.Promo_Codes')</p>
             </a>
@@ -176,7 +179,7 @@
     <ul class="nav nav-treeview" !style="display: block;">
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('shipping_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.shipping.index') }}" class="nav-link {{ Request::is('admin/shipping') ? 'active' : '' }}">
+            <a href="{{ route('admin.shipping.index') }}" class="nav-link {{ Request::is($lang . '/admin/shipping') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-shipping-fast"></i>
                 <p>@lang('_menu.Shipping')</p>
             </a>
@@ -185,7 +188,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('fees_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.fees.index') }}" class="nav-link {{ Request::is('admin/fees') ? 'active' : ''}}">
+            <a href="{{ route('admin.fees.index') }}" class="nav-link {{ Request::is($lang . '/admin/fees') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-tags"></i>
                 <p>@lang('_menu.Fees')</p>
             </a>
@@ -194,7 +197,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('taxes_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.taxes.index') }}" class="nav-link {{ Request::is('admin/taxes') ? 'active' : ''}}">
+            <a href="{{ route('admin.taxes.index') }}" class="nav-link {{ Request::is($lang . '/admin/taxes') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-percentage"></i>
                 <p>@lang('_menu.Taxes')</p>
             </a>
@@ -203,16 +206,16 @@
         
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('order_status_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.order_status.index') }}" class="nav-link {{ Request::is('admin/order-status') ? 'active' : ''}}">
+            <a href="{{ route('admin.order_status.index') }}" class="nav-link {{ Request::is($lang . '/admin/order-status') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-flag"></i>
-                <p>@lang('_menu.Orders Status')</p>
+                <p>@lang('_menu.Orders_Status')</p>
             </a>
         </li>
         @endif
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('districts_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.districts.index') }}" class="nav-link {{ Request::is('admin/districts') ? 'active' : ''}}">
+            <a href="{{ route('admin.districts.index') }}" class="nav-link {{ Request::is($lang . '/admin/districts') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-map-marked-alt"></i>
                 <p>@lang('_menu.Districts')</p>
             </a>
@@ -221,7 +224,7 @@
 
         @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('sms_*'))
         <li class="nav-item">
-            <a href="{{ route('admin.sms.index') }}" class="nav-link {{ Request::is('admin/sms') ? 'active' : ''}}">
+            <a href="{{ route('admin.sms.index') }}" class="nav-link {{ Request::is($lang . '/admin/sms') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-sms"></i>
                 <p>@lang('_menu.SMS')</p>
             </a>
@@ -244,25 +247,25 @@
     </a>
     <ul class="nav nav-treeview" !style="display: block;">
         <li class="nav-item">
-            <a href="{{ url('admin/theme/slider') }}" class="nav-link {{ Request::is('admin/theme/slider') ? 'active' : ''}}">
+            <a href="{{ url('admin/theme/slider') }}" class="nav-link {{ Request::is($lang . '/admin/theme/slider') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-images"></i>
                 <p>@lang('_menu.Slider')</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ url('admin/theme/navbar') }}" class="nav-link {{ Request::is('admin/theme/navbar') ? 'active' : ''}}">
+            <a href="{{ url('admin/theme/navbar') }}" class="nav-link {{ Request::is($lang . '/admin/theme/navbar') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-stream"></i>
                 <p>@lang('_menu.Navbar')</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ url('admin/theme/custome-section') }}" class="nav-link {{ Request::is('admin/theme/custome-section') ? 'active' : ''}}">
+            <a href="{{ url('admin/theme/custome-section') }}" class="nav-link {{ Request::is($lang . '/admin/theme/custome-section') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-object-group"></i>
                 <p>@lang('_menu.Custome_Sections')</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ url('admin/theme/contacts-info') }}" class="nav-link {{ Request::is('admin/theme/contacts-info') ? 'active' : ''}}">
+            <a href="{{ url('admin/theme/contacts-info') }}" class="nav-link {{ Request::is($lang . '/admin/theme/contacts-info') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-id-card"></i>
                 <p>@lang('_menu.Contacts_Info')</p>
             </a>

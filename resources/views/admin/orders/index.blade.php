@@ -1,176 +1,183 @@
 @extends('layouts.admin.app')
 
-
-@section('content')
 @php 
-    $object_title = 'Order';
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
 @endphp
 
-<div class="content-header">
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
+
+@section('content')
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('orders.orders')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('orders.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('orders.orders')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
+
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
+
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
+        
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
+        </div>
+
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('orders.Orders_Adminstration')</h5>
+                </div>
+                <div class="col-6 text-right">
                     
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
+                    
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('orders_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
+                </div>
+            </div><!-- /.row -->
+
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Code')</label>
+                        <input type="text" class="form-control" id="s-code">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Customer')</label>
+                        <input type="text" class="form-control" id="s-name">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+                
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Email')</label>
+                        <input type="text" class="form-control" id="s-email">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Phone')</label>
+                        <input type="text" class="form-control" id="s-phone">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+                
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Country')</label>
+                        <select type="text" class="form-control" id="s-country">
+                            <option value="">-- select category --</option>
+                            @foreach($countries as $country)
+                            <option value="{{$country->id}}">{{$country->name}}</option>
+                            @endforeach
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Governorate')</label>
+                        <select type="text" class="form-control" id="s-governorate" multiple="multiple">
+                            <option value="">-- select category --</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="s-status">@lang('orders.Start_Date')</label>
+                        <input type="date" class="form-control" id="s-start_date">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="s-status">@lang('orders.End_Date')</label>
+                        <input type="date" class="form-control" id="s-end_date">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+                
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Status')</label>
+                        <select type="text" class="form-control" id="s-status">
+                            <option value="">-- all --</option>
+                            @foreach(order_status() as $order_status)
+                            <option value="{{$order_status->status_code}}">{{$order_status->status_name_en}}</option>
+                            @endforeach
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th styel="width: 160px !important">@lang('orders.Code')</th>
+                        <th>@lang('orders.Customer')</th>
+                        <th>@lang('orders.Phone')</th>
+                        <th>@lang('orders.Email')</th>
+                        <th>@lang('orders.Country')</th>
+                        <th>@lang('orders.Government')</th>
+                        <th>@lang('orders.Total')</th>
+                        <th styel="width: 160px !important">@lang('orders.Date')</th>
+                        <th>@lang('orders.Payment')</th>
+                        <th>@lang('orders.Status')</th>
+                        <th>@lang('orders.Status_Action')</th>
+                        <th>@lang('orders.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
-
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        </div><!-- /.card --> 
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        @include('admin.orders.incs._show')
+        @include('admin.orders.incs._create')
+        @include('admin.orders.incs._edit')
+        @include('admin.orders.incs._invoice')
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
+
     </div>
-
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
-                </div>
-                
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('orders_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
-                </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
-
-        <hr/>
-        
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Code</label>
-                    <input type="text" class="form-control" id="s-code">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Customer</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-3 -->
-            
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Email</label>
-                    <input type="text" class="form-control" id="s-email">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Phone</label>
-                    <input type="text" class="form-control" id="s-phone">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-            
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Country</label>
-                    <select type="text" class="form-control" id="s-country">
-                        <option value="">-- select category --</option>
-                        @foreach($countries as $country)
-                        <option value="{{$country->id}}">{{$country->name}}</option>
-                        @endforeach
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Governorate</label>
-                    <select type="text" class="form-control" id="s-governorate" multiple="multiple">
-                        <option value="">-- select category --</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="s-status">Start Date</label>
-                    <input type="date" class="form-control" id="s-start_date">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="s-status">End Date</label>
-                    <input type="date" class="form-control" id="s-end_date">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-            
-            <div class="col-4">
-                <div class="form-group search-action">
-                    <label for="">Status</label>
-                    <select type="text" class="form-control" id="s-status">
-                        <option value="">-- all --</option>
-                        @foreach(order_status() as $order_status)
-                        <option value="{{$order_status->status_code}}">{{$order_status->status_name_en}}</option>
-                        @endforeach
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-4 -->
-
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
-
-        <div class="overflow-table">
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th styel="width: 160px !important">Code</th>
-                    <th>Customer</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Country</th>
-                    <th>Government</th>
-                    <th>Total</th>
-                    <th styel="width: 160px !important">Date</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Status Action</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div><!-- /.card --> 
-    
-    @include('admin.orders.incs._show')
-    @include('admin.orders.incs._create')
-    @include('admin.orders.incs._edit')
-    @include('admin.orders.incs._invoice')
-
-
 </div>
 @endsection
 
@@ -261,28 +268,28 @@ $(function () {
 
         if (data.get('customer') == '' || data.get('customer') == 'null') {
             is_valide = false;
-            let err_msg = 'customer is required';
+            let err_msg = '@lang("orders.customer_is_required")';
             $(`#${prefix}customerErr`).text(err_msg);
             $(`#${prefix}customerErr`).slideDown(500);
         }
 
         if (data.get('products') == '' || data.get('products') == '[]') {
             is_valide = false;
-            let err_msg = 'products is required';
+            let err_msg = '@lang("orders.products_is_required")';
             $(`#${prefix}productsErr`).text(err_msg);
             $(`#${prefix}productsErr`).slideDown(500);
         }
         
         if (data.get('shipping') == '' || data.get('shipping') == 'null') {
             is_valide = false;
-            let err_msg = 'shipping is required';
+            let err_msg = '@lang("orders.shipping_is_required")';
             $(`#${prefix}shippingErr`).text(err_msg);
             $(`#${prefix}shippingErr`).slideDown(500);
         }
 
         if (data.get('is_free_shipping') == '0' && data.get('shipping_cost') <=0) {
             is_valide = false;
-            let err_msg = 'shipping cost is required';
+            let err_msg = '@lang("orders.shipping_cost_is_required")';
             $(`#${prefix}shipping_costErr`).text(err_msg);
             $(`#${prefix}shipping_costErr`).slideDown(500);
         }

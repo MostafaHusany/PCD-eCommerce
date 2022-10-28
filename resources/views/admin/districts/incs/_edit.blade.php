@@ -1,7 +1,7 @@
 <div style="display: none" id="editObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Update {{$object_title}}</h5>
+            <h5>@lang('districts.Update_District')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#editObjectsCard" data-target-card="#objectsCard">
@@ -16,18 +16,18 @@
         <input type="hidden" id="is-main" value="main">
         
         <div class="form-group row">
-            <label for="edit-name" class="col-sm-2 col-form-label">Name</label>
+            <label for="edit-name" class="col-sm-2 col-form-label">@lang('districts.Name')</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="edit-name" placeholder="Name">
+                <input type="text" class="form-control" id="edit-name" placeholder="@lang('districts.Name')">
                 <div style="padding: 5px 7px; display: none" id="edit-nameErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
         </div><!-- /.form-group -->
 
         <div class="parent-el form-group row">
-            <label for="edit-phone_code" class="col-sm-2 col-form-label">Phone Code</label>
+            <label for="edit-phone_code" class="col-sm-2 col-form-label">@lang('districts.Phone_Code')</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="edit-phone_code" placeholder="Phone code">
+                <input type="text" class="form-control" id="edit-phone_code" placeholder="@lang('districts.Phone_Code')">
                 <div style="padding: 5px 7px; display: none" id="edit-phone_codeErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -35,7 +35,7 @@
         
         <div class="parent-el form-group row">
             <input type="hidden" id="edit-children_tags">
-            <label for="edit-child_tag_field" class="col-sm-2">Governorate</label>
+            <label for="edit-child_tag_field" class="col-sm-2">@lang('districts.Governorate')</label>
             <div class="col-sm-8">
                 <input class="form-control" id="edit-child_tag_field">
                 <div style="padding: 5px 7px; display: none" id="children_tagsErr" class="err-msg mt-2 alert alert-danger">
@@ -53,8 +53,8 @@
             <div class="col-sm-10">
                 <table class="table">
                     <tr>
-                        <td>Name</td>
-                        <td>Action</td>
+                        <td>@lang('districts.Name')</td>
+                        <td>@lang('districts.Actions')</td>
                     </tr>
                     <tbody id="edit-childrenTableContainer">
 
@@ -63,7 +63,7 @@
             </div><!-- /.col-sm-10 -->
         </div>
         
-        <button class="update-object btn btn-warning float-right">Update {{$object_title}}</button>
+        <button class="update-object btn btn-warning float-right">@lang('districts.Update_District')</button>
     </div>
 </div>
 

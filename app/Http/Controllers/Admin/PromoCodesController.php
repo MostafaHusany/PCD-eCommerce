@@ -29,8 +29,12 @@ class PromoCodesController extends Controller
         if ($request->ajax()) {
             $model = PromoCode::query();//->with('orders');
             
-            if (isset($request->title)) {
-                $model->where('title', $request->title);
+            if (isset($request->code)) {
+                $model->where('code', "%$request->code%");
+            }
+
+            if (isset($request->owner)) {
+                $model->where('user_id', "$request->owner");
             }
 
             $datatable_model = Datatables::of($model)

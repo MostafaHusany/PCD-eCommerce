@@ -1,98 +1,115 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
+
+@push('page_css')
+    @if($is_ar)
+        @include('layouts.admin.incs._rtl')
+    @endif
+@endpush
 
 @section('content')
 @php 
     $object_title = 'Promo Cods';
 @endphp
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('promos.Promo_Cods')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('promos.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                            @lang('promos.Promo_Cods')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
-<div class="content-header">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
 
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}} Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('promos.Promos_Codes_Adminstration')</h5>
                 </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('promo_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('promo_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
                 </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
+            </div><!-- /.row -->
 
-        <hr/>
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('promos.Code')</label>
+                        <input type="text" class="form-control" id="s-title">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+                
+                <div class="col-6">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('promos.Owner')</label>
+                        <select type="text" class="form-control" id="s-owner"></select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-6 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>@lang('promos.Code')</th>
+                    <th>@lang('promos.Type')</th>
+                    <th>@lang('promos.Value')</th>
+                    <th>@lang('promos.Owner')</th>
+                    <th>@lang('promos.Nom_Orders')</th>
+                    <th>@lang('promos.Active')</th>
+                    <th>@lang('promos.Actions')</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group search-action">
-                    <label for="s-title">Title</label>
-                    <input type="text" class="form-control" id="s-title">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-6 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        @include('admin.promos.incs._create')
 
-        <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Code</th>
-                <th>Type</th>
-                <th>Value</th>
-                <th>Owner</th>
-                <th>Nom Orders</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    @include('admin.promos.incs._create')
+        @include('admin.promos.incs._edit')
+        
 
-    @include('admin.promos.incs._edit')
-    
-
+    </div>
 </div>
 @endsection
 
@@ -138,7 +155,11 @@ $(function () {
         ],
         function (d) {
             if ($('#s-title').length)
-            d.title = $('#s-title').val();              
+            d.title = $('#s-title').val();   
+            
+            
+            if ($('#s-owner').length)
+            d.owner = $('#s-owner').val();   
         }
     );
 
@@ -151,21 +172,21 @@ $(function () {
 
         if (data.get('is_random') == 'false' && data.get('code') == '') {
             is_valide = false;
-            let err_msg = 'code is required';
+            let err_msg = '@lang("promos.code_is_required")';
             $(`#${prefix}codeErr`).text(err_msg);
             $(`#${prefix}codeErr`).slideDown(500);
         }
 
         if (data.get('type') === '') {
             is_valide = false;
-            let err_msg = 'type is required';
+            let err_msg = '@lang("promos.type_is_required")';
             $(`#${prefix}typeErr`).text(err_msg);
             $(`#${prefix}typeErr`).slideDown(500);
         }
         
         if (data.get('value') == 0 || data.get('value') === '') {
             is_valide = false;
-            let err_msg = 'value is required and can\'t be zero';
+            let err_msg = '@lang("promos.value_is_required_and_cant_be_zero")';
             $(`#${prefix}valueErr`).text(err_msg);
             $(`#${prefix}valueErr`).slideDown(500);
         }
@@ -193,9 +214,9 @@ $(function () {
     const index_custome_events =  (function () {
         function start_event () {
             $('#owner, #edit-owner, #s-owner').select2({
-                // allowClear: true,
+                allowClear: true,
                 width: '100%',
-                placeholder: 'Select User',
+                placeholder: '@lang("promos.Select_User")',
                 ajax: {
                     url: '{{ url("admin/users-search") }}',
                     dataType: 'json',
@@ -236,7 +257,7 @@ $(function () {
             $('#categories, #edit-categories').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select categories',
+                placeholder: '@lang("promos.Select_categories")',
                 ajax: {
                     url: '{{ url("admin/products-categories-search") }}',
                     dataType: 'json',

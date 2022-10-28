@@ -2,7 +2,7 @@
 <div style="display: none" id="showObjectCard" class="card card-body">
     <div class="row mb-1">
         <div class="col-6">
-            <h5>Show {{ $object_title }}</h5>
+            <h5>@lang('promotions.Show_Promotions')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#showObjectCard" data-target-card="#objectsCard">
@@ -15,21 +15,21 @@
 
     <form action="/" id="objectForm">
         <div class="form-group row">
-            <label for="show-title" class="col-sm-2 col-form-label">Title</label>
+            <label for="show-title" class="col-sm-2 col-form-label">@lang('promotions.Title')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" type="text" tabindex="1"  class="form-control" id="show-title">
             </div>
         </div><!-- /.form-group -->
         
         <div class="form-group row">
-            <label for="show-start_date" class="col-sm-2 col-form-label">Start Time</label>
+            <label for="show-start_date" class="col-sm-2 col-form-label">@lang('promotions.Start_Time')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" type="text" tabindex="2" id="show-start_date" class="form-control">
             </div>
         </div><!-- /.form-group -->
 
         <div class="form-group row">
-            <label for="show-end_date" class="col-sm-2 col-form-label">End Date</label>
+            <label for="show-end_date" class="col-sm-2 col-form-label">@lang('promotions.End_Date')</label>
             <div class="col-sm-10">
                 <input disabled="disabled" type="text" tabindex="3" id="show-end_date" class="form-control">
             </div>
@@ -45,14 +45,14 @@
             <table class="table" style="font-size: 12px; !width: max-content;">
                 <thead>
                     <tr>
-                        <td>Img</td>
-                        <td style="width:100px;">Name</td>
-                        <td>SKU</td>
-                        <td>Price</td>
-                        <td>Price On Sale</td>
-                        <td>Sale Ratio</td>
-                        <td>Valied Quantity</td>
-                        <td>Quantity On Sale</td>
+                        <td>@lang('promotions.Img')</td>
+                        <td style="width:100px;">@lang('promotions.Name')</td>
+                        <td>@lang('promotions.SKU')</td>
+                        <td>@lang('promotions.Price')</td>
+                        <td>@lang('promotions.Price_On_Sale')</td>
+                        <td>@lang('promotions.Sale_Ratio')</td>
+                        <td>@lang('promotions.Valied_Quantity')</td>
+                        <td>@lang('promotions.Quantity_On_Sale')</td>
                     </tr>
                 </thead>
                 <tbody id="show-selected_product_table"></tbody>

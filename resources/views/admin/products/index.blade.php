@@ -1,10 +1,16 @@
 @extends('layouts.admin.app')
 
+@php 
+    $is_ar = LaravelLocalization::getCurrentLocale() == 'ar'; 
+@endphp
 
 @push('page_css')
 <link rel="stylesheet" type="text/css" href="{{ asset('plugins/input_img_privew/jpreview.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/sceditor/minified/themes/default.min.css') }}" />
 
+@if($is_ar)
+    @include('layouts.admin.incs._rtl')
+@endif
 
 <style>
     #nav-ar_description .note-editable,
@@ -18,142 +24,145 @@
 @php 
     $object_title = 'Product';
 @endphp
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="text-left">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@lang('products.Products')</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url('admin') }}">@lang('products.Dashboard')</a>
+                        </li>
+                        
+                        <li class="breadcrumb-item active">
+                        @lang('products.Products')
+                        </li>
+                    </ol>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /.content-header -->
 
-<div class="content-header">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{$object_title}}s</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('admin') }}">Dashboard</a>
-                    </li>
-                    
-                    <li class="breadcrumb-item active">
-                        {{$object_title}}s
-                    </li>
-                </ol>
-            </div>
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div><!-- /.content-header -->
 
-<div class="container-fluid">
-
-    <div id="successAlert" style="display: none" class="alert alert-success"></div>
-    
-    <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+        <div id="successAlert" style="display: none" class="alert alert-success"></div>
         
-    <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
+        <div id="dangerAlert"  style="display: none" class="alert alert-danger"></div>
+            
+        <div id="warningAlert" style="display: none" class="alert alert-warning"></div>
 
-    <div class="d-flex justify-content-center mb-3">
-        <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center mb-3">
+            <div id="loddingSpinner" style="display: none" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
 
-    <div id="objectsCard" class="card card-body">
-        <div class="row">
-            <div class="col-6">
-                <h5>{{$object_title}}s Adminstration</h5>
-            </div>
-            <div class="col-6 text-right">
-                <div class="relode-btn btn btn-info btn-sm">
-                    <i class="relode-btn-icon fas fa-redo"></i>
-                    <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+        <div id="objectsCard" class="card card-body">
+            <div class="row">
+                <div class="col-6">
+                    <h5>@lang('products.Products_Adminstration')</h5>
                 </div>
+                <div class="col-6 text-right">
+                    <div class="relode-btn btn btn-info btn-sm">
+                        <i class="relode-btn-icon fas fa-redo"></i>
+                        <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
+                    </div>
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_add'))
-                <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
-                    <i class="fas fa-plus"></i>
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('products_add'))
+                    <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    @endif
                 </div>
-                @endif
-            </div>
-        </div><!-- /.row -->
+            </div><!-- /.row -->
 
-        <hr/>
+            <hr/>
+            
+            <!-- START SEARCH BAR -->
+            <div class="row">
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('products.Name')</label>
+                        <input type="text" class="form-control" id="s-name">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+                
+                <div class="col-3">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('products.SKU')</label>
+                        <input type="text" class="form-control" id="s-sku">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+                
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('products.Category')</label>
+                        <select class="form-control" id="s-category"></select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+                
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="s-title">@lang('products.Type')</label>
+                        <select class="form-control" id="s-type">
+                            <option value="">@lang('products.All')</option>
+                            <option value="0">@lang('products.Usual')</option>
+                            <option value="1">@lang('products.Composite')</option>
+                            <option value="2">@lang('products.Upgradable')</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+                
+                <div class="col-2">
+                    <div class="form-group search-action">
+                        <label for="s-active">@lang('products.Active')</label>
+                        <select class="form-control" id="s-active">
+                            <option value="">@lang('products.All')</option>
+                            <option value="1">@lang('products.Active')</option>
+                            <option value="0">@lang('products.De-Active')</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-2 -->
+            </div><!-- /.row --> 
+            <!-- END   SEARCH BAR -->
+
+            <div class="overflow-table">
+                <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('products.Image')</th>
+                        <th style="width: 80px">@lang('products.Name')</th>
+                        <th>@lang('products.SKU')</th>
+                        <th>@lang('products.Price')</th>
+                        <th>@lang('products.Sale_Price')</th>
+                        <th>@lang('products.Categories')</th>
+                        <th>@lang('products.Storage_Quantity')</th>
+                        <th>@lang('products.Quantity')</th>
+                        <th>@lang('products.R_Quantity')</th>
+                        <th>@lang('products.Active')</th>
+                        <th>@lang('products.Type')</th>
+                        <th>@lang('products.Action')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table --> 
+        </div><!-- /.card --> 
         
-        <!-- START SEARCH BAR -->
-        <div class="row">
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">Name</label>
-                    <input type="text" class="form-control" id="s-name">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-            
-            <div class="col-3">
-                <div class="form-group search-action">
-                    <label for="s-title">SKU</label>
-                    <input type="text" class="form-control" id="s-sku">
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-            
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="s-title">Category</label>
-                    <select class="form-control" id="s-category"></select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-            
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="s-title">Type</label>
-                    <select class="form-control" id="s-type">
-                        <option value="">All</option>
-                        <option value="0">Usual</option>
-                        <option value="1">Composite</option>
-                        <option value="2">Upgradable</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-            
-            <div class="col-2">
-                <div class="form-group search-action">
-                    <label for="s-active">Active</label>
-                    <select class="form-control" id="s-active">
-                        <option value="">All</option>
-                        <option value="1">Active</option>
-                        <option value="0">De-Active</option>
-                    </select>
-                </div><!-- /.form-group -->
-            </div><!-- /.col-2 -->
-        </div><!-- /.row --> 
-        <!-- END   SEARCH BAR -->
+        
+        @include('admin.products.incs._create')
+        
+        @include('admin.products.incs._edit')
+        
+        @include('admin.products.incs._show')
 
-        <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
-            <thead>
-                <th>#</th>
-                <th>Image</th>
-                <th style="width: 80px">Name</th>
-                <th>SKU</th>
-                <th>Price</th>
-                <th>Sale Price</th>
-                <th>Categories</th>
-                <th>Storage Quantity</th>
-                <th>Quantity</th>
-                <th>R-Quantity</th>
-                <th>Active</th>
-                <th>Type</th>
-                <th>Action</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div><!-- /.card --> 
-    
-    
-    @include('admin.products.incs._create')
-    
-    @include('admin.products.incs._edit')
-    
-    @include('admin.products.incs._show')
+        {{--
+        @include('admin.products.incs._composite_product_upgrade_option')
+        --}}
 
-    {{--
-    @include('admin.products.incs._composite_product_upgrade_option')
-    --}}
-
+    </div>
 </div>
 @endsection
 
@@ -241,21 +250,21 @@ $(function () {
 
         if (data.get('ar_name') === '') {
             is_valide = false;
-            let err_msg = 'arabic name is required';
+            let err_msg = '@lang("products.arabic name is required")';
             $(`#${prefix}ar_nameErr`).text(err_msg);
             $(`#${prefix}ar_nameErr`).slideDown(500);
         }
 
         if (data.get('ar_small_description') === '') {
             is_valide = false;
-            let err_msg = 'arabic short description is required';
+            let err_msg = '@lang("products.arabic_short_description_is_required")';
             $(`#${prefix}ar_small_descriptionErr`).text(err_msg);
             $(`#${prefix}ar_small_descriptionErr`).slideDown(500);
         }
 
         if (data.get('ar_description') === '') {
             is_valide = false;
-            let err_msg = 'arabic description is required';
+            let err_msg = '@lang("products.arabic_description_is_required")';
             $(`#${prefix}ar_descriptionErr`).text(err_msg);
             $(`#${prefix}ar_descriptionErr`).slideDown(500);
             $(`#nav-ar_description-tab`).css('border', '1px solid red')
@@ -265,21 +274,21 @@ $(function () {
 
         if (data.get('en_name') === '') {
             is_valide = false;
-            let err_msg = 'english name is required';
+            let err_msg = '@lang("products.english_name_is_required")';
             $(`#${prefix}en_nameErr`).text(err_msg);
             $(`#${prefix}en_nameErr`).slideDown(500);
         }
 
         if (data.get('en_small_description') === '') {
             is_valide = false;
-            let err_msg = 'english short description is required';
+            let err_msg = '@lang("products.english_short_description_is_required")';
             $(`#${prefix}en_small_descriptionErr`).text(err_msg);
             $(`#${prefix}en_small_descriptionErr`).slideDown(500);
         }
 
         if (data.get('en_description') === '') {
             is_valide = false;
-            let err_msg = 'english description is required';
+            let err_msg = '@lang("products.english_description_is_required")';
             $(`#${prefix}en_descriptionErr`).text(err_msg);
             $(`#${prefix}en_descriptionErr`).slideDown(500);
             $(`#nav-en_description-tab`).css('border', '1px solid red')
@@ -289,61 +298,61 @@ $(function () {
 
         if (data.get('is_composite') !== '1' && (data.get('quantity') === '' || data.get('quantity') < 0)) {
             is_valide = false;
-            let err_msg = 'quantity is required';
+            let err_msg = '@lang("products.quantity_is_required")';
             $(`#${prefix}quantityErr`).text(err_msg);
             $(`#${prefix}quantityErr`).slideDown(500);
         }
         
         if (data.get('storage_quantity') < 0) {
             is_valide = false;
-            let err_msg = 'storage quantity can\'t be negative';
+            let err_msg = '@lang("products.storage_quantity_cant_be_negative")';
             $(`#${prefix}storage_quantityErr`).text(err_msg);
             $(`#${prefix}storage_quantityErr`).slideDown(500);
         } 
 
         if (data.get('sku') === '') {
             is_valide = false;
-            let err_msg = 'sku is required';
+            let err_msg = '@lang("products.sku_is_required")';
             $(`#${prefix}skuErr`).text(err_msg);
             $(`#${prefix}skuErr`).slideDown(500);
         }
         
         if (prefix === '' && data.get('main_image') === '') {
             is_valide = false;
-            let err_msg = 'main image is required';
+            let err_msg = '@lang("products.main_image_is_required")';
             $(`#${prefix}main_imageErr`).text(err_msg);
             $(`#${prefix}main_imageErr`).slideDown(500);
         }
 
         if (data.get('price') === '' || data.get('price') <= '0') {
             is_valide = false;
-            let err_msg = 'price is required';
+            let err_msg = '@lang("products.price_is_required")';
             $(`#${prefix}priceErr`).text(err_msg);
             $(`#${prefix}priceErr`).slideDown(500);
         }
 
         if (data.get('price_after_sale') < 0) {
             is_valide = false;
-            let err_msg = 'price after sale can\'t be negative';
+            let err_msg = '@lang("products.price_after_sale_cant_be_negative")';
             $(`#${prefix}price_after_saleErr`).text(err_msg);
             $(`#${prefix}price_after_saleErr`).slideDown(500);
         }
 
         if (data.get('is_composite') === '1' && data.get('reserved_quantity') <= 0) {
             is_valide = false;
-            let err_msg = 'reserved quantity can\'t be zero';
+            let err_msg = '@lang("products.reserved_quantity_cant_be_zero")';
             $(`#${prefix}reserved_quantityErr`).text(err_msg);
             $(`#${prefix}reserved_quantityErr`).slideDown(500);
         }
 
         if (data.get('is_composite') === '1' && (data.get('child_products') === '[]' || data.get('child_products') === '')) {
             is_valide = false;
-            $(`#${prefix}find_child_productsErr`).text('You need to select child product').slideDown(500);    
+            $(`#${prefix}find_child_productsErr`).text('@lang("products.You_need_to_select_child_product")').slideDown(500);    
         }
 
         if (data.get('is_composite') === '1' && (data.get('child_products_quantity') === '{}' || data.get('child_products') === '')) {
             is_valide = false;
-            $(`#${prefix}find_child_productsErr`).text('You need to select child product').slideDown(500);    
+            $(`#${prefix}find_child_productsErr`).text('@lang("products.You_need_to_select_child_product")').slideDown(500);    
         }
 
         if (data.get('is_composite') === '2') {
@@ -375,7 +384,7 @@ $(function () {
 
             upgrade_err ? 
                 $('#categories-upgradableErr')
-                .text('you selected some categories without selecting products !').slideDown(500) :
+                .text('@lang("products.you_selected_some_categories_without_selecting_products")').slideDown(500) :
                 $('#categories-upgradableErr').text('').slideUp(500)
             ;
         }
@@ -567,7 +576,7 @@ $(function () {
             $('#edit-categories-upgradable, #categories-upgradable, #categories, #edit-categories, #s-category').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select categories',
+                placeholder: '@lang("products.Select_categories")',
                 ajax: {
                     url: '{{ url("admin/products-categories-search") }}',
                     dataType: 'json',
@@ -589,7 +598,7 @@ $(function () {
             $('#brand_id, #edit-brand_id, #s-brand_id').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select brand',
+                placeholder: '@lang("products.Select_brand")',
                 ajax: {
                     url: '{{ url("admin/brand-search") }}',
                     dataType: 'json',
@@ -640,7 +649,7 @@ $(function () {
             $('#find_child_products, #edit-find_child_products').select2({
                 allowClear: true,
                 width: '100%',
-                placeholder: 'Select products, by name, id, or sku',
+                placeholder: '@lang("products.Select_products_by_name")',
                 ajax: {
                     url: '{{ url("admin/products-search") }}',
                     dataType: 'json',
