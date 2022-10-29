@@ -54,6 +54,14 @@ return [
     'Free_Shipping' => 'شحن مجاني',
     'No_Free_Shipping' => 'شحن غير مجاني',
 
+    'Payment_status' => 'حالة الدفع',
+    'select_payment_status' => 'حدد حالة الدفع',
+    'waiting_payment' => 'انتظار الدفع',
+    'check_payment_transaction' => 'انتظار الفحص',
+    'paid' => 'تم الدفع',
+    'refused' => 'تم الرفض',
+    'all' => 'الكل',
+
     // validation 
     'customer_is_required' => 'يلزم تحديد العميل',
     'products_is_required' => 'يلزم تحديد المنتج',

@@ -84,13 +84,6 @@
                         <input type="text" class="form-control" id="s-name">
                     </div><!-- /.form-group -->
                 </div><!-- /.col-3 -->
-                
-                <div class="col-4">
-                    <div class="form-group search-action">
-                        <label for="">@lang('orders.Email')</label>
-                        <input type="text" class="form-control" id="s-email">
-                    </div><!-- /.form-group -->
-                </div><!-- /.col-4 -->
 
                 <div class="col-4">
                     <div class="form-group search-action">
@@ -103,7 +96,7 @@
                     <div class="form-group search-action">
                         <label for="">@lang('orders.Country')</label>
                         <select type="text" class="form-control" id="s-country">
-                            <option value="">-- select category --</option>
+                            <option value="">-- @lang('orders.all') --</option>
                             @foreach($countries as $country)
                             <option value="{{$country->id}}">{{$country->name}}</option>
                             @endforeach
@@ -116,6 +109,19 @@
                         <label for="">@lang('orders.Governorate')</label>
                         <select type="text" class="form-control" id="s-governorate" multiple="multiple">
                             <option value="">-- select category --</option>
+                        </select>
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-4 -->
+                
+                <div class="col-4">
+                    <div class="form-group search-action">
+                        <label for="">@lang('orders.Payment_status')</label>
+                        <select class="form-control" id="s-payment-status">
+                            <option value="">-- @lang('orders.all') --</option>
+                            <option value="waiting_payment">@lang('orders.waiting_payment')</option>
+                            <option value="check_payment_transaction">@lang('orders.check_payment_transaction')</option>
+                            <option value="paid">@lang('orders.paid')</option>
+                            <option value="refused">@lang('orders.refused')</option>
                         </select>
                     </div><!-- /.form-group -->
                 </div><!-- /.col-4 -->
@@ -138,7 +144,7 @@
                     <div class="form-group search-action">
                         <label for="">@lang('orders.Status')</label>
                         <select type="text" class="form-control" id="s-status">
-                            <option value="">-- all --</option>
+                            <option value="">-- @lang('orders.all') --</option>
                             @foreach(order_status() as $order_status)
                             <option value="{{$order_status->status_code}}">{{$order_status->status_name_en}}</option>
                             @endforeach
@@ -235,8 +241,8 @@ $(function () {
             if ($('#s-name').length)
             d.name = $('#s-name').val(); 
 
-            if ($('#s-email').length)
-            d.email = $('#s-email').val();  
+            if ($('#s-payment-status').length)
+            d.payment_status = $('#s-payment-status').val();  
             
             if ($('#s-phone').length)
             d.phone = $('#s-phone').val();

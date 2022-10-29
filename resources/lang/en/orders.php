@@ -57,6 +57,14 @@ return [
     'Free_Shipping' => 'Free Shipping',
     'No_Free_Shipping' => 'No Free Shipping',
 
+    'Payment_status' => 'Payment status',
+    'select_payment_status' => 'select payment status',
+    'waiting_payment' => 'waiting payment',
+    'check_payment_transaction' => 'check payment transaction',
+    'paid' => 'paid',
+    'refused' => 'refused',
+    'all' => 'all',
+
     // validation 
     'customer_is_required' => 'customer is required',
     'products_is_required' => 'products is required',

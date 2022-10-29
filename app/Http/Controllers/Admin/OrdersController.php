@@ -58,9 +58,9 @@ class OrdersController extends Controller
                 });
             }
 
-            if (isset($request->email)) {
-                $model->whereHas('customer', function ($q) use ($request) {
-                    $q->where('customers.email', 'like', "%$request->email%");
+            if (isset($request->payment_status)) {
+                $model->whereHas('invoice', function ($q) use ($request) {
+                    $q->where('invoices.status', $request->payment_status);
                 });
             }
 
