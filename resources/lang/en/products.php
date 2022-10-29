@@ -23,7 +23,7 @@ return [
     'Categories' => 'Categories',
     'Storage_Quantity' => 'Storage Quantity',
     'Quantity' => 'Quantity',
-    'R_uantity' => 'R-Quantity',
+    'R_Quantity' => 'R-Quantity',
     'Active' => 'Active',
     'Type' => 'Type',
     'Action' => 'Action',

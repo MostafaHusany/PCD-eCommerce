@@ -20,7 +20,7 @@ return [
     'Categories' => 'الفئات',
     'Storage_Quantity' => 'كمية مخزنة',
     'Quantity' => 'كمية العرض',
-    'R_uantity' => 'كمية محجوزة',
+    'R_Quantity' => 'كمية محجوزة',
     'Action' => 'الاحداث',
 
     // create product
