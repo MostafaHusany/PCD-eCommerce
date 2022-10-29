@@ -97,6 +97,7 @@ class OrderStatusController extends Controller
     public function destroy ($id) {
         $target_object = $this->target_model->find($id);
         isset($target_object) && $target_object->delete();
+        cache()->forget('order_status');
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
