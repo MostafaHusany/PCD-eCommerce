@@ -422,7 +422,9 @@ class ProductsController extends Controller
         json_encode([
             'upgrade_categories'  => $upgrade_categories,
             'upgrade_products_id' => $upgrade_products_id,
-            'upgrade_products'    => $upgrade_products
+            'upgrade_products'    => $upgrade_products,
+            'child_products_id' => $child_products,
+            'products_quantity' => $child_products_quantity,
         ]): json_encode([
             'child_products_id' => $child_products,
             'products_quantity' => $child_products_quantity,
