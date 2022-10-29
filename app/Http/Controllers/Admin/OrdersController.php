@@ -103,10 +103,10 @@ class OrdersController extends Controller
                 return view('admin.orders.incs._code', compact('row_object'));
             })
             ->addColumn('customer', function ($row_object) {
-                return $row_object->customer->name;
+                return isset($row_object->customer) ? $row_object->customer->name : 'deleted';
             })
             ->addColumn('phone', function ($row_object) {
-                return $row_object->customer->phone;
+                return isset($row_object->customer) ? $row_object->customer->phone : 'deleted';
             })
             ->addColumn('email', function ($row_object) {
                 return isset($row_object->customer) && isset($row_object->customer->email) ? $row_object->customer->email : '---';
