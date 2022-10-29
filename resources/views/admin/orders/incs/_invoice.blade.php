@@ -2,7 +2,7 @@
 <div style="display: none" id="invoiceObjectsCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Order Invoice</h5>
+            <h5>@lang('orders.Order_Invoice')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#invoiceObjectsCard" data-target-card="#objectsCard">
@@ -15,40 +15,40 @@
         <div class="form-group">
             <table class="table">
                 <tr>
-                    <td><b>Order Code</b></td>
+                    <td><b>@lang('orders.Order_Code')</b></td>
                     <td id="show-invoice-code"></td>
                 </tr>
                 <tr>
-                    <td><b>Sub Total</b></td>
+                    <td><b>@lang('orders.Sub_Total')</b></td>
                     <td id="show-invoice-sub-total"></td>
                 </tr>
                 <tr>
-                    <td><b>Shipping</b></td>
+                    <td><b>@lang('orders.Shipping')</b></td>
                     <td id="show-invoice-shipping"></td>
                 </tr>
                 
                 <tr>                
-                    <td><b>Tax</b></td>
+                    <td><b>@lang('orders.Tax')</b></td>
                     <td id="show-invoice-tax"></td>
                 </tr>
                 
                 <tr>
-                    <td><b>Fee</b></td>
+                    <td><b>@lang('orders.Fee')</b></td>
                     <td id="show-invoice-fee"></td>
                 </tr>
                 
                 <tr>
-                    <td><b>Total</b></td>
+                    <td><b>@lang('orders.Total')</b></td>
                     <td id="show-invoice-total"></td>
                 </tr>
                 
                 <tr>
-                    <td><b>Status</b></td>
+                    <td><b>@lang('orders.Status')</b></td>
                     <td id="show-invoice-status"></td>
                 </tr>
 
                 <tr>
-                    <td><b>Transaction Refuse Count</b></td>
+                    <td><b>@lang('orders.Transaction_Refuse_Count')</b></td>
                     <td id="show-payment-refuse-count"></td>
                 </tr>
             </table>
@@ -57,13 +57,24 @@
         <hr/>
 
         <div id="paymentSuccess" style="display: none;" class="alert alert-success">
-            Payment was accepted successfully !
+            @lang('orders.Payment_was_accepted_successfully')
         </div>
 
         <div id="paymentRefused" style="display: none;" class="alert alert-danger">
-            Payment was refused
+            @lang('orders.Payment_was_refused')
         </div>
-
+        
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6 text-left">
+                    <button id="acceptPayment" class="btn btn-success">@lang('orders.Accept_Payment')</button>
+                </div>
+                <div class="col-6 text-right">
+                    <button id="refusePayment" class="btn btn-danger">@lang('orders.Refuse_Payment')</button>
+                </div>
+            </div>
+        </div><!-- /.form-group -->
+        
         <div id="transaction-image-container" class="text-center img-status form-group">
             <img id="transaction-image" src="#" class="img-fluid img-thumbnail" alt="...">
         </div><!-- /.form-group -->
@@ -75,16 +86,6 @@
             <h1>No File Uploaded !!</h1>
         </div>
         
-        <div class="form-group">
-            <div class="row">
-                <div class="col-6 text-left">
-                    <button id="acceptPayment" class="btn btn-success">Accept Payment</button>
-                </div>
-                <div class="col-6 text-right">
-                    <button id="refusePayment" class="btn btn-danger">Refuse Payment</button>
-                </div>
-            </div>
-        </div><!-- /.form-group -->
     </div>
 </div>
 
@@ -123,6 +124,14 @@
                 $('#show-invoice-total').text(data.total);
                 $('#show-invoice-status').text(data.status);
                 $('#show-payment-refuse-count').text(data.payment_refuse_count);
+
+                if (!Boolean(data.status) || data.status == 'waiting_payment') {
+                    $('#acceptPayment').attr('disabled', 'disabled');
+                    $('#refusePayment').attr('disabled', 'disabled');
+                } else {
+                    $('#acceptPayment').removeAttr('disabled', 'disabled');
+                    $('#refusePayment').removeAttr('disabled', 'disabled');
+                }
 
                 if (data.trasnaction_imge == null) {
                     $('#transaction-image-not-found').slideDown();

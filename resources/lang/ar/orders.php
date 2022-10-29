@@ -62,6 +62,17 @@ return [
     'refused' => 'تم الرفض',
     'all' => 'الكل',
 
+    // show invoice
+    'Order_Invoice'  => 'فاتورة الطلب',
+    'Order_Code'     => 'كود الطلب',
+    'Tax'            => 'الضريبة',
+    'Fee'            => 'الرسوم',
+    'Transaction_Refuse_Count' => 'عدد مرات رفض الحوالة',
+    'Accept_Payment' => 'قبول الدفع',
+    'Refuse_Payment' => 'رفض الدفع',
+    'Payment_was_accepted_successfully' => 'تم قبول حوالة الدفع بنجاح',
+    'Payment_was_refused' => 'تم رفض حوالة الدفع',
+
     // validation 
     'customer_is_required' => 'يلزم تحديد العميل',
     'products_is_required' => 'يلزم تحديد المنتج',

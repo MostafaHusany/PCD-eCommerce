@@ -65,11 +65,22 @@ return [
     'refused' => 'refused',
     'all' => 'all',
 
+    // show invoice
+    'Order_Invoice'  => 'Order Invoice',
+    'Order_Code'     => 'Order Code',
+    'Tax'            => 'Tax',
+    'Fee'            => 'Fee',
+    'Transaction_Refuse_Count' => 'Transaction Refuse Count',
+    'Accept_Payment' => 'Accept Payment',
+    'Refuse_Payment' => 'Refuse Payment',
+    'Payment_was_accepted_successfully' => 'Payment was accepted successfully',
+    'Payment_was_refused' => 'Payment was refused',
+
     // validation 
     'customer_is_required' => 'customer is required',
     'products_is_required' => 'products is required',
     'shipping_is_required' => 'shipping is required',
-    'shipping_cost_is_required' => 'shipping cost is required'
+    'shipping_cost_is_required' => 'shipping cost is required',
 
 
 ];
