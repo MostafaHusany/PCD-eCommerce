@@ -634,7 +634,9 @@ $(function () {
                 selected_category : null,// the one we clicked on to show it products
                 categories : [],// all selected categories
                 categories_products : {},// each category products
-                selected_categories_products : {}// each category selected product
+                selected_categories_products : {},// each category selected product,
+                "child_products_id" : [],
+                "products_quantity" : {}
             };
 
             // getters
@@ -687,6 +689,12 @@ $(function () {
 
             const removeCategory = (category_id) => {
                 store.categories = store.categories.filter(category => category.id != category_id);
+                
+                store.selected_categories_products[category_id].forEach(selectedProduct => {
+                    store.child_products_id = store.child_products_id.filter(productId => productId != selectedProduct.id);
+                    delete store.products_quantity[selectedProduct.id]
+                });
+
                 delete store.categories_products[category_id];
                 delete store.selected_categories_products[category_id];
                 
@@ -707,11 +715,15 @@ $(function () {
 
                 if (!is_exist) {
                     const target_product = (store.categories_products[store.selected_category].find(product => product.id == product_id));
-                    target_product.is_default      = meta ? meta.is_default      : false;
-                    target_product.needed_quantity = meta ? meta.needed_quantity : 0;
-                    target_product.upgrade_price   = meta ? meta.upgrade_price   : Number(target_product.price);
+                    console.log('selectProduct : ', store.categories_products, product_id, target_product);
+                    target_product.is_default      = Boolean(meta.is_default) ? meta.is_default      : false;
+                    target_product.needed_quantity = Boolean(meta.needed_quantity) ? meta.needed_quantity : 0;
+                    target_product.upgrade_price   = Boolean(meta.upgrade_price) ? meta.upgrade_price   : Number(target_product.price);
 
                     store.selected_categories_products[store.selected_category].push(target_product);
+                    // added new
+                    store.child_products_id.push(target_product.id);
+                    store.products_quantity[target_product.id] = 1;
                 }
 
                 // parse updates in upgradable inputes fields
@@ -735,6 +747,9 @@ $(function () {
                 // if (is_need_new_default) new_products_list[0].is_default = true;
                 
                 store.selected_categories_products[store.selected_category] = new_products_list;
+                // added new
+                store.child_products_id = store.child_products_id.filter(productId => productId != product_id);
+                delete store.products_quantity[product_id];
                 
                 // parse updates in upgradable inputes fields
                 parseRequestData();
@@ -759,6 +774,7 @@ $(function () {
                 store.selected_categories_products[store.selected_category].forEach((product, index) => {
                     if (product.id == product_id) {
                         product.needed_quantity = quantity;
+                        store.products_quantity[product_id] = quantity;
                         return;
                     }
                 });
@@ -789,7 +805,9 @@ $(function () {
                     selected_category : null,
                     categories : [],
                     categories_products : {},
-                    selected_categories_products : {}
+                    selected_categories_products : {},
+                    child_products_id : [],
+                    products_quantity : {}
                 };
 
                 parseRequestData();
@@ -799,7 +817,7 @@ $(function () {
             const calculateExpectedPrice = () => {
                 store.expected_price = 0;
                 store.categories.forEach(category => {
-                    console.log('test calc : ', store.selected_categories_products, category.id, store.selected_categories_products[category.id]);
+                    // console.log('test calc : ', store.selected_categories_products, category.id, store.selected_categories_products[category.id]);
                     store.selected_categories_products[category.id].forEach(product => {
                         store.expected_price += product.is_default 
                         ? product.needed_quantity * product.upgrade_price : 0;
@@ -826,7 +844,11 @@ $(function () {
                 $('#edit-upgrade_option_categories').val(JSON.stringify(categoreis));
                 $('#edit-upgrade_option_products').val(JSON.stringify(selectedProdcuts));
                 $('#edit-upgrade_option_products_ids').val(JSON.stringify(selectedProdcutsIds));
-                console.log(categoreis, selectedProdcuts, selectedProdcutsIds);
+                $('#edit-child_products').val(JSON.stringify(store.child_products_id));
+                $('#edit-child_products_quantity').val(JSON.stringify(store.products_quantity));
+                
+                // console.log('parseRequestData 1: ', categoreis, selectedProdcuts, selectedProdcutsIds)
+                // console.log('parseRequestData 2: ', store.child_products_id, store.products_quantity);
             };
 
             // special method for rendering the edit form
@@ -840,6 +862,7 @@ $(function () {
                 // selected_categories_products : {}// each category selected product { cat_id : [] , }
 
                 let meta = JSON.parse(data.meta);
+                console.log(meta);
                 addReservedQuantity(data.quantity)
                 
                 let requests_count = 0;
@@ -852,17 +875,27 @@ $(function () {
                         }
                     }).then(res => {
                         if (res.data.success) {
+                            // get category and related products
                             addCategory(res.data.category, res.data.data);
+                            return res.data.category;
                         }// end :: if
-                    }).then(res => {
-                        store.categories.forEach(category => {
-                            selectedCategory(category.id);
-                            meta.upgrade_products_id[category.id].forEach(product_id => {
-                                selectProduct(product_id, meta.upgrade_products[category.id][product_id]);
-                            });
-                        });// end :: store.categories
+                    }).then(category => {
+                        console.log(category.id);
+                        // store.categories.forEach(category => {
+                        //     selectedCategory(category.id);
+                        //     meta.upgrade_products_id[category.id].forEach(product_id => {
+                        //         selectProduct(product_id, meta.upgrade_products[category.id][product_id]);
+                        //     });
+                        // });// end :: store.categories
 
-                        selectedCategory(null);
+                        selectedCategory(category.id);
+                        meta.upgrade_products_id[category.id].forEach(product_id => {
+                            console.log(meta.upgrade_products[category.id], meta.upgrade_products[category.id][product_id]);
+                            selectProduct(product_id, meta.upgrade_products[category.id][product_id]);
+                        });
+                    
+
+                        // selectedCategory(null);
                         calculateExpectedPrice();
                         render.render_categories();
                         render.render_expected_price();
@@ -871,6 +904,7 @@ $(function () {
                         if (requests_count === meta.upgrade_categories.length) {
                             $('#edit-childrenCategoriesLoddingSpinner').hide(500);
                         }
+                        // console.log(requests_count, meta.upgrade_categories.length);
                     }).catch(err => {
                         console.log('Enable to finsh requesting upgradable products in 829_edit : ', err);
                         $('#edit-categories-upgradableErr').text('Enable to bring data successfully !!').slideDown(500);
@@ -1007,7 +1041,7 @@ $(function () {
             } 
 
             const render_expected_price = () => {
-                console.log('expected price : ', store.getExpectedPrice());
+                // console.log('expected price : ', store.getExpectedPrice());
                 const price = store.getExpectedPrice();
                 $('#edit-price').val(price);
                 $('#edit-upgradeExpectedPrice').text(price);

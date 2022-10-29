@@ -82,7 +82,7 @@ class ProductCategoriesController extends Controller
             $target_object->attributes;
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         } else if (isset($target_object) && isset($request->my_products)) {
-            $category_products = $target_object->products()->where('is_active', 1)->where('quantity', '>', 0)->where('is_composite', 0)->get();
+            $category_products = $target_object->products()->where('quantity', '>', 0)->where('is_composite', 0)->get();
             return response()->json(['data' => $category_products, 'category' => $target_object, 'success' => isset($category_products)]);
         } if (isset($target_object) && isset($request->get_children)) {
             // $target_object->children;

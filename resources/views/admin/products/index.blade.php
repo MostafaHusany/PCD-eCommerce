@@ -440,6 +440,10 @@ $(function () {
             $('#demo-4-container').append(main_image);
         });
 
+        // store custome field values in global variable
+        // after rendering the custome fields
+        // get the data and show it in the fields
+        window.custome_field_values = data.product_custome_fields;
         
         if (data.is_composite == 1) {
             $('.edit-child-products-container').slideDown(500);
@@ -471,10 +475,7 @@ $(function () {
             $('#edit-price').val(data.price);
         }, 1000);
 
-        // store custome field values in global variable
-        // after rendering the custome fields
-        // get the data and show it in the fields
-        window.custome_field_values = data.product_custome_fields;
+
     }
 
     const index_custome_events =  (function () {
