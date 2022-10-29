@@ -340,8 +340,8 @@ class ProductsController extends Controller
         // get the target product
         $target_object = Product::find($id);
 
-        $child_products          = $request->is_composite == 1 ? (array) json_decode($request->child_products) : [];
-        $child_products_quantity = $request->is_composite == 1 ? (array) json_decode($request->child_products_quantity) : [];
+        $child_products          = $request->is_composite != 0 ? (array) json_decode($request->child_products) : [];
+        $child_products_quantity = $request->is_composite != 0 ? (array) json_decode($request->child_products_quantity) : [];
         if ($request->is_composite == 1) {
             $this->restore_reserved_products($target_object);
 
