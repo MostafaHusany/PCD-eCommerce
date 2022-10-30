@@ -111,15 +111,8 @@
                 </div>
             </div>
         </div><!-- /.form-group -->
-
-        <div id="container-reserved_quantity" class="form-group row">
-            <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">@lang('products.Reserved_Quantity')</label>
-            <div class="col-sm-10">
-                <input disabled="disabled" type="number" tabindex="9"  class="form-control" min="0" id="edit-reserved_quantity-show" value="0">
-            </div>
-        </div><!-- /.form-group -->
         
-        <div class="edit-upgradable-options edit-child-products-container form-group row" style="display: none;">
+        <div class="container-reserved_quantity edit-upgradable-options edit-child-products-container form-group row" style="display: none;">
             <label for="edit-reserved_quantity" class="col-sm-2 col-form-label">@lang('products.Reserved_Quantity')</label>
             <div class="col-sm-10">
                 <input type="number" tabindex="9"  class="form-control" min="0" id="edit-reserved_quantity" value="0">
