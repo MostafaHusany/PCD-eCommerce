@@ -415,7 +415,7 @@ class ProductsController extends Controller
         }// end :: if
         
         
-        $data['quantity']         = $request->is_composite == 1 ? $request->reserved_quantity : $request->quantity;
+        $data['quantity']         = $request->is_composite != 0 ? $request->reserved_quantity : $request->quantity;
         $data['slug']             = join("-", explode(' ', $request->en_name));
         $data['price_after_sale'] = $request->price_after_sale > 0 ? $request->price_after_sale : null;
         $data['meta']             = $request->is_composite == 2 ? 
