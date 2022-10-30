@@ -221,16 +221,10 @@ trait MakeOrder {
         $fee_total  = $fee_result['fee_total'];
         $meta['fees'] = $fee_result['fee_meta'];
 
-        // START CALCULATE 
-        // $promo_code_discount = $this->calculate_promocode_discount($target_order);
+        // START CALCULATE DISCOUNT
         $total = $sub_total + $target_order->shipping_cost + $tax_total + $fee_total;
-        if (isset($target_order->promo_code)) {
-            $promo_code = $target_order->promo_code;
-            $discount = $target_order->promo_code->type == 'fixed' ? $promo_code->value : $total * ($promo_code->value / 100);
-            $total   -= $discount;
-            $target_order->promo_code_discount = $discount;
-        }
-
+        $total = isset($target_order->promo_code) ? $this->calculate_promocode_discount($target_order, $total) : $total;
+        
         $target_order->sub_total = $sub_total;
         $target_order->taxe      = $tax_total;
         $target_order->fee       = $fee_total;
@@ -470,6 +464,15 @@ trait MakeOrder {
         return ['fee_total' => $fee_total, 'fee_meta' => $fee_meta];
     }// end :: calculate_all_fees
 
+    private function calculate_promocode_discount ($target_order, $total) {
+        $promo_code = $target_order->promo_code;
+        $discount = $target_order->promo_code->type == 'fixed' ? $promo_code->value : $total * ($promo_code->value / 100);
+        $total   -= $discount;
+        $target_order->promo_code_discount = $discount;
+
+        return $total;
+    }
+
     private function create_order_invoice ($target_order) {
         /**
          * Here we will create order invoice, 
@@ -494,7 +497,7 @@ trait MakeOrder {
         $order_invoice->save();
 
         return $order_invoice;
-    }
+    }// end :: create_order_invoice
 
     private function SMSTemplate ($phone, $type , $sub_msg = null) {
         $sms_msgs = SystemSetting::where('setting_code', 'sms_settings')->first();
