@@ -177,6 +177,8 @@ class OrdersController extends Controller
                 'fee' =>$target_order->fee,
                 'sub_total' =>$target_order->sub_total,
                 'total' =>$target_order->total,
+                'promo_code' => $target_order->promo_code->code,
+                'promo_code_discount' => $target_order->promo_code_discount,
             ];
 
             return response()->json(['data' => $target_data, 'success' => isset($target_data)]);

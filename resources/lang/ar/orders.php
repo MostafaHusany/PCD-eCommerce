@@ -61,6 +61,7 @@ return [
     'paid' => 'تم الدفع',
     'refused' => 'تم الرفض',
     'all' => 'الكل',
+    'Restored' => 'مرتجع',
 
     // show invoice
     'Order_Invoice'  => 'فاتورة الطلب',
@@ -72,6 +73,8 @@ return [
     'Refuse_Payment' => 'رفض الدفع',
     'Payment_was_accepted_successfully' => 'تم قبول حوالة الدفع بنجاح',
     'Payment_was_refused' => 'تم رفض حوالة الدفع',
+    'Discount' => 'الخصم',
+    'Promo_Code' => 'كود الخصم',
 
     // validation 
     'customer_is_required' => 'يلزم تحديد العميل',

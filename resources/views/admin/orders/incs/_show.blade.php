@@ -142,15 +142,9 @@
                         <td class="text-center" colspan="6">
                             <h3>@lang('orders.Sub_Total')</h3>
                         </td>
-                        <td id="show-selected_products_sub_total">---</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center" colspan="6">
-                            <h5>@lang('orders.Shipping_Total')</h5>
-                        </td>
-                        <td>
-                            <span id="show-selected_shipping_cost" data-cost=""> --- </span> @lang('orders.SAR')
-                        </td>
+                            <td>
+                                <span id="show-selected_products_sub_total"> --- </span> @lang('orders.SAR')
+                            </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -170,6 +164,26 @@
                             <span id="show-selected_fee_cost"> --- </span> @lang('orders.SAR')
                         </td>
                         <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="6">
+                            <h5>@lang('orders.Shipping_Total')</h5>
+                        </td>
+                        <td>
+                            <span id="show-selected_shipping_cost" data-cost=""> --- </span> @lang('orders.SAR')
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="6">
+                            <h5>@lang('orders.Discount')</h5>
+                        </td>
+                        <td>
+                            <span id="show-selected_Discount_cost" data-cost=""> --- </span> @lang('orders.SAR')
+                        </td>
+                        <td>
+                            <h5 class="my-3" style="display: inline">@lang('orders.Promo_Code') : </h5> <span id="show-selected_Discount_code" data-cost=""> --- </span>
+                        </td>
                     </tr>
                     <tr>
                         <td class="text-center" colspan="6">
@@ -262,6 +276,18 @@
 
                 $('#show-fees_list_table_container').append(fee_info_table_td);
             });
+
+            // show promo-code discount
+            if(Boolean(data.promo_code_discount)) {
+                $('#show-selected_Discount_cost').html(`<span class="text-danger" style="text-align:right;">-${data.promo_code_discount}</span>`);
+                $('#show-selected_Discount_code').text(`"${data.promo_code}"`);
+
+            } else {
+                $('#show-selected_Discount_cost').html( '---' );
+                $('#show-selected_Discount_code').html( '---' );
+            }
+
+
             // show order products rows
             data.products.forEach(product => {
                 console.log(product, order_meta);
@@ -303,7 +329,7 @@
             let sub_total_val = 0;
             let total_quantity = 0;
             
-            $('#show-selected_products_sub_total').text(data.sub_total + " SR")
+            $('#show-selected_products_sub_total').text(data.sub_total)
             $('#show-selected_shipping_cost').text(data.shipping_cost);
             $('#show-selected_taxe_cost').text(data.taxe);
             $('#show-selected_fee_cost').text(data.fee);

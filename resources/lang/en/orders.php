@@ -48,7 +48,7 @@ return [
     'Taxes_Total' => 'Taxes Total',
     'Fee_Total' => 'Fee Total',
     'SAR' => 'SAR',
-    'Shipping_Total' => 'Shipping_Total',
+    'Shipping_Total' => 'Shipping Total',
     'Fee' => 'Fees',
     'Taxe' => 'Taxe',
     'Create_Order' => 'Create Order',
@@ -64,6 +64,7 @@ return [
     'paid' => 'paid',
     'refused' => 'refused',
     'all' => 'all',
+    'Restored' => 'Restored',
 
     // show invoice
     'Order_Invoice'  => 'Order Invoice',
@@ -75,6 +76,8 @@ return [
     'Refuse_Payment' => 'Refuse Payment',
     'Payment_was_accepted_successfully' => 'Payment was accepted successfully',
     'Payment_was_refused' => 'Payment was refused',
+    'Discount' => 'Discount',
+    'Promo_Code' => 'Promo Code',
 
     // validation 
     'customer_is_required' => 'customer is required',
