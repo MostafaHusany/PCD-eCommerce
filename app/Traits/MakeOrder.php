@@ -73,7 +73,7 @@ trait MakeOrder {
          * # here send sms message with the order creation ...
         */
         $order_code = ", order coder : $new_order->code";
-        $this->SMSTemplate($target_customer->phone, 'create-order-sms', $order_code);
+        $this->SMSOrderTemplate($target_customer->phone, 'create-order-sms', $order_code);
 
         return $new_order;
     }
@@ -506,7 +506,7 @@ trait MakeOrder {
         return $order_invoice;
     }// end :: create_order_invoice
 
-    private function SMSTemplate ($phone, $type , $sub_msg = null) {
+    private function SMSOrderTemplate ($phone, $type , $sub_msg = null) {
         $sms_msgs = SystemSetting::where('setting_code', 'sms_settings')->first();
         $sms_msgs = (array) json_decode($sms_msgs->meta);
         $sms_temp = $sms_msgs[$type];
