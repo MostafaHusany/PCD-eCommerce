@@ -62,6 +62,9 @@ return [
     'refused' => 'تم الرفض',
     'all' => 'الكل',
     'Restored' => 'مرتجع',
+    'Default_Item' => 'القطعة الافتراضية',
+    'Not_valied' => 'غير متاحة',
+    'upgradable_products_is_not_valied' => 'هناك مشكلة في متطلبات التجميعة',
 
     // show invoice
     'Order_Invoice'  => 'فاتورة الطلب',

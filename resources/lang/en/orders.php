@@ -56,6 +56,9 @@ return [
     'Show_Order' => 'Show Order',
     'Free_Shipping' => 'Free Shipping',
     'No_Free_Shipping' => 'No Free Shipping',
+    'Default_Item' => 'Default Item',
+    'Not_valied' => 'Not valied',
+    'upgradable_products_is_not_valied' => 'Upgradable products requirment is not valied',
 
     'Payment_status' => 'Payment status',
     'select_payment_status' => 'select payment status',

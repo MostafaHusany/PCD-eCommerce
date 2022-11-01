@@ -128,6 +128,9 @@ class ProductsController extends Controller
         }
 
         if (isset($target_object) && isset($request->get_p)) {
+            // If the product is composite : 2 pring upgradable & products
+            $target_object->upgrade_categories;
+            $target_object->upgrade_products;
             $target_object->price = $target_object->get_price();
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }

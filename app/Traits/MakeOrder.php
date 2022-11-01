@@ -201,7 +201,14 @@ trait MakeOrder {
     private function update_order_calculation ($target_order, $products_data, Array $fees_ids) {
         /* 
             # Array $products_data [products_id => [1, 2, ...], 
-                                    products_quantity => [product_id => [quantity => 2, price => 0.0]] ]
+                                        products_quantity => [
+                                            product_id => [
+                                                quantity => 2, price => 0.0,
+                                                upgrade_options => [category_id => product_id, ...],
+                                                upgrade_options_list => [product_id, ...]
+                                            ]
+                                        ] 
+                                    ]
         */
         
         // START CREATE SOLD-PRODUCTS RECORD FOR EACH PRODUCT IN THE ORDER

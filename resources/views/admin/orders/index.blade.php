@@ -213,7 +213,7 @@ $(function () {
             toggle_btn      : '.toggle-btn',
             create_obj_btn  : '.create-object',
             update_obj_btn  : '.update-object',
-            fields_list     : ['id', 'customer', 'products', 'products_quantity', 'shipping', 'shipping_cost', 'is_free_shipping', 'fees'],
+            fields_list     : ['id', 'customer', 'products', 'products_quantity', 'upgradable_is_valied', 'shipping', 'shipping_cost', 'is_free_shipping', 'fees'],
             imgs_fields     : []
         },
         [
@@ -286,6 +286,13 @@ $(function () {
             $(`#${prefix}productsErr`).slideDown(500);
         }
         
+        if (data.get('upgradable_is_valied') == 'false') {
+            is_valide = false;
+            let err_msg = '@lang("orders.upgradable_products_is_not_valied")';
+            $(`#${prefix}productsErr`).text(err_msg);
+            $(`#${prefix}productsErr`).slideDown(500);
+        }
+
         if (data.get('shipping') == '' || data.get('shipping') == 'null') {
             is_valide = false;
             let err_msg = '@lang("orders.shipping_is_required")';
