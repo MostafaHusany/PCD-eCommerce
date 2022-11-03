@@ -28,7 +28,7 @@ return [
     // validation
     'code_is_required' => "code is required",
     'type_is_required' => 'type is required',
-    'value_is_required_and_cant_be_zero' => 'value is required and can\'t be zero'
+    'value_is_required_and_cant_be_zero' => 'value is required and can not be zero'
 
 
 ];

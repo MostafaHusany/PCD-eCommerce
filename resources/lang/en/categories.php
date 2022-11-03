@@ -32,7 +32,7 @@ return [
     'description_en' => 'Description',
     'description_ar' => 'الوصف',
     'Create_Category' => 'Create Category',
-    'order_rule_dis_1' => 'Here you can create an order limitation rule, that the customer can\'t order more than given number of this category.',
+    'order_rule_dis_1' => 'Here you can create an order limitation rule, that the customer can not order more than given number of this category.',
     'order_rule_dis_2' => 'If there is no rule leave the dafault value 0',
     'Update_Category' => 'Update Category',
     'Child_Categories' => 'Child Categories',

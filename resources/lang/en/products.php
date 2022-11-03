@@ -80,8 +80,8 @@ return [
     'sku_is_required' => 'sku is required',
     'main_image_is_required' => 'main image is required',
     'price_is_required' => 'price is required',
-    'price_after_sale_cant_be_negative' => 'price after sale can\'t be negative',
-    'reserved_quantity_cant_be_zero' => 'reserved quantity can\'t be zero',
+    'price_after_sale_cant_be_negative' => 'price after sale can not be negative',
+    'reserved_quantity_cant_be_zero' => 'reserved quantity can not be zero',
     'You_need_to_select_child product' => 'You need to select child product',
     'you_selected_some_categories_without_selecting_products' => 'you selected some categories without selecting products !',
 
