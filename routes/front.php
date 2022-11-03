@@ -4,6 +4,7 @@ use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+/*
 Route::group([
     'namespace' => 'Shop',
     'prefix' => LaravelLocalization::setLocale(),
@@ -58,3 +59,4 @@ Route::group([
     Route::get('wishlist', 'FavoriteController@wishlist')->name('wishlist');
 
 });
+*/

@@ -24,9 +24,8 @@ use App\Product;
 
 Auth::routes();
 
-Route::get('/home', function() {
-    return redirect('admin/');
-})->name('home');
+Route::redirect('/', 'admin/')->name('home');
+Route::redirect('/home', 'admin/')->name('home');
 
 Route::group(['middleware' => ['auth:web', 'admin.permissions', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'], 
                 'namespace' => 'Admin', 
