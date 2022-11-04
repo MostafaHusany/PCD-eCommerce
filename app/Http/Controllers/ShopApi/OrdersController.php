@@ -198,7 +198,6 @@ class OrdersController extends Controller
             if ($product->is_composite == 2) {
                 $upgradeProducts = Product::whereIn('id', $products_quantity[$product->id]['upgrade_options_list'])
                     ->where('quantity', '=', 0)
-                    ->where('is_active', 0)
                     ->count();
 
                 if ($upgradeProducts) {
