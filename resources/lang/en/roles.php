@@ -18,6 +18,11 @@ return [
     'Select_users' => 'Select users',
     'Select_permissions' => 'Select permissions',
     'Update_Role' => 'Update_Role',
+    'Show_Role' => 'Show Role',
+    'Assigned_Users' => 'Assigned Users',
+    'Category' => 'Category',
+    'Email' => 'Email',
+    'Phone' => 'Phone',
 
     // validation 
     'name_is_required' => 'name is required',

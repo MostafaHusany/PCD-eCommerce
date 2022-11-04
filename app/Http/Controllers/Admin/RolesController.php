@@ -68,11 +68,9 @@ class RolesController extends Controller
     }
 
     public function show (Request $request, $id) {
-        $target_role = Role::find($id);
+        $target_role = Role::with(['users', 'permissions'])->find($id);
 
         if (isset($target_role) && isset($request->fast_acc)) {
-            $target_role->users;
-            $target_role->permissions;
             return response()->json(['data' => $target_role, 'success' => isset($target_role)]);
         }
 

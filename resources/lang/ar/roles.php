@@ -18,6 +18,11 @@ return [
     'Select_users' => 'تعين مستخدمين',
     'Select_permissions' => 'تعين صلاحيات',
     'Update_Role' => 'تحديث فئة',
+    'Show_Role' => 'عرض الفئة',
+    'Assigned_Users' => 'المستخدمين المعينين',
+    'Category' => 'الفئة',
+    'Email' => 'البريد الالكتروني',
+    'Phone' => 'رقم الهاتف',
 
     // validation 
     'name_is_required' => 'يلزم ادخال الاسم',

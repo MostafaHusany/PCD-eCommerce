@@ -92,6 +92,8 @@
         @include('admin.roles.incs._create')
 
         @include('admin.roles.incs._edit')
+
+        @include('admin.roles.incs._show')
         
 
     </div>
