@@ -663,7 +663,7 @@ $(document).ready(function () {
              */
             products_list.forEach(product => {
                 let { price, quantity } = products_meta[product.id];
-                tmp_sub_total  += price * parseInt(quantity);
+                tmp_sub_total  += parseFloat(price) * parseInt(quantity);
                 total_quantity += parseInt(quantity);
             });
 
@@ -676,37 +676,37 @@ $(document).ready(function () {
             window.tax_ration.forEach(tax_obj => {
                 // per item
                 if (tax_obj.cost_type == 1) {
-                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? tax_obj.cost * total_quantity
-                        : tax_obj.cost * sub_total / 100;
+                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? Number(tax_obj.cost) * Number(total_quantity)
+                        : Number(tax_obj.cost) * Number(sub_total) / 100;
                 } else {
-                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? tax_obj.cost 
-                        : tax_obj.cost * sub_total / 100;
+                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? Number(tax_obj.cost) 
+                        : Number(tax_obj.cost) * Number(sub_total) / 100;
                 }// end :: if
                 
-                tax_data.taxe_total += tax_data.each_taxes_total[tax_obj.id];
+                tax_data.taxe_total = Number(tax_data.taxe_total) + Number(tax_data.each_taxes_total[tax_obj.id]);
             });
 
             // also we will calculate fees sub-total here
             fees_data.fees_total = 0;
             fees_data.selected_fees.forEach(fee_obj => {
                 if (fee_obj.cost_type == 1) {
-                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? fee_obj.cost * total_quantity
-                        : tax_obj.cost * sub_total / 100;
+                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? Number(fee_obj.cost) * Number(total_quantity)
+                        : Number(tax_obj.cost) * Number(sub_total) / 100;
                 } else {
-                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? fee_obj.cost 
-                        : fee_obj.cost * sub_total / 100;
+                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? Number(fee_obj.cost) 
+                        : Number(fee_obj.cost) * Number(sub_total) / 100;
                 }
                 
                 fees_data.fees_total += fees_data.each_fees_total[fee_obj.id];
             });
 
-            total = sub_total + tax_data.taxe_total + fees_data.fees_total;
-            total += shipping_data.is_free ? 0 : parseFloat(shipping_data.cost);
+            total = Number(sub_total) + Number(tax_data.taxe_total) + Number(fees_data.fees_total);
+            total += Number(shipping_data.is_free) ? 0 : Number(shipping_data.cost);
         }
         
         // update product price NOT USED !!
         const update_product_price = (product_id, price) => {
-            products_meta[product_id].price = price;
+            products_meta[product_id].price = Number(price);
             
             // re-calculate sub-total
             _calculate_order_sub_total();
