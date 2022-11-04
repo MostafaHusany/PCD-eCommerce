@@ -48,11 +48,10 @@ class UsersController extends Controller
     }
 
     public function show (Request $request, $id) {
-        $target_user = User::find($id);
+        $target_user = User::with(['roles', 'permissions'])->find($id);
         
         if (isset($target_user) && isset($request->fast_acc)) {
             $target_user->role = sizeof($target_user->roles) ? $target_user->roles[0] : null;
-            $target_user->permissions;
             return response()->json(['data' => $target_user, 'success' => isset($target_user)]);
         }
 

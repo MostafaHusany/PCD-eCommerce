@@ -114,6 +114,8 @@
         @include('admin.users.incs._create')
 
         @include('admin.users.incs._edit')
+
+        @include('admin.users.incs._show')
         
 
     </div>

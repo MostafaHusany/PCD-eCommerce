@@ -20,6 +20,7 @@ return [
     'Password' => 'Password',
     'Create_User' => 'Create User',
     'Update_User' => 'Update User',
+    'Show_User' => 'Show User',
 
     // valiation 
     'name_is_required' => 'name is required',

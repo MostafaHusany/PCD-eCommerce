@@ -19,6 +19,7 @@ return [
     'Password' => 'كلمة السر',
     'Create_User' => 'انشاء حساب',
     'Update_User' => 'تحديث حساب',
+    'Show_User' => 'عرض المستخدم',
 
     // valiation 
     'name_is_required' => 'يلزم ادخال الأسم',

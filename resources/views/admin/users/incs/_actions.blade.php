@@ -1,6 +1,10 @@
 <div class="text-center">
     @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['users_show']))
-    <button class="show-object btn btn-xs btn-info" data-object-id="{{$row_object->id}}">
+    <button class="show-object btn btn-xs btn-info" 
+        data-object-id="{{$row_object->id}}"
+        data-current-card="#objectsCard"    
+        data-target-card="#showObjectCard"   
+    >
         <i class="fas fa-eye"></i>
     </button>
     @endif
