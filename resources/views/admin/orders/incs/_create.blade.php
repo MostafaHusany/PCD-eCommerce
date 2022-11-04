@@ -241,16 +241,16 @@
     <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="upgradableModalLabel">Upgradable Product</h5>
+                <h5 class="modal-title" id="upgradableModalLabel">@lang('orders.Upgradable_Product')</h5>
             </div><!-- /.modal-header -->
             
             <div class="modal-body" id="upgradableModalBody" style="max-height: 450px; overflow-y:scroll">
             </div><!-- /.modal-body -->
             
             <div class="modal-footer" style="justify-content: space-between">
-                <h3>Total Price : <span class="texف-primary my-2" id="product-upgradable-price"> --- </span>SAR</h3>
+                <h3>@lang('orders.Total_Price') : <span class="texف-primary my-2" id="product-upgradable-price"> --- </span>@lang('orders.SAR')</h3>
                 <div>
-                    <button id="upgradable-action-don" type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+                    <button id="upgradable-action-don" type="button" class="btn btn-primary" data-dismiss="modal">@lang('orders.Done')</button>
                     <!-- <button type="button" class="btn btn-primary">Understood</button> -->
                 </div>
             </div><!-- /.modal-footer -->
