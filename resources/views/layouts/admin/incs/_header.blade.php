@@ -93,7 +93,7 @@
                 </div>
             </li>
         --}}
-        
+       {{-- 
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <i class="far fa-bell"></i>
@@ -120,6 +120,7 @@
                 <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
         </li>
+        --}}
 
         <li class="nav-item">
             <a class="nav-link" !data-widget="fullscreen"     
