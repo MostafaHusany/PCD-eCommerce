@@ -676,24 +676,24 @@ $(document).ready(function () {
             window.tax_ration.forEach(tax_obj => {
                 // per item
                 if (tax_obj.cost_type == 1) {
-                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? Number(tax_obj.cost) * Number(total_quantity)
+                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed == 1? Number(tax_obj.cost) * Number(total_quantity)
                         : Number(tax_obj.cost) * Number(sub_total) / 100;
                 } else {
-                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed ? Number(tax_obj.cost) 
+                    tax_data.each_taxes_total[tax_obj.id] = tax_obj.is_fixed == 1? Number(tax_obj.cost) 
                         : Number(tax_obj.cost) * Number(sub_total) / 100;
                 }// end :: if
-                
                 tax_data.taxe_total = Number(tax_data.taxe_total) + Number(tax_data.each_taxes_total[tax_obj.id]);
+                console.log('taxe_total', tax_data.taxe_total)
             });
 
             // also we will calculate fees sub-total here
             fees_data.fees_total = 0;
             fees_data.selected_fees.forEach(fee_obj => {
                 if (fee_obj.cost_type == 1) {
-                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? Number(fee_obj.cost) * Number(total_quantity)
+                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed == 1 ? Number(fee_obj.cost) * Number(total_quantity)
                         : Number(tax_obj.cost) * Number(sub_total) / 100;
                 } else {
-                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed ? Number(fee_obj.cost) 
+                    fees_data.each_fees_total[fee_obj.id] = fee_obj.is_fixed == 1 ? Number(fee_obj.cost) 
                         : Number(fee_obj.cost) * Number(sub_total) / 100;
                 }
                 
