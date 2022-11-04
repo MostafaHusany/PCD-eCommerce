@@ -109,9 +109,11 @@ class ProductsController extends Controller
         
         if ($id == 0 && isset($request->products_list)) {
             $products_list = json_decode($request->products_list);
-            $target_products = Product::whereIn('id', $products_list)->get();
+            $target_products = Product::whereIn('id', $products_list)
+            ->with(['children', 'upgrade_categories', 'upgrade_products'])
+            ->get();
             
-            return response()->json(['products' => $target_products, 'success' => isset($target_products)]);
+            return response()->json(['data' => $target_products, 'success' => isset($target_products)]);
         }
 
         $target_object = Product::with(['children', 'upgrade_categories', 'upgrade_products'])->find($id);
@@ -128,9 +130,6 @@ class ProductsController extends Controller
         }
 
         if (isset($target_object) && isset($request->get_p)) {
-            // If the product is composite : 2 pring upgradable & products
-            $target_object->upgrade_categories;
-            $target_object->upgrade_products;
             $target_object->price = $target_object->get_price();
             return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
         }

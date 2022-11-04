@@ -286,12 +286,12 @@ $(function () {
             $(`#${prefix}productsErr`).slideDown(500);
         }
         
-        if (data.get('upgradable_is_valied') == 'false') {
-            is_valide = false;
-            let err_msg = '@lang("orders.upgradable_products_is_not_valied")';
-            $(`#${prefix}productsErr`).text(err_msg);
-            $(`#${prefix}productsErr`).slideDown(500);
-        }
+        // if (data.get('upgradable_is_valied') == 'false') {
+        //     is_valide = false;
+        //     let err_msg = '@lang("orders.upgradable_products_is_not_valied")';
+        //     $(`#${prefix}productsErr`).text(err_msg);
+        //     $(`#${prefix}productsErr`).slideDown(500);
+        // }
 
         if (data.get('shipping') == '' || data.get('shipping') == 'null') {
             is_valide = false;
@@ -339,7 +339,21 @@ $(function () {
         var shipping_option = new Option(data.shipping.title, data.shipping.id, false, true);
         $('#edit-shipping').append(shipping_option).trigger('change');
         $('#edit-shipping_cost').val(data.shipping_cost);
-    }
+    };
+
+    objects_dynamic_table.showValidationErr = (msgs, prefix = '') => {
+        console.log('showValidationErr : ', msgs, prefix);
+        if (msgs == 'not_valied_product') {
+            window.relode_create_prodcuts_table();
+        } else {
+            let keys = Object.keys(msgs);
+            keys.forEach(key => {
+                // for case of sub validation specialy for images !!
+                let tmp_key = (key.split('.'))[0];
+                $(`#${prefix}${tmp_key}Err`).html(msgs[key]).slideDown(500);
+            });
+        }
+    };
 
     const index_custome_events =  (function () {
         function start_events () {

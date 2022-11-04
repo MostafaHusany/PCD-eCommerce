@@ -59,6 +59,9 @@ return [
     'Default_Item' => 'Default Item',
     'Not_valied' => 'Not valied',
     'upgradable_products_is_not_valied' => 'Upgradable products requirment is not valied',
+    'Is_Active' => 'Is Active',
+    'Upgradable_Product' => 'Upgradable Product',
+    'Done' => 'Done',
 
     'Payment_status' => 'Payment status',
     'select_payment_status' => 'select payment status',

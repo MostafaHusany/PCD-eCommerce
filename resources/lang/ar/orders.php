@@ -65,6 +65,9 @@ return [
     'Default_Item' => 'القطعة الافتراضية',
     'Not_valied' => 'غير متاحة',
     'upgradable_products_is_not_valied' => 'هناك مشكلة في متطلبات التجميعة',
+    'Is_Active' => 'التفعيل',
+    'Upgradable_Product' => 'منتج قابل للتحديث',
+    'Done' => 'تم',
 
     // show invoice
     'Order_Invoice'  => 'فاتورة الطلب',

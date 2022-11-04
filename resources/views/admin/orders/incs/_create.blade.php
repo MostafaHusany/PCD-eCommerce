@@ -89,6 +89,7 @@
                             <td style="width: 160px">@lang('orders.Name')</td>
                             <td>@lang('orders.SKU')</td>
                             <td style="width: 100px">@lang('orders.Price')</td>
+                            <td>@lang('orders.Is_Active')</td>
                             <td>@lang('orders.Edit_Price')</td>
                             <td>@lang('orders.Valied_Quantity')</td>
                             <td>@lang('orders.Requested_Quantity')</td>
@@ -339,6 +340,11 @@ $(document).ready(function () {
             return await response.data;
         };
 
+        const request_products = async (products_list) => {
+            const response = await axios.get(`{{ url('admin/products') }}/0`, { params: { products_list : JSON.stringify(products_list) }});
+            return await response.data;
+        }
+
         const request_shipping = async (shipping_id) => {
             const response = await axios.get(`{{ url("admin/shipping") }}/${shipping_id}`, { params: { fast_acc : true }});
             return await response.data;
@@ -528,6 +534,7 @@ $(document).ready(function () {
                 // update if the product is valied 
                 if ((upgradable_products[upgrade_focus].products.find(product => product.id == product_id)).quantity > 0) {
                     products_meta[upgrade_focus].upgrade_options[category_id] = product_id;
+                    products_meta[upgrade_focus].upgrade_options_list = Object.values(products_meta[upgrade_focus].upgrade_options);
                 }
             }, 
 
@@ -734,6 +741,7 @@ $(document).ready(function () {
         return {
             // async methods
             request_product,
+            request_products,
             request_shipping,
             request_fees,
 
@@ -822,13 +830,14 @@ $(document).ready(function () {
                 let { tax_tr, total_product_cost } = _create_product_tax_columns (target_product.id, products_meta[target_product.id]);
                 let {quantity, price, is_upgradable, is_valied} = products_meta[target_product.id];
                 let product_tr = `
-                    <tr style="${ is_upgradable && !is_valied ? 'background-color: #f8d7da' : '' }" class="selected-product-rows selected-product-row-${target_product.id}">
+                    <tr style="${ (is_upgradable && !is_valied) || (target_product.quantity <= 0) || (target_product.is_active == 0) ? 'background-color: #f8d7da' : '' }" class="selected-product-rows selected-product-row-${target_product.id}">
                         
                         <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
                         <td>${target_product.ar_name} / ${target_product.en_name}</td>
                         <td>${target_product.sku}</td>
 
                         <td>${target_product.price}</td>
+                        <td>${target_product.is_active == 1 ? '<span class="text-primary">active</span>' : '<span class="text-danger">not active</span>'}</td>
                         <td>
                             <input style="width: 80px" class="selected_product_price" type="number" value="${price}" step="1"
                                 id="selected_product_price_${target_product.id}"
@@ -1174,7 +1183,7 @@ $(document).ready(function () {
         }
     })(StoreObject);
 
-    ControllerObject = (function (storeObject, viewObject) {
+    const ControllerObject = (function (storeObject, viewObject) {
         /**
          * # Search and select customer 
          * 
@@ -1196,6 +1205,42 @@ $(document).ready(function () {
 
         let products_list = [];
         let products_meta = {};
+
+        const relode_create_prodcuts_table = () => {
+            /**
+             * 1- Get all products stored in products_list
+             * from server again.
+             * 
+             * 2- Do reset to the store and re-inite to the
+             * data.
+             * 
+             * 3- Re-render the products table again.   
+             */
+            // push data tp products_list
+            ({products_list, products_meta} = storeObject.get_products_data());
+            
+            storeObject.reset_store();
+            console.log(Object.keys(products_meta));
+            storeObject.request_products(Object.keys(products_meta))
+            .then(res => {
+                let {success, data} = res;
+                console.log('then : ', data);
+                if (success) {
+                    data.forEach(product => {
+                        storeObject.add_new_product(product);
+                    });
+
+                    ({products_list, products_meta} = storeObject.get_products_data());
+                    
+                    // show products list
+                    viewObject.show_selected_products(products_list, products_meta);
+
+                    // update form products_quantity hidden field
+                    viewObject.update_product_hidden_fields(products_meta);
+                }
+            });
+
+        };
 
         const products_events = () => {
             // clear old session before start.
@@ -1352,9 +1397,11 @@ $(document).ready(function () {
                 StoreObject.upgradable_products_methods.upgrade_action(category_id, product_id);
                 StoreObject.upgradable_products_methods.update_upgrade_product_price(target_product_id);
                 StoreObject.upgradable_products_methods.re_validate_upgradable(target_product_id);
-
+                
                 // render related info
                 let {product, product_meta} = StoreObject.upgradable_products_methods.find_product(target_product_id);
+                ({products_list, products_meta} = storeObject.get_products_data());
+
                 viewObject.upgradable_methods.render_upgradable_category_product(product, product_meta, category_id);
                 viewObject.upgradable_methods.render_upgradable_price(product_meta.price);
 
@@ -1501,15 +1548,20 @@ $(document).ready(function () {
             });
             
         };
-
+        
         const init = () => {
             products_events();  
         };
 
         init();
 
+        return {
+            relode_create_prodcuts_table
+        }
     })(StoreObject, ViewObject);
 
+    // universial access 
+    window.relode_create_prodcuts_table = ControllerObject.relode_create_prodcuts_table;
 });
 </script>
 @endpush

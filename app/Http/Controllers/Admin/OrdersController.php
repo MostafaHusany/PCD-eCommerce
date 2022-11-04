@@ -199,12 +199,16 @@ class OrdersController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
         }
-
-        // dd($request->all());
+        
+        // validate the products in the cart  
+        [$is_not_valied, $validation_result] = $this->is_valied_product($request->products, $request->products_quantity);
+        if ($is_not_valied) {
+            return response()->json($validation_result);
+        }
         
         // products_quantity contains the quantity and the prices of eacg product in the order 
-        $products_quantity  = (array) json_decode($request->products_quantity);
         $products_id        = (array) json_decode($request->products);
+        $products_quantity  = (array) json_decode($request->products_quantity);
         $targted_fees_ids   = explode(',', $request->fees);
         
         $target_shipping = Shipping::find($request->shipping);
@@ -337,22 +341,102 @@ class OrdersController extends Controller
     }
 
     // START HELPER FUNCTION
-    // public function update_product_quantity ($target_product, $order_quantity) {
-    //     if ($target_product->is_composite === 1) {
-    //         $target_children = $target_product->children;
-    //         $parent_product_meta = (array) json_decode($target_product->meta);
-    //         $products_quantity   = (array) $parent_product_meta['products_quantity'];
+    private function is_valied_product ($products_id, $products_quantity) {
+        /**
+         * # Here we validate the product once more
+         * to make sure that there is no conflict happens
+         * before confirming the order.
+         * 
+         * # Validation goes through product and 
+         * usual and upgradable to make sure there 
+         * valied products. 
+         */
+        
+        $products_id       = (array) json_decode($products_id);
+        $products_quantity = (array) json_decode($products_quantity);
+        // $upgradeProducts = Product::whereIn('id', [50])
+        // ->where('quantity', '=', 0)
+        // // ->where('is_active', 0)
+        // ->count();
+        // dd($upgradeProducts);
+        // dd($products_id, $products_quantity);
+        // foreach ($products_id as $product_id) {
+        //     dd(((array) $products_quantity[$product_id])['price']);
+        // }
 
-    //         foreach ($target_children as $child_product) {
-    //             $requested_quantity          = $products_quantity[$child_product->id] * $order_quantity;
-    //             $child_product->reserved_quantity -= $requested_quantity;
-    //             $child_product->save();
-    //         }
-    //     }
+        // foreach ($cartItems as $item) {
+        //     /***
+        //      *  [
+        //             2022 => [
+        //                 "quantity" => 1,
+        //                 "upgrade_options" => {"4":151,"8":385},
+        //                 "upgrade_options_list" => [151,385]
+        //             ]
+        //         ]
+        //      */
+        //     $products_id[] = $item['id'];
+        //     $products_quantity[$item['id']] = [
+        //         'quantity'             => $item['quantity'],
+        //         'upgrade_options'      => isset($item['upgrade_options']) ? $item['upgrade_options'] : null,
+        //         'upgrade_options_list' => isset($item['upgrade_options_list']) ? $item['upgrade_options_list'] : null,
+        //     ];   
+        // }
+        
+        // dd($products_quantity);
+        // if length is zero this mean there is no products 
+        // if (!sizeof($products_id)) {
+        //     return array('data' => null, 'success' => false, 'msg' => 'no_products_on_cart');
+        // }
+        
+        // get the products that has no valied quantity in the storage
+        $requested_products = Product::whereIn('id', $products_id)->get();
+        
+        // valiedate that the product has quantity
+        $is_not_valied     = false;
+        $validation_result = ['not_valied' => [], 'finshed_from_storage' => [], 'not_valied_quantity' => [], 'not_valied_upgrade_quantity' => []];
+        foreach ($requested_products as $product) {
+            $product_q = (array) $products_quantity[$product->id];
+            
+            if ($product->is_composite == 2) {
+                $upgrade_options_list = $product_q['upgrade_options_list'];
+                $upgradeProducts = Product::whereIn('id', $upgrade_options_list)
+                    ->where('quantity', '=', 0)
+                    // ->where('is_active', 0)
+                    ->count();
 
-    //     $target_product->quantity -= $order_quantity;
-    //     $target_product->save();
-    // }
+                if ($upgradeProducts) {
+                    $is_not_valied = true;
+                    $validation_result['not_valied_upgrade_quantity'][$product->id] = $upgradeProducts;   
+                }
+            }
+
+            // product is not valied
+            if ($product->is_active == 0) {
+                $is_not_valied = true;
+                $validation_result['not_valied'][] = $product;
+            }   
+
+            // product dosen't have quantity in the storage 
+            else if ($product->quantity == 0) {
+                $is_not_valied = true;
+                $validation_result['finshed_from_storage'][] = $product;
+            }
+
+            // product dosen't have requested quantity 
+            else if ($product->quantity < $product_q['quantity']) {
+                $is_not_valied = true;
+                $validation_result['not_valied_quantity'][] = $product;
+            }
+        }
+        
+        return [
+            $is_not_valied, 
+            $is_not_valied ? 
+            array('data' => null, 'success' => false, 'msg' => 'not_valied_product') 
+                :
+            [$products_id, $products_quantity]
+        ];
+    }
 
     protected function SMSTemplate ($target_order) {
         $sms_msgs = SystemSetting::where('setting_code', 'sms_settings')->first();
