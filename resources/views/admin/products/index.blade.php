@@ -496,6 +496,10 @@ $(function () {
 
                 sceditor.instance(en_description).keyDown(function () {
                     $(en_description).val(sceditor.instance(en_description).val())
+                }).bind("paste", function () {
+                    setTimeout(() => {
+                        $(en_description).val(sceditor.instance(en_description).val())
+                    }, 500);
                 });
 
                 var ar_description = document.getElementById('ar_description')
@@ -509,6 +513,10 @@ $(function () {
 
                 sceditor.instance(ar_description).keyDown(function () {
                     $(ar_description).val(sceditor.instance(ar_description).val())
+                }).bind("paste", function () {
+                    setTimeout(() => {
+                        $(ar_description).val(sceditor.instance(ar_description).val())
+                    }, 500);
                 });
 
 
@@ -524,6 +532,10 @@ $(function () {
 
                 sceditor.instance(edit_en_description).keyDown(function () {
                     $(edit_en_description).val(sceditor.instance(edit_en_description).val())
+                }).bind("paste", function () {
+                    setTimeout(() => {
+                        $(edit_en_description).val(sceditor.instance(edit_en_description).val())
+                    }, 500);
                 });
 
                 var edit_ar_description = document.getElementById('edit-ar_description')
@@ -537,6 +549,10 @@ $(function () {
 
                 sceditor.instance(edit_ar_description).keyDown(function () {
                     $(edit_ar_description).val(sceditor.instance(edit_ar_description).val())
+                }).bind("paste", function () {
+                    setTimeout(() => {
+                        $(edit_ar_description).val(sceditor.instance(edit_ar_description).val())
+                    }, 500);
                 });
             }
         }
