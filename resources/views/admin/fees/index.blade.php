@@ -174,7 +174,7 @@ $(function () {
         
         if (data.get('cost') == 0 || data.get('cost') === '') {
             is_valide = false;
-            let err_msg = '@lang("fees.cost is required and can\'t be zero")';
+            let err_msg = '@lang("fees.cost is required and can not be zero")';
             $(`#${prefix}costErr`).text(err_msg);
             $(`#${prefix}costErr`).slideDown(500);
         }
