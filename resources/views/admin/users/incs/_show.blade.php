@@ -15,27 +15,27 @@
     <div>
         <table class="table">
             <tr>
-                <td>Name</td>
+                <td>@lang('users.Name')</td>
                 <td id="show-name"></td>
             </tr>
             <tr>
-                <td>Email</td>
+                <td>@lang('users.Email')</td>
                 <td id="show-email"></td>
             </tr>
             <tr>
-                <td>Phone</td>
+                <td>@lang('users.Phone')</td>
                 <td id="show-phone"></td>
             </tr>
             <tr>
-                <td>Category</td>
+                <td>@lang('users.Category')</td>
                 <td id="show-category"></td>
             </tr>
             <tr>
-                <td>Role</td>
+                <td>@lang('users.Role')</td>
                 <td id="show-role"></td>
             </tr>
             <tr>
-                <td>Permissions</td>
+                <td>@lang('users.Permissions')</td>
                 <td id="show-permissions"></td>
             </tr>
         </table>
