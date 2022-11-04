@@ -19,7 +19,7 @@ class CustomerController extends Controller
     public function index (Request $request) {
         
         if ($request->ajax()) {
-            $model = Customer::query();
+            $model = Customer::query()->withCount('orders');
             
             if (isset($request->name)) {
                 $model->where('name', 'like', '%' . $request->name . '%');
@@ -41,6 +41,10 @@ class CustomerController extends Controller
                 $model->whereIn('gove_id', $request->governorate);
             }
 
+            if (isset($request->orders)) {
+                $model->having('orders_count', $request->orders);
+            }
+
             $datatable_model = Datatables::of($model)
             ->addColumn('email', function ($row_object) {
                 return isset($row_object->email) ? $row_object->email : '---';
@@ -54,6 +58,9 @@ class CustomerController extends Controller
             ->addColumn('active', function ($row_object) {
                 return isset($row_object->user) ? view('admin.customers.incs._active', compact('row_object')) : null;
             })
+            ->addColumn('orders', function ($row_object) {
+                return $row_object->orders()->count();
+            })
             ->addColumn('actions', function ($row_object) {
                 return view('admin.customers.incs._actions', compact('row_object'));
             });
@@ -66,13 +73,13 @@ class CustomerController extends Controller
     }
 
     public function show (Request $request, $id) {
-        $target_customer = Customer::find($id);
+        $target_customer = Customer::with(['country', 'government', 'orders'])->find($id);
 
         if (isset($target_customer) && isset($request->fast_acc)) {
             // $target_user->permissions = (array) json_decode($target_user->permissions);
             // $target_customer = $target_user->customer;
-            $target_customer->country; $target_customer->government;
-            isset($request->get_orders) && $target_customer->orders;
+            // $target_customer->country; $target_customer->government;
+            // isset($request->get_orders) && $target_customer->orders;
             return response()->json(['data' => $target_customer, 'success' => isset($target_customer)]);
         }
 

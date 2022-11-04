@@ -14,41 +14,41 @@
     <div class="form-group">
         <table class="table">
             <tr>
-                <td>Name</td>
+                <td>@lang('customers.Name')</td>
                 <td id="show-full-name"></td>
             </tr>
             <tr>
-                <td>Email</td>
+                <td>@lang('customers.Email')</td>
                 <td id="show-email"></td>
             </tr>
             <tr>
-                <td>Phone</td>
+                <td>@lang('customers.Phone')</td>
                 <td id="show-phone"></td>
             </tr>
             <tr>
-                <td>Country</td>
+                <td>@lang('customers.Country')</td>
                 <td id="show-country"></td>
             </tr>
             <tr>
-                <td>Government</td>
+                <td>@lang('customers.Government')</td>
                 <td id="show-government"></td>
             </tr>
             <tr>
-                <td>Address</td>
+                <td>@lang('customers.Address')</td>
                 <td id="show-address"></td>
             </tr>
         </table>
     </div><!-- /.form-group -->
 
     <div class="form-group" style="height: 400px; overflow-y: scroll">
-        <label for="">Customer Orders</label>
+        <label for="">@lang('customers.Customer_Orders')</label>
         <table class="table">
             <tr>
                 <th>#</th>
-                <th>Code</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>@lang('customers.Code')</th>
+                <th>@lang('customers.Total')</th>
+                <th>@lang('customers.Status')</th>
+                <th>@lang('customers.Actions')</th>
             </tr>
             <tbody id="show-customer-order-body">
 
@@ -60,7 +60,7 @@
 <div style="display: none" id="showOrderCard" class="card card-body">
     <div class="row">
         <div class="col-6">
-            <h5>Show Order</h5>
+            <h5>@lang('orders.Show_Order')</h5>
         </div>
         <div class="col-6 text-right">
             <div class="toggle-btn btn btn-default btn-sm" data-current-card="#showOrderCard" data-target-card="#showObjectsCard">
@@ -74,13 +74,13 @@
             <div class="form-group" style="height: 400px; overflow: scroll;">
                 <table class="table" style="font-size: 12px; width: max-content; ">
                     <tr>
-                        <td>Img</td>
-                        <td>Name</td>
-                        <td>SKU</td>
-                        <td>Price</td>
-                        <td>Quantity</td>
-                        <td>Restored</td>
-                        <td id="show-products_table_header">Sub Total Price</td>
+                        <td>@lang('orders.Img')</td>
+                        <td>@lang('orders.Name')</td>
+                        <td>@lang('orders.SKU')</td>
+                        <td>@lang('orders.Price')</td>
+                        <td>@lang('orders.Quantity')</td>
+                        <td>@lang('orders.Restored')</td>
+                        <td id="show-products_table_header">@lang('orders.Sub_Total_Price')</td>
                         <!-- <td>Total Price</td> -->
                     </tr>
                     <tbody id="show-selected_product_table"></tbody>
@@ -90,7 +90,7 @@
 
         <!-- START SHIPPING PHASE -->
         <div class="form-group row">
-            <label for="" class="col-2">Shipping</label>
+            <label for="" class="col-2">@lang('orders.Shipping')</label>
             <div class="form-group col-4">
                 <input id="show-shipping-name" class="form-control" disabled="disabled">
             </div><!-- /.form-group -->
@@ -101,8 +101,8 @@
 
             <div class="form-group col-2">
                 <select id="show-shipping-is-free" disabled="disabled" class="form-control">
-                    <option value="1">Free Shipping</option>
-                    <option value="0">No Free Shipping</option>
+                    <option value="1">@lang('orders.Free_Shipping')</option>
+                    <option value="0">@lang('orders.No_Free_Shipping')</option>
                 </select>
             </div><!-- /.form-group -->
         </div><!-- /.form-group -->
@@ -112,15 +112,15 @@
 
         <div class="form-group row">
             <div class="col-6">
-                <h4>Taxes</h4>
+                <h4>@lang('orders.Taxes')</h4>
                 <table class="table" style="font-size: 12px">
                     <thead>
                         <tr>
-                            <th>Taxe</th>
-                            <th>Calculation Type</th>
-                            <th>Cost Type</th>
-                            <th>Value</th>
-                            <th>Total</th>
+                            <th>@lang('orders.Taxe')</th>
+                            <th>@lang('orders.Calculation_Type')</th>
+                            <th>@lang('orders.Cost_Type')</th>
+                            <th>@lang('orders.Value')</th>
+                            <th>@lang('orders.Total')</th>
                         </tr>
                     </thead>
                     <tbody id="show-taxes_list_table_container"></tbody>
@@ -128,15 +128,15 @@
             </div><!-- /.col-6 -->
 
             <div class="col-6">
-                <h4>Fees</h4>
+                <h4>@lang('orders.Fees')</h4>
                 <table class="table" style="font-size: 12px">
                     <thead>
                         <tr>
-                            <th>Fee</th>
-                            <th>Calculation Type</th>
-                            <th>Cost Type</th>
-                            <th>Value</th>
-                            <th>Total</th>
+                            <th>@lang('orders.Fee')</th>
+                            <th>@lang('orders.Calculation_Type')</th>
+                            <th>@lang('orders.Cost_Type')</th>
+                            <th>@lang('orders.Value')</th>
+                            <th>@lang('orders.Total')</th>
                         </tr>
                     </thead>
                     <tbody id="show-fees_list_table_container"></tbody>
@@ -149,43 +149,55 @@
                 <tbody id="show-selected_product_table">
                     <tr>
                         <td class="text-center" colspan="6">
-                            <h3>Sub Total</h3>
+                            <h3>@lang('orders.Sub_Total')</h3>
                         </td>
-                        <td id="show-selected_products_sub_total">---</td>
+                        <td id="show-selected_products_sub_total">---</td> @lang('orders.SAR')
+                        <td></td>
                     </tr>
                     <tr>
                         <td class="text-center" colspan="6">
-                            <h5>Shipping Total</h5>
+                            <h5>@lang('orders.Shipping_Total')</h5>
                         </td>
                         <td>
-                            <span id="show-selected_shipping_cost" data-cost=""> --- </span> SAR
+                            <span id="show-selected_shipping_cost" data-cost=""> --- </span> @lang('orders.SAR')
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td class="text-center" colspan="6">
-                            <h5>Taxes Total</h5>
+                            <h5>@lang('orders.Taxes_Total')</h5>
                         </td>
                         <td>
-                            <span id="show-selected_taxe_cost"> --- </span> SAR
+                            <span id="show-selected_taxe_cost"> --- </span> @lang('orders.SAR')
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td class="text-center" colspan="6">
-                            <h5>Fee Total</h5>
+                            <h5>@lang('orders.Fee_Total')</h5>
                         </td>
                         <td>
-                            <span id="show-selected_fee_cost"> --- </span> SAR
+                            <span id="show-selected_fee_cost"> --- </span> @lang('orders.SAR')
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td class="text-center" colspan="6">
-                            <h5>Total</h5>
+                            <h5>@lang('orders.Discount')</h5>
                         </td>
                         <td>
-                            <span id="show-selected_products_total"> --- </span> SAR
+                            <span id="show-selected_Discount_cost" data-cost=""> --- </span> @lang('orders.SAR')
+                        </td>
+                        <td>
+                            <h5 class="my-3" style="display: inline">@lang('orders.Promo_Code') : </h5> <span id="show-selected_Discount_code" data-cost=""> --- </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="6">
+                            <h5>@lang('orders.Total')</h5>
+                        </td>
+                        <td>
+                            <span id="show-selected_products_total"> --- </span> @lang('orders.SAR')
                         </td>
                         <td></td>
                     </tr>
@@ -223,17 +235,19 @@
     }
 
     function show_customer_orders (orders) {
+        console.log(orders);
         // clear old order sessions
         $('.show-customer-order-tr').remove();
         
         let tr_el = '';
         orders.forEach(order => {
+            let status = {'6' : 'مستلم', '4' : 'الشحن', '3' : 'اعداد', '1' : 'اختباري', '0' : 'انتظار', '-1' : 'مرتجع'}
             tr_el += `
                 <tr class="show-customer-order-tr">
                     <td>${order.id}</td>
                     <td>${order.code}</td>
-                    <td>${order.status}</td>
                     <td>${order.total}</td>
+                    <td>${status[order.status]}</td>
                     <td>
                         <button class="show-customer-order btn btn-sm btn-info"
                             data-object-id="${order.id}"
@@ -333,6 +347,16 @@
                     $('#show-fees_list_table_container').append(fee_info_table_td);
                 });
 
+                // show promo-code discount
+                if(Boolean(data.promo_code_discount)) {
+                    $('#show-selected_Discount_cost').html(`<span class="text-danger" style="text-align:right;">-${data.promo_code_discount}</span>`);
+                    $('#show-selected_Discount_code').text(`"${data.promo_code}"`);
+
+                } else {
+                    $('#show-selected_Discount_cost').html( '---' );
+                    $('#show-selected_Discount_code').html( '---' );
+                }
+
                 // show order products rows
                 data.products.forEach(product => {
                     let product_quantity = (order_meta.products_quantity[product.id].quantity - order_meta.restored_quantity[product.id]);
@@ -371,7 +395,7 @@
                 let sub_total_val = 0;
                 let total_quantity = 0;
                 
-                $('#show-selected_products_sub_total').text(data.sub_total + " SR")
+                $('#show-selected_products_sub_total').text(data.sub_total)
                 $('#show-selected_shipping_cost').text(data.shipping_cost);
                 $('#show-selected_taxe_cost').text(data.taxe);
                 $('#show-selected_fee_cost').text(data.fee);

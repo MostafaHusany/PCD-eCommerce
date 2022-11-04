@@ -96,6 +96,13 @@
 
                 <div class="col-2">
                     <div class="form-group search-action">
+                        <label for="">@lang('customers.Orders')</label>
+                        <input type="number" min="0" class="form-control" id="s-orders">
+                    </div><!-- /.form-group -->
+                </div><!-- /.col-3 -->
+
+                <div class="col-2">
+                    <div class="form-group search-action">
                         <label for="">@lang('customers.Country')</label>
                         <select type="text" class="form-control" id="s-country">
                             <option value="">-- @lang('customers.select_country') --</option>
@@ -106,7 +113,7 @@
                     </div><!-- /.form-group -->
                 </div><!-- /.col-2 -->
 
-                <div class="col-4">
+                <div class="col-2">
                     <div class="form-group search-action">
                         <label for="">@lang('customers.Governorate')</label>
                         <select type="text" class="form-control" id="s-governorate" multiple="multiple">
@@ -126,6 +133,7 @@
                     <th>@lang('customers.Phone')</th>
                     <th>@lang('customers.Country')</th>
                     <th>@lang('customers.Government')</th>
+                    <th>@lang('customers.Orders')</th>
                     <th>@lang('customers.Active')</th>
                     <th>@lang('customers.Actions')</th>
                 </thead>
@@ -182,6 +190,7 @@ $(function () {
             { data: 'phone', name: 'phone' },
             { data: 'country', name: 'country' },
             { data: 'government', name: 'government' },
+            { data: 'orders', name: 'orders' },
             { data: 'active', name: 'active' },
             { data: 'actions', name: 'actions' },
         ],
@@ -195,11 +204,15 @@ $(function () {
             if ($('#s-phone').length)
             d.phone = $('#s-phone').val();
             
+            if ($('#s-orders').length)
+            d.orders = $('#s-orders').val();
+            
             if ($('#s-country').length)
             d.country = $('#s-country').val();      
             
             if ($('#s-governorate').length)
-            d.governorate = $('#s-governorate').val();                
+            d.governorate = $('#s-governorate').val();       
+                     
         }
     );
 

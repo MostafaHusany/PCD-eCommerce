@@ -18,6 +18,12 @@ return [
     'Create_New_User' => 'انشاء حساب عميل جديد',
     'Create_Customer' => 'انشاء حساب',
     'Update_User' => 'تحديث حساب عميل',
+    'Government' => 'المحافظة',
+    'Code' => 'الكود',
+    'Total' => 'الاجمالي',
+    'Status' => 'الحالة',
+    'Customer_Orders' => 'طلبات العميل',
+    'Orders' => 'الطلبات',
 
     //validation
     'name_is_required' => 'يلزم ادخال الاسم',

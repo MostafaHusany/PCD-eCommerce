@@ -14,6 +14,7 @@ return [
     'Actions' => 'Actions',
     'select_country' => 'select country',
     'select_governorate' => 'select governorate',
+    'Government' => 'Government',
 
     // Create Form
     'Address' => 'Address',
@@ -21,6 +22,12 @@ return [
     'Create_New_User' => 'Create New User',
     'Create_Customer' => 'Create Customer',
     'Update_User' => 'Update_User',
+    'Customer_Orders' => 'Customer Orders',
+    'Code' => 'Code',
+    'Total' => 'Total',
+    'Status' => 'Status',
+    'Customer_Orders' => 'Customer Orders',
+    'Orders' => 'Orders',
 
     //validation
     'name_is_required' => 'name is required',
