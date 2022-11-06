@@ -72,12 +72,16 @@ class AuthController extends Controller
         /**
          * # Record user phone and generate randome code
          * than send sms to user phone with the code. 
+         * 
+         * # We have a new senario login and register will be only with 
+         * phone number, this mean that if the phone dosn't exists we need
+         * to do register a new account for the user.
          *  
         */
 
-        $validator = Validator::make($request->all(), [
-            'phone' => isset($request->new_acc) ? 'required|unique:users,phone' : 'required|exists:users,phone',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'phone' => isset($request->new_acc) ? 'required|unique:users,phone' : 'required|exists:users,phone',
+        // ]);
 
         if ($validator->fails()) {
             return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
@@ -91,6 +95,12 @@ class AuthController extends Controller
             $target_phone->updated_at = Date('Y-m-d');
             $target_phone->save();
         } else {
+            // create user
+            User::create([
+                'phone'    => $request->phone,
+                'password' => bcrypt($random_code)
+            ]);
+
             $target_phone = VCustomerPhone::create([
                 'phone' => $request->phone,
                 'code' => $random_code
