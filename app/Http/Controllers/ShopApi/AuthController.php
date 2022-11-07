@@ -83,9 +83,9 @@ class AuthController extends Controller
         //     'phone' => isset($request->new_acc) ? 'required|unique:users,phone' : 'required|exists:users,phone',
         // ]);
 
-        if ($validator->fails()) {
-            return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
-        }
+        // if ($validator->fails()) {
+        //     return response()->json(['data' => null, 'success' => false, 'msg' => $validator->errors()]); 
+        // }
 
         $random_code  = 9999;
         $target_phone = VCustomerPhone::where('phone', $request->phone)->first();
@@ -96,14 +96,21 @@ class AuthController extends Controller
             $target_phone->save();
         } else {
             // create user
-            User::create([
+            $target_user = User::create([
                 'phone'    => $request->phone,
-                'password' => bcrypt($random_code)
+                'password' => bcrypt($random_code),
+                'email_verified_at' => Date('Y-m-d h:i:s')
+            ]);
+            $target_user->customer()->create([
+                'phone'    => $request->phone,
+                'password' => bcrypt($random_code),
+                'plain_password' => $random_code
             ]);
 
             $target_phone = VCustomerPhone::create([
                 'phone' => $request->phone,
-                'code' => $random_code
+                'code' => $random_code,
+                'user_id' => $target_user->id
             ]);
         }
 
