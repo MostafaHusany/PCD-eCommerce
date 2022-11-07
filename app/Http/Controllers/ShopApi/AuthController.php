@@ -15,7 +15,7 @@ use App\Customer;
 use App\District;
 use App\VCustomerPhone;
 use App\SystemSetting;
-
+use App\Models\BankAcount;
 
 use App\Traits\SMSSender;
 
@@ -314,8 +314,21 @@ class AuthController extends Controller
     public function showOrder ($id) {
 
         $customerOrders = Order::query()->with(['products', 'invoice', 'status_obj']);
-        $data = $customerOrders->has('invoice')->where('customer_id', auth()->user()->customer->id)
-                ->where('orders.id', $id)->orderBy('orders.id', 'desc')->first();
+
+        $target_order = $customerOrders->has('invoice')
+        ->where('customer_id', auth()->user()->customer->id)
+        ->where('orders.id', $id)
+        ->orderBy('orders.id', 'desc')
+        ->first();
+        
+        $bank_acounts = cache()->remember('bank_acounts', CACHE_TIME, function () {
+            return BankAcount::where('is_active', 1)->get();
+        });
+        
+        $data = [
+            'target_order' => $target_order,
+            'bank_acounts' => $bank_acounts,
+        ];
 
         return response()->json(array('data' => $data, 'success' => true));
     }

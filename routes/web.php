@@ -206,6 +206,16 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions', 'localeSessionRe
         'destroy'   => 'admin.sms.destroy'
         ]
     ]);
+    
+    Route::resource('banks', 'BankAccountsController', ['names' => [
+        'index'     => 'admin.banks.index',
+        'store'     => 'admin.banks.store',
+        'show'      => 'admin.banks.show',
+        'edit'      => 'admin.banks.edit',
+        'update'    => 'admin.banks.update',
+        'destroy'   => 'admin.banks.destroy'
+        ]
+    ]);
 
     Route::resource('invoices', 'InvoicesController', ['names' => [
         // 'index'     => 'admin.invoices.index',

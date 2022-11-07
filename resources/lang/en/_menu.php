@@ -33,6 +33,7 @@ return [
     'Slider' => 'Slider',
     'Navbar' => 'Navbar',
     'Custome_Sections' => 'Custome Sections',
-    'Contacts_Info' => 'Contacts Info'
+    'Contacts_Info' => 'Contacts Info',
 
+    'banks' => 'Banks Accounts',
 ];

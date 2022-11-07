@@ -167,8 +167,8 @@ $lang = LaravelLocalization::getCurrentLocale();
 </li>
 @endif
 
-@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('shipping_*') || auth()->user()->isAbleTo('fees_*') || auth()->user()->isAbleTo('taxes_*') || auth()->user()->isAbleTo('order_status_*'))
-<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') || str_contains(Request::path(), '/districts') || str_contains(Request::path(), '/sms') ? 'menu-is-opening menu-open' : '' }}">
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('shipping_*') || auth()->user()->isAbleTo('fees_*') || auth()->user()->isAbleTo('taxes_*') || auth()->user()->isAbleTo('order_status_*') || auth()->user()->isAbleTo('districts_*') || auth()->user()->isAbleTo('sms_*'))
+<li class="nav-item {{ str_contains(Request::path(), '/shipping') || str_contains(Request::path(), '/taxes') || str_contains(Request::path(), '/fees') || str_contains(Request::path(), '/order-status') || str_contains(Request::path(), '/districts') || str_contains(Request::path(), '/sms') || str_contains(Request::path(), '/banks') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-sliders-h"></i>
         <p>
@@ -227,6 +227,15 @@ $lang = LaravelLocalization::getCurrentLocale();
             <a href="{{ route('admin.sms.index') }}" class="nav-link {{ Request::is($lang . '/admin/sms') ? 'active' : ''}}">
                 <i class="nav-icon fas fa-sms"></i>
                 <p>@lang('_menu.SMS')</p>
+            </a>
+        </li>
+        @endif
+
+        @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('banks_*'))
+        <li class="nav-item">
+            <a href="{{ route('admin.banks.index') }}" class="nav-link {{ Request::is($lang . '/admin/banks') ? 'active' : ''}}">
+                <i class="nav-icon fas fa-money-check-alt"></i>
+                <p>@lang('_menu.banks')</p>
             </a>
         </li>
         @endif
