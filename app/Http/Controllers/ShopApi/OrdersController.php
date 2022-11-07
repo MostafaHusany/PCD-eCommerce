@@ -46,6 +46,7 @@ class OrdersController extends Controller
 
     public function create_order (Request $request) {
         $validator = Validator::make($request->all(), [
+            'name'        => ['required'],
             'shipping_id' => ['required', 'exists:shippings,id'],
             'phone' => '',
             'cartItems' => ['required'],
@@ -86,7 +87,12 @@ class OrdersController extends Controller
 
         // update customer address
         // store customer address
+        $target_user       = auth('api')->user();
+        $target_user->name = $request->name;
+        $target_user->save();
+
         $target_customer = auth('api')->user()->customer;
+        $target_customer->name       = $request->name;
         $target_customer->country_id = $request->country_id;
         $target_customer->gove_id = $request->gove_id;
         $target_customer->address = $request->address;
