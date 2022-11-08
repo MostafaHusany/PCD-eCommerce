@@ -116,7 +116,6 @@ class ShopController extends Controller
         $order_dir      = isset($request->order_dir) ? $request->order_dir : 'desc';
         
         $products  = $model->orderBy($order_type, $order_dir)->orderBy('id', 'desc')->paginate($pagination_nom);
-        // $products       = $model->count();
 
         return response()->json(array('data' => $products, 'success' => isset($products)));
     }
@@ -131,9 +130,10 @@ class ShopController extends Controller
     }
 
     public function get_brands () {
-        $brands = cache()->remember('brands', 3600, function () {
-            return Brand::all();
-        });
+        // $brands = cache()->remember('brands', 3600, function () {
+        //     return Brand::all();
+        // });
+        $brands = Brand::all();
             
         return response()->json(array('data' => $brands, 'success' => isset($categories)));
     }

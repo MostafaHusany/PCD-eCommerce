@@ -321,9 +321,11 @@ class AuthController extends Controller
         ->orderBy('orders.id', 'desc')
         ->first();
         
-        $bank_acounts = cache()->remember('bank_acounts', CACHE_TIME, function () {
-            return BankAcount::where('is_active', 1)->get();
-        });
+        // $bank_acounts = cache()->remember('bank_acounts', CACHE_TIME, function () {
+        //     return BankAcount::where('is_active', 1)->get();
+        // });
+
+        $bank_acounts = BankAcount::where('is_active', 1)->get();
         
         $data = [
             'target_order' => $target_order,

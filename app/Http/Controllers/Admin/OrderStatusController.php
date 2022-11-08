@@ -70,7 +70,7 @@ class OrderStatusController extends Controller
 
         $data       = $request->all();
         $new_object = $this->target_model->create($data);
-        cache()->forget('order_status');
+        // cache()->forget('order_status');
 
         return response()->json(['data' => $new_object, 'success' => isset($new_object)]);
     }// end :: store
@@ -89,7 +89,7 @@ class OrderStatusController extends Controller
         $data          = $request->all();
         $target_object = $this->target_model->find($id);
         $target_object->update($data);
-        cache()->forget('order_status');
+        // cache()->forget('order_status');
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
@@ -97,7 +97,7 @@ class OrderStatusController extends Controller
     public function destroy ($id) {
         $target_object = $this->target_model->find($id);
         isset($target_object) && $target_object->delete();
-        cache()->forget('order_status');
+        // cache()->forget('order_status');
 
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
