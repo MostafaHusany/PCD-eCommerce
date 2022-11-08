@@ -122,9 +122,10 @@ class ShopController extends Controller
     }
 
     public function get_categories (Request $request) {
-        $categories = cache()->remember('categories', 3600, function () {
-            return ProductCategory::with(['attributes', 'brands', 'children'])->where('is_active', 1)->get();
-        });
+        // $categories = cache()->remember('categories', 3600, function () {
+        //     return ProductCategory::with(['attributes', 'brands', 'children'])->where('is_active', 1)->get();
+        // });
+        $categories = ProductCategory::with(['attributes', 'brands', 'children'])->where('is_active', 1)->get();
             
         return response()->json(array('data' => $categories, 'success' => isset($categories)));
     }
