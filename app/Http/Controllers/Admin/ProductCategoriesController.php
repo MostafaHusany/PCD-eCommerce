@@ -149,6 +149,8 @@ class ProductCategoriesController extends Controller
             return $this->update_category_custome_field($request, $id);
         }
         
+        $this->clear_cach();
+        
         return $this->update_category($request, $id);
     }
 
@@ -175,8 +177,6 @@ class ProductCategoriesController extends Controller
             $brands = explode(',', $request->brands);
             $target_object->brands()->sync($brands);
         }
-
-        $this->clear_cach();
         
         return response()->json(['data' => $target_object, 'success' => isset($target_object)]);
     }
