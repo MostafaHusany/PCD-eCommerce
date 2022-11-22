@@ -225,6 +225,7 @@
 @push('page_scripts')
 <script>
     const ShowOrderStore = (function () {
+        let products = null
         let orderProducts = null;
         let productsQuantity = null;
         /*
@@ -258,24 +259,25 @@
         */
 
         let setters = {
-            setData (order_meta, order_products) {
-                orderProducts = order_products;
+            setData (order_meta, order_products, products) {
+                orderProducts = products;// main products
+                orderProducts = order_products;// upgrade options
                 productsQuantity = structuredClone(order_meta.products_quantity);
             },
 
             clearData () {
-                orderMeta = null;
-                orderProducts = null
+                products = null;
+                orderProducts = null;
+                productsQuantity = null;
             }
         };
 
         let getters = {
             getCompositeUpgradable (productId) {
-                let upgrade_options_list = productsQuantity[productId].upgrade_options_list;
                 let selected_upgrades    = [];
                 
                 orderProducts.forEach(order_product => {
-                    if (upgrade_options_list.includes(Number(order_product.product_id))) {
+                    if (order_product.parent_product_id == productId) {
                         selected_upgrades.push(order_product.product);
                     }
                 });
@@ -343,7 +345,7 @@
             const data = res.data.data;
             const order_meta = JSON.parse(data.products_meta);
             
-            ShowOrderStore.setters.setData(order_meta, data.order_products);
+            ShowOrderStore.setters.setData(order_meta, data.order_products, data.products);
 
             // get customer data
             $('#show-customer_name').text(`${data.customer.name}`);
