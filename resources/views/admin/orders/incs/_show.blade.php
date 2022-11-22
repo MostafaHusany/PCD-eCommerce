@@ -275,7 +275,7 @@
                 let selected_upgrades    = [];
                 
                 orderProducts.forEach(order_product => {
-                    if (upgrade_options_list.includes(order_product.product_id)) {
+                    if (upgrade_options_list.includes(Number(order_product.product_id))) {
                         selected_upgrades.push(order_product.product);
                     }
                 });
