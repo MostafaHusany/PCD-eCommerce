@@ -89,6 +89,7 @@
                         <td style="width: 160px">@lang('orders.Name')</td>
                         <td>@lang('orders.SKU')</td>
                         <td style="width: 100px">@lang('orders.Price')</td>
+                        <td>@lang('orders.Is_Active')</td>
                         <td>@lang('orders.Edit_Price')</td>
                         <td>@lang('orders.Valied_Quantity')</td>
                         <td>@lang('orders.Requested_Quantity')</td>
@@ -233,6 +234,28 @@
     </form>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="edit-upgradableModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="edit-upgradableModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="edit-upgradableModalLabel">@lang('orders.Upgradable_Product')</h5>
+            </div><!-- /.modal-header -->
+            
+            <div class="modal-body" id="edit-upgradableModalBody" style="max-height: 450px; overflow-y:scroll">
+            </div><!-- /.modal-body -->
+            
+            <div class="modal-footer" style="justify-content: space-between">
+                <h3>@lang('orders.Total_Price') : <span class="text-primary my-2" id="edit-product-upgradable-price"> --- </span>@lang('orders.SAR')</h3>
+                <div>
+                    <button id="edit-upgradable-action-don" type="button" class="btn btn-primary" data-dismiss="modal">@lang('orders.Done')</button>
+                    <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                </div>
+            </div><!-- /.modal-footer -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 @push('page_scripts')
 <script>
@@ -270,6 +293,28 @@ $(document).ready(function () {
                 }
             */
         };
+        
+        // when user open upgrade modal we store the related product id here
+        let upgrade_focus = null;
+        let upgradable_products = {
+            /**
+                # Actions :
+                => select category, show related products,
+                => select child product for this category
+                => update total product price 
+                product_id : {
+                    * upgradable product obj
+                    * get from product meta 
+                    *  upgrade_products_id : { category_id : [product_id, ...]}
+                    *  products_quantity : { product_id : quantity }
+                    *  upgrade_categories : [category_id...],
+                    *  upgrade_products : {category_id : {product_id : {id, upgrade_price, needed_quantity, is_default} }},
+                    * get from product
+                    *  categories : [category_obj, ...]
+                    *  products : [product_obj, ...]
+                }
+            **/
+        };
 
         let shipping_data = {
             // id, is_free, cost
@@ -298,6 +343,11 @@ $(document).ready(function () {
             return await response.data;
         };
 
+        const request_products = async (products_list) => {
+            const response = await axios.get(`{{ url('admin/products') }}/0`, { params: { products_list : JSON.stringify(products_list) }});
+            return await response.data;
+        }
+
         const request_shipping = async (shipping_id) => {
             const response = await axios.get(`{{ url("admin/shipping") }}/${shipping_id}`, { params: { fast_acc : true }});
             return await response.data;
@@ -316,34 +366,31 @@ $(document).ready(function () {
 
         //  START PRODUCTS DATA EDITING
         const set_products_data = (input_products_list, input_products_meta) => {
-            products_list = input_products_list;
-            products_meta = input_products_meta;
+            products_list = JSON.parse(JSON.stringify(input_products_list));
+            products_meta = JSON.parse(JSON.stringify(input_products_meta));
 
             let keys = Object.keys(products_meta);
             keys.forEach(key => {
                 products_meta[key] = {
-                    quantity : parseInt(products_meta[key].quantity),
-                    price    : parseFloat(products_meta[key].price)
+                    quantity : parseInt(input_products_meta[key].quantity),
+                    price    : parseFloat(input_products_meta[key].price)
                 }
 
-                let target_product = products_list.find(product => product.id == key);
+                let target_product = input_products_list.find(product => product.id == key);
                 
                 if (target_product.is_composite == 2) {
-                    let meta = JSON.parse(target_product.meta);
-                    let upgrade_options = {};
-                    let upgrade_options_list = [];
+                    /**
+                     * Get the product default children,
+                     * validate if the children has valied quantity
+                     *  => if not valied we need to store a flag for render
+                     */
+                    let {upgrade_options, upgrade_options_list, is_valied} = upgradable_products_methods.get_upgradable_default(target_product, input_products_meta);
+                    products_meta[target_product.id].is_upgradable = true;
+                    products_meta[target_product.id].is_valied = true;
+                    products_meta[target_product.id].upgrade_options = input_products_meta[target_product.id].upgrade_options;
+                    products_meta[target_product.id].upgrade_options_list = input_products_meta[target_product.id].upgrade_options_list;
 
-                    meta.upgrade_categories.forEach(category_id => {
-                        meta.upgrade_products_id[category_id].forEach(product_id => {
-                            if (meta.upgrade_products[category_id][product_id].is_default) {
-                                upgrade_options[category_id] = product_id;
-                                upgrade_options_list.push(product_id);
-                            }
-                        });
-                    });
-
-                    products_meta[key].upgrade_options = upgrade_options;
-                    products_meta[key].upgrade_options_list = upgrade_options_list;
+                    upgradable_products_methods.add_product(target_product);
                 }
             });
             
@@ -357,31 +404,178 @@ $(document).ready(function () {
             products_list.push(new_product);
             products_meta[new_product.id] = {
                 quantity : 1,
-                price    : new_product.price
+                price    : new_product.price,
+                is_upgradable : false,
             };
             
             if (new_product.is_composite == 2) {
-                let meta = JSON.parse(new_product.meta);
-                let upgrade_options = {};
-                let upgrade_options_list = [];
-
-                meta.upgrade_categories.forEach(category_id => {
-                    meta.upgrade_products_id[category_id].forEach(product_id => {
-                        if (meta.upgrade_products[category_id][product_id].is_default) {
-                            upgrade_options[category_id] = product_id;
-                            upgrade_options_list.push(product_id);
-                        }
-                    });
-                });
-
+                /**
+                 * Get the product default children,
+                 * validate if the children has valied quantity
+                 *  => if not valied we need to store a flag for render
+                 */
+                let {upgrade_options, upgrade_options_list, is_valied} = upgradable_products_methods.get_upgradable_default(new_product);
+                products_meta[new_product.id].is_upgradable = true;
+                products_meta[new_product.id].is_valied = is_valied;
                 products_meta[new_product.id].upgrade_options = upgrade_options;
                 products_meta[new_product.id].upgrade_options_list = upgrade_options_list;
+
+                upgradable_products_methods.add_product(new_product);
             }
 
             // re-calculate sub-total
             _calculate_order_sub_total();
 
             return { products_list, products_meta};
+        };
+
+        // upgradable products methods 
+        const upgradable_products_methods = {
+            /**
+             * # get data from the product
+             * => what data to get ?
+             * => where to store ?
+             * => how to use the data in the render ? 
+             */
+            
+            add_product : (new_product) => {
+                /**
+                 * get from product meta 
+                 *  upgrade_categories,
+                 *  upgrade_products,
+                 *  products_quantity
+                 * get from product
+                 *  categories
+                 *  products
+                 * 
+                 */
+
+                let meta = JSON.parse(new_product.meta);
+                const {upgrade_categories, upgrade_products, products_quantity, upgrade_products_id} = meta; 
+                const { upgrade_categories : categories, upgrade_products: products} = new_product;
+                upgradable_products[new_product.id] = {
+                    product : new_product,
+                    upgrade_categories, upgrade_products, products_quantity, upgrade_products_id,
+                    categories, products
+                }
+            }, // add_product
+
+            validate_upgradable : (new_product, needed_quantity, product_id) => {
+                // validate if the child product has valied quantity 
+                let is_valied = true;
+                const {upgrade_categories, upgrade_products} = new_product;
+
+                upgrade_products.forEach(product => {
+                    if (product.id == product_id) {
+                        is_valied = product.quantity > needed_quantity;
+                    }
+                });
+
+                return is_valied;
+            }, // validate_upgradable
+
+            re_validate_upgradable : (product_id) => {
+                /**
+                 * # Re-Validate upgradable after upgrade product 
+                 * to make sure we can use it for order.
+                 */
+                let meta = products_meta[product_id];
+                let {upgrade_categories, products} = upgradable_products[product_id];
+                let is_valied = true;
+
+                let total = 0;
+                upgrade_categories.forEach(category_id => {
+                    let selected_product_id = meta.upgrade_options[category_id];
+                    is_valied = is_valied && (products.find(product => product.id == selected_product_id).quantity > 0)
+                });
+
+                // update upgradable product final price 
+                products_meta[product_id].is_valied = is_valied;
+            },
+
+            get_upgradable_default  : function (new_product) {
+                /**
+                 * # Get the default product for each category
+                 * and validate that default product quantity
+                 */
+                let meta = JSON.parse(new_product.meta);
+                let upgrade_options = {};
+                let upgrade_options_list = [];
+                let is_valied = true;
+
+                meta.upgrade_categories.forEach(category_id => {
+                    meta.upgrade_products_id[category_id].forEach(product_id => {
+                        if (meta.upgrade_products[category_id][product_id].is_default) {
+                            upgrade_options[category_id] = product_id;
+                            upgrade_options_list.push(product_id);
+                            is_valied = is_valied && this.validate_upgradable(new_product, meta.products_quantity[product_id], product_id);
+                        }
+                    });
+                });
+
+                return {upgrade_options, upgrade_options_list, is_valied};
+            }, // get_upgradable_meta
+
+            find_product : (product_id) => {
+                return  { product :upgradable_products[product_id], product_meta : products_meta[product_id]};
+            }, // find_product
+            
+            is_upgradables_valied : () => {
+                is_valied = true;
+                products_list.forEach(product => {
+                    if(products_meta[product.id].is_upgradable)
+                    is_valied = is_valied && products_meta[product.id].is_valied 
+                });
+                
+                return is_valied;
+            },
+
+            start_upgrade_mode : (product_id) => {
+                upgrade_focus = product_id;
+            },
+
+            get_focus_value : () => {
+                return upgrade_focus;
+            },
+
+            upgrade_action : (category_id, product_id) => {
+                // update if the product is valied 
+                if ((upgradable_products[upgrade_focus].products.find(product => product.id == product_id)).quantity > 0) {
+                    // upgrade upgrade_options and upgrade_options_list
+                    let old_selection = products_meta[upgrade_focus].upgrade_options[category_id];
+                    products_meta[upgrade_focus].upgrade_options_list = (products_meta[upgrade_focus].upgrade_options_list).filter(p_id => p_id != old_selection);
+                    products_meta[upgrade_focus].upgrade_options_list.push(product_id);
+                    products_meta[upgrade_focus].upgrade_options[category_id] = product_id;
+                }
+            }, 
+
+            update_upgrade_product_price (product_id) {
+                /**
+                 * From "products_meta" we can get : 
+                 * 1- upgrade_options : where we can get the selected products for each category,
+                 * and it's what we will send to the server to create order
+                 * 2- price : we use it for rendering purpose only and we need to store the
+                 * final result here
+                 * 
+                 * From "upgradable_products" we can get :
+                 * 1- upgrade_categories : all categories list
+                 * 2- upgrade_products : each category upgrade option with required data like price
+                 * and quantity.
+                 * */
+                let meta = products_meta[product_id];
+                let {upgrade_categories, upgrade_products} = upgradable_products[product_id];
+
+                let total = 0;
+                upgrade_categories.forEach(category_id => {
+                    let selected_product_id = meta.upgrade_options[category_id];
+                    let selected_product_info = upgrade_products[category_id][selected_product_id];
+
+                    total += parseFloat(selected_product_info.upgrade_price);
+                });
+
+                // update upgradable product final price 
+                products_meta[product_id].price = total;
+            }
         };
 
         // remove product from products list
@@ -530,6 +724,12 @@ $(document).ready(function () {
         };
 
         // START GETTERS
+        const get_products_data = () => {
+            // re-calculate sub-total
+            _calculate_order_sub_total();
+            return { products_list, products_meta};
+        }
+
         const get_sub_total = () => {
             return sub_total;
         }
@@ -550,6 +750,7 @@ $(document).ready(function () {
         return {
             // async methods
             request_product,
+            request_products,
             request_shipping,
             request_fees,
 
@@ -561,8 +762,10 @@ $(document).ready(function () {
             
             shipping_methods,//add_shipping,
             fees_methods,
+            upgradable_products_methods,
 
             // getters
+            get_products_data,
             get_sub_total,
             get_taxes_total,
             get_total
@@ -634,15 +837,16 @@ $(document).ready(function () {
             products_list.forEach(target_product => {
                 
                 let { tax_tr, total_product_cost } = _create_product_tax_columns (target_product.id, products_meta[target_product.id]);
-                let {quantity, price} = products_meta[target_product.id];
+                let {quantity, price, is_upgradable, is_valied} = products_meta[target_product.id];
                 let product_tr = `
-                    <tr class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
+                    <tr style="${ (is_upgradable && !is_valied) || (target_product.quantity <= 0) || (target_product.is_active == 0) ? 'background-color: #f8d7da' : '' }" class="edit-selected-product-rows edit-selected-product-row-${target_product.id}">
                         
                         <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${target_product.main_image}" /></td>
                         <td>${target_product.ar_name} / ${target_product.en_name}</td>
                         <td>${target_product.sku}</td>
 
                         <td>${target_product.price}</td>
+                        <td>${target_product.is_active == 1 ? '<span class="text-primary">active</span>' : '<span class="text-danger">not active</span>'}</td>
                         <td>
                             <input style="width: 80px" class="selected_product_price" type="number" value="${price}" step="1"
                                 id="selected_product_price_${target_product.id}"
@@ -667,6 +871,17 @@ $(document).ready(function () {
                             ${parseFloat(quantity * price + total_product_cost).toFixed(2)}
                         </td>
                         <td>
+                            ${ 
+                                products_meta[target_product.id].is_upgradable ? 
+                                `
+                                    <button type="button" class="upgrade_selected_item btn btn-sm btn-warning"
+                                        data-target="${target_product.id}"
+                                    >
+                                        <i class="fas fa-wrench"></i>
+                                    </button>
+                                ` 
+                                : ''
+                            }
                             <button class="remove_selected_item btn btn-sm btn-danger"
                                 data-target="${target_product.id}"
                             >
@@ -682,6 +897,163 @@ $(document).ready(function () {
 
             // show the sub-total after showing the products
             update_sub_total();
+        };
+
+        // render upgradable products in the modal
+        const upgradable_methods = {
+            render_upgradable_modal : (target_product, meta) => {
+                /**
+                 * target_product :
+                    * upgradable product obj
+                    * get from product meta 
+                    *  upgrade_products_id : { category_id : [product_id, ...]}
+                    *  products_quantity : { product_id : quantity }
+                    *  upgrade_categories : [category_id...],
+                    *  upgrade_products : {category_id : {product_id : {id, upgrade_price, needed_quantity, is_default} }},
+                    * get from product
+                    *  categories : [category_obj, ...]
+                    *  products : [product_obj, ...]
+                * main element key = #upgradableModalBody 
+                */
+                
+                let { upgrade_products_id, upgrade_products, categories, products } = target_product;
+
+                let categories_el  = '';
+                categories.forEach(category => {
+                    let products_el = '';
+                    let selected_product = meta.upgrade_options[category.id];
+                    let products_id   = upgrade_products_id[category.id];
+                    let is_not_category_valied = false;
+                    
+
+                    products_id.forEach(product_id => {
+                        let product      = products.find(product => product.id == product_id);
+                        let product_meta = upgrade_products[category.id][product.id];
+                        
+                        if (selected_product == product.id && product.quantity <= 0) {
+                            is_not_category_valied = true;
+                        }
+
+                        products_el += `
+                        <div data-category="${category.id}" data-product="${product.id}" id="upgradeProduct${category.id}${product.id}" class=" select-upgrade-product col-md-4" ${selected_product == product.id && ( product.quantity > 0 ? 'style="background-color: #007bff"' : 'style="background-color: #f8d7da"') } >
+                            <div class="card">
+                                <img src="{{ url('/') }}/${product.main_image}" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5>{{$is_ar ? '${product.ar_name}' : '${product.en_name}' }}</h5>
+                                    <p class="${product.quantity <= 0 && 'text-danger'}" style="margin: 0; padding: 0; display: flex; justify-content: space-between">
+                                        <span>@lang('orders.Valied_Quantity') :</span> <span>${product.quantity}</span>
+                                    </p>
+                                    
+                                    <p style="margin: 0; padding: 0; display: flex; justify-content: space-between">
+                                        <span>@lang('orders.Requested_Quantity') :</span> <span>${product_meta.needed_quantity}</span>
+                                    </p>
+                                    
+                                    <p style="margin: 0; padding: 0; display: flex; justify-content: space-between">
+                                        <span>@lang('orders.Price') :</span> <span>${product_meta.upgrade_price}</span>
+                                    </p>
+
+                                    ${
+                                        product_meta.is_default ?
+                                        `<p style="margin: 0; padding: 0;">
+                                            <span class="badge badge-pill badge-primary">@lang('orders.Default_Item')</span>
+                                        </p>`
+                                        : ''
+                                    }
+
+                                    ${
+                                        product.quantity <= 0 ?
+                                        `<p style="margin: 0; padding: 0;">
+                                            <span class="badge badge-pill badge-danger">@lang('orders.Not_valied')</span>
+                                        </p>`
+                                        : ''
+                                    }
+                                    
+                                </div><!-- /.card-body -->
+                            </div><!-- /.card -->
+                        </div><!-- /.col-md-4 -->
+                        `; 
+                    });
+
+                    categories_el += `
+                        <div class="card mb-3">
+                            <div class="card-header" style="${is_not_category_valied && 'background-color: #f8d7da;'}">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h3>${category.ar_title}</h3>
+                                    </div><!-- /.col-6 -->
+                                    <div class="col-6 text-right">
+                                        <i class="show-upgradable-category fas fa-caret-down" style="cursor: pointer; font-size: 1.5rem" data-target="${category.id}"></i>
+                                    </div><!-- /.col-6 -->
+                                </div><!-- /.row -->
+                            </div><!-- /.card-header -->
+
+                            <div id="upgradable-products-${category.id}" class="upgradable-products card-body" style="display: none;">
+                                <div class="row">${ products_el }</div>
+                            </div><!-- card-body -->
+                        </div><!-- /.card -->
+                    `;
+                });
+                
+                $('#edit-upgradableModalBody').html(categories_el);
+            },
+
+            render_upgradable_category_product : (target_product, meta, category_id) => {
+                let { upgrade_products_id, upgrade_products, categories, products } = target_product;
+                
+                let selected_product = meta.upgrade_options[category_id];
+                let products_id      = upgrade_products_id[category_id];
+                
+                let products_el = '';
+                products_id.forEach(product_id => {
+                    let product      = products.find(product => product.id == product_id);
+                    let product_meta = upgrade_products[category_id][product.id];
+
+                    products_el += `
+                    <div data-category="${category_id}" data-product="${product.id}" id="upgradeProduct${category_id}${product.id}" class=" select-upgrade-product col-md-4" ${selected_product == product.id && 'style="background-color: #007bff"' } >
+                        <div class="card">
+                            <img src="{{ url('/') }}/${product.main_image}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5>{{$is_ar ? '${product.ar_name}' : '${product.en_name}' }}</h5>
+                                <p class="${product.quantity <= 0 && 'text-danger'}" style="margin: 0; padding: 0; display: flex; justify-content: space-between">
+                                    <span>@lang('orders.Valied_Quantity') :</span> <span>${product.quantity}</span>
+                                </p>
+                                
+                                <p style="margin: 0; padding: 0; display: flex; justify-content: space-between">
+                                    <span>@lang('orders.Requested_Quantity') :</span> <span>${product_meta.needed_quantity}</span>
+                                </p>
+                                
+                                <p style="margin: 0; padding: 0; display: flex; justify-content: space-between">
+                                    <span>@lang('orders.Price') :</span> <span>${product_meta.upgrade_price}</span>
+                                </p>
+
+                                ${
+                                    product_meta.is_default ?
+                                    `<p style="margin: 0; padding: 0;">
+                                        <span class="badge badge-pill badge-primary">@lang('orders.Default_Item')</span>
+                                    </p>`
+                                    : ''
+                                }
+
+                                ${
+                                    product.quantity <= 0 ?
+                                    `<p style="margin: 0; padding: 0;">
+                                        <span class="badge badge-pill badge-danger">@lang('orders.Not_valied')</span>
+                                    </p>`
+                                    : ''
+                                }
+                                
+                            </div><!-- /.card-body -->
+                        </div><!-- /.card -->
+                    </div><!-- /.col-md-4 -->
+                    `; 
+                });
+
+                $(`#upgradable-products-${category_id}`).html(`<div class="row">${ products_el }</div>`);
+            },
+            
+            render_upgradable_price : (price) => {
+                $('#edit-product-upgradable-price').text(price);
+            }
         };
 
         // show alert that the product already exists
@@ -805,6 +1177,7 @@ $(document).ready(function () {
 
         return {
             show_selected_products,
+            upgradable_methods,
             alert_product_exists,
             update_product_row,
             update_product_hidden_fields,
@@ -925,6 +1298,75 @@ $(document).ready(function () {
                 // update storage products meta
                 storeObject.update_products_meta(products_meta);
                 
+                // update form products_quantity hidden field,
+                // Notice that we need change the name to products_meta
+                viewObject.update_product_hidden_fields(products_meta);
+            }).on('click', '.upgrade_selected_item', function (e) {
+                e.preventDefault();
+                let target_product_id = $(this).data('target');
+
+                StoreObject.upgradable_products_methods.start_upgrade_mode(target_product_id);
+                // get target upgradable products
+                let {product, product_meta} = StoreObject.upgradable_products_methods.find_product(target_product_id);
+                viewObject.upgradable_methods.render_upgradable_modal(product, product_meta);
+                viewObject.upgradable_methods.render_upgradable_price(product_meta.price);
+
+                $('#edit-upgradableModal').modal('toggle')
+            });
+
+            
+            /**
+             * upgradable products modal
+             */
+            $('#edit-upgradableModalBody').on('click', '.show-upgradable-category', function () {
+                let target_id  = $(this).data('target');
+                let toggle_val = $(this).data('toggle-val');
+
+                if (toggle_val == 'closed') {
+                    $(this).data('toggle-val', 'open');
+                    $(`#upgradable-products-${target_id}`).slideUp(500);
+                } else {
+                    $('.upgradable-products').slideUp();
+                    $(`#upgradable-products-${target_id}`).slideDown(500);
+                    $(this).data('toggle-val', 'closed');
+                }
+            }).on('click', '.select-upgrade-product', function () {
+                let product_id  = $(this).data('product');
+                let category_id = $(this).data('category');
+                let target_product_id = StoreObject.upgradable_products_methods.get_focus_value();
+                /**
+                 * # We want to update upgradable product
+                 * selected child option.
+                 * # When the user select a product in the category
+                 * update the upgradable product meta in "products_meta"
+                 * than re-render the category products
+                 */
+
+                // upgrade action on category
+                StoreObject.upgradable_products_methods.upgrade_action(category_id, product_id);
+                StoreObject.upgradable_products_methods.update_upgrade_product_price(target_product_id);
+                StoreObject.upgradable_products_methods.re_validate_upgradable(target_product_id);
+                
+                // render related info
+                let {product, product_meta} = StoreObject.upgradable_products_methods.find_product(target_product_id);
+                ({products_list, products_meta} = storeObject.get_products_data());
+
+                viewObject.upgradable_methods.render_upgradable_category_product(product, product_meta, category_id);
+                viewObject.upgradable_methods.render_upgradable_price(product_meta.price);
+
+            });
+
+            // close upgrade modal
+            $('#edit-upgradable-action-don').on('click', function () {
+                /* 
+                    # After user done upgrade to the product :
+                    re-render order products table and re-do 
+                    the upgradable validation
+                */
+                ({products_list, products_meta} = storeObject.get_products_data());
+                // show products list
+                viewObject.show_selected_products(products_list, products_meta);
+
                 // update form products_quantity hidden field,
                 // Notice that we need change the name to products_meta
                 viewObject.update_product_hidden_fields(products_meta);
@@ -1060,13 +1502,13 @@ $(document).ready(function () {
             products_list = input_products_list;
             products_meta = input_products_meta;
             
-            storeObject.set_products_data (products_list, products_meta);
+            storeObject.set_products_data (input_products_list, input_products_meta);
 
-            viewObject.show_selected_products(products_list, products_meta);
+            viewObject.show_selected_products(input_products_list, input_products_meta);
 
             // update form products_quantity hidden field,
-            // Notice that we need change the name to products_meta
-            viewObject.update_product_hidden_fields(products_meta);
+            // Notice that we need change the name to input_products_meta
+            viewObject.update_product_hidden_fields(input_products_meta);
         }
 
         const init = () => {

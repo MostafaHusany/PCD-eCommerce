@@ -62,6 +62,7 @@ return [
     'Is_Active' => 'Is Active',
     'Upgradable_Product' => 'Upgradable Product',
     'Done' => 'Done',
+    'Composite_Product' => 'Composite Product',
 
     'Payment_status' => 'Payment status',
     'select_payment_status' => 'select payment status',

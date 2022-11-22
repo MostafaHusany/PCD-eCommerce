@@ -317,15 +317,14 @@ $(function () {
         var customer_option = new Option(`${data.customer['name']}`, data.customer.id, false, true);
         $('#edit-customer').append(customer_option).trigger('change');
         
-        // get products meta
-        const order_meta = JSON.parse(data.products_meta);
-        const products_quantity = (JSON.parse(data.products_meta))['products_quantity'];
-        console.log('edit test : ', data, data.products, products_quantity);
+        const products_quantity = JSON.parse(JSON.stringify(data.products_quantity));
         EditControllerObject.edit_products_update(data.products, products_quantity);
         
         // get fees data
         $('#edit-fees').val('').trigger('change');
         
+        // get products meta
+        const order_meta = JSON.parse(data.products_meta);
         order_meta.fees.forEach(fee_obj => {
             let tmp = new Option(fee_obj.title, fee_obj.id, false, true);
             // fee_list.push($tmp)

@@ -145,14 +145,16 @@ class OrdersController extends Controller
 
         if (isset($target_order) && isset($request->fast_acc)) {
             // I need to get the product old price, and new price 
-
+            $products_quantity = (array) json_decode($target_order->meta);
+            $products_quantity = (array) $products_quantity['products_quantity'];
             $target_data = [
                 'id'            => $target_order->id,
                 'customer'      => $target_order->customer,
                 // 'all_products'  => $target_order->products,
-                'products'      => $target_order->products()->where('is_child', 0)->distinct()->get(),
+                'products'      => $target_order->products()->with(['children', 'upgrade_categories', 'upgrade_products'])->where('is_child', 0)->distinct()->get(),
                 // 'products'      => $target_order->products,
                 'products_meta' => $target_order->meta,
+                'products_quantity' => $products_quantity,
                 'shipping'      => $target_order->shipping,
                 'shipping_cost' => $target_order->shipping_cost,
                 'is_free_shipping' => $target_order->is_free_shipping,
@@ -168,7 +170,7 @@ class OrdersController extends Controller
                 'customer'      => $target_order->customer,
                 // 'all_products'  => $target_order->products,
                 'products'      => $target_order->products()->where('is_child', 0)->distinct()->get(),
-                'order_products'      => $target_order->order_products()->where('is_child', 0)->get(),
+                'order_products'      => $target_order->order_products()->with(['product'])->where('is_child', 1)->get(),
                 'products_meta' => $target_order->meta,
                 'shipping'      => $target_order->shipping,
                 'shipping_cost' => $target_order->shipping_cost,

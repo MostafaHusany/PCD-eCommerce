@@ -248,7 +248,7 @@
             </div><!-- /.modal-body -->
             
             <div class="modal-footer" style="justify-content: space-between">
-                <h3>@lang('orders.Total_Price') : <span class="texف-primary my-2" id="product-upgradable-price"> --- </span>@lang('orders.SAR')</h3>
+                <h3>@lang('orders.Total_Price') : <span class="text-primary my-2" id="product-upgradable-price"> --- </span>@lang('orders.SAR')</h3>
                 <div>
                     <button id="upgradable-action-don" type="button" class="btn btn-primary" data-dismiss="modal">@lang('orders.Done')</button>
                     <!-- <button type="button" class="btn btn-primary">Understood</button> -->
@@ -340,6 +340,7 @@ $(document).ready(function () {
             return await response.data;
         };
 
+        // used by upgradable
         const request_products = async (products_list) => {
             const response = await axios.get(`{{ url('admin/products') }}/0`, { params: { products_list : JSON.stringify(products_list) }});
             return await response.data;
@@ -414,7 +415,7 @@ $(document).ready(function () {
 
                 upgradable_products_methods.add_product(new_product);
             }
-
+            
             // re-calculate sub-total
             _calculate_order_sub_total();
             return { products_list, products_meta};
@@ -532,9 +533,13 @@ $(document).ready(function () {
 
             upgrade_action : (category_id, product_id) => {
                 // update if the product is valied 
+                console.log('upgrade_action :', upgradable_products[upgrade_focus]);
                 if ((upgradable_products[upgrade_focus].products.find(product => product.id == product_id)).quantity > 0) {
+                    // upgrade upgrade_options and upgrade_options_list
+                    let old_selection = products_meta[upgrade_focus].upgrade_options[category_id];
+                    products_meta[upgrade_focus].upgrade_options_list = (products_meta[upgrade_focus].upgrade_options_list).filter(p_id => p_id != old_selection);
+                    products_meta[upgrade_focus].upgrade_options_list.push(product_id);
                     products_meta[upgrade_focus].upgrade_options[category_id] = product_id;
-                    products_meta[upgrade_focus].upgrade_options_list = Object.values(products_meta[upgrade_focus].upgrade_options);
                 }
             }, 
 

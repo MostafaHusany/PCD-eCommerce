@@ -81,6 +81,7 @@ return [
     'Payment_was_refused' => 'تم رفض حوالة الدفع',
     'Discount' => 'الخصم',
     'Promo_Code' => 'كود الخصم',
+    'Composite_Product' => 'منتج مركب',
 
     // validation 
     'customer_is_required' => 'يلزم تحديد العميل',

@@ -64,14 +64,15 @@
             <div class="form-group" style="height: 400px; overflow: scroll;">
                 <table class="table" style="font-size: 12px; width: max-content; ">
                     <tr>
-                        <td>@lang('orders.Img')</td>
-                        <td>@lang('orders.Name')</td>
-                        <td>@lang('orders.SKU')</td>
-                        <td>@lang('orders.Price')</td>
-                        <td>@lang('orders.Quantity')</td>
-                        <td>@lang('orders.Restored')</td>
-                        <td id="show-products_table_header">@lang('orders.Sub_Total_Price')</td>
-                        <td>@lang('orders.Total_Price')</td>
+                        <th style="width: 120px;">@lang('orders.Img')</th>
+                        <th>@lang('orders.Name')</th>
+                        <th>@lang('orders.SKU')</th>
+                        <th>@lang('orders.Price')</th>
+                        <th>@lang('orders.Quantity')</th>
+                        <th>@lang('orders.Restored')</th>
+                        <th id="show-products_table_header">@lang('orders.Sub_Total_Price')</th>
+                        <th>@lang('orders.Total_Price')</th>
+                        <th>@lang('orders.Actions')</th>
                     </tr>
                     <tbody id="show-selected_product_table"></tbody>
                 </table>
@@ -200,10 +201,127 @@
     </form>
 </div>
 
-
+<!-- Modal -->
+<div dir="{{ $is_ar ? 'rtl' : 'ltr' }}" class="modal fade" id="showOrderProduct" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="showOrderProductLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="showOrderProductLabel">@lang('orders.Composite_Product')</h5>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+            <div class="modal-body">
+                <div class="show-upgradable-products" style="height: 400px; overflow-y: scroll; overflow-x: hidden;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('orders.Done')</button>
+                <!-- <button type="button" class="btn btn-primary">@lang('orders.Done')</button> -->
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('page_scripts')
 <script>
+    const ShowOrderStore = (function () {
+        let orderProducts = null;
+        let productsQuantity = null;
+        /*
+        orderMeta =  {
+                fees : [],
+                products_id : ['53'],
+                products_prices : {53: 1891},
+                products_quantity : {
+                    53 : {
+                        is_upgradable: true
+                        is_valied : true
+                        price : 2020
+                        quantity : 1
+                        upgrade_options : {1: 2, 2: 47, 4: 51, 7: 16, 11: 48}
+                        upgrade_options_list : [2, 47, 51, 16, 48]
+                    }
+                },
+                restored_quantity : {
+                    53: 0
+                }
+                taxes : [
+                    cost: 15
+                    cost_type: 0
+                    id : 1
+                    is_active : 1
+                    is_fixed: 0
+                    tax_total : 303
+                    title : "ضريبة القيمة المضافة"
+                ] 
+            }
+        */
+
+        let setters = {
+            setData (order_meta, order_products) {
+                orderProducts = order_products;
+                productsQuantity = structuredClone(order_meta.products_quantity);
+            },
+
+            clearData () {
+                orderMeta = null;
+                orderProducts = null
+            }
+        };
+
+        let getters = {
+            getCompositeUpgradable (productId) {
+                let upgrade_options_list = productsQuantity[productId].upgrade_options_list;
+                let selected_upgrades    = [];
+                
+                orderProducts.forEach(order_product => {
+                    if (upgrade_options_list.includes(order_product.product_id)) {
+                        selected_upgrades.push(order_product.product);
+                    }
+                });
+
+                return selected_upgrades;
+            }
+        };
+
+        return {
+            setters,
+            getters
+        };
+    })();
+
+    
+    function renderUpgradeSelection (products) {
+        let row = '';
+        
+        products.forEach(product => {
+            row += `
+            <div class="col-4 my-3">
+                <div class="card" style="height: 100%">
+                    <img src="{{ url('/') }}/${product.main_image}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5>{{$is_ar ? '${product.ar_name}' : '${product.en_name}' }}</h5>
+                        
+                        <button 
+                            type="button" 
+                            class="copy-sku btn btn-primary btn-block" 
+                            data-id="${product.id}" data-sku="${product.sku}" 
+                            data-toggle="tooltip" data-placement="top" title="Click to copy !"
+                        >
+                            SKU : <span>${product.sku}</span> 
+                            <i style="display: none" class="fas fa-check-circle done-${product.id}"></i>
+                        </button>
+                    </div><!-- /.card-body -->
+                </div><!-- /.card -->
+            </div>
+            `;
+        });
+        // row = `<div class="row">${row}</div>`;
+
+        
+        $('.show-upgradable-products').html(`<div class="row">${row}</div>`);
+    }
+
     $('#dataTable').on('click', '.show-object', function () {
         // send request, to the server get the data about the order
         // we need data about the customer, the products of the order
@@ -225,8 +343,8 @@
             const data = res.data.data;
             const order_meta = JSON.parse(data.products_meta);
             
-            console.log(data, 'show order meta :: ', order_meta);
-            
+            ShowOrderStore.setters.setData(order_meta, data.order_products);
+
             // get customer data
             $('#show-customer_name').text(`${data.customer.name}`);
             $('#show-customer_email').text(data.customer.email);
@@ -287,10 +405,8 @@
                 $('#show-selected_Discount_code').html( '---' );
             }
 
-
             // show order products rows
             data.products.forEach(product => {
-                console.log(product, order_meta);
                 let product_quantity = (order_meta.products_quantity[product.id].quantity - order_meta.restored_quantity[product.id]);
                 let product_cost     = order_meta.products_prices[product.id] * product_quantity;
                 let total_tax        = 0;
@@ -309,8 +425,8 @@
 
                 let tmp_row = `
                     <tr class="show-order-product-tr">
-                        <td><img width="80px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
-                        <td>${product.ar_name} / ${product.en_name}</td>
+                        <td><img width="120px"class="img-thumbnail" src="{{url('/')}}/${product.main_image}" /></td>
+                        <td>${product.ar_name} <br/> ${product.en_name}</td>
                         <td>${product.sku}</td>
                         <td>${order_meta.products_prices[product.id]}</td>
                         <td>${order_meta.products_quantity[product.id].quantity}</td>
@@ -320,6 +436,15 @@
                         <td>${parseFloat(product_cost).toFixed(2)} SR</td>
                         ${product_tax_td}
                         <td>${parseFloat(product_cost + total_tax).toFixed(2)}</td>  
+                        ${
+                            product.is_composite != 0 ? 
+                            `<td>
+                                <button type="button" data-product-id="${product.id}" class="show-composite-product btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>`
+                            : '---'
+                        }
                     </tr>
                 `;
                 $('#show-selected_product_table').prepend(tmp_row);
@@ -340,6 +465,37 @@
             $('#loddingSpinner').hide(500);
 
         }); 
+    });
+
+    $('#show-selected_product_table').on('click', '.show-composite-product', function () {
+        /**
+         * # Get composite product child products ...
+         * => get selected product id
+         * => find the product in the ShowOrderStore
+         */
+        let product_id = $(this).data('product-id');
+
+        let tragetProducts = ShowOrderStore.getters.getCompositeUpgradable(product_id);
+        renderUpgradeSelection(tragetProducts);
+
+        $('#showOrderProduct').modal('toggle')
+    });
+
+    $('.show-upgradable-products').on('click', '.copy-sku', function () {
+        let targe_id  = $(this).data('id');
+        let targe_sku = $(this).data('sku');
+        let $temp     = $("<input>");
+
+        $(this).append($temp);
+        $temp.val(targe_sku).select();
+        document.execCommand("copy", false, $temp.val());
+        $temp.remove();
+        
+        $(`.done-${targe_id}`).show(300);
+        setTimeout(() => {
+            $(`.done-${targe_id}`).hide();
+        }, 2000);
+
     });
 </script>
 @endpush
