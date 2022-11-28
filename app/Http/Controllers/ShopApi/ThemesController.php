@@ -13,7 +13,11 @@ class ThemesController extends Controller
         // need caching
         $slides = ThemeSetting::where('section', 'slider')->with(['category', 'product'])->get();
         $navbraLinks = ThemeSetting::where('section', 'navbar')->with(['category'])->get();
-        $customeSection = ThemeSetting::where('section', 'cSection')->with(['products'])->get();
+        $customeSection = ThemeSetting::where('section', 'cSection')->get();
+
+        foreach($customeSection as $section) {
+            $section->products = $section->products()->with(['product_promotion_r'])->get();
+        }
 
         $data = [
             'slides' => $slides,
