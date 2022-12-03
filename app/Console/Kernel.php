@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('order:restore')
-        ->dailyAt('1:00');
-        // ->everyMinute();
+        // ->dailyAt('1:00');
+        ->everyMinute();
         // ->minute();
         // ->hourly();
     }
