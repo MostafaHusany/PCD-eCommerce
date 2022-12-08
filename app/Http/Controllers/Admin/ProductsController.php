@@ -486,8 +486,8 @@ class ProductsController extends Controller
                     ->orwhere('sku','LIKE',"%$search%")
                     ->orWhere('id', $search);
                 })
-                ->where('quantity', '>', 0)
-                ->where('is_active', 1);
+                ->where('quantity', '>', 0);
+                // ->where('is_active', 1);
             		
             !isset($request->all_products) && $model->where('is_composite',  0);
 
