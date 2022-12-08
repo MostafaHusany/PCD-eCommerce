@@ -174,7 +174,7 @@ $(function () {
                 $(`#${prefix}skuErr`).slideDown(500);
             }
         } else {
-            let valied_extensions = ['xlsx', 'xls', 'xls', 'xlw'];
+            let valied_extensions = ['xlsx', 'xls', 'xls', 'xlw', 'csv'];
             let file_struc    = data.get('importFile').split('.');
             let is_file_exist = data.get('importFile') != '' && file_struc.length == 2;
             if (!is_file_exist || !valied_extensions.includes(file_struc[1])) {

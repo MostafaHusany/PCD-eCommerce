@@ -17,7 +17,7 @@
         <div class="form-group row">
             <label for="importFile" class="col-sm-2 col-form-label">@lang('products.Select_Excel_File')</label>
             <div class="col-sm-10">
-                <input type="file" tabindex="1" id="importFile" placeholder="importFile" accept=".xlsx,.xls,.xls,.xlw">
+                <input type="file" tabindex="1" id="importFile" placeholder="importFile" accept=".xlsx,.xls,.xls,.xlw,.csv">
                 <div style="padding: 5px 7px; display: none" id="importFileErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>

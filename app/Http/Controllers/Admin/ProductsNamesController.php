@@ -59,7 +59,7 @@ class ProductsNamesController extends Controller
 
     public function store (Request $request) {
         $validator = Validator::make($request->all(), [
-            'importFile.*' => 'required|file|mimes:xlsx,xls,xls,xlw',
+            'importFile.*' => 'required|file|mimes:xlsx,xls,xls,xlw,csv',
         ]);
 
         if ($validator->fails()) {
