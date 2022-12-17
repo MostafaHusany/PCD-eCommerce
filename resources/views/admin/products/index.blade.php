@@ -324,7 +324,7 @@ $(function () {
             $(`#${prefix}main_imageErr`).slideDown(500);
         }
 
-        if (data.get('price') === '' || data.get('price') <= '0') {
+        if (data.get('price') === '' || data.get('price') < '0') {
             is_valide = false;
             let err_msg = '@lang("products.price_is_required")';
             $(`#${prefix}priceErr`).text(err_msg);
