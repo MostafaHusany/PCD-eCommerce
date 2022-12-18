@@ -98,21 +98,23 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('categories.Icon')</th>
-                    <th>@lang('categories.Ar_Title')</th>
-                    <th>@lang('categories.En_Title')</th>
-                    <th>@lang('categories.Is_Main')</th>
-                    <th>@lang('categories.Parent')</th>
-                    <th>@lang('categories.Products')</th>
-                    <th>@lang('categories.Rule')</th>
-                    <th>@lang('categories.Active')</th>
-                    <th>@lang('categories.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('categories.Icon')</th>
+                        <th>@lang('categories.Ar_Title')</th>
+                        <th>@lang('categories.En_Title')</th>
+                        <th>@lang('categories.Is_Main')</th>
+                        <th>@lang('categories.Parent')</th>
+                        <th>@lang('categories.Products')</th>
+                        <th>@lang('categories.Rule')</th>
+                        <th>@lang('categories.Active')</th>
+                        <th>@lang('categories.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table --> 
         </div><!-- /.card --> 
         
         @include('admin.categories.incs._create')

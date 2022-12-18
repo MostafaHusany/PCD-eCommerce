@@ -125,20 +125,22 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('customers.Name')</th>
-                    <th>@lang('customers.Email')</th>
-                    <th>@lang('customers.Phone')</th>
-                    <th>@lang('customers.Country')</th>
-                    <th>@lang('customers.Government')</th>
-                    <th>@lang('customers.Orders')</th>
-                    <th>@lang('customers.Active')</th>
-                    <th>@lang('customers.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('customers.Name')</th>
+                        <th>@lang('customers.Email')</th>
+                        <th>@lang('customers.Phone')</th>
+                        <th>@lang('customers.Country')</th>
+                        <th>@lang('customers.Government')</th>
+                        <th>@lang('customers.Orders')</th>
+                        <th>@lang('customers.Active')</th>
+                        <th>@lang('customers.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table --> 
         </div><!-- /.card --> 
         
         @include('admin.customers.incs._create')

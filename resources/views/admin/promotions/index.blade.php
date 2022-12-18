@@ -79,17 +79,19 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('promotions.Title')</th>
-                    <th>@lang('promotions.Start_Date')</th>
-                    <th>@lang('promotions.End_Date')</th>
-                    <th>@lang('promotions.Active')</th>
-                    <th>@lang('promotions.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('promotions.Title')</th>
+                        <th>@lang('promotions.Start_Date')</th>
+                        <th>@lang('promotions.End_Date')</th>
+                        <th>@lang('promotions.Active')</th>
+                        <th>@lang('promotions.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.promotions.incs._create')

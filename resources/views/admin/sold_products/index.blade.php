@@ -146,24 +146,26 @@
                 
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
-
-            <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('sold_products.Image')</th>
-                    <th>@lang('sold_products.Order_Code')</th>
-                    <th>@lang('sold_products.Name')</th>
-                    <th>@lang('sold_products.Type')</th>
-                    <th>@lang('sold_products.Parent')</th>
-                    <th>@lang('sold_products.Status')</th>
-                    <th>@lang('sold_products.Categories')</th>
-                    <th>@lang('sold_products.SKU')</th>
-                    <th>@lang('sold_products.Price')</th>
-                    <th>@lang('sold_products.Date')</th>
-                    <th>@lang('sold_products.Action')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+                        
+            <div class="overflow-table">
+                <table style="font-size: 14px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('sold_products.Image')</th>
+                        <th>@lang('sold_products.Order_Code')</th>
+                        <th>@lang('sold_products.Name')</th>
+                        <th>@lang('sold_products.Type')</th>
+                        <th>@lang('sold_products.Parent')</th>
+                        <th>@lang('sold_products.Status')</th>
+                        <th>@lang('sold_products.Categories')</th>
+                        <th>@lang('sold_products.SKU')</th>
+                        <th>@lang('sold_products.Price')</th>
+                        <th>@lang('sold_products.Date')</th>
+                        <th>@lang('sold_products.Action')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         

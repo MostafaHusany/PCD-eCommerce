@@ -78,16 +78,18 @@
                 </div><!-- /.col-6 -->
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
-
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>@lang('order_status.Status_Code')</th>
-                    <th>@lang('order_status.Status_Name')</th>
-                    <th>@lang('order_status.Status_Color')</th>
-                    <th>@lang('order_status.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>@lang('order_status.Status_Code')</th>
+                        <th>@lang('order_status.Status_Name')</th>
+                        <th>@lang('order_status.Status_Color')</th>
+                        <th>@lang('order_status.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- ./overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.orders_status.incs._create')

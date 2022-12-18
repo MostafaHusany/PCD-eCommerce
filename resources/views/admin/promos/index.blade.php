@@ -89,19 +89,21 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('promos.Code')</th>
-                    <th>@lang('promos.Type')</th>
-                    <th>@lang('promos.Value')</th>
-                    <th>@lang('promos.Owner')</th>
-                    <th>@lang('promos.Nom_Orders')</th>
-                    <th>@lang('promos.Active')</th>
-                    <th>@lang('promos.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('promos.Code')</th>
+                        <th>@lang('promos.Type')</th>
+                        <th>@lang('promos.Value')</th>
+                        <th>@lang('promos.Owner')</th>
+                        <th>@lang('promos.Nom_Orders')</th>
+                        <th>@lang('promos.Active')</th>
+                        <th>@lang('promos.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.promos.incs._create')

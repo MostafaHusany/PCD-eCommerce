@@ -94,20 +94,22 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('districts.Type')</th>
-                    <th>@lang('districts.Name')</th>
-                    <th>@lang('districts.Code')</th>
-                    <th>@lang('districts.Parent')</th>
-                    <th>@lang('districts.Customers')</th>
-                    <th>@lang('districts.Orders')</th>
-                    <th>@lang('districts.Active')</th>
-                    <th>@lang('districts.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('districts.Type')</th>
+                        <th>@lang('districts.Name')</th>
+                        <th>@lang('districts.Code')</th>
+                        <th>@lang('districts.Parent')</th>
+                        <th>@lang('districts.Customers')</th>
+                        <th>@lang('districts.Orders')</th>
+                        <th>@lang('districts.Active')</th>
+                        <th>@lang('districts.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.districts.incs._create')

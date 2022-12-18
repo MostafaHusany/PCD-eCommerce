@@ -79,20 +79,22 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('shippings.Title')</th>
-                    <th>@lang('shippings.Cost')</th>
-                    <!-- <th>@lang('shippings.Free_Taxes')</th> -->
-                    <!-- <th>Cost Type</th>
-                    <th>System</th> -->
-                    <th>@lang('shippings.Orders')</th>
-                    <th>@lang('shippings.Active')</th>
-                    <th>@lang('shippings.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('shippings.Title')</th>
+                        <th>@lang('shippings.Cost')</th>
+                        <!-- <th>@lang('shippings.Free_Taxes')</th> -->
+                        <!-- <th>Cost Type</th>
+                        <th>System</th> -->
+                        <th>@lang('shippings.Orders')</th>
+                        <th>@lang('shippings.Active')</th>
+                        <th>@lang('shippings.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.shipping.incs._create')

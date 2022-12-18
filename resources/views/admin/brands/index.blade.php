@@ -82,16 +82,18 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('brands.AR_Title')</th>
-                    <th>@lang('brands.EN_Title')</th>
-                    <th>@lang('brands.Image')</th>
-                    <th>@lang('brands.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('brands.AR_Title')</th>
+                        <th>@lang('brands.EN_Title')</th>
+                        <th>@lang('brands.Image')</th>
+                        <th>@lang('brands.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.brands.incs._create')

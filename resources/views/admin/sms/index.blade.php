@@ -96,21 +96,23 @@
                 </div><!-- /.col-6 -->
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
-
-            <table style="font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('sms.Phone')</th>
-                    <th>@lang('sms.SMS')</th>
-                    <th>@lang('sms.Status')</th>
-                    <th>@lang('sms.Date')</th>
-                    <th>@lang('sms.Err_Code')</th>
-                    <th>@lang('sms.Err_Msg')</th>
-                    <th>@lang('sms.Resend')</th>
-                    <th>@lang('sms.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            
+            <div class="overflow-table">
+                <table style="font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('sms.Phone')</th>
+                        <th>@lang('sms.SMS')</th>
+                        <th>@lang('sms.Status')</th>
+                        <th>@lang('sms.Date')</th>
+                        <th>@lang('sms.Err_Code')</th>
+                        <th>@lang('sms.Err_Msg')</th>
+                        <th>@lang('sms.Resend')</th>
+                        <th>@lang('sms.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.sms.incs._create')

@@ -79,18 +79,20 @@
             </div><!-- /.row --> 
             <!-- END   SEARCH BAR -->
 
-            <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>@lang('taxes.Title')</")th>
-                    <th>@lang('taxes.Cost')</th>
-                    <th>@lang('taxes.Cost_Type')</th>
-                    <th>@lang('taxes.System')</th>
-                    <th>@lang('taxes.Active')</th>
-                    <th>@lang('taxes.Actions')</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="overflow-table">
+                <table style="!font-size: 12px !important" id="dataTable" class="table table-sm table-bordered">
+                    <thead>
+                        <th>#</th>
+                        <th>@lang('taxes.Title')</")th>
+                        <th>@lang('taxes.Cost')</th>
+                        <th>@lang('taxes.Cost_Type')</th>
+                        <th>@lang('taxes.System')</th>
+                        <th>@lang('taxes.Active')</th>
+                        <th>@lang('taxes.Actions')</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div><!-- /.overflow-table -->
         </div><!-- /.card --> 
         
         @include('admin.taxes.incs._create')
