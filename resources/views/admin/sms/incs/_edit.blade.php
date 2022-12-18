@@ -15,7 +15,7 @@
         <div class="form-group row">
             <label for="edit-verification-sms" class="col-sm-2 col-form-label">@lang('sms.Verification_SMS')</label>
             <div class="col-sm-10">
-                <textarea tabindex="0" id="edit-verification-sms" maxlength="50" class="form-control" placeholder="@lang('sms.Verification_sms_template')"></textarea>
+                <textarea tabindex="0" id="edit-verification-sms" maxlength="200" class="form-control" placeholder="@lang('sms.Verification_sms_template')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-verification-smsErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -30,7 +30,7 @@
         <div class="form-group row">
             <label for="edit-welcome-sms" class="col-sm-2 col-form-label">@lang('sms.Welcome_SMS')</label>
             <div class="col-sm-7">
-                <textarea tabindex="0" id="edit-welcome-sms" class="form-control" maxlength="50" placeholder="@lang('sms.Welcome_sms_template')"></textarea>
+                <textarea tabindex="0" id="edit-welcome-sms" class="form-control" maxlength="200" placeholder="@lang('sms.Welcome_sms_template')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-welcome-smsErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -45,7 +45,7 @@
         <div class="form-group row">
             <label for="edit-create-order-sms" class="col-sm-2 col-form-label">@lang('sms.Create_Order_SMS')</label>
             <div class="col-sm-7">
-                <textarea tabindex="0" id="edit-create-order-sms" class="form-control" maxlength="50" placeholder="@lang('sms.Create_order_sms_template')"></textarea>
+                <textarea tabindex="0" id="edit-create-order-sms" class="form-control" maxlength="200" placeholder="@lang('sms.Create_order_sms_template')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-create-order-smsErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
@@ -60,7 +60,7 @@
         <div class="form-group row">
             <label for="edit-order-status-sms" class="col-sm-2 col-form-label">@lang('sms.Order_Status_SMS')</label>
             <div class="col-sm-7">
-                <textarea tabindex="0" id="edit-order-status-sms" class="form-control" maxlength="50" placeholder="@lang('sms.Order_Status_sms_template')"></textarea>
+                <textarea tabindex="0" id="edit-order-status-sms" class="form-control" maxlength="200" placeholder="@lang('sms.Order_Status_sms_template')"></textarea>
                 <div style="padding: 5px 7px; display: none" id="edit-order-status-smsErr" class="err-msg mt-2 alert alert-danger">
                 </div>
             </div>
