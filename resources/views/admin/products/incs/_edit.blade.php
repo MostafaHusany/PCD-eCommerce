@@ -703,7 +703,7 @@ $(function () {
             }
 
             // hidden fields
-            const selectProduct = (product_id, meta = null) => {
+            const selectProduct = (product_id, meta = {}) => {
                 let is_exist = store.selected_categories_products[store.selected_category].find(product => product.id == product_id);
 
                 if (!is_exist) {
