@@ -54,6 +54,12 @@ class PermissionsSeeder extends Seeder
         //     'name' => 'dashboard',
         // ];
 
+        // theme settings
+        // $data = [
+        //     'display_name' => 'theme settings',
+        //     'name' => 'theme_settings' 
+        // ];
+
         Permission::insert($data);
     }
 }

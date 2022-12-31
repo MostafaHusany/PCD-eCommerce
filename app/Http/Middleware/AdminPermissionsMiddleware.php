@@ -69,6 +69,10 @@ class AdminPermissionsMiddleware
             return $next($request);
         }// end :: if
 
+        if ($request->routeIs('admin.theme.*') && auth()->user()->isAbleTo('theme_settings')) {
+            return $next($request);
+        }// end :: if
+
         if ($request->isMethod('get') && $request->routeIs('admin.dashboard')) {
             if (auth()->user()->isAbleTo('dashboard')) {
                 return $next($request);

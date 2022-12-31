@@ -234,22 +234,22 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions', 'localeSessionRe
 
     // theme editor
     Route::group(['prefix' => 'theme'], function () {
-        Route::get('custome-section', 'ThemeController@customeSection');
+        Route::get('custome-section', 'ThemeController@customeSection')->name('admin.theme.custome');
 
-        Route::get('navbar', 'ThemeController@navbar');
-        Route::post('navbar', 'ThemeController@store');
+        Route::get('navbar', 'ThemeController@navbar')->name('admin.theme.navbar.index');
+        Route::post('navbar', 'ThemeController@store')->name('admin.theme.navbar.store');
         
-        Route::get('slider', 'ThemeController@slider');
-        Route::post('slider', 'ThemeController@store');
+        Route::get('slider', 'ThemeController@slider')->name('admin.theme.slider.index');
+        Route::post('slider', 'ThemeController@store')->name('admin.theme.slider.store');
         
-        Route::get('footer', 'ThemeController@footer');
+        Route::get('footer', 'ThemeController@footer')->name('admin.theme.footer.index');
 
-        Route::get('contacts-info', 'ThemeController@contactsInfo');
-        Route::post('contacts-info', 'ThemeController@store');
+        Route::get('contacts-info', 'ThemeController@contactsInfo')->name('admin.theme.contacts.index');
+        Route::post('contacts-info', 'ThemeController@store')->name('admin.theme.contacts.store');
 
-        Route::post('/', 'ThemeController@store');
-        Route::put('/{id}', 'ThemeController@update');
-        Route::delete('/{id}', 'ThemeController@destory');
+        Route::post('/', 'ThemeController@store')->name('admin.theme.post');
+        Route::put('/{id}', 'ThemeController@update')->name('admin.theme.put');
+        Route::delete('/{id}', 'ThemeController@destory')->name('admin.theme.delete');
     });
 
     // fast ajax search

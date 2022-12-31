@@ -247,7 +247,7 @@ $lang = LaravelLocalization::getCurrentLocale();
 </li>
 @endif
 
-@if(auth()->user()->hasRole('admin'))
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('theme_settings') )
 <li class="nav-item {{ str_contains(Request::path(), '#') || str_contains(Request::path(), '#') || str_contains(Request::path(), 'admin/theme/') ? 'menu-is-opening menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-puzzle-piece"></i>
