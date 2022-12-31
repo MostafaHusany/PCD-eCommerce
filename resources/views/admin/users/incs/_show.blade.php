@@ -65,8 +65,12 @@ $(document).ready(function () {
             let { data, success } = res.data;
             
             if (success) {
-                let user_role = `<span class="badge badge-pill badge-primary">${data.role.display_name}</span>`;
-                $(`#show-role`).html(user_role);
+                if (Boolean(data.role)) {
+                    let user_role = `<span class="badge badge-pill badge-primary">${data.role.display_name}</span>`;
+                    $(`#show-role`).html(user_role);
+                } else {
+                    $(`#show-role`).text('---');
+                }
 
                 keys.forEach(key => {
                     if (Boolean(data[key]) && key == 'permissions') {
