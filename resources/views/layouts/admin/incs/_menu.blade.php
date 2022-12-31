@@ -2,12 +2,15 @@
 $lang = LaravelLocalization::getCurrentLocale(); 
 @endphp
 <!-- need to remove -->
+
+@if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('dashboard'))
 <li class="nav-item">
     <a href="{{ route('home') }}" class="nav-link {{ Request::is($lang.'/admin') ? 'active' : '' }}">
         <i class="nav-icon fas fa-tachometer-alt"></i>
         <p>@lang('_menu.Dashboard')</p>
     </a>
 </li>
+@endif
 
 @if(auth()->user()->hasRole('admin'))
 <li class="nav-item {{ str_contains(Request::path(), '/users') || str_contains(Request::path(), '/roles') ? 'menu-is-opening menu-open' : '' }}">
@@ -239,7 +242,6 @@ $lang = LaravelLocalization::getCurrentLocale();
             </a>
         </li>
         @endif
-
 
     </ul>
 </li>

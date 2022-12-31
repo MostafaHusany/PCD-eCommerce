@@ -58,13 +58,13 @@
                         <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
                     </div>
 
-                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('edit_sms_template'))
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('sms_edit'))
                     <div class="edit-sms-btn toggle-btn btn btn-warning btn-sm" data-current-card="#objectsCard" data-target-card="#editObjectsCard">
                         <i class="fas fa-edit"></i>
                     </div>
                     @endif
 
-                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('send_sms'))
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo('sms_add'))
                     <div class="toggle-btn btn btn-primary btn-sm" data-current-card="#objectsCard" data-target-card="#createObjectCard">
                         <i class="fas fa-sms"></i>
                     </div>

@@ -34,8 +34,8 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions', 'localeSessionRe
     
     Route::get('error', 'ErrorsController@has_no_permission')->name('admin.error.no_permission');
 
-    Route::get('my-profile', 'UsersController@myProfile');
-    Route::post('my-profile', 'UsersController@updateProfile');
+    Route::get('my-profile', 'UsersController@myProfile')->name('admin.profile.index');
+    Route::post('my-profile', 'UsersController@updateProfile')->name('admin.profile.update');
 
     Route::resource('users', 'UsersController', ['names' => [
         'index' => 'admin.users.index',
@@ -229,7 +229,7 @@ Route::group(['middleware' => ['auth:web', 'admin.permissions', 'localeSessionRe
 
     // dashboard
     Route::group([], function () {
-        Route::get('/', 'DashboardController@index');
+        Route::get('/', 'DashboardController@index')->name('admin.dashboard');
     });
 
     // theme editor

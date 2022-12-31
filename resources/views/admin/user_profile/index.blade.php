@@ -49,7 +49,7 @@
                     <span class="relode-btn-loader spinner-grow spinner-grow-sm" style="display: none;" role="status" aria-hidden="true"></span>
                 </div> -->
 
-                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['users_add']))
+                @if(auth()->user()->hasRole('admin') || auth()->user()->isAbleTo(['users_add']) || $target_user->id == auth()->user()->id )
                 <div class="toggle-btn btn btn-warning btn-sm" data-current-card="#objectsCard" data-target-card="#editObjectCard">
                     <i class="fas fa-edit"></i>
                 </div>
