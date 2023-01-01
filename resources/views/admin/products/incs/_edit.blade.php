@@ -398,9 +398,9 @@ $(function () {
             });
 
             $('#edit-selected_child_product_container').on('change keyup', '.edit-selected-product-child-quantity', function () {
+                const targted_product_id       = $(this).data('target');
                 const original_valied_quantity = $(this).data('original-quantity');
                 const selected_quantity_value  = $(this).val();
-                const targted_product_id       = $(this).data('target');
                 const total_parent_quantity    = $('#edit-reserved_quantity').val();
 
                 let left_quantity  = original_valied_quantity - (selected_quantity_value * total_parent_quantity);
@@ -467,7 +467,7 @@ $(function () {
             $('#edit-find_child_products').val('').trigger('change');
             $('#edit-childrenProductsLoddingSpinner').hide(500);
             
-            update_selected_child_products (target_product.id, 1);
+            update_selected_child_products (target_product.id, target_product_r_quantity);
         }
 
         window.update_selected_child_products = function (targted_product_id, selected_quantity_value) {
@@ -614,9 +614,11 @@ $(function () {
 
             // change total reserved quantity || update price and hidden input
             $('#edit-reserved_quantity').on('change', function () {
-                store.addReservedQuantity(Number($(this).val()));
-                render.render_products();
-                render.render_expected_price();
+                if ($('#edit-is_composite').val() == 2) { 
+                    store.addReservedQuantity(Number($(this).val()));
+                    render.render_products();
+                    render.render_expected_price();
+                }
             });
         }
 

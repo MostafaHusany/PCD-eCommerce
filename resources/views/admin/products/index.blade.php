@@ -397,7 +397,7 @@ $(function () {
     };
 
     objects_dynamic_table.addDataToForm = (fields_id_list, imgs_fields, data, prefix) => {
-
+        console.log('test edit form : ', data);
         function insertAtCaret (key, value) {
 
             let description = document.getElementById(`edit-${key}`)
